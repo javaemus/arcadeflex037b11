@@ -5,7 +5,7 @@ package mame;
 
 import static arcadeflex.fucPtr.*;
 import static old.arcadeflex.libc_old.CopyArray;
-import static mame.commonH.*;
+import static mame056.commonH.*;
 import static mame.drawgfxH.GfxDecodeInfo;
 import static mame.drawgfxH.rectangle;
 import static old.mame.inptportH.InputPortTiny;

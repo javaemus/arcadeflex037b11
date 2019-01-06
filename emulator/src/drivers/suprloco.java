@@ -26,6 +26,7 @@ import static old2.mame.timer.*;
 import static old2.mame.timerH.*;
 import static old.mame.common.*;
 import static old.mame.inputH.KEYCODE_F2;
+import static mame056.common.*;
 
 public class suprloco {
 

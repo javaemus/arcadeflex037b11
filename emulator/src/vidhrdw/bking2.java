@@ -18,7 +18,7 @@ import static old.sound.mixer.*;
 import static vidhrdw.generic.*;
 import static common.libc.cstring.*;
 import static common.libc.expressions.*;
-
+import static mame056.common.*;
 public class bking2 {
 
     static int/*UINT8*/ xld1 = 0;

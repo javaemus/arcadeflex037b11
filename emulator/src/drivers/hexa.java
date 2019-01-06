@@ -18,7 +18,7 @@ import static mame.sndintrfH.*;
 import static vidhrdw.hexa.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 
 public class hexa {
 

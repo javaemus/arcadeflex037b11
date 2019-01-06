@@ -18,7 +18,7 @@ import static old2.mame.tilemapC.*;
 import static mame.palette.*;
 import static old2.mame.mame.*;
 import static old.mame.drawgfx.fillbitmap;
-
+import static mame056.common.*;
 public class stfight {
 
     // Real stuff

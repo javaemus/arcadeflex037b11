@@ -13,7 +13,7 @@ import static vidhrdw.generic.*;
 import static mame.osdependH.*;
 import static old.mame.common.coin_counter_w;
 import static old2.mame.mame.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 
 public class exedexes {
 

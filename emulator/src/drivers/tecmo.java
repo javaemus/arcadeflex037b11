@@ -24,6 +24,7 @@ import static cpu.z80.z80H.Z80_NMI_INT;
 import static mame.palette.*;
 import static sound._3812intfH.*;
 import static sound._3812intf.*;
+import static mame056.common.*;
 
 public class tecmo {
 

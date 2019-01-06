@@ -16,6 +16,7 @@ import static sound.sn76477.*;
 import static old2.mame.common.*;
 import static old.mame.cpuintrf.*;
 import static mame.palette.*;
+import static mame056.common.*;
 
 public class route16 {
 

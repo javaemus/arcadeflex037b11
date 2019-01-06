@@ -26,9 +26,7 @@ import static sound.namcoH.*;
 //vidhrdw imports
 import static vidhrdw.generic.*;
 import static vidhrdw.pengo.*;
-
-import static old.mame.common.memory_region;
-import static old.mame.common.memory_region_length;
+import static mame056.common.*;
 import static old.mame.cpuintrf.interrupt;
 import static old.mame.cpuintrf.interrupt_enable_w;
 import static old.mame.inptport.*;

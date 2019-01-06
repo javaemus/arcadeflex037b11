@@ -3,3 +3,7 @@
 Emulator
 --------
 -Intial import from arcadeflex037b7
+-Added loader from 0.56 repo for testing
+-Neccesary modifications to drivers
+-Added RegionInfo in mameH
+-Only bankp driver works atm (using the new romloader)

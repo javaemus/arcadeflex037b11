@@ -16,7 +16,7 @@ import static old.mame.drawgfx.*;
 import static old2.mame.common.*;
 import static mame.drawgfxH.*;
 import static old.mame.common.*;
-
+import static mame056.common.*;
 public class snk {
 
     public static int snk_bg_tilemap_baseaddr, gwar_sprite_placement;

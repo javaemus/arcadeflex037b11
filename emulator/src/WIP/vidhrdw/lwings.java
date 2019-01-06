@@ -19,6 +19,7 @@ import static mame.drawgfxH.*;
 import static mame.paletteH.*;
 import static mame.palette.*;
 import static vidhrdw.generic.*;
+import static mame056.common.*;
 
 public class lwings {
 

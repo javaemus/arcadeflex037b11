@@ -16,7 +16,7 @@ import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
 import static old.mame.cpuintrf.*;
 import static mame.sndintrfH.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old.arcadeflex.osdepend.*;
 import static cpu.z80.z80H.*;
 import static mame.sndintrf.*;

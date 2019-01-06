@@ -14,7 +14,7 @@ import static vidhrdw.generic.*;
 import static old2.mame.common.*;
 import static common.libc.cstring.*;
 import static mame.commonH.REGION_GFX2;
-import static old.mame.common.memory_region;
+import static mame056.common.*;
 
 public class munchmo {
 

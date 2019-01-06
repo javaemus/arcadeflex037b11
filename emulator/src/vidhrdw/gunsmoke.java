@@ -21,7 +21,7 @@ import static old2.mame.common.*;
 import static vidhrdw.generic.*;
 import static old.mame.common.*;
 import static old2.mame.memoryH.*;
-
+import static mame056.common.*;
 public class gunsmoke {
 
     public static UBytePtr gunsmoke_bg_scrolly = new UBytePtr();

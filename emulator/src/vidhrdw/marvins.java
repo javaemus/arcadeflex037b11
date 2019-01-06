@@ -10,7 +10,6 @@ import static arcadeflex.libc.ptr.*;
 import static mame.commonH.REGION_PROMS;
 import static mame.drawgfxH.*;
 import static mame.osdependH.*;
-import static old.mame.common.memory_region;
 import static old.mame.drawgfx.*;
 import static old2.mame.common.flip_screen_w;
 import static old2.mame.mame.Machine;
@@ -21,6 +20,8 @@ import static old.mame.cpuintrf.*;
 import static mame.palette.*;
 import static drivers.marvins.*;
 import static mame.commonH.REGION_CPU1;
+import static mame056.common.*;
+
 
 public class marvins {
 

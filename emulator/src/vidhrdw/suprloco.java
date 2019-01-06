@@ -16,7 +16,7 @@ import static old2.mame.common.*;
 import static mame.commonH.*;
 import static old2.mame.tilemapC.*;
 import static old2.mame.tilemapH.*;
-
+import static mame056.common.*;
 public class suprloco {
 
     public static UBytePtr suprloco_videoram = new UBytePtr();

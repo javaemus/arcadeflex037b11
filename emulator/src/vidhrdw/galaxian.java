@@ -15,7 +15,7 @@ import static WIP.drivers.scramble.*;
 import static mame.drawgfxH.*;
 import static mame.osdependH.*;
 import static old.mame.cpuintrf.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old2.mame.common.*;
 import static old2.mame.drawgfx.*;
 import static old2.mame.mame.Machine;

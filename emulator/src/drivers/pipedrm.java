@@ -18,7 +18,7 @@ import static old2.mame.memoryH.*;
 import static old.mame.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.pipedrm.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static mame.palette.*;
 import static mame.cpuintrfH.*;
 import arcadeflex.libc.ptr.UBytePtr;

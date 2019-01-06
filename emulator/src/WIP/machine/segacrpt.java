@@ -4,7 +4,7 @@
  */
 package WIP.machine;
 
-import static old.mame.common.*;
+import static mame056.common.*;
 import static mame.commonH.*;
 import static old2.mame.memory.*;
 import static arcadeflex.libc.ptr.*;

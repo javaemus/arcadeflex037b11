@@ -19,7 +19,7 @@ import static sound._2203intf.*;
 import static sound._2203intfH.*;
 import static vidhrdw.gundealr.*;
 import static old2.mame.memory.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static mame.palette.*;
 
 public class gundealr

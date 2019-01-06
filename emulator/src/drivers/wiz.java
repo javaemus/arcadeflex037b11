@@ -22,6 +22,7 @@ import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static mame.sndintrf.*;
 import static vidhrdw.wiz.*;
+import static mame056.common.*;
 
 public class wiz {
 

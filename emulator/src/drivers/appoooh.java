@@ -19,7 +19,7 @@ import static mame.sndintrfH.*;
 import static sound.MSM5205H.*;
 import static sound.MSM5205.*;
 import static arcadeflex.libc.ptr.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static mame.commonH.*;
 import static old.mame.cpuintrf.*;
 

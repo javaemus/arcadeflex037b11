@@ -15,7 +15,7 @@ import static arcadeflex.libc.cstring.*;
 import static old.mame.common.*;
 import static mame.commonH.*;
 import static old2.mame.memoryH.*;
-
+import static mame056.common.*;
 public class hexa {
 
     static int charbank;

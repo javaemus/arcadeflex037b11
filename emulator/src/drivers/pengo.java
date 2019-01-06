@@ -6,7 +6,7 @@ package drivers;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static WIP.machine.segacrpt.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static mame.commonH.*;
 import static old.mame.cpuintrf.*;
 import static mame.drawgfxH.*;

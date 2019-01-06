@@ -18,7 +18,7 @@ import static vidhrdw.generic.*;
 import static mame.sndintrf.*;
 import static vidhrdw.commando.*;
 import static arcadeflex.libc.ptr.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static sound._2203intfH.*;
 import static sound._2203intf.*;
 

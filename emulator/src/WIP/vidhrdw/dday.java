@@ -23,6 +23,7 @@ import static old.mame.common.*;
 import static old.sound.mixer.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
+import static mame056.common.*;
 
 public class dday {
 

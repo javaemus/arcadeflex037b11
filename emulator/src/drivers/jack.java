@@ -21,7 +21,7 @@ import static mame.sndintrfH.*;
 import static vidhrdw.jack.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static mame.palette.*;
 import static old2.mame.memory.*;
 

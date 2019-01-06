@@ -2887,4 +2887,16 @@ public class cpuintrf {
 /*TODO*///		fflush(stdout);
 /*TODO*///	}
 /*TODO*///
+    
+    /***
+     * HACKISH but should work for z80
+     */
+    public static int cputype_databus_width(int cpunum)
+    {
+        return 8;
+    }
+    public static int cputype_endianess(int cpunum)
+    {
+        return CPU_IS_LE;
+    }
 }

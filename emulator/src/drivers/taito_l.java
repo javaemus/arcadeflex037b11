@@ -31,6 +31,7 @@ import static WIP.sndhrdw.rastan.*;
 import arcadeflex.libc.ptr.UBytePtr;
 import static old.sound.mixerH.*;
 import static common.libc.expressions.*;
+import static mame056.common.*;
 
 public class taito_l {
 

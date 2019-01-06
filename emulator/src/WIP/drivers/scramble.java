@@ -14,7 +14,7 @@ import static drivers.cclimber.*;
 import static drivers.frogger.*;
 
 import static machine.scramble.*;
-
+import static mame056.common.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;

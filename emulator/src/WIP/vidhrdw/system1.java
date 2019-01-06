@@ -23,6 +23,7 @@ import static common.subArrays.*;
 import static vidhrdw.generic.*;
 import static WIP.vidhrdw.system1H.*;
 import static WIP.drivers.system1.*;
+import static mame056.common.*;
 
 public class system1 {
 

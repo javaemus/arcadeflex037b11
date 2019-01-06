@@ -27,6 +27,7 @@ import static old2.mame.timer.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static old2.mame.timerH.*;
+import static mame056.common.*;
 
 public class tehkanwc {
 

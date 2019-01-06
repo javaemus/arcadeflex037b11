@@ -20,7 +20,7 @@ import static vidhrdw.generic.*;
 import static sound.sn76496.*;
 import static sound.sn76496H.*;
 import static vidhrdw.mrdo.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 
 public class mrdo {
 

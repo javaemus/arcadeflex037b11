@@ -27,7 +27,7 @@ import static cpu.z80.z80H.*;
 import static old.mame.cpuintrf.*;
 import static sound.MSM5205H.*;
 import static sound.MSM5205.*;
-
+import static mame056.common.*;
 public class kchamp {
 
     static int nmi_enable = 0;

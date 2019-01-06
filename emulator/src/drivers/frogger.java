@@ -25,6 +25,7 @@ import static sound.ay8910H.*;
 import static vidhrdw.frogger.*;
 import static sndhrdw.frogger.*;
 import static vidhrdw.generic.*;
+import static mame056.common.*;
 
 public class frogger
 {

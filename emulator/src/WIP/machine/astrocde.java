@@ -7,7 +7,7 @@ package WIP.machine;
 import arcadeflex.fucPtr.*;
 import arcadeflex.libc.ptr.*;
 import static mame.commonH.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old.mame.cpuintrf.*;
 import static old.mame.inptport.*;
 import static old.arcadeflex.osdepend.*;

@@ -13,7 +13,7 @@ import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static mame.sndintrfH.*;
 import static old.mame.cpuintrf.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old.mame.inptportH.*;
 import static arcadeflex.libc.ptr.*;
 import static WIP.vidhrdw.airbustr.*;

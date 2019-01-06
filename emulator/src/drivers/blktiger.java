@@ -22,8 +22,9 @@ import static sound._2203intfH.*;
 import static vidhrdw.blktiger.*;
 import static vidhrdw.generic.*;
 import static mame.palette.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static mame.cpuintrfH.*;
+import static old.mame.common.coin_lockout_w;
 
 public class blktiger {
 

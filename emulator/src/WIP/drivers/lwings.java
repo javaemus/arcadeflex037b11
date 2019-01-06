@@ -28,6 +28,7 @@ import static sound.MSM5205.*;
 import static sound.MSM5205H.*;
 import static sound._2203intfH.*;
 import static sound._2203intf.*;
+import static mame056.common.*;
 
 public class lwings {
 

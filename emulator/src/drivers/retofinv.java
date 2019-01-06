@@ -15,7 +15,7 @@ import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.retofinv.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static mame.sndintrf.*;
 import static mame.cpuintrfH.*;
 import static sound.sn76496.*;

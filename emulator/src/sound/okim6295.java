@@ -12,7 +12,7 @@ import static mame.sndintrfH.*;
 import static sound.adpcmH.*;
 import static old2.mame.mame.*;
 import static old.sound.streams.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static mame.sndintrf.*;
 import static sound.okim6295H.*;
 import static common.ptr.*;

@@ -26,7 +26,7 @@ import static sound.MSM5205.*;
 import static sound.MSM5205H.*;
 import static machine.tait8741.*;
 import static machine.tait8741H.*;
-
+import static mame056.common.*;
 public class gsword {
 
     static int coins;

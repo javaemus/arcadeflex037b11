@@ -20,6 +20,7 @@ import static old2.mame.memoryH.*;
 import static old.mame.cpuintrf.*;
 import static old.mame.drawgfx.drawgfx;
 import static old.mame.drawgfx.fillbitmap;
+import static mame056.common.*;
 
 public class galivan {
 

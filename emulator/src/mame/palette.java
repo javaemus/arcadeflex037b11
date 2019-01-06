@@ -12,7 +12,7 @@ import static old2.mame.memoryH.*;
 import static mame.paletteH.*;
 import static old2.mame.mame.*;
 import static mame.artworkC.*;
-import static old.mame.common.memory_region;
+import static mame056.common.*;
 import static mame.commonH.REGION_PROMS;
 import static old.arcadeflex.video.*;
 import static old.mame.usrintrf.*;

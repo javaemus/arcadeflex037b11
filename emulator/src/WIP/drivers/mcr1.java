@@ -25,6 +25,7 @@ import static WIP.machine.mcr.*;
 import static WIP.sndhrdw.mcr.*;
 import static WIP.sndhrdw.mcrH.*;
 import static WIP.machine.z80fmly.*;
+import static mame056.common.*;
 
 public class mcr1 {
 

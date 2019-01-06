@@ -7,7 +7,7 @@ package machine;
 import static mame.commonH.*;
 
 import static arcadeflex.libc.ptr.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 
 public class pacplus {
 

@@ -20,7 +20,7 @@ import static vidhrdw.goindol.*;
 import static sound._2203intf.*;
 import static sound._2203intfH.*;
 import static mame.sndintrfH.*;
-
+import static mame056.common.*;
 public class goindol {
 
     public static WriteHandlerPtr goindol_bankswitch_w = new WriteHandlerPtr() {

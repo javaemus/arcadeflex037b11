@@ -18,7 +18,7 @@ import static old2.mame.common.*;
 import static mame.commonH.*;
 import static old.mame.cpuintrf.*;
 import static old2.mame.memoryH.*;
-
+import static mame056.common.*;
 public class superqix {
 
     public static int gfxbank;

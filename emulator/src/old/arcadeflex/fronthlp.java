@@ -21,8 +21,7 @@ import old2.arcadeflex.settings;
 import static old.arcadeflex.libc_old.*;
 import static old.mame.common.printromlist;
 import static old.mame.common.showdisclaimer;
-import static mame.commonH.ROMFLAG_MASK;
-import static mame.commonH.RomModule;
+import static mame056.commonH.*;
 import static old.mame.cpuintrf.cputype_name;
 import static mame.driver.drivers;
 import static mame.driverH.*;
@@ -522,7 +521,7 @@ public class fronthlp {
 			gamedrv = drivers[j];
 			if (list == LIST_LISTROMS)
                         {
-	   		   printromlist(gamedrv.rom,gamename);
+/*TODO*/ //	   		   printromlist(gamedrv.rom,gamename);
                         }
 			else
 			{
@@ -956,10 +955,10 @@ public class fronthlp {
                                 int romp_ptr=0;
 				romp = drivers[i].rom;
 
-				while (romp!=null && (romp[romp_ptr].name!=null || romp[romp_ptr].offset!=0 || romp[romp_ptr].length!=0))
+				while (romp!=null && (romp[romp_ptr]._name!=null || romp[romp_ptr]._offset!=0 || romp[romp_ptr]._length!=0))
 				{
-					if (romp[romp_ptr].name!=null && romp[romp_ptr].name != "-1")
-						printf("%08x %-12s %s\n",romp[romp_ptr].crc,romp[romp_ptr].name,drivers[i].description);
+					if (romp[romp_ptr]._name!=null && romp[romp_ptr]._name != "-1")
+						printf("%08x %-12s %s\n",romp[romp_ptr]._crc,romp[romp_ptr]._name,drivers[i].description);
 
 					romp_ptr++;
 				}
@@ -976,9 +975,9 @@ public class fronthlp {
 
 				romp = drivers[i].rom;
 
-				while (romp!=null && (romp[romp_ptr].name!=null || romp[romp_ptr].offset!=0 || romp[romp_ptr].length!=0))
+				while (romp!=null && (romp[romp_ptr]._name!=null || romp[romp_ptr]._offset!=0 || romp[romp_ptr]._length!=0))
 				{
-					if (romp[romp_ptr].name!=null && romp[romp_ptr].name != "-1" && romp[romp_ptr].crc!=0)
+					if (romp[romp_ptr]._name!=null && romp[romp_ptr]._name != "-1" && romp[romp_ptr]._crc!=0)
 					{
 						j = i+1;
 						while (drivers[j]!=null)
@@ -987,15 +986,15 @@ public class fronthlp {
 
 							romp1 = drivers[j].rom;
                                                          int romp1_ptr=0;
-                                                        while (romp1!=null && (romp1[romp1_ptr].name!=null || romp1[romp1_ptr].offset!=0 || romp1[romp1_ptr].length!=0))
+                                                        while (romp1!=null && (romp1[romp1_ptr]._name!=null || romp1[romp1_ptr]._offset!=0 || romp1[romp1_ptr]._length!=0))
 							{
-								if (romp1[romp1_ptr].name!=null && romp1[romp1_ptr].name!="-1" &&
-										strcmp(romp[romp_ptr].name,romp1[romp1_ptr].name)!=0 &&
-										romp1[romp1_ptr].crc == romp[romp_ptr].crc)
+								if (romp1[romp1_ptr]._name!=null && romp1[romp1_ptr]._name!="-1" &&
+										strcmp(romp[romp_ptr]._name,romp1[romp1_ptr]._name)!=0 &&
+										romp1[romp1_ptr]._crc == romp[romp_ptr]._crc)
 								{
-									printf("%08x %-12s %-8s <. %-12s %-8s\n",romp[romp_ptr].crc,
-											romp[romp_ptr].name,drivers[i].name,
-											romp1[romp1_ptr].name,drivers[j].name);
+									printf("%08x %-12s %-8s <. %-12s %-8s\n",romp[romp_ptr]._crc,
+											romp[romp_ptr]._name,drivers[i].name,
+											romp1[romp1_ptr]._name,drivers[j].name);
 								}
 
 								romp1_ptr++;
@@ -1021,9 +1020,9 @@ public class fronthlp {
 
 				romp = drivers[i].rom;
 
-				while (romp!=null && (romp[romp_ptr].name!=null || romp[romp_ptr].offset!=0 || romp[romp_ptr].length!=0))
+				while (romp!=null && (romp[romp_ptr]._name!=null || romp[romp_ptr]._offset!=0 || romp[romp_ptr]._length!=0))
 				{
-					if (romp[romp_ptr].name!=null && romp[romp_ptr].name != "-1" && romp[romp_ptr].crc!=0)
+					if (romp[romp_ptr]._name!=null && romp[romp_ptr]._name != "-1" && romp[romp_ptr]._crc!=0)
 					{
 						j = 0;
 						while (drivers[j]!=null)
@@ -1043,10 +1042,10 @@ public class fronthlp {
                                                                 int romp1_ptr=0;
 								match = 0;
 
-								while (romp1!=null && (romp1[romp1_ptr].name!=null || romp1[romp1_ptr].offset!=0 || romp1[romp1_ptr].length!=0))
+								while (romp1!=null && (romp1[romp1_ptr]._name!=null || romp1[romp1_ptr]._offset!=0 || romp1[romp1_ptr]._length!=0))
 								{
-									if (romp1[romp1_ptr].name!=null && romp1[romp1_ptr].name != "-1" &&
-											(strcmp(romp[romp_ptr].name,romp1[romp1_ptr].name)==0))
+									if (romp1[romp1_ptr]._name!=null && romp1[romp1_ptr]._name != "-1" &&
+											(strcmp(romp[romp_ptr]._name,romp1[romp1_ptr]._name)==0))
 									{
 										match = 1;
 										break;
@@ -1059,15 +1058,15 @@ public class fronthlp {
 								{
 									romp1_ptr=0;//romp1 = drivers_old[j].rom;
 
-									while (romp1!=null && (romp1[romp1_ptr].name!=null || romp1[romp1_ptr].offset!=0 || romp1[romp1_ptr].length!=0))
+									while (romp1!=null && (romp1[romp1_ptr]._name!=null || romp1[romp1_ptr]._offset!=0 || romp1[romp1_ptr]._length!=0))
 									{
-                                                                            if (romp1[romp1_ptr].name!=null && romp1[romp1_ptr].name != "-1" &&
-												(strcmp(romp[romp_ptr].name,romp1[romp1_ptr].name)!=0) &&
-												romp1[romp1_ptr].crc == romp[romp_ptr].crc)
+                                                                            if (romp1[romp1_ptr]._name!=null && romp1[romp1_ptr]._name != "-1" &&
+												(strcmp(romp[romp_ptr]._name,romp1[romp1_ptr]._name)!=0) &&
+												romp1[romp1_ptr]._crc == romp[romp_ptr]._crc)
 										{
-											printf("%08x %-12s %-8s <. %-12s %-8s\n",romp[romp_ptr].crc,
-													romp[romp_ptr].name,drivers[i].name,
-													romp1[romp1_ptr].name,drivers[j].name);
+											printf("%08x %-12s %-8s <. %-12s %-8s\n",romp[romp_ptr]._crc,
+													romp[romp_ptr]._name,drivers[i].name,
+													romp1[romp1_ptr]._name,drivers[j].name);
 										}
 
 										romp1_ptr++;
@@ -1086,7 +1085,7 @@ public class fronthlp {
 			return 0;
 
 		case LIST_LISTROMSIZE: /* I used this for statistical analysis */
-			i = 0;
+		/*	i = 0;
 			while (drivers[i]!=null)
 			{
 				if (drivers[i].clone_of == null || ((drivers[i].clone_of.flags & NOT_A_DRIVER)!=0))
@@ -1097,9 +1096,9 @@ public class fronthlp {
                                         j = 0;
                                         
                                         romp = drivers[i].rom;
-					while (romp!=null && (romp[romp_ptr].name!=null || romp[romp_ptr].offset!=0 || romp[romp_ptr].length!=0))
+					while (romp!=null && (romp[romp_ptr]._name!=null || romp[romp_ptr]._offset!=0 || romp[romp_ptr]._length!=0))
 					{
-						j += romp[romp_ptr].length & ~ROMFLAG_MASK;
+						j += romp[romp_ptr]._length & ~ROMFLAG_MASK;
 
 						romp_ptr++;
 					}
@@ -1107,7 +1106,7 @@ public class fronthlp {
 				}
 
 				i++;
-			}
+			}*/
 			return 0;
 
 		case LIST_LISTCPU: /* I used this for statistical analysis */

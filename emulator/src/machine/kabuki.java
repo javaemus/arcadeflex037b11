@@ -5,7 +5,7 @@
 package machine;
 
 import static mame.commonH.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old2.mame.memory.*;
 import static arcadeflex.libc.ptr.*;
 import static common.libc.cstring.memcpy;

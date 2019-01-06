@@ -15,6 +15,7 @@ import static mame.commonH.*;
 import static mame.driverH.*;
 import static old.mame.common.*;
 import static old2.mame.common.*;
+import static mame056.common.*;
 
 public class zaxxon {
 

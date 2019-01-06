@@ -57,6 +57,11 @@ import static old.mame.inptport.*;
 import static mame.osdependH.OSD_FILETYPE_NVRAM;
 import static mame.palette.*;
 import static mame.sndintrf.*;
+import static mame056.common.free_memory_region;
+import static mame056.common.memory_region;
+import static mame056.common.memory_region_length;
+import static mame056.common.readroms;
+import static mame056.commonH.ROMREGION_DISPOSE;
 import static old.mame.usrintrf.*;
 import static vidhrdw.generic.*;
 import static old.arcadeflex.video.osd_create_display;
@@ -210,9 +215,7 @@ public class mame {
         }
 
         for (i = 0; i < MAX_MEMORY_REGIONS; i++) {
-            Machine.u8_memory_region[i] = null;
-            Machine.memory_region_length[i] = 0;
-            Machine.memory_region_type[i] = 0;
+            Machine.memory_region[i] = new RegionInfo();
         }
         if (gamedrv.input_ports != null) {
             Machine.input_ports = input_port_allocate(gamedrv.input_ports);
@@ -278,9 +281,7 @@ public class mame {
 
         /* free the memory allocated for ROM and RAM */
         for (i = 0; i < MAX_MEMORY_REGIONS; i++) {
-            Machine.u8_memory_region[i] = null;
-            Machine.memory_region_length[i] = 0;
-            Machine.memory_region_type[i] = 0;
+            free_memory_region(i);
         }
 
         /* free the memory allocated for input ports definition */
@@ -572,8 +573,9 @@ public class mame {
                     real_scrbitmap = (artwork_overlay != null || artwork_backdrop != null) ? artwork_real_scrbitmap : Machine.scrbitmap;
 
                     /* free memory regions allocated with REGIONFLAG_DISPOSE (typically gfx roms) */
+                    /* free memory regions allocated with REGIONFLAG_DISPOSE (typically gfx roms) */
                     for (region = 0; region < MAX_MEMORY_REGIONS; region++) {
-                        if ((Machine.memory_region_type[region] & REGIONFLAG_DISPOSE) != 0) {
+                        if ((Machine.memory_region[region].flags & ROMREGION_DISPOSE) != 0) {
                             int i;
 
                             /* invalidate contents to avoid subtle bugs */
@@ -581,7 +583,7 @@ public class mame {
                                 memory_region(region).write(i, rand());
                             }
 
-                            Machine.u8_memory_region[region] = null;
+                            Machine.memory_region[region] = null;
                         }
                     }
                     if (settingsloaded == 0) {

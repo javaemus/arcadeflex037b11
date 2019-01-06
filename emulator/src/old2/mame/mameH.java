@@ -19,6 +19,7 @@ along with Arcadeflex.  If not, see <http://www.gnu.org/licenses/>.
  */
 package old2.mame;
 
+import arcadeflex.libc.ptr.UBytePtr;
 import static old.arcadeflex.libc_old.FILE;
 import static mame.commonH.GameSamples;
 import static mame.drawgfxH.GfxElement;
@@ -34,11 +35,16 @@ public class mameH {
     public static final int MAX_GFX_ELEMENTS = 32;
     public static final int MAX_MEMORY_REGIONS = 32;
 
+    public static class RegionInfo {
+
+        public UBytePtr base;
+        public int length;
+        public int/*UINT32*/ type;
+        public int/*UINT32*/ flags;
+    }
     public static class RunningMachine {
 
-        public /*unsigned char * */ char[][] u8_memory_region = new char[MAX_MEMORY_REGIONS][];
-        public int memory_region_length[] = new int[MAX_MEMORY_REGIONS];
-        public int memory_region_type[] = new int[MAX_MEMORY_REGIONS];
+        public RegionInfo[] memory_region = new RegionInfo[MAX_MEMORY_REGIONS];
 
         public GfxElement gfx[] = new GfxElement[MAX_GFX_ELEMENTS];
         public osd_bitmap scrbitmap;

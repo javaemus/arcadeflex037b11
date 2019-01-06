@@ -21,7 +21,7 @@ import static vidhrdw.cclimber.*;
 import static sndhrdw.cclimber.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old.mame.inputH.KEYCODE_F1;
 import static old2.mame.common.*;
 import static old2.mame.memory.*;

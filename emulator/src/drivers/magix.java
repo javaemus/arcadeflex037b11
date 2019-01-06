@@ -23,7 +23,7 @@ import static sound.MSM5205H.*;
 import static old.mame.common.*;
 import static mame.cpuintrfH.*;
 import static old.arcadeflex.osdepend.*;
-
+import static mame056.common.*;
 public class magix {
 
     public static InitMachinePtr magix_init_machine = new InitMachinePtr() {

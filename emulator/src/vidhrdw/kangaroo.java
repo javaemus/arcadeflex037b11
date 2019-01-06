@@ -17,7 +17,7 @@ import static old2.mame.common.*;
 import static old2.mame.memoryH.*;
 import static mame.palette.*;
 import static old2.mame.memory.*;
-
+import static mame056.common.*;
 public class kangaroo {
 
     public static UBytePtr kangaroo_video_control = new UBytePtr();

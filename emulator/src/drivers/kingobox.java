@@ -22,7 +22,7 @@ import static sound.ay8910H.*;
 import static mame.sndintrfH.*;
 import static sound.dac.*;
 import static sound.dacH.*;
-
+import static mame056.common.*;
 public class kingobox {
 
     public static UBytePtr video_shared = new UBytePtr();

@@ -27,6 +27,7 @@ import static old2.mame.common.*;
 import static sndhrdw.frogger.*;
 import static sndhrdw.scramble.*;
 import static old2.mame.memory.*;
+import static mame056.common.*;
 
 public class scobra {
 

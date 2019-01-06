@@ -10,12 +10,11 @@ import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
 import static mame.osdependH.osd_bitmap;
-import static old.mame.common.memory_region;
 import static mame.palette.palette_recalc;
 import static vidhrdw.generic.*;
 import static common.libc.cstring.*;
 import static common.libc.expressions.*;
-
+import static mame056.common.*;
 public class bombjack {
 
     static int background_image;

@@ -15,7 +15,7 @@ import static old2.mame.timer.*;
 import static old2.mame.timerH.*;
 import static sound.samples.*;
 import static old.arcadeflex.osdepend.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static common.libc.cstring.*;
 
 public class xevious {

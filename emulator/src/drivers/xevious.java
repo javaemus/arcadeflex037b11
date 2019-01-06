@@ -19,6 +19,7 @@ import static machine.xevious.*;
 import static vidhrdw.xevious.*;
 import static vidhrdw.generic.*;
 import static sound.samplesH.*;
+import static mame056.common.*;
 
 public class xevious {
 

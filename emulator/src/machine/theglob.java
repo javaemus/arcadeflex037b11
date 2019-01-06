@@ -11,7 +11,7 @@ import static mame.commonH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static old.arcadeflex.osdepend.logerror;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old2.mame.memoryH.*;
 
 public class theglob {

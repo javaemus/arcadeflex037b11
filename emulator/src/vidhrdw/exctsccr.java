@@ -12,7 +12,7 @@ import static old2.mame.mame.Machine;
 import static mame.osdependH.*;
 import static vidhrdw.generic.*;
 import static mame.commonH.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old2.mame.timer.*;
 import static old2.mame.timerH.*;
 import static old.mame.cpuintrf.*;

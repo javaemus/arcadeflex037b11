@@ -22,7 +22,7 @@ import static mame.sndintrf.*;
 import static sound._3526intf.*;
 import static sound._3812intfH.*;
 import static old2.mame.common.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 
 public class sauro {
 

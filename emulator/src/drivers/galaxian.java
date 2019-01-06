@@ -15,7 +15,7 @@ import static WIP.drivers.scramble.*;
 import static drivers.pacman.driver_pacman;
 
 import static machine.scramble.*;
-
+import static mame056.common.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;

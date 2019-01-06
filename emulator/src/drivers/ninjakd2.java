@@ -19,7 +19,7 @@ import static mame.sndintrfH.*;
 import static sound._2203intf.*;
 import static sound._2203intfH.*;
 import static vidhrdw.ninjakd2.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static sound.samples.*;
 import static sound.samplesH.*;
 import static mame.palette.*;

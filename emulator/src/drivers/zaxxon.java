@@ -23,6 +23,7 @@ import static sndhrdw.zaxxon.*;
 import static arcadeflex.libc.ptr.*;
 import static common.libc.cstdlib.*;
 import static old.mame.common.*;
+import static mame056.common.*;
 
 public class zaxxon {
 

@@ -26,6 +26,7 @@ import static sound.ym2413.*;
 import static machine.kabuki.*;
 import static mame.palette.*;
 import static vidhrdw.generic.*;
+import static mame056.common.*;
 
 public class cbasebal {
 

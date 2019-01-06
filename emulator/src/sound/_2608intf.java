@@ -13,7 +13,7 @@ import static sound.fm.*;
 import static old.sound.streams.*;
 import static old2.mame.timer.*;
 import static arcadeflex.fucPtr.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static arcadeflex.libc.ptr.*;
 import static common.libc.cstdio.*;
 

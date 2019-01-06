@@ -27,6 +27,7 @@ import static old2.mame.timerH.*;
 import static old.mame.inputH.*;
 import static mame.palette.*;
 import static old2.mame.memory.*;
+import static mame056.common.*;
 
 public class system1 {
 

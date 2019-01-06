@@ -18,7 +18,7 @@ import static sound.fmoplH.*;
 import static sound.fmopl.*;
 import static mame.cpuintrfH.*;
 import static old2.mame.timer.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 
 public class y8950intf extends snd_interface {
 

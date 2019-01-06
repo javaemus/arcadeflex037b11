@@ -16,6 +16,7 @@ import static old2.mame.mame.Machine;
 import static old2.mame.memoryH.cpu_setbank;
 import static mame.osdependH.osd_bitmap;
 import static vidhrdw.generic.*;
+import static mame056.common.*;
 
 public class _1943 {
 

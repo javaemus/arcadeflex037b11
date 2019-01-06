@@ -9,7 +9,7 @@ import static arcadeflex.libc.ptr.*;
 import static old.arcadeflex.osdepend.*;
 import static old2.mame.memoryH.*;
 import static mame.commonH.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static mame.cpuintrfH.*;
 import static old.mame.cpuintrf.*;
 
