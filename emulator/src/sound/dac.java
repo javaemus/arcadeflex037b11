@@ -11,7 +11,7 @@ import mame.sndintrf.*;
 import static mame.sndintrfH.*;
 import static sound.dacH.*;
 import static old2.mame.mame.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 
 public class dac extends snd_interface {
 

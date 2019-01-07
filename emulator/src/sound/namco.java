@@ -10,7 +10,7 @@ import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
 import static sound.namcoH.*;
 import static mame056.common.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 import static old2.mame.mame.*;
 import static old.arcadeflex.osdepend.*;
 import static arcadeflex.libc.ptr.*;

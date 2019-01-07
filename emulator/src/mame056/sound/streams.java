@@ -1,14 +1,13 @@
 /**
- * ported to 0.37b5
+ *  ported to 0.56
  */
-package old.sound;
-
+package mame056.sound;
 
 import static common.ptr.*;
-import static old2.mame.mame.Machine;
-import static mame.sndintrf.sound_scalebufferpos;
+import static old2.mame.mame.*;
+import static mame.sndintrf.*;
 import static old.sound.mixer.*;
-import static old.sound.mixerH.MIXER_MAX_CHANNELS;
+import static old.sound.mixerH.*;
 
 public class streams {
 
@@ -33,7 +32,7 @@ public class streams {
 
     static int[] stream_sample_rate = new int[MIXER_MAX_CHANNELS];
     static int[] stream_buffer_pos = new int[MIXER_MAX_CHANNELS];
-    static int[] stream_sample_length = new int[MIXER_MAX_CHANNELS];	/* in usec */
+    static int[] stream_sample_length = new int[MIXER_MAX_CHANNELS];/* in usec */
 
     static int[] stream_param = new int[MIXER_MAX_CHANNELS];
     static StreamInitPtr[] stream_callback = new StreamInitPtr[MIXER_MAX_CHANNELS];
@@ -52,8 +51,8 @@ public class streams {
      |      |
      GND    GND
      */
-    /* R1, R2, R3 in Ohm; C in pF */
-    /* set C = 0 to disable the filter */
+ /* R1, R2, R3 in Ohm; C in pF */
+ /* set C = 0 to disable the filter */
     public static void set_RC_filter(int channel, int R1, int R2, int R3, int C) {
         r1[channel] = R1;
         r2[channel] = R2;
@@ -63,22 +62,22 @@ public class streams {
 
     public static void apply_RC_filter(int channel, ShortPtr buf, int len, int sample_rate) {
         if (c[channel] == 0) {
-            return;	/* filter disabled */
+            return;/* filter disabled */
 
         }
 
         float R1 = r1[channel];
         float R2 = r2[channel];
         float R3 = r3[channel];
-        float C = (float) (c[channel] * 1E-12);	/* convert pF to F */
+        float C = (float) (c[channel] * 1E-12);/* convert pF to F */
 
-        /* Cut Frequency = 1/(2*Pi*Req*C) */
+ /* Cut Frequency = 1/(2*Pi*Req*C) */
 
         float Req = (R1 * (R2 + R3)) / (R1 + R2 + R3);
 
         int K = (int) (0x10000 * Math.exp(-1 / (Req * C) / sample_rate));
 
-        buf.write(0, (short) (buf.read(0) + (memory[channel] - buf.read(0)) * K / 0x10000));
+        buf.write((short) (buf.read() + (memory[channel] - buf.read()) * K / 0x10000));
 
         for (int i = 1; i < len; i++) {
             buf.write(i, (short) (buf.read(i) + (buf.read(i - 1) - buf.read(i)) * K / 0x10000));
@@ -169,8 +168,8 @@ public class streams {
     }
 
     public static int stream_init(String name, int default_mixing_level,
-                                  int sample_rate,
-                                  int param, StreamInitPtr callback) {
+            int sample_rate,
+            int param, StreamInitPtr callback) {
         int channel;
 
         channel = mixer_allocate_channel(default_mixing_level);
@@ -196,8 +195,8 @@ public class streams {
     }
 
     public static int stream_init_multi(int channels, String[] names, int[] default_mixing_levels,
-                                        int sample_rate,
-                                        int param, StreamInitMultiPtr callback) {
+            int sample_rate,
+            int param, StreamInitMultiPtr callback) {
         int channel, i;
 
         channel = mixer_allocate_channels(channels, default_mixing_levels);
@@ -244,13 +243,15 @@ public class streams {
             if (stream_joined_channels[channel] > 1) {
                 ShortPtr[] buf = new ShortPtr[MIXER_MAX_CHANNELS];
 
-                for (int i = 0; i < stream_joined_channels[channel]; i++)
+                for (int i = 0; i < stream_joined_channels[channel]; i++) {
                     buf[i] = new ShortPtr(stream_buffer[channel + i], stream_buffer_pos[channel + i] * 2);
+                }
 
                 stream_callback_multi[channel].handler(stream_param[channel], buf, buflen);
 
-                for (int i = 0; i < stream_joined_channels[channel]; i++)
+                for (int i = 0; i < stream_joined_channels[channel]; i++) {
                     stream_buffer_pos[channel + i] += buflen;
+                }
             } else {
                 ShortPtr buf = new ShortPtr(stream_buffer[channel], stream_buffer_pos[channel] * 2);//INT16 *buf = stream_buffer[channel] + stream_buffer_pos[channel];
 

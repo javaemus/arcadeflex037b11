@@ -17,7 +17,7 @@ import static old2.mame.mame.Machine;
 import static old.mame.common.*;
 
 import static old.sound.mixer.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 
 public class galaxian {
 

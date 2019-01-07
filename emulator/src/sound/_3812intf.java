@@ -19,7 +19,7 @@ import static old2.mame.timer.*;
 import static sound._3812intfH.*;
 import static sound.fmopl.*;
 import static sound.fmoplH.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 
 public class _3812intf extends snd_interface {
 

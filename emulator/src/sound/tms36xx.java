@@ -12,7 +12,7 @@ import static old.arcadeflex.osdepend.logerror;
 import static mame.sndintrfH.MachineSound;
 import static mame.sndintrfH.SOUND_TMS36XX;
 import static sound.tms36xxH.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 
 public class tms36xx extends snd_interface {
 

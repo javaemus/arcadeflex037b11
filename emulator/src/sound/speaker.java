@@ -7,7 +7,7 @@ package sound;
 import static common.ptr.*;
 import static mame.sndintrfH.*;
 import static sound.speakerH.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 import static arcadeflex.libc.cstdio.*;
 import static mame.sndintrf.*;
 import static old2.mame.mame.Machine;

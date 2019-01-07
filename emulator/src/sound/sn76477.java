@@ -7,7 +7,7 @@ import static mame.sndintrf.*;
 import static mame.sndintrfH.MachineSound;
 import static mame.sndintrfH.*;
 import static sound.sn76477H.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 import static old2.mame.timer.*;
 import static old2.mame.timerH.*;
 import static common.libc.expressions.*;

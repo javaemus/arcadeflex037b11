@@ -10,7 +10,7 @@ import static mame.sndintrf.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static old.sound.mixerH.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 import static arcadeflex.fucPtr.*;
 
 public class timeplt {

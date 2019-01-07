@@ -10,7 +10,7 @@ import static mame.sndintrf.*;
 import static old2.mame.mame.*;
 import static sound.fmH.*;
 import static sound.fm.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 import static old2.mame.timer.*;
 import static arcadeflex.fucPtr.*;
 import static mame056.common.*;

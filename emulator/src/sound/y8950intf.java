@@ -11,7 +11,7 @@ import static mame.sndintrfH.*;
 import static sound._3812intfH.*;
 import static old2.mame.mame.*;
 import static mame.sndintrf.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 import static arcadeflex.fucPtr.*;
 import common.ptr.ShortPtr;
 import static sound.fmoplH.*;

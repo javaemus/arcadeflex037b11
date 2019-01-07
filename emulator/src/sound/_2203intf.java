@@ -14,7 +14,7 @@ import static old2.mame.timer.*;
 import static sound._2203intfH.*;
 import static sound.fm.*;
 import static sound.fmH.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 
 public class _2203intf extends snd_interface {
 

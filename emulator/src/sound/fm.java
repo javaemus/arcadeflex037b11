@@ -5,7 +5,7 @@
 package sound;
 
 import arcadeflex.libc.ptr.UBytePtr;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 import static common.ptr.*;
 import static common.subArrays.*;
 import static sound._2203intf.YM2203UpdateRequest;

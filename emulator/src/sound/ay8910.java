@@ -13,7 +13,7 @@ import static sound.ay8910H.*;
 import static old.arcadeflex.osdepend.*;
 import static old.mame.cpuintrf.*;
 import static old.sound.mixer.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 import static old2.mame.mame.Machine;
 
 public class ay8910 extends snd_interface {

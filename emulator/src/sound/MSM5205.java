@@ -17,7 +17,7 @@ import static old2.mame.timerH.TIME_IN_HZ;
 import static sound.MSM5205H.MAX_MSM5205;
 import static sound.MSM5205H.MSM5205interface;
 import static old.sound.mixer.mixer_set_volume;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 
 public class MSM5205 extends snd_interface {
 

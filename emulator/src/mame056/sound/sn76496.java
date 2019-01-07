@@ -14,7 +14,7 @@ import static mame.sndintrfH.*;
 import static old2.mame.mame.*;
 
 import static mame056.sound.sn76496H.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 
 public class sn76496 extends snd_interface {
 

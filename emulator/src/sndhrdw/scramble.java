@@ -7,7 +7,7 @@ package sndhrdw;
 import static arcadeflex.fucPtr.*;
 import static cpu.z80.z80H.*;
 import static old.mame.cpuintrf.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 
 public class scramble {
 

@@ -12,7 +12,7 @@ import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
 import static sound._5110intfH.*;
 import static sound.tms5110.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 
 public class _5110intf extends snd_interface {
 

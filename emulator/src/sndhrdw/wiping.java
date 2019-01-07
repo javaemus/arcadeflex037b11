@@ -7,7 +7,7 @@ import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static arcadeflex.libc.cstring.*;
 import static mame056.common.*;
-import static old.sound.streams.*;
+import static mame056.sound.streams.*;
 import static mame.commonH.*;
 import static mame.sndintrfH.MachineSound;
 import static common.ptr.*;

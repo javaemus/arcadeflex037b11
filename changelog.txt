@@ -3,6 +3,7 @@
 Emulator
 ========
 -Ported sn76496 sound to 0.56 
+-Ported streams class to 0.56
 
 06/01/2018
 ==========
