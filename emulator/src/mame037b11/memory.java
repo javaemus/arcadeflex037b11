@@ -5,7 +5,12 @@ package mame037b11;
 
 import static arcadeflex.fucPtr.*;
 import arcadeflex.libc.ptr.UBytePtr;
+import static common.libc.cstring.memset;
+import static mame.commonH.REGION_CPU1;
+import static mame.driverH.MAX_CPU;
 import static mame037b11.memoryH.*;
+import static mame037b11.cpuintrf.*;
+import static old2.mame.mame.*;
 
 public class memory {
 
@@ -69,84 +74,94 @@ public class memory {
 /*TODO*///#define MEMWRITESTART			profiler_mark(PROFILER_MEMWRITE);
 /*TODO*///#define MEMWRITEEND(ret)		{ (ret); profiler_mark(PROFILER_END); return; }
 /*TODO*///
-/*TODO*///#define DATABITS_TO_SHIFT(d)	(((d) == 32) ? 2 : ((d) == 16) ? 1 : 0)
-/*TODO*///
-/*TODO*////* helper macros */
-/*TODO*///#define HANDLER_IS_RAM(h)		((FPTR)(h) == STATIC_RAM)
-/*TODO*///#define HANDLER_IS_ROM(h)		((FPTR)(h) == STATIC_ROM)
-/*TODO*///#define HANDLER_IS_RAMROM(h)	((FPTR)(h) == STATIC_RAMROM)
-/*TODO*///#define HANDLER_IS_NOP(h)		((FPTR)(h) == STATIC_NOP)
-/*TODO*///#define HANDLER_IS_BANK(h)		((FPTR)(h) >= STATIC_BANK1 && (FPTR)(h) <= STATIC_BANKMAX)
-/*TODO*///#define HANDLER_IS_STATIC(h)	((FPTR)(h) < STATIC_COUNT)
-/*TODO*///
-/*TODO*///#define HANDLER_TO_BANK(h)		((FPTR)(h))
+    public static int DATABITS_TO_SHIFT(int d) {
+        return (((d) == 32) ? 2 : ((d) == 16) ? 1 : 0);
+    }
+
+    /* helper macros */
+    public static boolean HANDLER_IS_RAM(int h) {
+        return ((h) == STATIC_RAM);
+    }
+
+    public static boolean HANDLER_IS_ROM(int h) {
+        return ((h) == STATIC_ROM);
+    }
+
+    public static boolean HANDLER_IS_RAMROM(int h) {
+        return ((h) == STATIC_RAMROM);
+    }
+
+    /*TODO*///#define HANDLER_IS_NOP(h)		((FPTR)(h) == STATIC_NOP)
+    public static boolean HANDLER_IS_BANK(int h) {
+        return ((h) >= STATIC_BANK1 && (h) <= STATIC_BANKMAX);
+    }
+
+    public static boolean HANDLER_IS_STATIC(int h) {
+        return (h < STATIC_COUNT && h != -15000);//special handle for arcadeflex
+    }
+
+    /*TODO*///#define HANDLER_TO_BANK(h)		((FPTR)(h))
 /*TODO*///#define BANK_TO_HANDLER(b)		((void *)(b))
 /*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	TYPE DEFINITIONS
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///struct bank_data
-/*TODO*///{
-/*TODO*///	UINT8 				used;				/* is this bank used? */
-/*TODO*///	UINT8 				cpu;				/* the CPU it is used for */
+
+    /*-------------------------------------------------
+            TYPE DEFINITIONS
+    -------------------------------------------------*/
+    public static class bank_data {
+        /*TODO*///	UINT8 				used;				/* is this bank used? */
+/*TODO*///	UINT8 				cpunum;				/* the CPU it is used for */
 /*TODO*///	offs_t 				base;				/* the base offset */
 /*TODO*///	offs_t				readoffset;			/* original base offset for reads */
 /*TODO*///	offs_t				writeoffset;		/* original base offset for writes */
-/*TODO*///};
-/*TODO*///
-/*TODO*///struct handler_data
-/*TODO*///{
-/*TODO*///	void *				handler;			/* function pointer for handler */
-/*TODO*///	offs_t				offset;				/* base offset for handler */
-/*TODO*///};
-/*TODO*///
-/*TODO*///struct table_data
-/*TODO*///{
-/*TODO*///	UINT8 *				table;				/* pointer to base of table */
-/*TODO*///	UINT8 				subtable_count;		/* number of subtables used */
-/*TODO*///	UINT8 				subtable_alloc;		/* number of subtables allocated */
-/*TODO*///	struct handler_data *handlers;			/* pointer to which set of handlers */
-/*TODO*///};
-/*TODO*///
-/*TODO*///struct memport_data
-/*TODO*///{
-/*TODO*///	int					cpu;				/* CPU index */
-/*TODO*///	int					abits;				/* address bits */
-/*TODO*///	int 				dbits;				/* data bits */
-/*TODO*///	int					ebits;				/* effective address bits */
-/*TODO*///	offs_t				mask;				/* address mask */
-/*TODO*///	struct table_data	read;				/* memory read lookup table */
-/*TODO*///	struct table_data	write;				/* memory write lookup table */
-/*TODO*///};
-/*TODO*///
-/*TODO*///struct cpu_data
-/*TODO*///{
-/*TODO*///	void *				rombase;			/* ROM base pointer */
-/*TODO*///	void *				rambase;			/* RAM base pointer */
-/*TODO*///	opbase_handler 		opbase;				/* opcode base handler */
-/*TODO*///
-/*TODO*///	struct memport_data	mem;				/* memory tables */
-/*TODO*///	struct memport_data	port;				/* port tables */
-/*TODO*///};
-/*TODO*///
-/*TODO*///struct memory_address_table
-/*TODO*///{
-/*TODO*///	int 				bits;				/* address bits */
-/*TODO*///	read8_handler		handler;			/* handler associated with that */
-/*TODO*///};
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	GLOBAL VARIABLES
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-    public static UBytePtr OP_ROM = new UBytePtr();
-    /* opcode ROM base */
-    public static UBytePtr OP_RAM = new UBytePtr();
-    /* opcode RAM base */
+    }
+
+    public static class handler_data {
+
+        public Object handler;/* function pointer for handler */
+        public int offset;/* base offset for handler */
+
+        public static handler_data[] create(int n) {
+            handler_data[] a = new handler_data[n];
+            for (int k = 0; k < n; k++) {
+                a[k] = new handler_data();
+            }
+            return a;
+        }
+    }
+
+    public static class table_data {
+
+        UBytePtr table;/* pointer to base of table */
+        int /*UINT8*/ subtable_count;/* number of subtables used */
+        int /*UINT8*/ subtable_alloc;/* number of subtables allocated */
+        handler_data[] handlers;/* pointer to which set of handlers */
+    }
+
+    public static class memport_data {
+
+        int cpunum;/* CPU index */
+        int abits;/* address bits */
+        int dbits;/* data bits */
+        int ebits;/* effective address bits */
+        int /*offs_t*/ mask;/* address mask */
+        table_data read = new table_data();/* memory read lookup table */
+        table_data write = new table_data();/* memory write lookup table */
+    }
+
+    public static class cpu_data {
+
+        UBytePtr rombase;/* ROM base pointer */
+        UBytePtr rambase;/* RAM base pointer */
+ /*TODO*///	opbase_handler 		opbase;				/* opcode base handler */
+        memport_data mem = new memport_data();/* memory tables */
+        memport_data port = new memport_data();/* port tables */
+    }
+
+    /*-------------------------------------------------
+	GLOBAL VARIABLES
+-------------------------------------------------*/
+    public static UBytePtr OP_ROM = new UBytePtr();/* opcode ROM base */
+    public static UBytePtr OP_RAM = new UBytePtr();/* opcode RAM base */
  /*TODO*///UINT8		 				opcode_entry;					/* opcode readmem entry */
 /*TODO*///
 /*TODO*///UINT8 *						readmem_lookup;					/* memory read lookup table */
@@ -158,30 +173,30 @@ public class memory {
 /*TODO*///static offs_t				port_amask;						/* port address mask */
 /*TODO*///
     public static UBytePtr[] cpu_bankbase = new UBytePtr[STATIC_COUNT];/* array of bank bases */
- /*TODO*///struct ExtMemory			ext_memory[MAX_EXT_MEMORY];		/* externally-allocated memory */
-/*TODO*///
+    public static ExtMemory[] ext_memory = ExtMemory.create(MAX_EXT_MEMORY);/* externally-allocated memory */
+ /*TODO*///
 /*TODO*///static opbase_handler		opbasefunc;						/* opcode base override */
 /*TODO*///
-/*TODO*///static struct handler_data 	rmemhandler8[ENTRY_COUNT];		/* 8-bit memory read handlers */
-/*TODO*///static struct handler_data 	rmemhandler16[ENTRY_COUNT];		/* 16-bit memory read handlers */
-/*TODO*///static struct handler_data 	rmemhandler32[ENTRY_COUNT];		/* 32-bit memory read handlers */
-/*TODO*///static struct handler_data 	wmemhandler8[ENTRY_COUNT];		/* 8-bit memory write handlers */
-/*TODO*///static struct handler_data 	wmemhandler16[ENTRY_COUNT];		/* 16-bit memory write handlers */
-/*TODO*///static struct handler_data 	wmemhandler32[ENTRY_COUNT];		/* 32-bit memory write handlers */
-/*TODO*///
-/*TODO*///static struct handler_data 	rporthandler8[ENTRY_COUNT];		/* 8-bit port read handlers */
-/*TODO*///static struct handler_data 	rporthandler16[ENTRY_COUNT];	/* 16-bit port read handlers */
-/*TODO*///static struct handler_data 	rporthandler32[ENTRY_COUNT];	/* 32-bit port read handlers */
-/*TODO*///static struct handler_data 	wporthandler8[ENTRY_COUNT];		/* 8-bit port write handlers */
-/*TODO*///static struct handler_data 	wporthandler16[ENTRY_COUNT];	/* 16-bit port write handlers */
-/*TODO*///static struct handler_data 	wporthandler32[ENTRY_COUNT];	/* 32-bit port write handlers */
-/*TODO*///
+    public static handler_data[] rmemhandler8 = handler_data.create(ENTRY_COUNT);/* 8-bit memory read handlers */
+    public static handler_data[] rmemhandler16 = handler_data.create(ENTRY_COUNT);/* 16-bit memory read handlers */
+    public static handler_data[] rmemhandler32 = handler_data.create(ENTRY_COUNT);/* 32-bit memory read handlers */
+    public static handler_data[] wmemhandler8 = handler_data.create(ENTRY_COUNT);/* 8-bit memory write handlers */
+    public static handler_data[] wmemhandler16 = handler_data.create(ENTRY_COUNT);/* 16-bit memory write handlers */
+    public static handler_data[] wmemhandler32 = handler_data.create(ENTRY_COUNT);/* 32-bit memory write handlers */
+
+    public static handler_data[] rporthandler8 = handler_data.create(ENTRY_COUNT);/* 8-bit port read handlers */
+    public static handler_data[] rporthandler16 = handler_data.create(ENTRY_COUNT);/* 16-bit port read handlers */
+    public static handler_data[] rporthandler32 = handler_data.create(ENTRY_COUNT);/* 32-bit port read handlers */
+    public static handler_data[] wporthandler8 = handler_data.create(ENTRY_COUNT);/* 8-bit port write handlers */
+    public static handler_data[] wporthandler16 = handler_data.create(ENTRY_COUNT);/* 16-bit port write handlers */
+    public static handler_data[] wporthandler32 = handler_data.create(ENTRY_COUNT);/* 32-bit port write handlers */
+ /*TODO*///
 /*TODO*///static read8_handler 		rmemhandler8s[STATIC_COUNT];	/* copy of 8-bit static read memory handlers */
 /*TODO*///static write8_handler 		wmemhandler8s[STATIC_COUNT];	/* copy of 8-bit static write memory handlers */
 /*TODO*///
-/*TODO*///static struct cpu_data 		cpudata[MAX_CPU];				/* data gathered for each CPU */
-/*TODO*///static struct bank_data 	bankdata[MAX_BANKS];			/* data gathered for each bank */
-/*TODO*///
+    public static cpu_data[] cpudata = new cpu_data[MAX_CPU];/* data gathered for each CPU */
+    public static bank_data[] bankdata = new bank_data[MAX_BANKS];/* data gathered for each bank */
+ /*TODO*///
 /*TODO*///
 /*TODO*////*-------------------------------------------------
 /*TODO*///	PROTOTYPES
@@ -664,126 +679,118 @@ public class memory {
 /*TODO*///}
 /*TODO*///
 /*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	fatalerror - display an error message and
-/*TODO*///	exit immediately
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///int fatalerror(const char *string, ...)
-/*TODO*///{
-/*TODO*///	va_list arg;
-/*TODO*///	va_start(arg, string);
-/*TODO*///	vprintf(string, arg);
-/*TODO*///	va_end(arg);
-/*TODO*///	return 0;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	memory_find_base - return a pointer to the
-/*TODO*///	base of RAM associated with the given CPU
-/*TODO*///	and offset
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///void *memory_find_base(int cpu, offs_t offset)
-/*TODO*///{
-/*TODO*///	int region = REGION_CPU1 + cpu;
-/*TODO*///	struct ExtMemory *ext;
-/*TODO*///
-/*TODO*///	/* look in external memory first */
-/*TODO*///	for (ext = ext_memory; ext->data; ext++)
-/*TODO*///		if (ext->region == region && ext->start <= offset && ext->end >= offset)
+/*-------------------------------------------------
+            fatalerror - display an error message and
+            exit immediately
+    -------------------------------------------------*/
+    public static int fatalerror(String str, Object... arguments) {
+        System.out.println(String.format(str, arguments));
+        return 0;
+    }
+
+    /*-------------------------------------------------
+            memory_find_base - return a pointer to the
+            base of RAM associated with the given CPU
+            and offset
+    -------------------------------------------------*/
+    public static UBytePtr memory_find_base(int cpunum, int offset) {
+
+        int region = REGION_CPU1 + cpunum;
+
+        /* look in external memory first */
+        for (ExtMemory ext : ext_memory) {
+            if (ext.data == null) {
+                break;
+            }
+            throw new UnsupportedOperationException("Unsupported");
+            /*TODO*///		if (ext->region == region && ext->start <= offset && ext->end >= offset)
 /*TODO*///			return (void *)((UINT8 *)ext->data + (offset - ext->start));
-/*TODO*///
-/*TODO*///	return (UINT8 *)cpudata[cpu].rambase + offset;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	get_handler_index - finds the index of a
-/*TODO*///	handler, or allocates a new one as necessary
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///UINT8 get_handler_index(struct handler_data *table, void *handler, offs_t start)
-/*TODO*///{
-/*TODO*///	int i;
-/*TODO*///
-/*TODO*///	/* all static handlers are hardcoded */
-/*TODO*///	if (HANDLER_IS_STATIC(handler))
-/*TODO*///		return (FPTR)handler;
-/*TODO*///
-/*TODO*///	/* otherwise, we have to search */
-/*TODO*///	for (i = STATIC_COUNT; i < SUBTABLE_BASE; i++)
-/*TODO*///	{
-/*TODO*///		if (table[i].handler == NULL)
-/*TODO*///		{
-/*TODO*///			table[i].handler = handler;
-/*TODO*///			table[i].offset = start;
-/*TODO*///		}
-/*TODO*///		if (table[i].handler == handler && table[i].offset == start)
-/*TODO*///			return i;
-/*TODO*///	}
-/*TODO*///	return 0;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	alloc_new_subtable - allocates more space
-/*TODO*///	for a new subtable
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///UINT8 alloc_new_subtable(const struct memport_data *memport, struct table_data *tabledata, UINT8 previous_value)
-/*TODO*///{
-/*TODO*///	int l1bits = LEVEL1_BITS(memport->ebits);
-/*TODO*///	int l2bits = LEVEL2_BITS(memport->ebits);
-/*TODO*///
-/*TODO*///	/* make sure we don't run out */
-/*TODO*///	if (tabledata->subtable_count + 1 == SUBTABLE_COUNT)
-/*TODO*///		fatalerror("error: ran out of memory subtables\n");
-/*TODO*///
-/*TODO*///	/* allocate more memory if we need to */
-/*TODO*///	if (tabledata->subtable_count <= tabledata->subtable_alloc)
-/*TODO*///	{
-/*TODO*///		tabledata->subtable_alloc += SUBTABLE_ALLOC;
-/*TODO*///		tabledata->table = realloc(tabledata->table, (1 << l1bits) + (tabledata->subtable_alloc << l2bits));
-/*TODO*///		if (!tabledata->table)
-/*TODO*///			fatalerror("error: ran out of memory allocating memory subtable\n");
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* initialize the table entries */
-/*TODO*///	memset(&tabledata->table[(1 << l1bits) + (tabledata->subtable_count << l2bits)], previous_value, 1 << l2bits);
-/*TODO*///
-/*TODO*///	/* return the new index */
-/*TODO*///	return SUBTABLE_BASE + tabledata->subtable_count++;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	populate_table - assign a memory handler to
-/*TODO*///	a range of addresses
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///void populate_table(struct memport_data *memport, int iswrite, offs_t start, offs_t stop, UINT8 handler)
-/*TODO*///{
-/*TODO*///	struct table_data *tabledata = iswrite ? &memport->write : &memport->read;
-/*TODO*///	int minbits = DATABITS_TO_SHIFT(memport->dbits);
-/*TODO*///	int l1bits = LEVEL1_BITS(memport->ebits);
-/*TODO*///	int l2bits = LEVEL2_BITS(memport->ebits);
-/*TODO*///	offs_t l2mask = LEVEL2_MASK(memport->ebits);
-/*TODO*///	offs_t l1start = start >> (l2bits + minbits);
-/*TODO*///	offs_t l2start = (start >> minbits) & l2mask;
-/*TODO*///	offs_t l1stop = stop >> (l2bits + minbits);
-/*TODO*///	offs_t l2stop = (stop >> minbits) & l2mask;
-/*TODO*///	UINT8 subindex;
-/*TODO*///
-/*TODO*///	/* sanity check */
-/*TODO*///	if (start > stop)
-/*TODO*///		return;
-/*TODO*///
-/*TODO*///	/* set the base for non RAM/ROM cases */
-/*TODO*///	if (handler != STATIC_RAM && handler != STATIC_ROM && handler != STATIC_RAMROM)
-/*TODO*///		tabledata->handlers[handler].offset = start;
-/*TODO*///
+        }
+        return new UBytePtr(cpudata[cpunum].rambase, offset);
+    }
+
+    /*-------------------------------------------------
+            get_handler_index - finds the index of a
+            handler, or allocates a new one as necessary
+    -------------------------------------------------*/
+    public static int get_handler_index(handler_data[] table, int handler, Object _handler, int start) {
+        int i;
+
+        /* all static handlers are hardcoded */
+        if (HANDLER_IS_STATIC(handler)) {
+            return handler;
+        }
+
+        /* otherwise, we have to search */
+        for (i = STATIC_COUNT; i < SUBTABLE_BASE; i++) {
+            if (table[i].handler == null) {
+                table[i].handler = _handler;
+                table[i].offset = start;
+            }
+            if (table[i].handler == _handler && table[i].offset == start) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    /*-------------------------------------------------
+	alloc_new_subtable - allocates more space
+	for a new subtable
+    -------------------------------------------------*/
+    static int/*UINT8*/ alloc_new_subtable(memport_data memport, table_data tabledata, int/*UINT8*/ previous_value) {
+        int l1bits = LEVEL1_BITS(memport.ebits);
+        int l2bits = LEVEL2_BITS(memport.ebits);
+
+        /* make sure we don't run out */
+        if (tabledata.subtable_count + 1 == SUBTABLE_COUNT) {
+            fatalerror("error: ran out of memory subtables\n");
+        }
+
+        /* allocate more memory if we need to */
+        if (tabledata.subtable_count <= tabledata.subtable_alloc) {
+            tabledata.subtable_alloc = (tabledata.subtable_alloc + SUBTABLE_ALLOC) & 0xFF;
+            //realloc (to be checked)
+            UBytePtr temp = new UBytePtr((1 << l1bits) + (tabledata.subtable_alloc << l2bits));//tabledata->table = realloc(tabledata->table, (1 << l1bits) + (tabledata->subtable_alloc << l2bits));
+            System.arraycopy(tabledata.table.memory, 0, temp.memory, 0, tabledata.table.memory.length);
+            tabledata.table.memory = temp.memory;
+            tabledata.table.offset = 0;
+        }
+
+        /* initialize the table entries */
+        memset(tabledata.table, (1 << l1bits) + (tabledata.subtable_count << l2bits), previous_value & 0xFF, 1 << l2bits);
+
+        /* return the new index */
+        return ((SUBTABLE_BASE + (tabledata.subtable_count++)) & 0xFF);
+    }
+
+
+    /*-------------------------------------------------
+	populate_table - assign a memory handler to
+	a range of addresses
+    -------------------------------------------------*/
+    public static void populate_table(memport_data memport, int iswrite, int start, int stop, int handler) {
+        table_data tabledata = iswrite != 0 ? memport.write : memport.read;
+        int minbits = DATABITS_TO_SHIFT(memport.dbits);
+        int l1bits = LEVEL1_BITS(memport.ebits);
+        int l2bits = LEVEL2_BITS(memport.ebits);
+        int l2mask = LEVEL2_MASK(memport.ebits);
+        int l1start = start >> (l2bits + minbits);
+        int l2start = (start >> minbits) & l2mask;
+        int l1stop = stop >> (l2bits + minbits);
+        int l2stop = (stop >> minbits) & l2mask;
+        int/*UINT8*/ subindex;
+
+        /* sanity check */
+        if (start > stop) {
+            return;
+        }
+
+        /* set the base for non RAM/ROM cases */
+        if (handler != STATIC_RAM && handler != STATIC_ROM && handler != STATIC_RAMROM) {
+            tabledata.handlers[handler].offset = start;
+        }
+        /*TODO*///
 /*TODO*///	/* remember the base for banks */
 /*TODO*///	if (handler >= STATIC_BANK1 && handler <= STATIC_BANKMAX)
 /*TODO*///	{
@@ -793,50 +800,58 @@ public class memory {
 /*TODO*///			bankdata[handler].readoffset = start;
 /*TODO*///	}
 /*TODO*///
-/*TODO*///	/* handle the starting edge if it's not on a block boundary */
-/*TODO*///	if (l2start != 0)
-/*TODO*///	{
-/*TODO*///		/* get the subtable index */
-/*TODO*///		subindex = tabledata->table[l1start];
-/*TODO*///		if (subindex < SUBTABLE_BASE)
-/*TODO*///			subindex = tabledata->table[l1start] = alloc_new_subtable(memport, tabledata, subindex);
-/*TODO*///		subindex &= SUBTABLE_MASK;
-/*TODO*///
-/*TODO*///		/* if the start and stop end within the same block, handle that */
-/*TODO*///		if (l1start == l1stop)
-/*TODO*///		{
-/*TODO*///			memset(&tabledata->table[(1 << l1bits) + (subindex << l2bits) + l2start], handler, l2stop - l2start + 1);
-/*TODO*///			return;
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		/* otherwise, fill until the end */
-/*TODO*///		memset(&tabledata->table[(1 << l1bits) + (subindex << l2bits) + l2start], handler, (1 << l2bits) - l2start);
-/*TODO*///		if (l1start != (offs_t)~0) l1start++;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* handle the trailing edge if it's not on a block boundary */
-/*TODO*///	if (l2stop != l2mask)
-/*TODO*///	{
-/*TODO*///		/* get the subtable index */
-/*TODO*///		subindex = tabledata->table[l1stop];
-/*TODO*///		if (subindex < SUBTABLE_BASE)
-/*TODO*///			subindex = tabledata->table[l1stop] = alloc_new_subtable(memport, tabledata, subindex);
-/*TODO*///		subindex &= SUBTABLE_MASK;
-/*TODO*///
-/*TODO*///		/* fill from the beginning */
-/*TODO*///		memset(&tabledata->table[(1 << l1bits) + (subindex << l2bits)], handler, l2stop + 1);
-/*TODO*///
-/*TODO*///		/* if the start and stop end within the same block, handle that */
-/*TODO*///		if (l1start == l1stop)
-/*TODO*///			return;
-/*TODO*///		if (l1stop != 0) l1stop--;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* now fill in the middle tables */
-/*TODO*///	if (l1start <= l1stop)
-/*TODO*///		memset(&tabledata->table[l1start], handler, l1stop - l1start + 1);
-/*TODO*///}
-/*TODO*///
+        /* handle the starting edge if it's not on a block boundary */
+        if (l2start != 0) {
+            /* get the subtable index */
+            subindex = tabledata.table.read(l1start);
+            if (subindex < SUBTABLE_BASE) {
+                tabledata.table.write(l1start, alloc_new_subtable(memport, tabledata, subindex));
+                subindex = tabledata.table.read(l1start);
+            }
+            subindex &= SUBTABLE_MASK;
+
+            /* if the start and stop end within the same block, handle that */
+            if (l1start == l1stop) {
+                memset(tabledata.table, (1 << l1bits) + (subindex << l2bits) + l2start, handler, l2stop - l2start + 1);
+                return;
+            }
+
+            /* otherwise, fill until the end */
+            memset(tabledata.table, (1 << l1bits) + (subindex << l2bits) + l2start, handler, (1 << l2bits) - l2start);
+            if (l1start != Integer.MAX_VALUE) {
+                l1start++;
+            }
+        }
+
+        /* handle the trailing edge if it's not on a block boundary */
+        if (l2stop != l2mask) {
+            /* get the subtable index */
+            subindex = tabledata.table.read(l1stop);
+            if (subindex < SUBTABLE_BASE) {
+                throw new UnsupportedOperationException("Unsupported");
+                /*TODO*///			subindex = tabledata->table[l1stop] = alloc_new_subtable(memport, tabledata, subindex);
+            }
+            subindex &= SUBTABLE_MASK;
+
+            /* fill from the beginning */
+            memset(tabledata.table, (1 << l1bits) + (subindex << l2bits), handler, l2stop + 1);
+
+            /* if the start and stop end within the same block, handle that */
+            if (l1start == l1stop) {
+                return;
+            }
+            if (l1stop != 0) {
+                l1stop--;
+            }
+        }
+
+        /* now fill in the middle tables */
+        if (l1start <= l1stop) {
+            memset(tabledata.table, l1start, handler, l1stop - l1start + 1);
+        }
+    }
+
+    /*TODO*///
 /*TODO*///
 /*TODO*////*-------------------------------------------------
 /*TODO*///	assign_dynamic_bank - finds a free or exact
@@ -868,47 +883,45 @@ public class memory {
 /*TODO*///}
 /*TODO*///
 /*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	install_mem_handler - installs a handler for
-/*TODO*///	memory operatinos
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///void install_mem_handler(struct memport_data *memport, int iswrite, offs_t start, offs_t end, void *handler)
-/*TODO*///{
-/*TODO*///	struct table_data *tabledata = iswrite ? &memport->write : &memport->read;
-/*TODO*///	UINT8 idx;
-/*TODO*///
-/*TODO*///	/* translate ROM and RAMROM to RAM here for read cases */
-/*TODO*///	if (!iswrite)
-/*TODO*///		if (HANDLER_IS_ROM(handler) || HANDLER_IS_RAMROM(handler))
-/*TODO*///			handler = (void *)MRA_RAM;
-/*TODO*///
-/*TODO*///	/* assign banks for sparse memory spaces */
-/*TODO*///	if (IS_SPARSE(memport->abits) && HANDLER_IS_RAM(handler))
-/*TODO*///		handler = (void *)assign_dynamic_bank(memport->cpu, start);
-/*TODO*///
-/*TODO*///	/* set the handler */
-/*TODO*///	idx = get_handler_index(tabledata->handlers, handler, start);
-/*TODO*///	populate_table(memport, iswrite, start, end, idx);
-/*TODO*///
+    /*-------------------------------------------------
+            install_mem_handler - installs a handler for
+            memory operatinos
+    -------------------------------------------------*/
+    public static void install_mem_handler(memport_data memport, int iswrite, int start, int end, int handler, Object _handler) {
+        table_data tabledata = iswrite != 0 ? memport.write : memport.read;
+        int /*UINT8*/ idx;
+
+        /* translate ROM and RAMROM to RAM here for read cases */
+        if (iswrite == 0) {
+            if (HANDLER_IS_ROM(handler) || HANDLER_IS_RAMROM(handler)) {
+                handler = MRA_RAM;
+            }
+        }
+
+        /* assign banks for sparse memory spaces */
+        if (IS_SPARSE(memport.abits) && HANDLER_IS_RAM(handler)) {
+            throw new UnsupportedOperationException("Unsupported");
+            /*TODO*///		handler = (void *)assign_dynamic_bank(memport->cpunum, start);
+        }
+        /* set the handler */
+        idx = get_handler_index(tabledata.handlers, handler, _handler, start);
+        populate_table(memport, iswrite, start, end, idx);
+        /*TODO*///
 /*TODO*///	/* if this is a bank, set the bankbase as well */
 /*TODO*///	if (HANDLER_IS_BANK(handler))
-/*TODO*///		cpu_bankbase[HANDLER_TO_BANK(handler)] = memory_find_base(memport->cpu, start);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	install_port_handler - installs a handler for
-/*TODO*///	port operatinos
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///void install_port_handler(struct memport_data *memport, int iswrite, offs_t start, offs_t end, void *handler)
-/*TODO*///{
-/*TODO*///	struct table_data *tabledata = iswrite ? &memport->write : &memport->read;
-/*TODO*///	UINT8 idx = get_handler_index(tabledata->handlers, handler, start);
-/*TODO*///	populate_table(memport, iswrite, start, end, idx);
-/*TODO*///}
-/*TODO*///
+/*TODO*///		cpu_bankbase[HANDLER_TO_BANK(handler)] = memory_find_base(memport->cpunum, start);
+    }
+
+    /*-------------------------------------------------
+	install_port_handler - installs a handler for
+	port operatinos
+    -------------------------------------------------*/
+    public static void install_port_handler(memport_data memport, int iswrite, int start, int end, int handler, Object _handler) {
+        table_data tabledata = iswrite != 0 ? memport.write : memport.read;
+        int /*UINT8*/ idx = get_handler_index(tabledata.handlers, handler, _handler, start);
+        populate_table(memport, iswrite, start, end, idx);
+    }
+    /*TODO*///
 /*TODO*///
 /*TODO*////*-------------------------------------------------
 /*TODO*///	set_static_handler - handy shortcut for
@@ -976,75 +989,132 @@ public class memory {
 /*TODO*///}
 /*TODO*///
 /*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	init_memport - initialize the mem/port data
-/*TODO*///	structure
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///static int init_memport(int cpu, struct memport_data *data, int abits, int dbits, int ismemory)
-/*TODO*///{
-/*TODO*///	/* determine the address and data bits */
-/*TODO*///	data->cpu = cpu;
-/*TODO*///	data->abits = abits;
-/*TODO*///	data->dbits = dbits;
-/*TODO*///	data->ebits = abits - DATABITS_TO_SHIFT(dbits);
-/*TODO*///	data->mask = 0xffffffffUL >> (32 - abits);
-/*TODO*///
-/*TODO*///	/* allocate memory */
-/*TODO*///	data->read.table = malloc(1 << LEVEL1_BITS(data->ebits));
-/*TODO*///	data->write.table = malloc(1 << LEVEL1_BITS(data->ebits));
-/*TODO*///	if (!data->read.table)
-/*TODO*///		return fatalerror("cpu #%d couldn't allocate read table\n", cpu);
-/*TODO*///	if (!data->write.table)
-/*TODO*///		return fatalerror("cpu #%d couldn't allocate write table\n", cpu);
-/*TODO*///
-/*TODO*///	/* initialize everything to unmapped */
-/*TODO*///	memset(data->read.table, STATIC_UNMAP, 1 << LEVEL1_BITS(data->ebits));
-/*TODO*///	memset(data->write.table, STATIC_UNMAP, 1 << LEVEL1_BITS(data->ebits));
-/*TODO*///
-/*TODO*///	/* initialize the pointers to the handlers */
-/*TODO*///	if (ismemory)
-/*TODO*///	{
-/*TODO*///		data->read.handlers = (dbits == 32) ? rmemhandler32 : (dbits == 16) ? rmemhandler16 : rmemhandler8;
-/*TODO*///		data->write.handlers = (dbits == 32) ? wmemhandler32 : (dbits == 16) ? wmemhandler16 : wmemhandler8;
-/*TODO*///	}
-/*TODO*///	else
-/*TODO*///	{
-/*TODO*///		data->read.handlers = (dbits == 32) ? rporthandler32 : (dbits == 16) ? rporthandler16 : rporthandler8;
-/*TODO*///		data->write.handlers = (dbits == 32) ? wporthandler32 : (dbits == 16) ? wporthandler16 : wporthandler8;
-/*TODO*///	}
-/*TODO*///	return 1;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	verify_memory - verify the memory structs
-/*TODO*///	and track which banks are referenced
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///static int verify_memory(void)
-/*TODO*///{
-/*TODO*///	int cpu;
-/*TODO*///
-/*TODO*///	/* zap the bank data */
-/*TODO*///	memset(&bankdata, 0, sizeof(bankdata));
-/*TODO*///
-/*TODO*///	/* loop over CPUs */
-/*TODO*///	for (cpu = 0; cpu < cpu_gettotalcpu(); cpu++)
-/*TODO*///	{
-/*TODO*///		const struct Memory_ReadAddress *mra = Machine->drv->cpu[cpu].memory_read;
-/*TODO*///		const struct Memory_WriteAddress *mwa = Machine->drv->cpu[cpu].memory_write;
-/*TODO*///		UINT32 width;
-/*TODO*///		int bank;
-/*TODO*///
-/*TODO*///		/* determine the desired width */
-/*TODO*///		switch (cpunum_databus_width(cpu))
-/*TODO*///		{
-/*TODO*///			case 8:		width = MEMPORT_WIDTH_8;	break;
-/*TODO*///			case 16:	width = MEMPORT_WIDTH_16;	break;
-/*TODO*///			case 32:	width = MEMPORT_WIDTH_32;	break;
-/*TODO*///			default:	return fatalerror("cpu #%d has invalid memory width!\n", cpu);
-/*TODO*///		}
+    /*-------------------------------------------------
+	init_memport - initialize the mem/port data
+	structure
+    -------------------------------------------------*/
+    static int init_memport(int cpunum, memport_data data, int abits, int dbits, int ismemory) {
+        /* determine the address and data bits */
+        data.cpunum = cpunum;
+        data.abits = abits;
+        data.dbits = dbits;
+        data.ebits = abits - DATABITS_TO_SHIFT(dbits);
+        data.mask = 0xffffffff >>> (32 - abits);
+
+        /* allocate memory */
+        data.read.table = new UBytePtr(1 << LEVEL1_BITS(data.ebits));
+        data.write.table = new UBytePtr(1 << LEVEL1_BITS(data.ebits));
+
+        /* initialize everything to unmapped */
+        memset(data.read.table, STATIC_UNMAP, 1 << LEVEL1_BITS(data.ebits));
+        memset(data.write.table, STATIC_UNMAP, 1 << LEVEL1_BITS(data.ebits));
+
+        /* initialize the pointers to the handlers */
+        if (ismemory != 0) {
+            data.read.handlers = (dbits == 32) ? rmemhandler32 : (dbits == 16) ? rmemhandler16 : rmemhandler8;
+            data.write.handlers = (dbits == 32) ? wmemhandler32 : (dbits == 16) ? wmemhandler16 : wmemhandler8;
+        } else {
+            data.read.handlers = (dbits == 32) ? rporthandler32 : (dbits == 16) ? rporthandler16 : rporthandler8;
+            data.write.handlers = (dbits == 32) ? wporthandler32 : (dbits == 16) ? wporthandler16 : wporthandler8;
+        }
+        return 1;
+    }
+    /*-------------------------------------------------
+            verify_memory - verify the memory structs
+            and track which banks are referenced
+    -------------------------------------------------*/
+    public static int verify_memory() {
+        int cpunum;
+
+        /* zap the bank data */
+        for (int i = 0; i < MAX_BANKS; i++) {
+            bankdata[i] = new bank_data();//memset(&bankdata, 0, sizeof(bankdata));
+        }
+
+        /* loop over CPUs */
+        for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
+
+            int width;
+            int bank;
+
+            /* determine the desired width */
+            switch (cpunum_databus_width(cpunum)) {
+                case 8:
+                    width = MEMPORT_WIDTH_8;
+                    break;
+                case 16:
+                    width = MEMPORT_WIDTH_16;
+                    break;
+                case 32:
+                    width = MEMPORT_WIDTH_32;
+                    break;
+                default:
+                    return fatalerror("cpu #%d has invalid memory width!\n", cpunum);
+            }
+            Object mra_obj = Machine.drv.cpu[cpunum].memory_read;
+            Object mwa_obj = Machine.drv.cpu[cpunum].memory_write;
+            if (mra_obj instanceof Memory_ReadAddress[]) {
+                Memory_ReadAddress[] mra = (Memory_ReadAddress[]) mra_obj;
+                int mra_ptr = 0;
+                /* verify the read handlers */
+                if (mra != null) {
+                    /* verify the MEMPORT_READ_START header */
+                    if (mra[mra_ptr].start == MEMPORT_MARKER && mra[mra_ptr].end != 0) {
+                        if ((mra[mra_ptr].end & MEMPORT_TYPE_MASK) != MEMPORT_TYPE_MEM) {
+                            return fatalerror("cpu #%d has port handlers in place of memory read handlers!\n", cpunum);
+                        }
+                        if ((mra[mra_ptr].end & MEMPORT_DIRECTION_MASK) != MEMPORT_DIRECTION_READ) {
+                            return fatalerror("cpu #%d has memory write handlers in place of memory read handlers!\n", cpunum);
+                        }
+                        if ((mra[mra_ptr].end & MEMPORT_WIDTH_MASK) != width) {
+                            return fatalerror("cpu #%d uses wrong data width memory handlers! (width = %d, memory = %08x)\n", cpunum, cpunum_databus_width(cpunum), mra[mra_ptr].end);
+                        }
+                        mra_ptr++;
+                    }
+                    /*TODO*///
+/*TODO*///			/* track banks used */
+/*TODO*///			for ( ; !IS_MEMPORT_END(mra); mra++)
+/*TODO*///				if (!IS_MEMPORT_MARKER(mra) && HANDLER_IS_BANK(mra->handler))
+/*TODO*///				{
+/*TODO*///					bank = HANDLER_TO_BANK(mra->handler);
+/*TODO*///					bankdata[bank].used = 1;
+/*TODO*///					bankdata[bank].cpunum = -1;
+/*TODO*///				}
+                }
+                /* verify the write handlers */
+                Memory_WriteAddress[] mwa = (Memory_WriteAddress[]) mwa_obj;
+                int mwa_ptr = 0;
+                if (mwa != null) {
+                    /* verify the MEMPORT_WRITE_START header */
+                    if (mwa[mwa_ptr].start == MEMPORT_MARKER && mwa[mwa_ptr].end != 0) {
+                        if ((mwa[mwa_ptr].end & MEMPORT_TYPE_MASK) != MEMPORT_TYPE_MEM) {
+                            return fatalerror("cpu #%d has port handlers in place of memory write handlers!\n", cpunum);
+                        }
+                        if ((mwa[mwa_ptr].end & MEMPORT_DIRECTION_MASK) != MEMPORT_DIRECTION_WRITE) {
+                            return fatalerror("cpu #%d has memory read handlers in place of memory write handlers!\n", cpunum);
+                        }
+                        if ((mwa[mwa_ptr].end & MEMPORT_WIDTH_MASK) != width) {
+                            return fatalerror("cpu #%d uses wrong data width memory handlers! (width = %d, memory = %08x)\n", cpunum, cpunum_databus_width(cpunum), mwa[mwa_ptr].end);
+                        }
+                        mwa_ptr++;
+                    }
+                    /*TODO*///
+/*TODO*///			/* track banks used */
+/*TODO*///			for (; !IS_MEMPORT_END(mwa); mwa++)
+/*TODO*///				if (!IS_MEMPORT_MARKER(mwa) && HANDLER_IS_BANK(mwa->handler))
+/*TODO*///				{
+/*TODO*///					bank = HANDLER_TO_BANK(mwa->handler);
+/*TODO*///					bankdata[bank].used = 1;
+/*TODO*///					bankdata[bank].cpunum = -1;
+/*TODO*///				}
+/*TODO*///				mwa++;
+                }
+            } else {
+                //do the same for 16,32bit handlers
+                throw new UnsupportedOperationException("Unsupported");
+            }
+            /*TODO*///		const struct Memory_ReadAddress *mra = Machine->drv->cpu[cpunum].memory_read;
+/*TODO*///		const struct Memory_WriteAddress *mwa = Machine->drv->cpu[cpunum].memory_write;
 /*TODO*///
 /*TODO*///		/* verify the read handlers */
 /*TODO*///		if (mra)
@@ -1053,11 +1123,11 @@ public class memory {
 /*TODO*///			if (mra->start == MEMPORT_MARKER && mra->end != 0)
 /*TODO*///			{
 /*TODO*///				if ((mra->end & MEMPORT_TYPE_MASK) != MEMPORT_TYPE_MEM)
-/*TODO*///					return fatalerror("cpu #%d has port handlers in place of memory read handlers!\n", cpu);
+/*TODO*///					return fatalerror("cpu #%d has port handlers in place of memory read handlers!\n", cpunum);
 /*TODO*///				if ((mra->end & MEMPORT_DIRECTION_MASK) != MEMPORT_DIRECTION_READ)
-/*TODO*///					return fatalerror("cpu #%d has memory write handlers in place of memory read handlers!\n", cpu);
+/*TODO*///					return fatalerror("cpu #%d has memory write handlers in place of memory read handlers!\n", cpunum);
 /*TODO*///				if ((mra->end & MEMPORT_WIDTH_MASK) != width)
-/*TODO*///					return fatalerror("cpu #%d uses wrong data width memory handlers! (width = %d, memory = %08x)\n", cpu,cpunum_databus_width(cpu),mra->end);
+/*TODO*///					return fatalerror("cpu #%d uses wrong data width memory handlers! (width = %d, memory = %08x)\n", cpunum,cpunum_databus_width(cpunum),mra->end);
 /*TODO*///				mra++;
 /*TODO*///			}
 /*TODO*///
@@ -1067,7 +1137,7 @@ public class memory {
 /*TODO*///				{
 /*TODO*///					bank = HANDLER_TO_BANK(mra->handler);
 /*TODO*///					bankdata[bank].used = 1;
-/*TODO*///					bankdata[bank].cpu = -1;
+/*TODO*///					bankdata[bank].cpunum = -1;
 /*TODO*///				}
 /*TODO*///		}
 /*TODO*///
@@ -1078,11 +1148,11 @@ public class memory {
 /*TODO*///			if (mwa->start == MEMPORT_MARKER && mwa->end != 0)
 /*TODO*///			{
 /*TODO*///				if ((mwa->end & MEMPORT_TYPE_MASK) != MEMPORT_TYPE_MEM)
-/*TODO*///					return fatalerror("cpu #%d has port handlers in place of memory write handlers!\n", cpu);
+/*TODO*///					return fatalerror("cpu #%d has port handlers in place of memory write handlers!\n", cpunum);
 /*TODO*///				if ((mwa->end & MEMPORT_DIRECTION_MASK) != MEMPORT_DIRECTION_WRITE)
-/*TODO*///					return fatalerror("cpu #%d has memory read handlers in place of memory write handlers!\n", cpu);
+/*TODO*///					return fatalerror("cpu #%d has memory read handlers in place of memory write handlers!\n", cpunum);
 /*TODO*///				if ((mwa->end & MEMPORT_WIDTH_MASK) != width)
-/*TODO*///					return fatalerror("cpu #%d uses wrong data width memory handlers! (width = %d, memory = %08x)\n", cpu,cpunum_databus_width(cpu),mwa->end);
+/*TODO*///					return fatalerror("cpu #%d uses wrong data width memory handlers! (width = %d, memory = %08x)\n", cpunum,cpunum_databus_width(cpunum),mwa->end);
 /*TODO*///				mwa++;
 /*TODO*///			}
 /*TODO*///
@@ -1092,71 +1162,115 @@ public class memory {
 /*TODO*///				{
 /*TODO*///					bank = HANDLER_TO_BANK(mwa->handler);
 /*TODO*///					bankdata[bank].used = 1;
-/*TODO*///					bankdata[bank].cpu = -1;
+/*TODO*///					bankdata[bank].cpunum = -1;
 /*TODO*///				}
 /*TODO*///				mwa++;
 /*TODO*///		}
-/*TODO*///	}
-/*TODO*///	return 1;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	verify_ports - verify the port structs
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///static int verify_ports(void)
-/*TODO*///{
-/*TODO*///	int cpu;
-/*TODO*///
-/*TODO*///	/* loop over CPUs */
-/*TODO*///	for (cpu = 0; cpu < cpu_gettotalcpu(); cpu++)
-/*TODO*///	{
-/*TODO*///		const struct IO_ReadPort *mra = Machine->drv->cpu[cpu].port_read;
-/*TODO*///		const struct IO_WritePort *mwa = Machine->drv->cpu[cpu].port_write;
-/*TODO*///		UINT32 width;
-/*TODO*///
-/*TODO*///		/* determine the desired width */
-/*TODO*///		switch (cpunum_databus_width(cpu))
-/*TODO*///		{
-/*TODO*///			case 8:		width = MEMPORT_WIDTH_8;	break;
-/*TODO*///			case 16:	width = MEMPORT_WIDTH_16;	break;
-/*TODO*///			case 32:	width = MEMPORT_WIDTH_32;	break;
-/*TODO*///			default:	return fatalerror("cpu #%d has invalid memory width!\n", cpu);
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		/* verify the read handlers */
-/*TODO*///		if (mra)
-/*TODO*///		{
-/*TODO*///			/* verify the PORT_READ_START header */
-/*TODO*///			if (mra->start == MEMPORT_MARKER && mra->end != 0)
-/*TODO*///			{
-/*TODO*///				if ((mra->end & MEMPORT_TYPE_MASK) != MEMPORT_TYPE_IO)
-/*TODO*///					return fatalerror("cpu #%d has memory handlers in place of I/O read handlers!\n", cpu);
-/*TODO*///				if ((mra->end & MEMPORT_DIRECTION_MASK) != MEMPORT_DIRECTION_READ)
-/*TODO*///					return fatalerror("cpu #%d has port write handlers in place of port read handlers!\n", cpu);
-/*TODO*///				if ((mra->end & MEMPORT_WIDTH_MASK) != width)
-/*TODO*///					return fatalerror("cpu #%d uses wrong data width port handlers! (width = %d, memory = %08x)\n", cpu,cpunum_databus_width(cpu),mra->end);
-/*TODO*///			}
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		/* verify the write handlers */
-/*TODO*///		if (mwa)
-/*TODO*///		{
-/*TODO*///			/* verify the PORT_WRITE_START header */
-/*TODO*///			if (mwa->start == MEMPORT_MARKER && mwa->end != 0)
-/*TODO*///			{
-/*TODO*///				if ((mwa->end & MEMPORT_TYPE_MASK) != MEMPORT_TYPE_IO)
-/*TODO*///					return fatalerror("cpu #%d has memory handlers in place of I/O write handlers!\n", cpu);
-/*TODO*///				if ((mwa->end & MEMPORT_DIRECTION_MASK) != MEMPORT_DIRECTION_WRITE)
-/*TODO*///					return fatalerror("cpu #%d has port read handlers in place of port write handlers!\n", cpu);
-/*TODO*///				if ((mwa->end & MEMPORT_WIDTH_MASK) != width)
-/*TODO*///					return fatalerror("cpu #%d uses wrong data width port handlers! (width = %d, memory = %08x)\n", cpu,cpunum_databus_width(cpu),mwa->end);
-/*TODO*///			}
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///	return 1;
-/*TODO*///}
+        }
+        return 1;
+    }
+
+    /*-------------------------------------------------
+    	verify_ports - verify the port structs
+    -------------------------------------------------*/
+    static int verify_ports() {
+        int cpunum;
+
+        /* loop over CPUs */
+        for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
+            int/*UINT32*/ width;
+
+            /* determine the desired width */
+            switch (cpunum_databus_width(cpunum)) {
+                case 8:
+                    width = MEMPORT_WIDTH_8;
+                    break;
+                case 16:
+                    width = MEMPORT_WIDTH_16;
+                    break;
+                case 32:
+                    width = MEMPORT_WIDTH_32;
+                    break;
+                default:
+                    return fatalerror("cpu #%d has invalid memory width!\n", cpunum);
+            }
+            Object mra_obj = Machine.drv.cpu[cpunum].port_read;
+            Object mwa_obj = Machine.drv.cpu[cpunum].port_write;
+            if (mra_obj instanceof IO_ReadPort[]) {
+                IO_ReadPort[] mra = (IO_ReadPort[]) mra_obj;
+                int mra_ptr = 0;
+                /* verify the read handlers */
+                if (mra != null) {
+                    /* verify the PORT_READ_START header */
+                    if (mra[mra_ptr].start == MEMPORT_MARKER && mra[mra_ptr].end != 0) {
+                        if ((mra[mra_ptr].end & MEMPORT_TYPE_MASK) != MEMPORT_TYPE_IO) {
+                            return fatalerror("cpu #%d has memory handlers in place of I/O read handlers!\n", cpunum);
+                        }
+                        if ((mra[mra_ptr].end & MEMPORT_DIRECTION_MASK) != MEMPORT_DIRECTION_READ) {
+                            return fatalerror("cpu #%d has port write handlers in place of port read handlers!\n", cpunum);
+                        }
+                        if ((mra[mra_ptr].end & MEMPORT_WIDTH_MASK) != width) {
+                            return fatalerror("cpu #%d uses wrong data width port handlers! (width = %d, memory = %08x)\n", cpunum, cpunum_databus_width(cpunum), mra[mra_ptr].end);
+                        }
+                    }
+                }
+
+                /* verify the write handlers */
+                IO_WritePort[] mwa = (IO_WritePort[]) mwa_obj;
+                int mwa_ptr = 0;
+                if (mwa != null) {
+                    /* verify the PORT_WRITE_START header */
+                    if (mwa[mwa_ptr].start == MEMPORT_MARKER && mwa[mwa_ptr].end != 0) {
+                        if ((mwa[mwa_ptr].end & MEMPORT_TYPE_MASK) != MEMPORT_TYPE_IO) {
+                            return fatalerror("cpu #%d has memory handlers in place of I/O write handlers!\n", cpunum);
+                        }
+                        if ((mwa[mwa_ptr].end & MEMPORT_DIRECTION_MASK) != MEMPORT_DIRECTION_WRITE) {
+                            return fatalerror("cpu #%d has port read handlers in place of port write handlers!\n", cpunum);
+                        }
+                        if ((mwa[mwa_ptr].end & MEMPORT_WIDTH_MASK) != width) {
+                            return fatalerror("cpu #%d uses wrong data width port handlers! (width = %d, memory = %08x)\n", cpunum, cpunum_databus_width(cpunum), mwa[mwa_ptr].end);
+                        }
+                    }
+                }
+            } else {
+                //do the same for 16,32bit handlers
+                throw new UnsupportedOperationException("Unsupported");
+            }
+            /*TODO*///		const struct IO_ReadPort *mra = Machine->drv->cpu[cpunum].port_read;
+            /*TODO*///		const struct IO_WritePort *mwa = Machine->drv->cpu[cpunum].port_write;
+            /*TODO*///
+            /*TODO*///		/* verify the read handlers */
+            /*TODO*///		if (mra)
+            /*TODO*///		{
+            /*TODO*///			/* verify the PORT_READ_START header */
+            /*TODO*///			if (mra->start == MEMPORT_MARKER && mra->end != 0)
+            /*TODO*///			{
+            /*TODO*///				if ((mra->end & MEMPORT_TYPE_MASK) != MEMPORT_TYPE_IO)
+            /*TODO*///					return fatalerror("cpu #%d has memory handlers in place of I/O read handlers!\n", cpunum);
+            /*TODO*///				if ((mra->end & MEMPORT_DIRECTION_MASK) != MEMPORT_DIRECTION_READ)
+            /*TODO*///					return fatalerror("cpu #%d has port write handlers in place of port read handlers!\n", cpunum);
+            /*TODO*///				if ((mra->end & MEMPORT_WIDTH_MASK) != width)
+            /*TODO*///					return fatalerror("cpu #%d uses wrong data width port handlers! (width = %d, memory = %08x)\n", cpunum,cpunum_databus_width(cpunum),mra->end);
+            /*TODO*///			}
+            /*TODO*///		}
+            /*TODO*///
+            /*TODO*///		/* verify the write handlers */
+            /*TODO*///		if (mwa)
+            /*TODO*///		{
+            /*TODO*///			/* verify the PORT_WRITE_START header */
+            /*TODO*///			if (mwa->start == MEMPORT_MARKER && mwa->end != 0)
+            /*TODO*///			{
+            /*TODO*///				if ((mwa->end & MEMPORT_TYPE_MASK) != MEMPORT_TYPE_IO)
+            /*TODO*///					return fatalerror("cpu #%d has memory handlers in place of I/O write handlers!\n", cpunum);
+            /*TODO*///				if ((mwa->end & MEMPORT_DIRECTION_MASK) != MEMPORT_DIRECTION_WRITE)
+            /*TODO*///					return fatalerror("cpu #%d has port read handlers in place of port write handlers!\n", cpunum);
+            /*TODO*///				if ((mwa->end & MEMPORT_WIDTH_MASK) != width)
+            /*TODO*///					return fatalerror("cpu #%d uses wrong data width port handlers! (width = %d, memory = %08x)\n", cpunum,cpunum_databus_width(cpunum),mwa->end);
+            /*TODO*///			}
+            /*TODO*///		}
+        }
+        return 1;
+    }
 /*TODO*///
 /*TODO*///
 /*TODO*////*-------------------------------------------------

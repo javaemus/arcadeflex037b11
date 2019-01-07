@@ -6,9 +6,10 @@ package mame037b11;
 import java.util.ArrayList;
 
 import static arcadeflex.fucPtr.InterruptPtr;
+import static mame.driverH.MAX_CPU;
+import static mame.driverH.VIDEO_UPDATE_AFTER_VBLANK;
 import static old.arcadeflex.osdepend.logerror;
-import static mame.cpuintrfH.*;
-import static mame.driverH.*;
+import static mame037b11.cpuintrfH.*;
 import static mame.sndintrf.sound_reset;
 import static old.mame.inptport.*;
 import static old2.mame.mame.Machine;
@@ -834,12 +835,11 @@ public class cpuintrf {
 /*TODO*///{
 /*TODO*///	activecpu = cpunum;
 /*TODO*///}
-/*TODO*///
-/*TODO*///int cpu_gettotalcpu(void)
-/*TODO*///{
-/*TODO*///	return totalcpu;
-/*TODO*///}
-/*TODO*///
+    public static int cpu_gettotalcpu() {
+        return totalcpu;
+    }
+
+    /*TODO*///
 /*TODO*///
 /*TODO*///
 /*TODO*///offs_t cpu_get_pc(void)
@@ -2744,18 +2744,20 @@ public class cpuintrf {
 /*TODO*///		return cpuintf[cpu_type].endianess;
 /*TODO*///	return 0;
 /*TODO*///}
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///  Returns the data bus width for a specific CPU type
-/*TODO*///***************************************************************************/
-/*TODO*///unsigned cputype_databus_width(int cpu_type)
-/*TODO*///{
-/*TODO*///	cpu_type &= ~CPU_FLAGS_MASK;
-/*TODO*///	if( cpu_type < CPU_COUNT )
-/*TODO*///		return cpuintf[cpu_type].databus_width;
-/*TODO*///	return 0;
-/*TODO*///}
-/*TODO*///
+    /**
+     * *************************************************************************
+     * Returns the data bus width for a specific CPU type
+     * *************************************************************************
+     */
+    public static int cputype_databus_width(int cpu_type) {
+        cpu_type &= ~CPU_FLAGS_MASK;
+        if (cpu_type < CPU_COUNT) {
+            return cpuintf[cpu_type].databus_width;
+        }
+        return 0;
+    }
+
+    /*TODO*///
 /*TODO*////***************************************************************************
 /*TODO*///  Returns the code align unit for a speciific CPU type (1 byte, 2 word, ...)
 /*TODO*///***************************************************************************/
@@ -2888,17 +2890,19 @@ public class cpuintrf {
 /*TODO*///		return cputype_endianess(CPU_TYPE(cpunum));
 /*TODO*///	return 0;
 /*TODO*///}
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///  Returns the data bus width for a specific CPU number
-/*TODO*///***************************************************************************/
-/*TODO*///unsigned cpunum_databus_width(int cpunum)
-/*TODO*///{
-/*TODO*///	if( cpunum < totalcpu )
-/*TODO*///		return cputype_databus_width(CPU_TYPE(cpunum));
-/*TODO*///	return 0;
-/*TODO*///}
-/*TODO*///
+    /**
+     * *************************************************************************
+     * Returns the data bus width for a specific CPU number
+     * *************************************************************************
+     */
+    public static int cpunum_databus_width(int cpunum) {
+        if (cpunum < totalcpu) {
+            return cputype_databus_width(CPU_TYPE(cpunum));
+        }
+        return 0;
+    }
+
+    /*TODO*///
 /*TODO*////***************************************************************************
 /*TODO*///  Returns the code align unit for the active CPU (1 byte, 2 word, ...)
 /*TODO*///***************************************************************************/

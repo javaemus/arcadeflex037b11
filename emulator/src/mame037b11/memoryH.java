@@ -4,6 +4,7 @@
 package mame037b11;
 
 import static arcadeflex.fucPtr.*;
+import arcadeflex.libc.ptr.UBytePtr;
 
 public class memoryH {
 
@@ -53,17 +54,22 @@ public class memoryH {
 /*TODO*///typedef read32_handler	port_read32_handler;
 /*TODO*///typedef write32_handler	port_write32_handler;
 /*TODO*///
-/*TODO*////* ----- typedefs for externally allocated memory ----- */
-/*TODO*///struct ExtMemory
-/*TODO*///{
-/*TODO*///	offs_t 			start, end;
-/*TODO*///	UINT8			region;
-/*TODO*///    UINT8 *			data;
-/*TODO*///};
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////***************************************************************************
+    /* ----- typedefs for externally allocated memory ----- */
+    public static class ExtMemory {
+
+        int start, end;
+        int region;
+        UBytePtr data;
+
+        public static ExtMemory[] create(int n) {
+            ExtMemory[] a = new ExtMemory[n];
+            for (int k = 0; k < n; k++) {
+                a[k] = new ExtMemory();
+            }
+            return a;
+        }
+    };
+    /*TODO*////***************************************************************************
 /*TODO*///
 /*TODO*///	Basic macros
 /*TODO*///
@@ -97,38 +103,41 @@ public class memoryH {
 /*TODO*///
 /*TODO*///
 /*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///
-/*TODO*///	Memory/port array constants
-/*TODO*///
-/*TODO*///	These apply to values in the array of read/write handlers that is
-/*TODO*///	declared within each driver.
-/*TODO*///
-/*TODO*///***************************************************************************/
-/*TODO*///
-/*TODO*////* ----- memory/port width constants ----- */
-/*TODO*///#define MEMPORT_WIDTH_MASK		0x00000003				/* mask to get at the width bits */
-/*TODO*///#define MEMPORT_WIDTH_8			0x00000001				/* this memory/port array is for an 8-bit databus */
-/*TODO*///#define MEMPORT_WIDTH_16 		0x00000002				/* this memory/port array is for a 16-bit databus */
-/*TODO*///#define MEMPORT_WIDTH_32 		0x00000003				/* this memory/port array is for a 32-bit databus */
-/*TODO*///
-/*TODO*////* ----- memory/port type constants ----- */
-/*TODO*///#define MEMPORT_TYPE_MASK		0x30000000				/* mask to get at the type bits */
-/*TODO*///#define MEMPORT_TYPE_MEM 		0x10000000				/* this memory/port array is for memory */
-/*TODO*///#define MEMPORT_TYPE_IO			0x20000000				/* this memory/port array is for ports */
-/*TODO*///
-/*TODO*////* ----- memory/port direction constants ----- */
-/*TODO*///#define MEMPORT_DIRECTION_MASK	0xc0000000				/* mask to get at the direction bits */
-/*TODO*///#define MEMPORT_DIRECTION_READ	0x40000000				/* this memory/port array is for reads */
-/*TODO*///#define MEMPORT_DIRECTION_WRITE	0x80000000				/* this memory/port array is for writes */
-/*TODO*///
-/*TODO*////* ----- memory/port address bits constants ----- */
-/*TODO*///#define MEMPORT_ABITS_MASK		0x08000000				/* set this bit to indicate the entry has address bits */
-/*TODO*///#define MEMPORT_ABITS_VAL_MASK	0x000000ff				/* number of address bits */
-/*TODO*///
-/*TODO*////* ----- memory/port struct marker constants ----- */
-/*TODO*///#define MEMPORT_MARKER			((offs_t)~0)			/* used in the end field to indicate end of array */
-/*TODO*///
+    /**
+     * *************************************************************************
+     *
+     * Memory/port array constants
+     *
+     * These apply to values in the array of read/write handlers that is
+     * declared within each driver.
+     *
+     **************************************************************************
+     */
+
+    /* ----- memory/port width constants ----- */
+    public static final int MEMPORT_WIDTH_MASK = 0x00000003;/* mask to get at the width bits */
+    public static final int MEMPORT_WIDTH_8 = 0x00000001;/* this memory/port array is for an 8-bit databus */
+    public static final int MEMPORT_WIDTH_16 = 0x00000002;/* this memory/port array is for a 16-bit databus */
+    public static final int MEMPORT_WIDTH_32 = 0x00000003;/* this memory/port array is for a 32-bit databus */
+
+ /* ----- memory/port type constants ----- */
+    public static final int MEMPORT_TYPE_MASK = 0x30000000;/* mask to get at the type bits */
+    public static final int MEMPORT_TYPE_MEM = 0x10000000;/* this memory/port array is for memory */
+    public static final int MEMPORT_TYPE_IO = 0x20000000;/* this memory/port array is for ports */
+
+ /* ----- memory/port direction constants ----- */
+    public static final int MEMPORT_DIRECTION_MASK = 0xc0000000;/* mask to get at the direction bits */
+    public static final int MEMPORT_DIRECTION_READ = 0x40000000;/* this memory/port array is for reads */
+    public static final int MEMPORT_DIRECTION_WRITE = 0x80000000;/* this memory/port array is for writes */
+
+ /* ----- memory/port address bits constants ----- */
+    public static final int MEMPORT_ABITS_MASK = 0x08000000;/* set this bit to indicate the entry has address bits */
+    public static final int MEMPORT_ABITS_VAL_MASK = 0x000000ff;/* number of address bits */
+
+ /* ----- memory/port struct marker constants ----- */
+    public static final int MEMPORT_MARKER = Integer.MAX_VALUE;/*((offs_t)~0);*//* used in the end field to indicate end of array */
+
+
  /* ----- static memory/port handler constants ----- */
     public static final int STATIC_INVALID = 0;/* invalid - should never be used */
     public static final int STATIC_BANK1 = 1;/* banked memory #1 */
@@ -168,7 +177,7 @@ public class memoryH {
     public static final int MAX_BANKS = 24;/* maximum number of banks */
     public static final int STATIC_BANKMAX = (STATIC_RAM - 1);/* handler constant of last bank */
 
-    /* handler constant of last bank */
+ /* handler constant of last bank */
 
  /*TODO*////***************************************************************************
 /*TODO*///
@@ -207,10 +216,11 @@ public class memoryH {
 /*TODO*///#define MRA_BANK23				((mem_read_handler)STATIC_BANK23)
 /*TODO*///#define MRA_BANK24				((mem_read_handler)STATIC_BANK24)
 /*TODO*///#define MRA_NOP					((mem_read_handler)STATIC_NOP)
-/*TODO*///#define MRA_RAM					((mem_read_handler)STATIC_RAM)
-/*TODO*///#define MRA_ROM					((mem_read_handler)STATIC_ROM)
-/*TODO*///#define MRA_RAMROM				((mem_read_handler)STATIC_RAMROM)
-/*TODO*///
+    public static final int MRA_RAM = STATIC_RAM;
+    public static final int MRA_ROM = STATIC_ROM;
+
+    public static final int MRA_RAMROM = STATIC_RAMROM;
+    /*TODO*///
 /*TODO*////* 8-bit writes */
 /*TODO*///#define MWA_BANK1				((mem_write_handler)STATIC_BANK1)
 /*TODO*///#define MWA_BANK2				((mem_write_handler)STATIC_BANK2)
@@ -237,9 +247,10 @@ public class memoryH {
 /*TODO*///#define MWA_BANK23				((mem_write_handler)STATIC_BANK23)
 /*TODO*///#define MWA_BANK24				((mem_write_handler)STATIC_BANK24)
 /*TODO*///#define MWA_NOP					((mem_write_handler)STATIC_NOP)
-/*TODO*///#define MWA_RAM					((mem_write_handler)STATIC_RAM)
-/*TODO*///#define MWA_ROM					((mem_write_handler)STATIC_ROM)
-/*TODO*///#define MWA_RAMROM				((mem_write_handler)STATIC_RAMROM)
+    public static final int MWA_RAM = STATIC_RAM;
+    public static final int MWA_ROM = STATIC_ROM;
+
+    /*TODO*///#define MWA_RAMROM				((mem_write_handler)STATIC_RAMROM)
 /*TODO*///
 /*TODO*////* 16-bit reads */
 /*TODO*///#define MRA16_BANK1				((mem_read16_handler)STATIC_BANK1)
@@ -402,14 +413,28 @@ public class memoryH {
 /*TODO*///***************************************************************************/
 
     /* ----- structs for memory read arrays ----- */
+ /* ----- structs for memory read arrays ----- */
     public static class Memory_ReadAddress {
 
-        int start, end;
-        /* start, end addresses, inclusive */
+        public Memory_ReadAddress(int start, int end) {
+            this.start = start;
+            this.end = end;
+            this.handler = -15000;//random number for not matching something else
+            this._handler = null;
+        }
+
+        public Memory_ReadAddress(int start, int end, int handler) {
+            this.start = start;
+            this.end = end;
+            this.handler = handler;
+            this._handler = null;
+        }
+
+        int start, end;/* start, end addresses, inclusive */
+        ReadHandlerPtr _handler;/* handler callback */
         int handler;
-        ReadHandlerPtr _handler;
-        /* handler callback */
     }
+
     /*TODO*///
 /*TODO*///struct Memory_ReadAddress16
 /*TODO*///{
@@ -424,14 +449,52 @@ public class memoryH {
 /*TODO*///};
 /*TODO*///
 /*TODO*////* ----- structs for memory write arrays ----- */
-/*TODO*///struct Memory_WriteAddress
-/*TODO*///{
-/*TODO*///    offs_t				start, end;		/* start, end addresses, inclusive */
-/*TODO*///	mem_write_handler	handler;		/* handler callback */
-/*TODO*///	data8_t **			base;			/* receives pointer to memory (optional) */
-/*TODO*///    size_t *			size;			/* receives size of memory in bytes (optional) */
-/*TODO*///};
-/*TODO*///
+    public static class Memory_WriteAddress {
+
+        public Memory_WriteAddress(int start, int end) {
+            this.start = start;
+            this.end = end;
+            this._handler = null;
+            this.handler = -15000;//random number for not matching something else
+            this.base = null;
+            this.size = null;
+        }
+
+        public Memory_WriteAddress(int start, int end, int handler) {
+            this.start = start;
+            this.end = end;
+            this.handler = handler;
+            this._handler = null;
+            this.base = null;
+            this.size = null;
+        }
+
+        public Memory_WriteAddress(int start, int end, WriteHandlerPtr _handler, UBytePtr base) {
+            this.start = start;
+            this.end = end;
+            this._handler = _handler;
+            this.handler = -15000;//random number for not matching something else
+            this.base = base;
+            this.size = null;
+        }
+
+        public Memory_WriteAddress(int start, int end, WriteHandlerPtr _handler, UBytePtr base, int[] size) {
+            this.start = start;
+            this.end = end;
+            this._handler = _handler;
+            this.handler = -15000;//random number for not matching something else
+            this.base = base;
+            this.size = size;
+        }
+
+        int start, end;/* start, end addresses, inclusive */
+        WriteHandlerPtr _handler;/* handler callback */
+        int handler;
+        UBytePtr base;/* receives pointer to memory (optional) */
+        int[] size;/* receives size of memory in bytes (optional) */
+    }
+
+    /*TODO*///
 /*TODO*///struct Memory_WriteAddress16
 /*TODO*///{
 /*TODO*///    offs_t				start, end;		/* start, end addresses, inclusive */
@@ -447,14 +510,33 @@ public class memoryH {
 /*TODO*///	data32_t **			base;			/* receives pointer to memory (optional) */
 /*TODO*///	size_t *			size;			/* receives size of memory in bytes (optional) */
 /*TODO*///};
-/*TODO*///
-/*TODO*////* ----- structs for port read arrays ----- */
-/*TODO*///struct IO_ReadPort
-/*TODO*///{
-/*TODO*///	offs_t				start, end;		/* start, end addresses, inclusive */
-/*TODO*///	port_read_handler 	handler;		/* handler callback */
-/*TODO*///};
-/*TODO*///
+
+    /* ----- structs for port read arrays ----- */
+    public static class IO_ReadPort {
+
+        public IO_ReadPort(int start, int end, int handler) {
+            this.start = start;
+            this.end = end;
+            this.handler = handler;
+            this._handler = null;
+        }
+
+        public IO_ReadPort(int start, int end, ReadHandlerPtr _handler) {
+            this.start = start;
+            this.end = end;
+            this.handler = -15000;//random number for not matching something else
+            this._handler = _handler;
+        }
+
+        public IO_ReadPort(int start, int end) {
+            this(start, end, null);
+        }
+        public int start, end;/* start, end addresses, inclusive */
+        public int handler;
+        public ReadHandlerPtr _handler;/* handler callback */
+    }
+
+    /*TODO*///
 /*TODO*///struct IO_ReadPort16
 /*TODO*///{
 /*TODO*///	offs_t				start, end;		/* start, end addresses, inclusive */
@@ -467,13 +549,31 @@ public class memoryH {
 /*TODO*///	port_read32_handler	handler;		/* handler callback */
 /*TODO*///};
 /*TODO*///
-/*TODO*////* ----- structs for port write arrays ----- */
-/*TODO*///struct IO_WritePort
-/*TODO*///{
-/*TODO*///	offs_t				start, end;		/* start, end addresses, inclusive */
-/*TODO*///	port_write_handler	handler;		/* handler callback */
-/*TODO*///};
-/*TODO*///
+/* ----- structs for port write arrays ----- */
+    public static class IO_WritePort {
+
+        public IO_WritePort(int start, int end, int handler) {
+            this.start = start;
+            this.end = end;
+            this.handler = handler;
+            this._handler = null;
+        }
+
+        public IO_WritePort(int start, int end, WriteHandlerPtr _handler) {
+            this.start = start;
+            this.end = end;
+            this.handler = -15000;//random number for not matching something else
+            this._handler = _handler;
+        }
+
+        public IO_WritePort(int start, int end) {
+            this(start, end, null);
+        }
+        public /*offs_t*/ int start, end;/* start, end addresses, inclusive */
+        public int handler;
+        public WriteHandlerPtr _handler;/* handler callback */
+    }
+    /*TODO*///
 /*TODO*///struct IO_WritePort16
 /*TODO*///{
 /*TODO*///	offs_t				start, end;		/* start, end addresses, inclusive */
@@ -496,7 +596,36 @@ public class memoryH {
 /*TODO*///
 /*TODO*////* ----- macros for identifying memory/port struct markers ----- */
 /*TODO*///#define IS_MEMPORT_MARKER(ma)		((ma)->start == MEMPORT_MARKER && (ma)->end < MEMPORT_MARKER)
-/*TODO*///#define IS_MEMPORT_END(ma)			((ma)->start == MEMPORT_MARKER && (ma)->end == 0)
+    public static boolean IS_MEMPORT_MARKER(Memory_ReadAddress ma) {
+        return (ma.start == MEMPORT_MARKER && ma.end < MEMPORT_MARKER);
+    }
+
+    public static boolean IS_MEMPORT_MARKER(Memory_WriteAddress ma) {
+        return (ma.start == MEMPORT_MARKER && ma.end < MEMPORT_MARKER);
+    }
+    
+        public static boolean IS_MEMPORT_MARKER(IO_ReadPort ma) {
+        return (ma.start == MEMPORT_MARKER && ma.end < MEMPORT_MARKER);
+    }
+        
+        public static boolean IS_MEMPORT_MARKER(IO_WritePort ma) {
+        return (ma.start == MEMPORT_MARKER && ma.end < MEMPORT_MARKER);
+    }    
+
+    /*TODO*///#define IS_MEMPORT_END(ma)			((ma)->start == MEMPORT_MARKER && (ma)->end == 0)
+    public static boolean IS_MEMPORT_END(Memory_ReadAddress ma) {
+        return ((ma).start == MEMPORT_MARKER && (ma).end == 0);
+    }
+
+    public static boolean IS_MEMPORT_END(Memory_WriteAddress ma) {
+        return ((ma).start == MEMPORT_MARKER && (ma).end == 0);
+    }
+    public static boolean IS_MEMPORT_END(IO_ReadPort ma) {
+        return ((ma).start == MEMPORT_MARKER && (ma).end == 0);
+    }
+    public static boolean IS_MEMPORT_END(IO_WritePort ma) {
+        return ((ma).start == MEMPORT_MARKER && (ma).end == 0);
+    }
 /*TODO*///
 /*TODO*////* ----- macros for defining the start/stop points ----- */
 /*TODO*///#define MEMPORT_ARRAY_START(t,n,f)	const struct t n[] = { { MEMPORT_MARKER, (f) },
@@ -537,45 +666,46 @@ public class memoryH {
 /*TODO*///
 /*TODO*///***************************************************************************/
 /*TODO*///
-/*TODO*////* ----- memory/port lookup table definitions ----- */
-/*TODO*///#define SUBTABLE_COUNT			64						/* number of slots reserved for subtables */
-/*TODO*///#define SUBTABLE_MASK			(SUBTABLE_COUNT-1)		/* mask to get at the subtable index */
-/*TODO*///#define SUBTABLE_BASE			(256-SUBTABLE_COUNT)	/* first index of a subtable */
-/*TODO*///#define ENTRY_COUNT				(SUBTABLE_BASE)			/* number of legitimate (non-subtable) entries */
-/*TODO*///#define SUBTABLE_ALLOC			8						/* number of subtables to allocate at a time */
-/*TODO*///
-/*TODO*////* ----- bit counts ----- */
-/*TODO*///#define LEVEL1_BITS_PREF		12						/* preferred number of bits in the 1st level lookup */
-/*TODO*///#define LEVEL1_BITS_BIAS		4						/* number of bits used to bias the L1 bits computation */
-/*TODO*///#define SPARSE_THRESH			20						/* number of address bits above which we use sparse memory */
+/* ----- memory/port lookup table definitions ----- */
+    public static final int SUBTABLE_COUNT = 64;/* number of slots reserved for subtables */
+    public static final int SUBTABLE_MASK = (SUBTABLE_COUNT - 1);/* mask to get at the subtable index */
+    public static final int SUBTABLE_BASE = (256 - SUBTABLE_COUNT);/* first index of a subtable */
+    public static final int ENTRY_COUNT = (SUBTABLE_BASE);/* number of legitimate (non-subtable) entries */
+    public static final int SUBTABLE_ALLOC = 8;/* number of subtables to allocate at a time */
+
+ /* ----- bit counts ----- */
+    public static final int LEVEL1_BITS_PREF = 12;/* preferred number of bits in the 1st level lookup */
+    public static final int LEVEL1_BITS_BIAS = 4;/* number of bits used to bias the L1 bits computation */
+    public static final int SPARSE_THRESH = 20;/* number of address bits above which we use sparse memory */
 /*TODO*///#define PORT_BITS				16						/* address bits used for all port I/O */
 /*TODO*///
 /*TODO*////* ----- external memory constants ----- */
-/*TODO*///#define MAX_EXT_MEMORY			64						/* maximum external memory areas we can allocate */
+/* ----- external memory constants ----- */
+    public static final int MAX_EXT_MEMORY = 64;/* maximum external memory areas we can allocate */
 /*TODO*///
 /*TODO*///
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///
-/*TODO*///	Memory/port lookup macros
-/*TODO*///
-/*TODO*///	These are used for accessing the internal lookup table.
-/*TODO*///
-/*TODO*///***************************************************************************/
-/*TODO*///
-/*TODO*////* ----- macros for determining the number of bits to use ----- */
-/*TODO*///#define LEVEL1_BITS(x)			(((x) < (2*LEVEL1_BITS_PREF - LEVEL1_BITS_BIAS)) ? LEVEL1_BITS_PREF : ((x) + LEVEL1_BITS_BIAS) / 2)
-/*TODO*///#define LEVEL2_BITS(x)			((x) - LEVEL1_BITS(x))
-/*TODO*///#define LEVEL1_MASK(x)			((1 << LEVEL1_BITS(x)) - 1)
-/*TODO*///#define LEVEL2_MASK(x)			((1 << LEVEL2_BITS(x)) - 1)
-/*TODO*///
-/*TODO*////* ----- table lookup helpers ----- */
+    /* ----- macros for determining the number of bits to use ----- */
+    public static int LEVEL1_BITS(int x) {
+        return (((x) < (2 * LEVEL1_BITS_PREF - LEVEL1_BITS_BIAS)) ? LEVEL1_BITS_PREF : ((x) + LEVEL1_BITS_BIAS) / 2);
+    }
+
+    public static int LEVEL2_BITS(int x) {
+        return ((x) - LEVEL1_BITS(x));
+    }
+
+    /*TODO*///#define LEVEL1_MASK(x)			((1 << LEVEL1_BITS(x)) - 1)
+    public static int LEVEL2_MASK(int x) {
+        return ((1 << LEVEL2_BITS(x)) - 1);
+    }
+
+    /*TODO*////* ----- table lookup helpers ----- */
 /*TODO*///#define LEVEL1_INDEX(a,b,m)		((a) >> (LEVEL2_BITS((b)-(m)) + (m)))
 /*TODO*///#define LEVEL2_INDEX(e,a,b,m)	((1 << LEVEL1_BITS((b)-(m))) + (((e) & SUBTABLE_MASK) << LEVEL2_BITS((b)-(m))) + (((a) >> (m)) & LEVEL2_MASK((b)-(m))))
 /*TODO*///
-/*TODO*////* ----- sparse memory space detection ----- */
-/*TODO*///#define IS_SPARSE(a)			((a) > SPARSE_THRESH)
-/*TODO*///
+/* ----- sparse memory space detection ----- */
+    public static boolean IS_SPARSE(int a) {
+        return ((a) > SPARSE_THRESH);
+    }
 /*TODO*///
 /*TODO*///
 /*TODO*////***************************************************************************
