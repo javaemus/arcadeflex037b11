@@ -17,8 +17,8 @@ import static old.mame.inputH.*;
 import static old2.mame.memoryH.*;
 import static mame.sndintrfH.MachineSound;
 import static mame.sndintrfH.SOUND_SN76496;
-import static sound.sn76496.*;
-import static sound.sn76496H.SN76496interface;
+import static mame056.sound.sn76496.*;
+import static mame056.sound.sn76496H.SN76496interface;
 import static vidhrdw.docastle.*;
 import static vidhrdw.generic.*;
 

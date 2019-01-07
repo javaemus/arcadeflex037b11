@@ -1,8 +1,9 @@
 /**
+ * ported to v0.56
  * ported to v0.37b7
  *
  */
-package sound;
+package mame056.sound;
 
 public class sn76496H {
 

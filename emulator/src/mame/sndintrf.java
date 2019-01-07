@@ -17,7 +17,7 @@ import static old.sound.streams.*;
 
 import sound.Dummy_snd;
 import sound.CustomSound;
-import sound.sn76496;
+import mame056.sound.sn76496;
 import sound.namco;
 import sound.ay8910;
 import sound._2203intf;

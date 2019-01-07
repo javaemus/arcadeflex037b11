@@ -19,8 +19,8 @@ import static mame.sndintrfH.*;
 //sound imports
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
-import static sound.sn76496.*;
-import static sound.sn76496H.*;
+import static mame056.sound.sn76496.*;
+import static mame056.sound.sn76496H.*;
 import static sound.namco.*;
 import static sound.namcoH.*;
 //vidhrdw imports

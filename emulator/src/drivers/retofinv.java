@@ -18,8 +18,8 @@ import static vidhrdw.retofinv.*;
 import static mame056.common.*;
 import static mame.sndintrf.*;
 import static mame.cpuintrfH.*;
-import static sound.sn76496.*;
-import static sound.sn76496H.*;
+import static mame056.sound.sn76496.*;
+import static mame056.sound.sn76496H.*;
 
 public class retofinv {
 

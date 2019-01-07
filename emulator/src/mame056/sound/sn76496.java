@@ -1,15 +1,19 @@
 /**
+ * ported to v0.56
  * ported to v0.37b7
  */
-package sound;
+package mame056.sound;
 
-import static mame.sndintrf.*;
 import static arcadeflex.fucPtr.*;
+
 import static common.libc.cstdio.*;
 import static common.ptr.*;
-import static old2.mame.mame.Machine;
+
+import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
-import static sound.sn76496H.*;
+import static old2.mame.mame.*;
+
+import static mame056.sound.sn76496H.*;
 import static old.sound.streams.*;
 
 public class sn76496 extends snd_interface {
@@ -46,24 +50,12 @@ public class sn76496 extends snd_interface {
         int Channel;
         int SampleRate;
         int UpdateStep;
-        int[] VolTable;
-        /* volume table         */
-
-        int[] Register;
-        /* registers */
-
-        int LastRegister;
-        /* last register written */
-
-        int[] Volume;
-        /* volume of voice 0-2 and noise */
-
-        int RNG;
-        /* noise generator      */
-
-        int NoiseFB;
-        /* noise feedback mask */
-
+        int[] VolTable;/* volume table         */
+        int[] Register;/* registers */
+        int LastRegister;/* last register written */
+        int[] Volume;/* volume of voice 0-2 and noise */
+        int RNG;/* noise generator      */
+        int NoiseFB;/* noise feedback mask */
         int[] Period;
         int[] Count;
         int[] Output;

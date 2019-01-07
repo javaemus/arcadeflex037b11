@@ -13,8 +13,8 @@ import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
 import static mame.sndintrfH.*;
-import static sound.sn76496.*;
-import static sound.sn76496H.*;
+import static mame056.sound.sn76496.*;
+import static mame056.sound.sn76496H.*;
 import static vidhrdw.generic.*;
 import static vidhrdw.mrjong.*;
 

@@ -18,8 +18,8 @@ import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static vidhrdw.exedexes.*;
 import static vidhrdw.generic.*;
-import static sound.sn76496.*;
-import static sound.sn76496H.*;
+import static mame056.sound.sn76496.*;
+import static mame056.sound.sn76496H.*;
 
 public class exedexes {
 

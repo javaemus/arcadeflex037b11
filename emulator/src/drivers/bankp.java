@@ -13,9 +13,9 @@ import static old2.mame.memoryH.*;
 import static old.mame.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.generic.*;
-import static sound.sn76496H.*;
+import static mame056.sound.sn76496H.*;
 import static vidhrdw.bankp.*;
-import static sound.sn76496.*;
+import static mame056.sound.sn76496.*;
 
 public class bankp {
 

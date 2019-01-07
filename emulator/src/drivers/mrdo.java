@@ -17,8 +17,8 @@ import static old.mame.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static old.mame.inputH.*;
 import static vidhrdw.generic.*;
-import static sound.sn76496.*;
-import static sound.sn76496H.*;
+import static mame056.sound.sn76496.*;
+import static mame056.sound.sn76496H.*;
 import static vidhrdw.mrdo.*;
 import static mame056.common.*;
 
