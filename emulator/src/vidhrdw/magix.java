@@ -10,7 +10,7 @@ import static mame.osdependH.osd_bitmap;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
 import static mame.palette.*;
-import static old.arcadeflex.video.osd_clearbitmap;
+import static arcadeflex.video.osd_clearbitmap;
 
 public class magix {
 

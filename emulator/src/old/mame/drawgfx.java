@@ -13,7 +13,7 @@ import static mame.drawgfx.blockmove_8toN_opaque_pri;
 import static mame.drawgfx.blockmove_8toN_opaque_pri_flipx;
 import static mame.drawgfx.blockmove_8toN_transpen_pri;
 import static mame.drawgfx.blockmove_8toN_transpen_pri_flipx;
-import static old.arcadeflex.video.osd_mark_dirty;
+import static arcadeflex.video.osd_mark_dirty;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old2.mame.mame.Machine;

@@ -39,9 +39,7 @@ import static old.arcadeflex.osdepend.osd_exit;
 import static old.arcadeflex.osdepend.osd_init;
 import static arcadeflex.libc.ptr.*;
 import static common.subArrays.*;
-import static old.arcadeflex.video.osd_clearbitmap;
-import static old.arcadeflex.video.osd_skip_this_frame;
-import static old.arcadeflex.video_old.*;
+import static arcadeflex.video.*;
 import static old.mame.common.*;
 import static mame.commonH.REGIONFLAG_DISPOSE;
 import static old.mame.cpuintrf.cpu_init;
@@ -64,7 +62,6 @@ import static mame056.common.readroms;
 import static mame056.commonH.ROMREGION_DISPOSE;
 import static old.mame.usrintrf.*;
 import static vidhrdw.generic.*;
-import static old.arcadeflex.video.osd_create_display;
 
 public class mame {
 

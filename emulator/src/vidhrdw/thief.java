@@ -13,7 +13,7 @@ import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
 import static mame.osdependH.osd_bitmap;
-import static old.arcadeflex.video.osd_free_bitmap;
+import static arcadeflex.video.osd_free_bitmap;
 import static mame.palette.*;
 import static vidhrdw.generic.*;
 import static mame056.common.*;

@@ -15,7 +15,7 @@ import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static mame.sndintrf.soundlatch_w;
 import static old.mame.common.*;
-import static old.arcadeflex.video.*;
+import static arcadeflex.video.*;
 import static mame056.common.*;
 
 public class skyfox {

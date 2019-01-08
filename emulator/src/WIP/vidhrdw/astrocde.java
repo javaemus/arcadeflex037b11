@@ -18,7 +18,7 @@ import static old2.mame.memory.*;
 import static cpu.z80.z80H.Z80_AF;
 import static cpu.z80.z80H.Z80_BC;
 import static old.mame.inptport.input_port_0_r;
-import static old.arcadeflex.video.*;
+import static arcadeflex.video.*;
 import static old.mame.inptport.input_port_1_r;
 import static old.mame.usrintrf.*;
 import static old2.arcadeflex.osd_cpuH.*;

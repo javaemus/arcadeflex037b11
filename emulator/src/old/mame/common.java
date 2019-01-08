@@ -12,7 +12,7 @@ import static arcadeflex.libc.ptr.*;
 import static old2.arcadeflex.libc_v2.charArrayToInt;
 import static old2.arcadeflex.libc_v2.charArrayToLong;
 import static old.arcadeflex.osdepend.logerror;
-import static old.arcadeflex.video.*;
+import static arcadeflex.video.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.rectangle;
 import static mame.driverH.*;
