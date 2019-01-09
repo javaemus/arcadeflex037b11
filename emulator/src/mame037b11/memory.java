@@ -6,44 +6,19 @@ package mame037b11;
 import static arcadeflex.fucPtr.*;
 import arcadeflex.libc.ptr.UBytePtr;
 import static common.libc.cstring.memset;
-import static mame.commonH.REGION_CPU1;
+import static mame.driverH.*;
+import static mame056.commonH.REGION_CPU1;
 import static mame.driverH.MAX_CPU;
 import static mame037b11.memoryH.*;
 import static mame037b11.cpuintrf.*;
+import static mame037b11.cpuintrfH.CPU_Z80;
+import static mame056.common.*;
+import static old.arcadeflex.libc_old.*;
 import static old2.mame.mame.*;
 
 public class memory {
 
     /*TODO*////***************************************************************************
-/*TODO*///
-/*TODO*///  memory.c
-/*TODO*///
-/*TODO*///  Functions which handle the CPU memory and I/O port access.
-/*TODO*///
-/*TODO*///  Caveats:
-/*TODO*///
-/*TODO*///  * The install_mem/port_*_handler functions are only intended to be
-/*TODO*///	called at driver init time. Do not call them after this time.
-/*TODO*///
-/*TODO*///  * If your driver executes an opcode which crosses a bank-switched
-/*TODO*///	boundary, it will pull the wrong data out of memory. Although not
-/*TODO*///	a common case, you may need to revert to memcpy to work around this.
-/*TODO*///	See machine/tnzs.c for an example.
-/*TODO*///
-/*TODO*///***************************************************************************/
-/*TODO*///
-/*TODO*///#include "driver.h"
-/*TODO*///#include "osd_cpu.h"
-/*TODO*///
-/*TODO*///#include <stdarg.h>
-/*TODO*///
-/*TODO*///
-/*TODO*/////#define MEM_DUMP
-/*TODO*/////#define CHECK_MASKS
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////***************************************************************************
 /*TODO*///
 /*TODO*///	Basic theory of memory handling:
 /*TODO*///
@@ -196,83 +171,50 @@ public class memory {
 /*TODO*///
     public static cpu_data[] cpudata = new cpu_data[MAX_CPU];/* data gathered for each CPU */
     public static bank_data[] bankdata = new bank_data[MAX_BANKS];/* data gathered for each bank */
- /*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	PROTOTYPES
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///static int fatalerror(const char *string, ...);
-/*TODO*///static UINT8 get_handler_index(struct handler_data *table, void *handler, offs_t start);
-/*TODO*///static UINT8 alloc_new_subtable(const struct memport_data *memport, struct table_data *tabledata, UINT8 previous_value);
-/*TODO*///static void populate_table(struct memport_data *memport, int iswrite, offs_t start, offs_t stop, UINT8 handler);
-/*TODO*///static void *assign_dynamic_bank(int cpu, offs_t start);
-/*TODO*///static void install_mem_handler(struct memport_data *memport, int iswrite, offs_t start, offs_t end, void *handler);
-/*TODO*///static void install_port_handler(struct memport_data *memport, int iswrite, offs_t start, offs_t end, void *handler);
-/*TODO*///static void set_static_handler(int idx,
-/*TODO*///		read8_handler r8handler, read16_handler r16handler, read32_handler r32handler,
-/*TODO*///		write8_handler w8handler, write16_handler w16handler, write32_handler w32handler);
-/*TODO*///static int init_cpudata(void);
-/*TODO*///static int init_memport(int cpu, struct memport_data *data, int abits, int dbits, int ismemory);
-/*TODO*///static int verify_memory(void);
-/*TODO*///static int verify_ports(void);
-/*TODO*///static int allocate_memory(void);
-/*TODO*///static int populate_memory(void);
-/*TODO*///static int populate_ports(void);
-/*TODO*///static int address_bits_of_cpu(int cpu);
-/*TODO*///static int init_static(void);
-/*TODO*///
-/*TODO*///#ifdef MEM_DUMP
-/*TODO*///static void mem_dump(void);
-/*TODO*///#endif
-/*TODO*///#ifdef CHECK_MASKS
-/*TODO*///static void verify_masks(void);
-/*TODO*///#endif
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	memory_init - initialize the memory system
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///int memory_init(void)
-/*TODO*///{
-/*TODO*///#ifdef CHECK_MASKS
-/*TODO*///	verify_masks();
-/*TODO*///#endif
-/*TODO*///
-/*TODO*///	/* init the static handlers */
+
+
+ /*-------------------------------------------------
+	memory_init - initialize the memory system
+-------------------------------------------------*/
+    public static int memory_init() {
+
+        /*TODO*///	/* init the static handlers */
 /*TODO*///	if (!init_static())
 /*TODO*///		return 0;
 /*TODO*///
-/*TODO*///	/* init the CPUs */
-/*TODO*///	if (!init_cpudata())
-/*TODO*///		return 0;
-/*TODO*///
-/*TODO*///	/* verify the memory handlers and check banks */
-/*TODO*///	if (!verify_memory())
-/*TODO*///		return 0;
-/*TODO*///	if (!verify_ports())
-/*TODO*///		return 0;
-/*TODO*///
-/*TODO*///	/* allocate memory for sparse address spaces */
-/*TODO*///	if (!allocate_memory())
-/*TODO*///		return 0;
-/*TODO*///
-/*TODO*///	/* then fill in the tables */
-/*TODO*///	if (!populate_memory())
-/*TODO*///		return 0;
-/*TODO*///	if (!populate_ports())
-/*TODO*///		return 0;
-/*TODO*///
-/*TODO*///#ifdef MEM_DUMP
-/*TODO*///	/* dump the final memory configuration */
-/*TODO*///	mem_dump();
-/*TODO*///#endif
-/*TODO*///
-/*TODO*///	return 1;
-/*TODO*///}
-/*TODO*///
+        /* init the CPUs */
+        if (init_cpudata() == 0) {
+            return 0;
+        }
+
+        /* verify the memory handlers and check banks */
+        if (verify_memory() == 0) {
+            return 0;
+        }
+        if (verify_ports() == 0) {
+            return 0;
+        }
+
+        /* allocate memory for sparse address spaces */
+        if (allocate_memory() == 0) {
+            return 0;
+        }
+
+        /* then fill in the tables */
+        if (populate_memory() == 0) {
+            return 0;
+        }
+        if (populate_ports() == 0) {
+            return 0;
+        }
+
+        /* dump the final memory configuration */
+        mem_dump();
+
+        return 1;
+    }
+
+    /*TODO*///
 /*TODO*///
 /*TODO*////*-------------------------------------------------
 /*TODO*///	memory_shutdown - free memory
@@ -318,7 +260,6 @@ public class memory {
     /*-------------------------------------------------
         memory_set_context - set the memory context
     -------------------------------------------------*/
-
     public static void memory_set_context(int activecpu) {
         throw new UnsupportedOperationException("unsupported");
         /*TODO*///	OP_RAM = cpu_bankbase[STATIC_RAM] = cpudata[activecpu].rambase;
@@ -921,6 +862,7 @@ public class memory {
         int /*UINT8*/ idx = get_handler_index(tabledata.handlers, handler, _handler, start);
         populate_table(memport, iswrite, start, end, idx);
     }
+
     /*TODO*///
 /*TODO*///
 /*TODO*////*-------------------------------------------------
@@ -949,46 +891,45 @@ public class memory {
 /*TODO*///	wporthandler16[idx].handler = (void *)w16handler;
 /*TODO*///	wporthandler32[idx].handler = (void *)w32handler;
 /*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	init_cpudata - initialize the cpudata
-/*TODO*///	structure for each CPU
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///static int init_cpudata(void)
-/*TODO*///{
-/*TODO*///	int cpu;
-/*TODO*///
-/*TODO*///	/* zap the cpudata structure */
-/*TODO*///	memset(&cpudata, 0, sizeof(cpudata));
-/*TODO*///
-/*TODO*///	/* loop over CPUs */
-/*TODO*///	for (cpu = 0; cpu < cpu_gettotalcpu(); cpu++)
-/*TODO*///	{
-/*TODO*///		/* set the RAM/ROM base */
-/*TODO*///		cpudata[cpu].rambase = cpudata[cpu].rombase = memory_region(REGION_CPU1 + cpu);
-/*TODO*///		cpudata[cpu].opbase = NULL;
-/*TODO*///
-/*TODO*///		/* initialize the readmem and writemem tables */
-/*TODO*///		if (!init_memport(cpu, &cpudata[cpu].mem, address_bits_of_cpu(cpu), cpunum_databus_width(cpu), 1))
-/*TODO*///			return 0;
-/*TODO*///
-/*TODO*///		/* initialize the readport and writeport tables */
-/*TODO*///		if (!init_memport(cpu, &cpudata[cpu].port, PORT_BITS, cpunum_databus_width(cpu), 0))
-/*TODO*///			return 0;
-/*TODO*///
-/*TODO*///#if HAS_Z80
-/*TODO*///		/* Z80 port mask kludge */
-/*TODO*///		if ((Machine->drv->cpu[cpu].cpu_type & ~CPU_FLAGS_MASK) == CPU_Z80)
-/*TODO*///			if (!(Machine->drv->cpu[cpu].cpu_type & CPU_16BIT_PORT))
-/*TODO*///				cpudata[cpu].port.mask = 0xff;
-/*TODO*///#endif
-/*TODO*///	}
-/*TODO*///	return 1;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
+    /*-------------------------------------------------
+	init_cpudata - initialize the cpudata
+	structure for each CPU
+-------------------------------------------------*/
+    static int init_cpudata() {
+        int cpu;
+
+        /* zap the cpudata structure */
+ /* zap the cpudata structure */
+        for (int i = 0; i < MAX_CPU; i++) {
+            cpudata[i] = new cpu_data();
+        }
+
+        /* loop over CPUs */
+        for (cpu = 0; cpu < cpu_gettotalcpu(); cpu++) {
+            /* set the RAM/ROM base */
+            cpudata[cpu].rambase = cpudata[cpu].rombase = memory_region(REGION_CPU1 + cpu);
+            /*TODO*///		cpudata[cpu].opbase = NULL;
+
+            /* initialize the readmem and writemem tables */
+            if (init_memport(cpu, cpudata[cpu].mem, address_bits_of_cpu(cpu), cpunum_databus_width(cpu), 1) == 0) {
+                return 0;
+            }
+
+            /* initialize the readport and writeport tables */
+            if (init_memport(cpu, cpudata[cpu].port, 16, cpunum_databus_width(cpu), 0) == 0) {
+                return 0;
+            }
+
+            /* Z80 port mask kludge */
+            if ((Machine.drv.cpu[cpu].cpu_type & ~CPU_FLAGS_MASK) == CPU_Z80) {
+                if ((Machine.drv.cpu[cpu].cpu_type & CPU_16BIT_PORT) == 0) {
+                    cpudata[cpu].port.mask = 0xff;
+                }
+            }
+        }
+        return 1;
+    }
+
     /*-------------------------------------------------
 	init_memport - initialize the mem/port data
 	structure
@@ -1019,6 +960,7 @@ public class memory {
         }
         return 1;
     }
+
     /*-------------------------------------------------
             verify_memory - verify the memory structs
             and track which banks are referenced
@@ -1271,127 +1213,215 @@ public class memory {
         }
         return 1;
     }
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	needs_ram - returns true if a given type
-/*TODO*///	of memory needs RAM backing it
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///static int needs_ram(int cpu, void *handler)
-/*TODO*///{
-/*TODO*///	/* RAM, ROM, and banks always need RAM */
-/*TODO*///	if (HANDLER_IS_RAM(handler) || HANDLER_IS_ROM(handler) || HANDLER_IS_RAMROM(handler) || HANDLER_IS_BANK(handler))
-/*TODO*///		return 1;
-/*TODO*///
+
+    /*-------------------------------------------------
+	needs_ram - returns true if a given type
+	of memory needs RAM backing it
+    -------------------------------------------------*/
+    static boolean needs_ram(int cpunum, int handler, Object _handler) {
+        /* RAM, ROM, and banks always need RAM */
+        if (HANDLER_IS_RAM(handler) || HANDLER_IS_ROM(handler) || HANDLER_IS_RAMROM(handler) || HANDLER_IS_BANK(handler)) {
+            return true;
+        }
+        /*TODO*///
 /*TODO*///	/* NOPs never need RAM */
 /*TODO*///	else if (HANDLER_IS_NOP(handler))
 /*TODO*///		return 0;
 /*TODO*///
 /*TODO*///	/* otherwise, we only need RAM for sparse memory spaces */
 /*TODO*///	else
-/*TODO*///		return IS_SPARSE(cpudata[cpu].mem.abits);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	allocate_memory - allocate memory for
-/*TODO*///	sparse CPU address spaces
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///static int allocate_memory(void)
-/*TODO*///{
-/*TODO*///	struct ExtMemory *ext = ext_memory;
-/*TODO*///	int cpu;
-/*TODO*///
-/*TODO*///	/* don't do it for drivers that don't have ROM (MESS needs this) */
-/*TODO*///	if (Machine->gamedrv->rom == 0)
-/*TODO*///		return 1;
-/*TODO*///
-/*TODO*///	/* loop over all CPUs */
-/*TODO*///	for (cpu = 0; cpu < cpu_gettotalcpu(); cpu++)
-/*TODO*///	{
-/*TODO*///		int region = REGION_CPU1 + cpu;
-/*TODO*///		int region_length = memory_region(region) ? memory_region_length(region) : 0;
-/*TODO*///		int size = region_length;
-/*TODO*///
-/*TODO*///		/* keep going until we break out */
-/*TODO*///		while (1)
-/*TODO*///		{
-/*TODO*///			const struct Memory_ReadAddress *mra = Machine->drv->cpu[cpu].memory_read;
-/*TODO*///			const struct Memory_WriteAddress *mwa = Machine->drv->cpu[cpu].memory_write;
-/*TODO*///			offs_t lowest = ~0, end, lastend;
-/*TODO*///
-/*TODO*///			/* find the base of the lowest memory region that extends past the end */
-/*TODO*///			for (mra = Machine->drv->cpu[cpu].memory_read; !IS_MEMPORT_END(mra); mra++)
-/*TODO*///				if (!IS_MEMPORT_MARKER(mra))
-/*TODO*///					if (mra->end >= size && mra->start < lowest && needs_ram(cpu, (void *)mra->handler))
-/*TODO*///						lowest = mra->start;
-/*TODO*///
-/*TODO*///			for (mwa = Machine->drv->cpu[cpu].memory_write; !IS_MEMPORT_END(mwa); mwa++)
-/*TODO*///				if (!IS_MEMPORT_MARKER(mwa))
-/*TODO*///					if (mwa->end >= size && mwa->start < lowest && (mwa->base || needs_ram(cpu, (void *)mwa->handler)))
-/*TODO*///						lowest = mwa->start;
-/*TODO*///
-/*TODO*///			/* done if nothing found */
-/*TODO*///			if (lowest == ~0)
-/*TODO*///				break;
-/*TODO*///
-/*TODO*///			/* now loop until we find the end of this contiguous block of memory */
-/*TODO*///			lastend = ~0;
-/*TODO*///			end = lowest;
-/*TODO*///			while (end != lastend)
-/*TODO*///			{
-/*TODO*///				lastend = end;
-/*TODO*///
-/*TODO*///				/* find the end of the contiguous block of memory */
-/*TODO*///				for (mra = Machine->drv->cpu[cpu].memory_read; !IS_MEMPORT_END(mra); mra++)
-/*TODO*///					if (!IS_MEMPORT_MARKER(mra))
-/*TODO*///						if (mra->start <= end+1 && mra->end > end && needs_ram(cpu, (void *)mra->handler))
-/*TODO*///							end = mra->end;
-/*TODO*///
-/*TODO*///				for (mwa = Machine->drv->cpu[cpu].memory_write; !IS_MEMPORT_END(mwa); mwa++)
-/*TODO*///					if (!IS_MEMPORT_MARKER(mwa))
-/*TODO*///						if (mwa->start <= end+1 && mwa->end > end && (mwa->base || needs_ram(cpu, (void *)mwa->handler)))
-/*TODO*///							end = mwa->end;
-/*TODO*///			}
-/*TODO*///
-/*TODO*///			/* fill in the data structure */
-/*TODO*///			ext->start = lowest;
-/*TODO*///			ext->end = end;
-/*TODO*///			ext->region = region;
-/*TODO*///
-/*TODO*///			/* allocate memory */
-/*TODO*///			ext->data = malloc(end+1 - lowest);
-/*TODO*///			if (!ext->data)
-/*TODO*///				fatalerror("malloc(%d) failed (lowest: %x - end: %x)\n", end + 1 - lowest, lowest, end);
-/*TODO*///
-/*TODO*///			/* reset the memory */
-/*TODO*///			memset(ext->data, 0, end+1 - lowest);
-/*TODO*///
-/*TODO*///			/* prepare for the next loop */
-/*TODO*///			size = ext->end + 1;
-/*TODO*///			ext++;
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///	return 1;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	populate_memory - populate the memory mapping
-/*TODO*///	tables with entries
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///static int populate_memory(void)
-/*TODO*///{
-/*TODO*///	int cpu;
-/*TODO*///
-/*TODO*///	/* loop over CPUs */
-/*TODO*///	for (cpu = 0; cpu < cpu_gettotalcpu(); cpu++)
-/*TODO*///	{
-/*TODO*///		const struct Memory_ReadAddress *mra, *mra_start = Machine->drv->cpu[cpu].memory_read;
-/*TODO*///		const struct Memory_WriteAddress *mwa, *mwa_start = Machine->drv->cpu[cpu].memory_write;
+/*TODO*///		return IS_SPARSE(cpudata[cpunum].mem.abits);
+        throw new UnsupportedOperationException("Unimplemented");
+    }
+
+    /*-------------------------------------------------
+    	allocate_memory - allocate memory for
+    	sparse CPU address spaces
+    -------------------------------------------------*/
+    static int allocate_memory() {
+        int ext = 0;//struct ExtMemory *ext = ext_memory;
+        int cpunum;
+
+        /* don't do it for drivers that don't have ROM (MESS needs this) */
+        if (Machine.gamedrv.rom == null) {
+            return 1;
+        }
+
+        /* loop over all CPUs */
+        for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
+            int region = REGION_CPU1 + cpunum;
+            int region_length = memory_region(region) != null ? memory_region_length(region) : 0;
+            int size = region_length;
+
+            /* keep going until we break out */
+            while (true) {
+                int lowest = Integer.MAX_VALUE, end = 0, lastend;
+                Object mra_obj = Machine.drv.cpu[cpunum].memory_read;
+                Object mwa_obj = Machine.drv.cpu[cpunum].memory_write;
+                if (mra_obj instanceof Memory_ReadAddress[]) {
+                    Memory_ReadAddress[] mra = (Memory_ReadAddress[]) mra_obj;
+                    int mra_ptr = 0;
+                    /* find the base of the lowest memory region that extends past the end */
+                    for (mra_ptr = 0; !IS_MEMPORT_END(mra[mra_ptr]); mra_ptr++) {
+                        if (!IS_MEMPORT_MARKER(mra[mra_ptr])) {
+                            if (mra[mra_ptr].end >= size && mra[mra_ptr].start < lowest && needs_ram(cpunum, mra[mra_ptr].handler, mra[mra_ptr]._handler)) {
+                                lowest = mra[mra_ptr].start;
+                            }
+                        }
+                    }
+                    Memory_WriteAddress[] mwa = (Memory_WriteAddress[]) mwa_obj;
+                    int mwa_ptr = 0;
+
+                    for (mwa_ptr = 0; !IS_MEMPORT_END(mwa[mwa_ptr]); mwa_ptr++) {
+                        if (!IS_MEMPORT_MARKER(mwa[mwa_ptr])) {
+                            if (mwa[mwa_ptr].end >= size && mwa[mwa_ptr].start < lowest && (mwa[mwa_ptr].base != null || needs_ram(cpunum, mwa[mwa_ptr].handler, mwa[mwa_ptr]._handler))) {
+                                lowest = mwa[mwa_ptr].start;
+                            }
+                        }
+                    }
+
+                    /* done if nothing found */
+                    if (lowest == Integer.MAX_VALUE) {
+                        break;
+                    }
+                    throw new UnsupportedOperationException("Unimplemented");
+
+                    /*TODO*///			/* now loop until we find the end of this contiguous block of memory */
+                    /*TODO*///			lastend = ~0;
+                    /*TODO*///			end = lowest;
+                    /*TODO*///			while (end != lastend)
+                    /*TODO*///			{
+                    /*TODO*///				lastend = end;
+                    /*TODO*///
+                    /*TODO*///				/* find the end of the contiguous block of memory */
+                    /*TODO*///				for (mra = Machine->drv->cpu[cpunum].memory_read; !IS_MEMPORT_END(mra); mra++)
+                    /*TODO*///					if (!IS_MEMPORT_MARKER(mra))
+                    /*TODO*///						if (mra->start <= end+1 && mra->end > end && needs_ram(cpunum, (void *)mra->handler))
+                    /*TODO*///							end = mra->end;
+                    /*TODO*///
+                    /*TODO*///				for (mwa = Machine->drv->cpu[cpunum].memory_write; !IS_MEMPORT_END(mwa); mwa++)
+                    /*TODO*///					if (!IS_MEMPORT_MARKER(mwa))
+                    /*TODO*///						if (mwa->start <= end+1 && mwa->end > end && (mwa->base || needs_ram(cpunum, (void *)mwa->handler)))
+                    /*TODO*///							end = mwa->end;
+                    /*TODO*///			}
+                }
+                /*TODO*///			/* find the base of the lowest memory region that extends past the end */
+                /*TODO*///			for (mra = Machine->drv->cpu[cpunum].memory_read; !IS_MEMPORT_END(mra); mra++)
+                /*TODO*///				if (!IS_MEMPORT_MARKER(mra))
+                /*TODO*///					if (mra->end >= size && mra->start < lowest && needs_ram(cpunum, (void *)mra->handler))
+                /*TODO*///						lowest = mra->start;
+                /*TODO*///
+                /*TODO*///			for (mwa = Machine->drv->cpu[cpunum].memory_write; !IS_MEMPORT_END(mwa); mwa++)
+                /*TODO*///				if (!IS_MEMPORT_MARKER(mwa))
+                /*TODO*///					if (mwa->end >= size && mwa->start < lowest && (mwa->base || needs_ram(cpunum, (void *)mwa->handler)))
+                /*TODO*///						lowest = mwa->start;
+                /*TODO*///
+                /*TODO*///			/* done if nothing found */
+                /*TODO*///			if (lowest == ~0)
+                /*TODO*///				break;
+                /*TODO*///
+                /*TODO*///			/* now loop until we find the end of this contiguous block of memory */
+                /*TODO*///			lastend = ~0;
+                /*TODO*///			end = lowest;
+                /*TODO*///			while (end != lastend)
+                /*TODO*///			{
+                /*TODO*///				lastend = end;
+                /*TODO*///
+                /*TODO*///				/* find the end of the contiguous block of memory */
+                /*TODO*///				for (mra = Machine->drv->cpu[cpunum].memory_read; !IS_MEMPORT_END(mra); mra++)
+                /*TODO*///					if (!IS_MEMPORT_MARKER(mra))
+                /*TODO*///						if (mra->start <= end+1 && mra->end > end && needs_ram(cpunum, (void *)mra->handler))
+                /*TODO*///							end = mra->end;
+                /*TODO*///
+                /*TODO*///				for (mwa = Machine->drv->cpu[cpunum].memory_write; !IS_MEMPORT_END(mwa); mwa++)
+                /*TODO*///					if (!IS_MEMPORT_MARKER(mwa))
+                /*TODO*///						if (mwa->start <= end+1 && mwa->end > end && (mwa->base || needs_ram(cpunum, (void *)mwa->handler)))
+                /*TODO*///							end = mwa->end;
+                /*TODO*///			}
+                /*TODO*///
+                /*TODO*///			/* fill in the data structure */
+                /*TODO*///			ext->start = lowest;
+                /*TODO*///			ext->end = end;
+                /*TODO*///			ext->region = region;
+                /*TODO*///
+                /*TODO*///			/* allocate memory */
+                /*TODO*///			ext->data = malloc(end+1 - lowest);
+                /*TODO*///			if (!ext->data)
+                /*TODO*///				fatalerror("malloc(%d) failed (lowest: %x - end: %x)\n", end + 1 - lowest, lowest, end);
+                /*TODO*///
+                /*TODO*///			/* reset the memory */
+                /*TODO*///			memset(ext->data, 0, end+1 - lowest);
+                /*TODO*///
+                /*TODO*///			/* prepare for the next loop */
+                /*TODO*///			size = ext->end + 1;
+                /*TODO*///			ext++;
+            }
+        }
+        return 1;
+    }
+
+    /*-------------------------------------------------
+    	populate_memory - populate the memory mapping
+    	tables with entries
+    -------------------------------------------------*/
+    public static int populate_memory() {
+        int cpunum;
+
+        /* loop over CPUs */
+        for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
+            Object mra_obj = Machine.drv.cpu[cpunum].memory_read;
+            Object mwa_obj = Machine.drv.cpu[cpunum].memory_write;
+            if (mra_obj instanceof Memory_ReadAddress[]) {
+                Memory_ReadAddress[] mra = (Memory_ReadAddress[]) mra_obj;
+                int mra_ptr = 0;
+                /* install the read handlers */
+                if (mra != null) {
+                    /* first find the end and check for address bits */
+                    for (mra_ptr = 0; !IS_MEMPORT_END(mra[mra_ptr]); mra_ptr++) {
+                        if (IS_MEMPORT_MARKER(mra[mra_ptr]) && ((mra[mra_ptr].end & MEMPORT_ABITS_MASK) != 0)) {
+                            cpudata[cpunum].mem.mask = 0xffffffff >>> (32 - (mra[mra_ptr].end & MEMPORT_ABITS_VAL_MASK));
+                        }
+                    }
+
+                    /* then work backwards */
+                    for (mra_ptr--; mra_ptr >= 0; mra_ptr--) {
+                        if (!IS_MEMPORT_MARKER(mra[mra_ptr])) {
+                            install_mem_handler(cpudata[cpunum].mem, 0, mra[mra_ptr].start, mra[mra_ptr].end, mra[mra_ptr].handler, (Object) mra[mra_ptr]._handler);
+                        }
+                    }
+                }
+                Memory_WriteAddress[] mwa = (Memory_WriteAddress[]) mwa_obj;
+                int mwa_ptr = 0;
+                /* install the write handlers */
+                if (mwa != null) {
+                    /* first find the end and check for address bits */
+                    for (mwa_ptr = 0; !IS_MEMPORT_END(mwa[mwa_ptr]); mwa_ptr++) {
+                        if (IS_MEMPORT_MARKER(mwa[mwa_ptr]) && (mwa[mwa_ptr].end & MEMPORT_ABITS_MASK) != 0) {
+                            cpudata[cpunum].mem.mask = 0xffffffff >>> (32 - (mwa[mwa_ptr].end & MEMPORT_ABITS_VAL_MASK));
+                        }
+                    }
+
+                    /* then work backwards */
+                    for (mwa_ptr--; mwa_ptr >= 0; mwa_ptr--) {
+                        if (!IS_MEMPORT_MARKER(mwa[mwa_ptr])) {
+                            install_mem_handler(cpudata[cpunum].mem, 1, mwa[mwa_ptr].start, mwa[mwa_ptr].end, mwa[mwa_ptr].handler, mwa[mwa_ptr]._handler);
+                            if (mwa[mwa_ptr].base != null) {
+                                UBytePtr p = memory_find_base(cpunum, mwa[mwa_ptr].start);
+                                mwa[mwa_ptr].base.memory = p.memory;
+                                mwa[mwa_ptr].base.offset = p.offset;
+                            }
+                            if (mwa[mwa_ptr].size != null) {
+                                mwa[mwa_ptr].size[0] = mwa[mwa_ptr].end - mwa[mwa_ptr].start + 1;
+                            }
+                        }
+                    }
+                }
+            } else {
+                //16,32bit handling
+                throw new UnsupportedOperationException("Unsupported");
+            }
+            /*TODO*///		const struct Memory_ReadAddress *mra, *mra_start = Machine->drv->cpu[cpunum].memory_read;
+/*TODO*///		const struct Memory_WriteAddress *mwa, *mwa_start = Machine->drv->cpu[cpunum].memory_write;
 /*TODO*///
 /*TODO*///		/* install the read handlers */
 /*TODO*///		if (mra_start)
@@ -1399,12 +1429,12 @@ public class memory {
 /*TODO*///			/* first find the end and check for address bits */
 /*TODO*///			for (mra = mra_start; !IS_MEMPORT_END(mra); mra++)
 /*TODO*///				if (IS_MEMPORT_MARKER(mra) && (mra->end & MEMPORT_ABITS_MASK))
-/*TODO*///					cpudata[cpu].mem.mask = 0xffffffffUL >> (32 - (mra->end & MEMPORT_ABITS_VAL_MASK));
+/*TODO*///					cpudata[cpunum].mem.mask = 0xffffffffUL >> (32 - (mra->end & MEMPORT_ABITS_VAL_MASK));
 /*TODO*///
 /*TODO*///			/* then work backwards */
 /*TODO*///			for (mra--; mra >= mra_start; mra--)
 /*TODO*///				if (!IS_MEMPORT_MARKER(mra))
-/*TODO*///					install_mem_handler(&cpudata[cpu].mem, 0, mra->start, mra->end, (void *)mra->handler);
+/*TODO*///					install_mem_handler(&cpudata[cpunum].mem, 0, mra->start, mra->end, (void *)mra->handler);
 /*TODO*///		}
 /*TODO*///
 /*TODO*///		/* install the write handlers */
@@ -1413,68 +1443,108 @@ public class memory {
 /*TODO*///			/* first find the end and check for address bits */
 /*TODO*///			for (mwa = mwa_start; !IS_MEMPORT_END(mwa); mwa++)
 /*TODO*///				if (IS_MEMPORT_MARKER(mwa) && (mwa->end & MEMPORT_ABITS_MASK))
-/*TODO*///					cpudata[cpu].mem.mask = 0xffffffffUL >> (32 - (mwa->end & MEMPORT_ABITS_VAL_MASK));
+/*TODO*///					cpudata[cpunum].mem.mask = 0xffffffffUL >> (32 - (mwa->end & MEMPORT_ABITS_VAL_MASK));
 /*TODO*///
 /*TODO*///			/* then work backwards */
 /*TODO*///			for (mwa--; mwa >= mwa_start; mwa--)
 /*TODO*///				if (!IS_MEMPORT_MARKER(mwa))
 /*TODO*///				{
-/*TODO*///					install_mem_handler(&cpudata[cpu].mem, 1, mwa->start, mwa->end, (void *)mwa->handler);
-/*TODO*///					if (mwa->base) *mwa->base = memory_find_base(cpu, mwa->start);
+/*TODO*///					install_mem_handler(&cpudata[cpunum].mem, 1, mwa->start, mwa->end, (void *)mwa->handler);
+/*TODO*///					if (mwa->base) *mwa->base = memory_find_base(cpunum, mwa->start);
 /*TODO*///					if (mwa->size) *mwa->size = mwa->end - mwa->start + 1;
 /*TODO*///				}
 /*TODO*///		}
-/*TODO*///	}
-/*TODO*///	return 1;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	populate_ports - populate the port mapping
-/*TODO*///	tables with entries
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///static int populate_ports(void)
-/*TODO*///{
-/*TODO*///	int cpu;
-/*TODO*///
-/*TODO*///	/* loop over CPUs */
-/*TODO*///	for (cpu = 0; cpu < cpu_gettotalcpu(); cpu++)
-/*TODO*///	{
-/*TODO*///		const struct IO_ReadPort *mra, *mra_start = Machine->drv->cpu[cpu].port_read;
-/*TODO*///		const struct IO_WritePort *mwa, *mwa_start = Machine->drv->cpu[cpu].port_write;
-/*TODO*///
-/*TODO*///		/* install the read handlers */
-/*TODO*///		if (mra_start)
-/*TODO*///		{
-/*TODO*///			/* first find the end and check for address bits */
-/*TODO*///			for (mra = mra_start; !IS_MEMPORT_END(mra); mra++)
-/*TODO*///				if (IS_MEMPORT_MARKER(mra) && (mra->end & MEMPORT_ABITS_MASK))
-/*TODO*///					cpudata[cpu].port.mask = 0xffffffffUL >> (32 - (mra->end & MEMPORT_ABITS_VAL_MASK));
-/*TODO*///
-/*TODO*///			/* then work backwards */
-/*TODO*///			for (mra--; mra != mra_start; mra--)
-/*TODO*///				if (!IS_MEMPORT_MARKER(mra))
-/*TODO*///					install_port_handler(&cpudata[cpu].port, 0, mra->start, mra->end, (void *)mra->handler);
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		/* install the write handlers */
-/*TODO*///		if (mwa_start)
-/*TODO*///		{
-/*TODO*///			/* first find the end and check for address bits */
-/*TODO*///			for (mwa = mwa_start; !IS_MEMPORT_END(mwa); mwa++)
-/*TODO*///				if (IS_MEMPORT_MARKER(mwa) && (mwa->end & MEMPORT_ABITS_MASK))
-/*TODO*///					cpudata[cpu].port.mask = 0xffffffffUL >> (32 - (mwa->end & MEMPORT_ABITS_VAL_MASK));
-/*TODO*///
-/*TODO*///			/* then work backwards */
-/*TODO*///			for (mwa--; mwa != mwa_start; mwa--)
-/*TODO*///				if (!IS_MEMPORT_MARKER(mwa))
-/*TODO*///					install_port_handler(&cpudata[cpu].port, 1, mwa->start, mwa->end, (void *)mwa->handler);
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///	return 1;
-/*TODO*///}
-/*TODO*///
+        }
+        return 1;
+    }
+
+    /*-------------------------------------------------
+    	populate_ports - populate the port mapping
+    	tables with entries
+    -------------------------------------------------*/
+    static int populate_ports() {
+        int cpunum;
+
+        /* loop over CPUs */
+        for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
+            Object mra_obj = Machine.drv.cpu[cpunum].port_read;
+            Object mwa_obj = Machine.drv.cpu[cpunum].port_write;
+            if (mra_obj instanceof IO_ReadPort[]) {
+                IO_ReadPort[] mra = (IO_ReadPort[]) mra_obj;
+                int mra_ptr = 0;
+
+                /* install the read handlers */
+                if (mra != null) {
+                    /* first find the end and check for address bits */
+                    for (mra_ptr = 0; !IS_MEMPORT_END(mra[mra_ptr]); mra_ptr++) {
+                        if (IS_MEMPORT_MARKER(mra[mra_ptr]) && (mra[mra_ptr].end & MEMPORT_ABITS_MASK) != 0) {
+                            cpudata[cpunum].port.mask = 0xffffffff >>> (32 - (mra[mra_ptr].end & MEMPORT_ABITS_VAL_MASK));
+                        }
+                    }
+
+                    /* then work backwards */
+                    for (mra_ptr--; mra_ptr >= 0; mra_ptr--) {
+                        if (!IS_MEMPORT_MARKER(mra[mra_ptr])) {
+                            install_port_handler(cpudata[cpunum].port, 0, mra[mra_ptr].start, mra[mra_ptr].end, mra[mra_ptr].handler, mra[mra_ptr]._handler);
+                        }
+                    }
+                }
+                IO_WritePort[] mwa = (IO_WritePort[]) mwa_obj;
+                int mwa_ptr = 0;
+                /* install the write handlers */
+                if (mwa != null) {
+                    /* first find the end and check for address bits */
+                    for (mwa_ptr = 0; !IS_MEMPORT_END(mwa[mwa_ptr]); mwa_ptr++) {
+                        if (IS_MEMPORT_MARKER(mwa[mwa_ptr]) && (mwa[mwa_ptr].end & MEMPORT_ABITS_MASK) != 0) {
+                            cpudata[cpunum].port.mask = 0xffffffff >>> (32 - (mwa[mwa_ptr].end & MEMPORT_ABITS_VAL_MASK));
+                        }
+                    }
+
+                    /* then work backwards */
+                    for (mwa_ptr--; mwa_ptr >= 0; mwa_ptr--) {
+                        if (!IS_MEMPORT_MARKER(mwa[mwa_ptr])) {
+                            install_port_handler(cpudata[cpunum].port, 1, mwa[mwa_ptr].start, mwa[mwa_ptr].end, mwa[mwa_ptr].handler, mwa[mwa_ptr]._handler);
+                        }
+                    }
+                }
+            } else {
+                //16bit -32 bit support
+                throw new UnsupportedOperationException("Unsupported");
+            }
+            /*TODO*///
+            /*TODO*///		/* install the read handlers */
+            /*TODO*///		if (mra_start)
+            /*TODO*///		{
+            /*TODO*///			/* first find the end and check for address bits */
+            /*TODO*///			for (mra = mra_start; !IS_MEMPORT_END(mra); mra++)
+            /*TODO*///				if (IS_MEMPORT_MARKER(mra) && (mra->end & MEMPORT_ABITS_MASK))
+            /*TODO*///					cpudata[cpunum].port.mask = 0xffffffffUL >> (32 - (mra->end & MEMPORT_ABITS_VAL_MASK));
+            /*TODO*///
+            /*TODO*///			/* then work backwards */
+            /*TODO*///			for (mra--; mra != mra_start; mra--)
+            /*TODO*///				if (!IS_MEMPORT_MARKER(mra))
+            /*TODO*///					install_port_handler(&cpudata[cpunum].port, 0, mra->start, mra->end, (void *)mra->handler);
+            /*TODO*///		}
+            /*TODO*///
+            /*TODO*///		/* install the write handlers */
+            /*TODO*///		if (mwa_start)
+            /*TODO*///		{
+            /*TODO*///			/* first find the end and check for address bits */
+            /*TODO*///			for (mwa = mwa_start; !IS_MEMPORT_END(mwa); mwa++)
+            /*TODO*///				if (IS_MEMPORT_MARKER(mwa) && (mwa->end & MEMPORT_ABITS_MASK))
+            /*TODO*///					cpudata[cpunum].port.mask = 0xffffffffUL >> (32 - (mwa->end & MEMPORT_ABITS_VAL_MASK));
+            /*TODO*///
+            /*TODO*///			/* then work backwards */
+            /*TODO*///			for (mwa--; mwa != mwa_start; mwa--)
+            /*TODO*///				if (!IS_MEMPORT_MARKER(mwa))
+            /*TODO*///					install_port_handler(&cpudata[cpunum].port, 1, mwa->start, mwa->end, (void *)mwa->handler);
+            /*TODO*///		}
+        }
+        return 1;
+    }
+
+    /*TODO*///
+    /*TODO*///
 /*TODO*///
 /*TODO*////*-------------------------------------------------
 /*TODO*///	READBYTE - generic byte-sized read handler
@@ -2165,7 +2235,11 @@ public class memory {
 /*TODO*///	get address bits from a read handler
 /*TODO*///-------------------------------------------------*/
 /*TODO*///
-/*TODO*///int address_bits_of_cpu(int cpu)
+    public static int address_bits_of_cpu(int cputype) {
+        /*HACK*/
+        return 16;//It should be ok for Z80 . well readone later
+    }
+    /*TODO*///int address_bits_of_cpu(int cpu)
 /*TODO*///{
 /*TODO*///	read8_handler handler = cpuintf[Machine->drv->cpu[cpu].cpu_type & ~CPU_FLAGS_MASK].memory_read;
 /*TODO*///	int	idx;
@@ -2574,277 +2648,117 @@ public class memory {
 /*TODO*///
 /*TODO*///	return 1;
 /*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	debugging
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///#ifdef MEM_DUMP
-/*TODO*///
-/*TODO*///static void dump_map(FILE *file, const struct memport_data *memport, const struct table_data *table)
-/*TODO*///{
-/*TODO*///	static const char *strings[] =
-/*TODO*///	{
-/*TODO*///		"invalid",		"bank 1",		"bank 2",		"bank 3",
-/*TODO*///		"bank 4",		"bank 5",		"bank 6",		"bank 7",
-/*TODO*///		"bank 8",		"bank 9",		"bank 10",		"bank 11",
-/*TODO*///		"bank 12",		"bank 13",		"bank 14",		"bank 15",
-/*TODO*///		"bank 16",		"bank 17",		"bank 18",		"bank 19",
-/*TODO*///		"bank 20",		"bank 21",		"bank 22",		"bank 23",
-/*TODO*///		"bank 24",		"RAM",			"ROM",			"RAMROM",
-/*TODO*///		"nop",			"unused 1",		"unused 2",		"unmapped"
-/*TODO*///	};
-/*TODO*///
-/*TODO*///	int minbits = DATABITS_TO_SHIFT(memport->dbits);
-/*TODO*///	int l1bits = LEVEL1_BITS(memport->ebits);
-/*TODO*///	int l2bits = LEVEL2_BITS(memport->ebits);
-/*TODO*///	int l1count = 1 << l1bits;
-/*TODO*///	int l2count = 1 << l2bits;
-/*TODO*///	int i, j;
-/*TODO*///
-/*TODO*///	fprintf(file, "  Address bits = %d\n", memport->abits);
-/*TODO*///	fprintf(file, "     Data bits = %d\n", memport->dbits);
-/*TODO*///	fprintf(file, "Effective bits = %d\n", memport->ebits);
-/*TODO*///	fprintf(file, "       L1 bits = %d\n", l1bits);
-/*TODO*///	fprintf(file, "       L2 bits = %d\n", l2bits);
-/*TODO*///	fprintf(file, "  Address mask = %X\n", memport->mask);
-/*TODO*///	fprintf(file, "\n");
-/*TODO*///
-/*TODO*///	for (i = 0; i < l1count; i++)
-/*TODO*///	{
-/*TODO*///		UINT8 entry = table->table[i];
-/*TODO*///		if (entry != STATIC_UNMAP)
-/*TODO*///		{
-/*TODO*///			fprintf(file, "%05X  %08X-%08X    = %02X: ", i,
-/*TODO*///					i << (l2bits + minbits),
-/*TODO*///					((i+1) << (l2bits + minbits)) - 1, entry);
-/*TODO*///			if (entry < STATIC_COUNT)
-/*TODO*///				fprintf(file, "%s [offset=%08X]\n", strings[entry], table->handlers[entry].offset);
-/*TODO*///			else if (entry < SUBTABLE_BASE)
-/*TODO*///				fprintf(file, "handler(%08X) [offset=%08X]\n", (UINT32)table->handlers[entry].handler, table->handlers[entry].offset);
-/*TODO*///			else
-/*TODO*///			{
-/*TODO*///				fprintf(file, "subtable %d\n", entry & SUBTABLE_MASK);
-/*TODO*///				entry &= SUBTABLE_MASK;
-/*TODO*///
-/*TODO*///				for (j = 0; j < l2count; j++)
-/*TODO*///				{
-/*TODO*///					UINT8 entry2 = table->table[(1 << l1bits) + (entry << l2bits) + j];
-/*TODO*///					if (entry2 != STATIC_UNMAP)
-/*TODO*///					{
-/*TODO*///						fprintf(file, "   %05X  %08X-%08X = %02X: ", j,
-/*TODO*///								(i << (l2bits + minbits)) | (j << minbits),
-/*TODO*///								((i << (l2bits + minbits)) | ((j+1) << minbits)) - 1, entry2);
-/*TODO*///						if (entry2 < STATIC_COUNT)
-/*TODO*///							fprintf(file, "%s [offset=%08X]\n", strings[entry2], table->handlers[entry2].offset);
-/*TODO*///						else if (entry2 < SUBTABLE_BASE)
-/*TODO*///							fprintf(file, "handler(%08X) [offset=%08X]\n", (UINT32)table->handlers[entry2].handler, table->handlers[entry2].offset);
-/*TODO*///						else
-/*TODO*///							fprintf(file, "subtable %d???????????\n", entry2 & SUBTABLE_MASK);
-/*TODO*///					}
-/*TODO*///				}
-/*TODO*///			}
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///}
-/*TODO*///
-/*TODO*///static void mem_dump(void)
-/*TODO*///{
-/*TODO*///	FILE *file = fopen("memdump.log", "w");
-/*TODO*///	int cpu;
-/*TODO*///
-/*TODO*///	/* skip if we can't open the file */
-/*TODO*///	if (!file)
-/*TODO*///		return;
-/*TODO*///
-/*TODO*///	/* loop over CPUs */
-/*TODO*///	for (cpu = 0; cpu < cpu_gettotalcpu(); cpu++)
-/*TODO*///	{
-/*TODO*///		/* memory handlers */
-/*TODO*///		if (cpudata[cpu].mem.abits)
-/*TODO*///		{
-/*TODO*///			fprintf(file, "\n\n"
-/*TODO*///			              "===============================\n"
-/*TODO*///			              "CPU %d read memory handler dump\n"
-/*TODO*///			              "===============================\n", cpu);
-/*TODO*///			dump_map(file, &cpudata[cpu].mem, &cpudata[cpu].mem.read);
-/*TODO*///
-/*TODO*///			fprintf(file, "\n\n"
-/*TODO*///			              "================================\n"
-/*TODO*///			              "CPU %d write memory handler dump\n"
-/*TODO*///			              "================================\n", cpu);
-/*TODO*///			dump_map(file, &cpudata[cpu].mem, &cpudata[cpu].mem.write);
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		/* port handlers */
-/*TODO*///		if (cpudata[cpu].port.abits)
-/*TODO*///		{
-/*TODO*///			fprintf(file, "\n\n"
-/*TODO*///			              "=============================\n"
-/*TODO*///			              "CPU %d read port handler dump\n"
-/*TODO*///			              "=============================\n", cpu);
-/*TODO*///			dump_map(file, &cpudata[cpu].port, &cpudata[cpu].port.read);
-/*TODO*///
-/*TODO*///			fprintf(file, "\n\n"
-/*TODO*///			              "==============================\n"
-/*TODO*///			              "CPU %d write port handler dump\n"
-/*TODO*///			              "==============================\n", cpu);
-/*TODO*///			dump_map(file, &cpudata[cpu].port, &cpudata[cpu].port.write);
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///	fclose(file);
-/*TODO*///}
-/*TODO*///#endif
-/*TODO*///
-/*TODO*///#ifdef CHECK_MASKS
-/*TODO*///static void *track_buffer[65536];
-/*TODO*///static int track_count;
-/*TODO*///static int static_count;
-/*TODO*///static int track_entry(void *entry, void *handler)
-/*TODO*///{
-/*TODO*///	int i;
-/*TODO*///	for (i = 0; i < track_count; i++)
-/*TODO*///		if (track_buffer[i] == entry)
-/*TODO*///			return 1;
-/*TODO*///	track_buffer[track_count++] = entry;
-/*TODO*///	if (HANDLER_IS_STATIC(handler))
-/*TODO*///		static_count++;
-/*TODO*///	return 0;
-/*TODO*///}
-/*TODO*///
-/*TODO*///static void verify_masks(void)
-/*TODO*///{
-/*TODO*///	int i, cpu;
-/*TODO*///
-/*TODO*///	for (i = 0;drivers[i];i++)
-/*TODO*///	{
-/*TODO*///		const struct RomModule *romp = drivers[i]->rom;
-/*TODO*///		if (romp)
-/*TODO*///		{
-/*TODO*///			for (cpu = 0;cpu < MAX_CPU;cpu++)
-/*TODO*///			{
-/*TODO*///				if (drivers[i]->drv->cpu[cpu].cpu_type)
-/*TODO*///				{
-/*TODO*///					const struct Memory_ReadAddress *mra = drivers[i]->drv->cpu[cpu].memory_read;
-/*TODO*///					const struct Memory_WriteAddress *mwa = drivers[i]->drv->cpu[cpu].memory_write;
-/*TODO*///					const struct IO_ReadPort *iora = drivers[i]->drv->cpu[cpu].port_read;
-/*TODO*///					const struct IO_WritePort *iowa = drivers[i]->drv->cpu[cpu].port_write;
-/*TODO*///
-/*TODO*///					if (mra)
-/*TODO*///						for ( ; !IS_MEMPORT_END(mra); mra++)
-/*TODO*///							if (!IS_MEMPORT_MARKER(mra))
-/*TODO*///							{
-/*TODO*///								size_t size = mra->end - mra->start + 1;
-/*TODO*///								if (size)
-/*TODO*///								{
-/*TODO*///									while (!(size & 1)) size >>= 1;
-/*TODO*///									if (size != 1)
-/*TODO*///									{
-/*TODO*///										if (!track_entry((void *)mra, (void *)mra->handler))
-/*TODO*///											printf("%s: %s cpu %d readmem inval size  { %08X, %08X }\n", drivers[i]->source_file, drivers[i]->name, cpu, mra->start, mra->end);
-/*TODO*///									}
-/*TODO*///								}
-/*TODO*///								size--;
-/*TODO*///								if ((mra->start & size) != 0)
-/*TODO*///								{
-/*TODO*///									if (!track_entry((void *)mra, (void *)mra->handler))
-/*TODO*///										printf("%s: %s cpu %d readmem inval start { %08X, %08X }\n", drivers[i]->source_file, drivers[i]->name, cpu, mra->start, mra->end);
-/*TODO*///								}
-/*TODO*///								if ((mra->end & size) != size)
-/*TODO*///								{
-/*TODO*///									if (!track_entry((void *)mra, (void *)mra->handler))
-/*TODO*///										printf("%s: %s cpu %d readmem inval end  { %08X, %08X }\n", drivers[i]->source_file, drivers[i]->name, cpu, mra->start, mra->end);
-/*TODO*///								}
-/*TODO*///							}
-/*TODO*///
-/*TODO*///					if (mwa)
-/*TODO*///						for ( ; !IS_MEMPORT_END(mwa); mwa++)
-/*TODO*///							if (!IS_MEMPORT_MARKER(mwa))
-/*TODO*///							{
-/*TODO*///								size_t size = mwa->end - mwa->start + 1;
-/*TODO*///								if (size)
-/*TODO*///								{
-/*TODO*///									while (!(size & 1)) size >>= 1;
-/*TODO*///									if (size != 1)
-/*TODO*///									{
-/*TODO*///										if (!track_entry((void *)mwa, (void *)mwa->handler))
-/*TODO*///											printf("%s: %s cpu %d writemem inval size  { %08X, %08X }\n", drivers[i]->source_file, drivers[i]->name, cpu, mwa->start, mwa->end);
-/*TODO*///									}
-/*TODO*///								}
-/*TODO*///								size--;
-/*TODO*///								if ((mwa->start & size) != 0)
-/*TODO*///								{
-/*TODO*///									if (!track_entry((void *)mwa, (void *)mwa->handler))
-/*TODO*///										printf("%s: %s cpu %d writemem inval start { %08X, %08X }\n", drivers[i]->source_file, drivers[i]->name, cpu, mwa->start, mwa->end);
-/*TODO*///								}
-/*TODO*///								if ((mwa->end & size) != size)
-/*TODO*///								{
-/*TODO*///									if (!track_entry((void *)mwa, (void *)mwa->handler))
-/*TODO*///										printf("%s: %s cpu %d writemem inval end  { %08X, %08X }\n", drivers[i]->source_file, drivers[i]->name, cpu, mwa->start, mwa->end);
-/*TODO*///								}
-/*TODO*///							}
-/*TODO*///
-/*TODO*///					if (iora)
-/*TODO*///						for ( ; !IS_MEMPORT_END(iora); iora++)
-/*TODO*///							if (!IS_MEMPORT_MARKER(iora))
-/*TODO*///							{
-/*TODO*///								size_t size = iora->end - iora->start + 1;
-/*TODO*///								if (size)
-/*TODO*///								{
-/*TODO*///									while (!(size & 1)) size >>= 1;
-/*TODO*///									if (size != 1)
-/*TODO*///									{
-/*TODO*///										if (!track_entry((void *)iora, (void *)iora->handler))
-/*TODO*///											printf("%s: %s cpu %d readmem inval size  { %08X, %08X }\n", drivers[i]->source_file, drivers[i]->name, cpu, iora->start, iora->end);
-/*TODO*///									}
-/*TODO*///								}
-/*TODO*///								size--;
-/*TODO*///								if ((iora->start & size) != 0)
-/*TODO*///								{
-/*TODO*///									if (!track_entry((void *)iora, (void *)iora->handler))
-/*TODO*///										printf("%s: %s cpu %d readmem inval start { %08X, %08X }\n", drivers[i]->source_file, drivers[i]->name, cpu, iora->start, iora->end);
-/*TODO*///								}
-/*TODO*///								if ((iora->end & size) != size)
-/*TODO*///								{
-/*TODO*///									if (!track_entry((void *)iora, (void *)iora->handler))
-/*TODO*///										printf("%s: %s cpu %d readmem inval end  { %08X, %08X }\n", drivers[i]->source_file, drivers[i]->name, cpu, iora->start, iora->end);
-/*TODO*///								}
-/*TODO*///							}
-/*TODO*///
-/*TODO*///					if (iowa)
-/*TODO*///						for ( ; !IS_MEMPORT_END(iowa); iowa++)
-/*TODO*///							if (!IS_MEMPORT_MARKER(iowa))
-/*TODO*///							{
-/*TODO*///								size_t size = iowa->end - iowa->start + 1;
-/*TODO*///								if (size)
-/*TODO*///								{
-/*TODO*///									while (!(size & 1)) size >>= 1;
-/*TODO*///									if (size != 1)
-/*TODO*///									{
-/*TODO*///										if (!track_entry((void *)iowa, (void *)iowa->handler))
-/*TODO*///											printf("%s: %s cpu %d writemem inval size  { %08X, %08X }\n", drivers[i]->source_file, drivers[i]->name, cpu, iowa->start, iowa->end);
-/*TODO*///									}
-/*TODO*///								}
-/*TODO*///								size--;
-/*TODO*///								if ((iowa->start & size) != 0)
-/*TODO*///								{
-/*TODO*///									if (!track_entry((void *)iowa, (void *)iowa->handler))
-/*TODO*///										printf("%s: %s cpu %d writemem inval start { %08X, %08X }\n", drivers[i]->source_file, drivers[i]->name, cpu, iowa->start, iowa->end);
-/*TODO*///								}
-/*TODO*///								if ((iowa->end & size) != size)
-/*TODO*///								{
-/*TODO*///									if (!track_entry((void *)iowa, (void *)iowa->handler))
-/*TODO*///										printf("%s: %s cpu %d writemem inval end  { %08X, %08X }\n", drivers[i]->source_file, drivers[i]->name, cpu, iowa->start, iowa->end);
-/*TODO*///								}
-/*TODO*///							}
-/*TODO*///				}
-/*TODO*///			}
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///	printf("Total busted entries = %d\n", track_count);
-/*TODO*///	printf("Busted entries that are static = %d\n", static_count);
-/*TODO*///}
-/*TODO*///#endif
-/*TODO*///
+
+    /*-------------------------------------------------
+    	debugging
+    -------------------------------------------------*/
+    static void dump_map(FILE file, memport_data memport, table_data table) {
+        String strings[]
+                = {
+                    "invalid", "bank 1", "bank 2", "bank 3",
+                    "bank 4", "bank 5", "bank 6", "bank 7",
+                    "bank 8", "bank 9", "bank 10", "bank 11",
+                    "bank 12", "bank 13", "bank 14", "bank 15",
+                    "bank 16", "bank 17", "bank 18", "bank 19",
+                    "bank 20", "bank 21", "bank 22", "bank 23",
+                    "bank 24", "RAM", "ROM", "RAMROM",
+                    "nop", "unused 1", "unused 2", "unmapped"
+                };
+
+        int minbits = DATABITS_TO_SHIFT(memport.dbits);
+        int l1bits = LEVEL1_BITS(memport.ebits);
+        int l2bits = LEVEL2_BITS(memport.ebits);
+        int l1count = 1 << l1bits;
+        int l2count = 1 << l2bits;
+        int i, j;
+
+        fprintf(file, "  Address bits = %d\n", memport.abits);
+        fprintf(file, "     Data bits = %d\n", memport.dbits);
+        fprintf(file, "Effective bits = %d\n", memport.ebits);
+        fprintf(file, "       L1 bits = %d\n", l1bits);
+        fprintf(file, "       L2 bits = %d\n", l2bits);
+        fprintf(file, "  Address mask = %X\n", memport.mask);
+        fprintf(file, "\n");
+
+        for (i = 0; i < l1count; i++) {
+            char entry = table.table.read(i);
+            if (entry != STATIC_UNMAP) {
+                fprintf(file, "%05X  %08X-%08X    = %02X: ", i,
+                        i << (l2bits + minbits),
+                        ((i + 1) << (l2bits + minbits)) - 1, (int) entry);
+                if (entry < STATIC_COUNT) {
+                    fprintf(file, "%s [offset=%08X]\n", strings[entry], table.handlers[entry].offset);
+                } else if (entry < SUBTABLE_BASE) {
+                    fprintf(file, "handler(%08X) [offset=%08X]\n", table.handlers[entry].handler.hashCode(), table.handlers[entry].offset);
+                } else {
+                    fprintf(file, "subtable %d\n", entry & SUBTABLE_MASK);
+                    entry &= SUBTABLE_MASK;
+
+                    for (j = 0; j < l2count; j++) {
+                        char/*UINT8*/ entry2 = table.table.read((1 << l1bits) + (entry << l2bits) + j);
+                        if (entry2 != STATIC_UNMAP) {
+                            fprintf(file, "   %05X  %08X-%08X = %02X: ", j,
+                                    (i << (l2bits + minbits)) | (j << minbits),
+                                    ((i << (l2bits + minbits)) | ((j + 1) << minbits)) - 1, (int) entry2);
+                            if (entry2 < STATIC_COUNT) {
+                                fprintf(file, "%s [offset=%08X]\n", strings[entry2], table.handlers[entry2].offset);
+                            } else if (entry2 < SUBTABLE_BASE) {
+                                fprintf(file, "handler(%08X) [offset=%08X]\n", table.handlers[entry2].handler.hashCode(), table.handlers[entry2].offset);
+                            } else {
+                                fprintf(file, "subtable %d???????????\n", entry2 & SUBTABLE_MASK);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void mem_dump() {
+        FILE file = fopen("memdump.log", "w");
+        int cpunum;
+
+        /* skip if we can't open the file */
+        if (file
+                == null) {
+            return;
+
+        }
+
+        /* loop over CPUs */
+        for (cpunum
+                = 0; cpunum
+                < cpu_gettotalcpu(); cpunum++) {
+            /* memory handlers */
+            if (cpudata[cpunum].mem.abits != 0) {
+                fprintf(file, "\n\n"
+                        + "===============================\n"
+                        + "CPU %d read memory handler dump\n"
+                        + "===============================\n", cpunum);
+                dump_map(file, cpudata[cpunum].mem, cpudata[cpunum].mem.read);
+
+                fprintf(file, "\n\n"
+                        + "================================\n"
+                        + "CPU %d write memory handler dump\n"
+                        + "================================\n", cpunum);
+                dump_map(file, cpudata[cpunum].mem, cpudata[cpunum].mem.write);
+            }
+
+            /* port handlers */
+            if (cpudata[cpunum].port.abits != 0) {
+                fprintf(file, "\n\n"
+                        + "=============================\n"
+                        + "CPU %d read port handler dump\n"
+                        + "=============================\n", cpunum);
+                dump_map(file, cpudata[cpunum].port, cpudata[cpunum].port.read);
+
+                fprintf(file, "\n\n"
+                        + "==============================\n"
+                        + "CPU %d write port handler dump\n"
+                        + "==============================\n", cpunum);
+                dump_map(file, cpudata[cpunum].port, cpudata[cpunum].port.write);
+            }
+        }
+        fclose(file);
+    }
 }
