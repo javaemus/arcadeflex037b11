@@ -15,7 +15,7 @@ import static mame.commonH.*;
 import static mame056.common.*;
 import static old2.mame.timer.*;
 import static old2.mame.timerH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 
 public class exctsccr {
 

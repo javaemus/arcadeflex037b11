@@ -3,10 +3,9 @@
  * using automatic conversion tool v0.01
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
-import static old.mame.cpuintrf.interrupt;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
@@ -20,7 +19,7 @@ import static cpu.z80.z80H.Z80_NMI_INT;
 import static sound.dacH.*;
 import static vidhrdw.bking2.*;
 import static vidhrdw.generic.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static old.arcadeflex.osdepend.*;

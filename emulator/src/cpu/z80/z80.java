@@ -13,9 +13,8 @@
 package cpu.z80;
 
 import static cpu.z80.z80H.*;
-import static mame.cpuintrfH.*;
-import static old.mame.cpuintrf.*;
-import static mame.driverH.*;
+import static mame037b11.cpuintrfH.*;
+import static mame037b11.cpuintrf.*;
 import static old2.mame.memoryH.*;
 import static old2.mame.memory.*;
 import static old.arcadeflex.osdepend.*;
@@ -37,9 +36,7 @@ public class z80 extends cpu_interface {
         endianess = CPU_IS_LE;
         align_unit = 1;
         max_inst_len = 4;
-        abits1 = ABITS1_16;
-        abits2 = ABITS2_16;
-        abitsmin = ABITS_MIN_16;
+        databus_width=16;
         icount = z80_ICount;
         pgm_memory_base=0;
         //intialize interfaces

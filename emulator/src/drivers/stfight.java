@@ -3,7 +3,7 @@
  * using automatic conversion tool v0.01
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;

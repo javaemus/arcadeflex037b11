@@ -10,13 +10,13 @@ import javax.xml.bind.Marshaller;
 import static mame.driver.drivers;
 import mame.driverH;
 import static mame.driverH.*;
-import mame.driverH.MachineCPU;
+import static mame037b11.cpuintrfH.*;
 import mame.driverH.MachineDriver;
 import static mame.sndintrf.sound_name;
 import static mame.sndintrf.sound_num;
 import mame.sndintrfH;
 import mame.sndintrfH.MachineSound;
-import static old.mame.cpuintrf.cputype_name;
+import static mame037b11.cpuintrf.*;
 
 /**
  *

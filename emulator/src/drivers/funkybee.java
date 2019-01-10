@@ -4,7 +4,7 @@
  *
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.driverH.*;
 import static old2.mame.memoryH.*;
@@ -14,9 +14,7 @@ import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame.sndintrfH.*;
 import static old.mame.common.*;
-import static old.mame.cpuintrf.interrupt;
-import static old.mame.cpuintrf.watchdog_reset_r;
-import static old.mame.cpuintrf.watchdog_reset_w;
+import static mame037b11.cpuintrf.*;
 import static old.mame.inptportH.*;
 import static vidhrdw.funkybee.*;
 import static sound.ay8910.*;

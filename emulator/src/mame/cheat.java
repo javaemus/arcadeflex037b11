@@ -16,7 +16,7 @@ import static old.mame.inptportH.*;
 import static old.mame.input.*;
 import static old.mame.usrintrf.*;
 import static old2.mame.mame.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static old.mame.inputH.*;
 
 public class cheat {

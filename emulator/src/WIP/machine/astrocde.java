@@ -8,7 +8,7 @@ import arcadeflex.fucPtr.*;
 import arcadeflex.libc.ptr.*;
 import static mame.commonH.*;
 import static mame056.common.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static old.mame.inptport.*;
 import static old.arcadeflex.osdepend.*;
 

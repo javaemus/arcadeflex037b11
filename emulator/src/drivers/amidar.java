@@ -3,7 +3,7 @@
  * using automatic conversion tool v0.01
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 //arcadeflex imports
 import static arcadeflex.fucPtr.*;
 //mame imports
@@ -27,7 +27,7 @@ import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old.sound.mixerH.*;
 import static old2.mame.memoryH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 
 public class amidar {
 

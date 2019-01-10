@@ -3,12 +3,12 @@
  * using automatic conversion tool v0.01
  */
 package WIP.drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static cpu.z80.z80H.Z80_NMI_INT;
 import static mame.commonH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
@@ -18,7 +18,6 @@ import static mame.sndintrfH.*;
 import static WIP.vidhrdw.system1.*;
 import static WIP.vidhrdw.system1H.*;
 import static vidhrdw.generic.*;
-import static old.mame.common.*;
 import static mame.sndintrf.*;
 import static WIP.machine.segacrpt.*;
 import static mame056.sound.sn76496.*;

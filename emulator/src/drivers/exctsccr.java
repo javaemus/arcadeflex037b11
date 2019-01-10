@@ -3,10 +3,10 @@
  * 02/09/2017 - Added working exctsccr driver
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;

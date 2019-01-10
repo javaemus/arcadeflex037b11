@@ -4,7 +4,7 @@
  */
 package cpu;
 
-import static mame.cpuintrfH.*;
+import static mame037b11.cpuintrfH.*;
 import static mame.driverH.*;
 import static old2.mame.memoryH.*;
 
@@ -18,14 +18,12 @@ public class Dummy_cpu extends cpu_interface {
         no_int = 0;
         irq_int = -1;
         nmi_int = -1;
+        databus_width=16;
         address_shift = 0;
         address_bits = 16;
         endianess = CPU_IS_LE;
         align_unit = 1;
         max_inst_len = 1;
-        abits1 = ABITS1_16;
-        abits2 = ABITS2_16;
-        abitsmin = ABITS_MIN_16;
         pgm_memory_base = 0;
 
         //intialize interfaces

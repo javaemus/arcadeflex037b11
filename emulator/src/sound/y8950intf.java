@@ -16,7 +16,7 @@ import static arcadeflex.fucPtr.*;
 import common.ptr.ShortPtr;
 import static sound.fmoplH.*;
 import static sound.fmopl.*;
-import static mame.cpuintrfH.*;
+import static mame037b11.cpuintrfH.*;
 import static old2.mame.timer.*;
 import static mame056.common.*;
 

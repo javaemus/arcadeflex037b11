@@ -17,7 +17,7 @@ import static old.arcadeflex.osdepend.*;
 import static old2.mame.mame.*;
 import static vidhrdw.generic.*;
 import static old2.mame.memoryH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static old.mame.drawgfx.drawgfx;
 import static old.mame.drawgfx.fillbitmap;
 import static mame056.common.*;

@@ -4,7 +4,7 @@
  */
 package drivers;
 //arcadeflex imports
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 //cpu imports
@@ -28,7 +28,7 @@ import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old.mame.inputH.*;
 import static old2.mame.memoryH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static old.arcadeflex.osdepend.*;
 
 public class marvins {

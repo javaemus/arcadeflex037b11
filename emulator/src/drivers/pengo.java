@@ -2,13 +2,13 @@
  * ported to 0.37b7
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static WIP.machine.segacrpt.*;
 import static mame056.common.*;
 import static mame.commonH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;

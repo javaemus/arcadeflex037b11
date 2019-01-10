@@ -1,3 +1,7 @@
+10/01/2018
+==========
+-Finished cpuintrf for 0.37b11. Still not compileable due to changes need to memory
+
 09/01/2018
 ==========
 -More to memory (so far it's equal with the mame0.56 memory)

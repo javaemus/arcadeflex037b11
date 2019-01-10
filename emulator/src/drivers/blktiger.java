@@ -3,13 +3,13 @@
  * using automatic conversion tool v0.01
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static old.arcadeflex.osdepend.logerror;
 import static cpu.z80.z80H.*;
 import static mame.commonH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
@@ -23,7 +23,6 @@ import static vidhrdw.blktiger.*;
 import static vidhrdw.generic.*;
 import static mame.palette.*;
 import static mame056.common.*;
-import static mame.cpuintrfH.*;
 import static old.mame.common.coin_lockout_w;
 
 public class blktiger {

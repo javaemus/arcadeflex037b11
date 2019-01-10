@@ -7,7 +7,7 @@ package machine;
 import static arcadeflex.fucPtr.*;
 import static old2.mame.memoryH.*;
 import static mame.commonH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame056.common.*;
 import static arcadeflex.libc.ptr.*;
 import static old2.mame.memory.*;

@@ -10,15 +10,16 @@ import static common.libc.cstdio.*;
 import static common.libc.cstring.*;
 
 import static mame056.commonH.*;
-import static mame.cpuintrfH.*;
 import static mame.driverH.*;
 import static mame.osdependH.*;
+import static mame037b11.cpuintrfH.CPU_IS_LE;
 import static old.arcadeflex.fileio.*;
 import old.arcadeflex.libc_old.FILE;
 import static old.arcadeflex.libc_old.*;
 import static old2.mame.mame.*;
 import static old2.mame.mameH.MAX_MEMORY_REGIONS;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
+import static mame037b11.cpuintrfH.CPU_FLAGS_MASK;
 
 public class common {
 

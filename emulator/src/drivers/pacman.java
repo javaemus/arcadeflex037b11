@@ -3,7 +3,7 @@
  * using automatic conversion tool v0.01
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 //arcadeflex imports
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
@@ -27,8 +27,7 @@ import static sound.namcoH.*;
 import static vidhrdw.generic.*;
 import static vidhrdw.pengo.*;
 import static mame056.common.*;
-import static old.mame.cpuintrf.interrupt;
-import static old.mame.cpuintrf.interrupt_enable_w;
+import static mame037b11.cpuintrf.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old.mame.inputH.*;
@@ -37,8 +36,7 @@ import static old2.mame.memoryH.*;
 import static old2.mame.mame.*;
 import static old.arcadeflex.libc_old.*;
 import static old.mame.common.*;
-import static old.mame.cpuintrf.*;
-import static mame.cpuintrfH.*;
+
 
 public class pacman {
 

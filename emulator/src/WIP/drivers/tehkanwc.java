@@ -4,6 +4,8 @@
  */
 package WIP.drivers;
 
+import static mame037b11.cpuintrf.*;
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
@@ -11,7 +13,6 @@ import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
-import static old.mame.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.generic.*;
 import static mame.sndintrf.*;
@@ -21,7 +22,6 @@ import static old.mame.common.*;
 import static sound.MSM5205.*;
 import static sound.MSM5205H.*;
 import static cpu.z80.z80H.Z80_NMI_INT;
-import static mame.cpuintrfH.*;
 import static mame.palette.*;
 import static old2.mame.timer.*;
 import static sound.ay8910.*;

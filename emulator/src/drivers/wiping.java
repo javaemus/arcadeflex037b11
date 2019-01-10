@@ -2,7 +2,7 @@
  *  ported to 0.37b7
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static mame.commonH.*;
@@ -11,11 +11,10 @@ import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.generic.*;
 import static vidhrdw.wiping.*;
-import static mame.cpuintrfH.*;
 import static sndhrdw.wiping.*;
 
 public class wiping {

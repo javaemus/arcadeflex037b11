@@ -3,12 +3,11 @@
  * using automatic conversion tool v0.01
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static machine.docastle.*;
 import static mame.commonH.*;
-import static old.mame.cpuintrf.interrupt;
-import static old.mame.cpuintrf.watchdog_reset_w;
+import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;

@@ -11,7 +11,7 @@ import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
 import static mame.osdependH.osd_bitmap;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static vidhrdw.generic.*;
 import static common.libc.cstring.*;
 import static common.libc.expressions.*;

@@ -3,7 +3,7 @@
  * using automatic conversion tool v0.01
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static vidhrdw.magix.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
@@ -11,7 +11,7 @@ import static mame.commonH.*;
 import static old2.mame.memoryH.*;
 import static mame.sndintrfH.*;
 import static mame.sndintrf.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
@@ -20,8 +20,6 @@ import static sound._3812intf.*;
 import static sound._3812intfH.*;
 import static sound.MSM5205.*;
 import static sound.MSM5205H.*;
-import static old.mame.common.*;
-import static mame.cpuintrfH.*;
 import static old.arcadeflex.osdepend.*;
 import static mame056.common.*;
 public class magix {

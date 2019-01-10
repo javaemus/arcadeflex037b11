@@ -14,7 +14,7 @@ import static arcadeflex.libc.cstring.*;
 import static common.libc.expressions.*;
 import static arcadeflex.libc.ptr.*;
 import static old2.mame.common.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static sound.dac.*;
 import static mame.commonH.*;
 

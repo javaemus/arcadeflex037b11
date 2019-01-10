@@ -3,7 +3,7 @@
  * ported to v0.36
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.driverH.*;
 import static old2.mame.memoryH.*;
@@ -12,7 +12,6 @@ import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame.sndintrfH.*;
-import static mame.cpuintrfH.*;
 import static old.mame.common.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memory.*;
@@ -24,7 +23,7 @@ import static vidhrdw.kchamp.*;
 import static sound.dacH.*;
 import static sound.dac.*;
 import static cpu.z80.z80H.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static sound.MSM5205H.*;
 import static sound.MSM5205.*;
 import static mame056.common.*;

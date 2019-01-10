@@ -5,7 +5,7 @@
 package sndhrdw;
 
 import static old2.mame.memoryH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame.sndintrf.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;

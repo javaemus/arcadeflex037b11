@@ -3,11 +3,11 @@
  * using automatic conversion tool v0.01
  */
 package WIP.machine;
-
+import static mame037b11.cpuintrfH.*;
 import static WIP.machine.z80fmlyH.*;
 import static arcadeflex.fucPtr.*;
 import static old.arcadeflex.osdepend.*;
-import static mame.cpuintrfH.*;
+import static mame037b11.cpuintrfH.*;
 import static old2.mame.timer.*;
 
 public class z80fmly {

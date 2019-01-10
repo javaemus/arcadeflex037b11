@@ -4,7 +4,7 @@
  */
 package WIP.drivers;
 //arcadeflex imports
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 //machine imports
 import static WIP.machine.slapfght.*;
@@ -27,7 +27,7 @@ import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old.sound.mixerH.*;
 import static old2.mame.memoryH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static old.mame.inputH.KEYCODE_F1;
 import static old.mame.inputH.KEYCODE_F2;
 

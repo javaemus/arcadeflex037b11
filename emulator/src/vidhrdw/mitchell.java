@@ -17,7 +17,7 @@ import static common.libc.cstring.*;
 import static mame.paletteH.*;
 import static old.arcadeflex.osdepend.*;
 import static old.mame.common.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static sound.okim6295H.*;
 import static sound.okim6295.*;
 

@@ -16,13 +16,14 @@ along with Arcadeflex.  If not, see <http://www.gnu.org/licenses/>.
  */
 package old.arcadeflex;
 
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.util.gamesxml.gamesXmlParser.writeGamesXml;
 import old2.arcadeflex.settings;
 import static old.arcadeflex.libc_old.*;
 import static old.mame.common.printromlist;
 import static old.mame.common.showdisclaimer;
 import static mame056.commonH.*;
-import static old.mame.cpuintrf.cputype_name;
+import static mame037b11.cpuintrf.*;
 import static mame.driver.drivers;
 import static mame.driverH.*;
 import static mame.sndintrf.sound_name;

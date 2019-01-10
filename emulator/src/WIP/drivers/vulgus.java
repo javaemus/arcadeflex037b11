@@ -3,7 +3,7 @@
  * using automatic conversion tool v0.01
  */
 package WIP.drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
@@ -12,7 +12,7 @@ import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
 import static mame.sndintrf.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static mame.palette.*;
 import static sound.ay8910.*;

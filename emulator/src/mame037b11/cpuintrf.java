@@ -6,6 +6,10 @@ package mame037b11;
 import java.util.ArrayList;
 
 import static arcadeflex.fucPtr.InterruptPtr;
+import arcadeflex.fucPtr.ReadHandlerPtr;
+import arcadeflex.fucPtr.WriteHandlerPtr;
+import cpu.Dummy_cpu;
+import cpu.z80.z80;
 import static mame.driverH.MAX_CPU;
 import static mame.driverH.VIDEO_UPDATE_AFTER_VBLANK;
 import static old.arcadeflex.osdepend.logerror;
@@ -165,8 +169,11 @@ public class cpuintrf {
     /*TODO*///#define SETPC(index,val)				((*cpu[index].intf->set_pc)(val))
 /*TODO*///#define GETSP(index)					((*cpu[index].intf->get_sp)())
 /*TODO*///#define SETSP(index,val)				((*cpu[index].intf->set_sp)(val))
-/*TODO*///#define GETREG(index,regnum)			((*cpu[index].intf->get_reg)(regnum))
-/*TODO*///#define SETREG(index,regnum,value)		((*cpu[index].intf->set_reg)(regnum,value))
+    static int GETREG(int index, int regnum) {
+        return cpu.get(index).intf.get_reg(regnum);
+    }
+
+    /*TODO*///#define SETREG(index,regnum,value)		((*cpu[index].intf->set_reg)(regnum,value))
     static void SETNMILINE(int index, int state) {
         cpu.get(index).intf.set_nmi_line(state);
     }
@@ -309,7 +316,9 @@ public class cpuintrf {
 /*TODO*///
     /* warning the ordering must match the one of the enum in driver.h! */
     public static cpu_interface cpuintf[]
-            = { /*TODO*///	CPU0(DUMMY,    Dummy,	 1,  0,1.00,0,				   -1,			   -1,			   8, 16,	  0,16,LE,1, 1	),
+            = {
+                new Dummy_cpu(),
+                new z80(), /*TODO*///	CPU0(DUMMY,    Dummy,	 1,  0,1.00,0,				   -1,			   -1,			   8, 16,	  0,16,LE,1, 1	),
             /*TODO*///#if (HAS_Z80)
             /*TODO*///	CPU1(Z80,	   z80, 	 1,255,1.00,Z80_IGNORE_INT,    Z80_IRQ_INT,    Z80_NMI_INT,    8, 16,	  0,16,LE,1, 4	),
             /*TODO*///#endif
@@ -727,24 +736,26 @@ public class cpuintrf {
 /*TODO*///  than 1 second without resetting the watchdog.
 /*TODO*///
 /*TODO*///***************************************************************************/
-/*TODO*///
-/*TODO*///static void watchdog_reset(void)
-/*TODO*///{
-/*TODO*///	if (watchdog_counter == -1) logerror("watchdog armed\n");
-/*TODO*///	watchdog_counter = 2*Machine->drv->frames_per_second;
-/*TODO*///}
-/*TODO*///
-/*TODO*///WRITE_HANDLER( watchdog_reset_w )
-/*TODO*///{
-/*TODO*///	watchdog_reset();
-/*TODO*///}
-/*TODO*///
-/*TODO*///READ_HANDLER( watchdog_reset_r )
-/*TODO*///{
-/*TODO*///	watchdog_reset();
-/*TODO*///	return 0;
-/*TODO*///}
-/*TODO*///
+    static void watchdog_reset() {
+        if (watchdog_counter == -1) {
+            logerror("watchdog armed\n");
+        }
+        watchdog_counter = (int) (2 * Machine.drv.frames_per_second);
+    }
+    public static WriteHandlerPtr watchdog_reset_w = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            watchdog_reset();
+        }
+    };
+
+    public static ReadHandlerPtr watchdog_reset_r = new ReadHandlerPtr() {
+        public int handler(int offset) {
+            watchdog_reset();
+            return 0;
+        }
+    };
+
+    /*TODO*///
 /*TODO*///WRITE16_HANDLER( watchdog_reset16_w )
 /*TODO*///{
 /*TODO*///	watchdog_reset();
@@ -773,29 +784,29 @@ public class cpuintrf {
         have_to_reset = 1;
     }
 
+    /**
+     * *************************************************************************
+     *
+     * Use this function to reset a specified CPU immediately
+     *
+     **************************************************************************
+     */
+    public static void cpu_set_reset_line(int cpunum, int state) {
+        timer_set(TIME_NOW, (cpunum & 7) | (state << 3), cpu_resetcallback);
+    }
+
+    /**
+     * *************************************************************************
+     *
+     * Use this function to control the HALT line on a CPU
+     *
+     **************************************************************************
+     */
+    public static void cpu_set_halt_line(int cpunum, int state) {
+        timer_set(TIME_NOW, (cpunum & 7) | (state << 3), cpu_haltcallback);
+    }
+
     /*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///
-/*TODO*///  Use this function to reset a specified CPU immediately
-/*TODO*///
-/*TODO*///***************************************************************************/
-/*TODO*///void cpu_set_reset_line(int cpunum,int state)
-/*TODO*///{
-/*TODO*///	timer_set(TIME_NOW, (cpunum & 7) | (state << 3), cpu_resetcallback);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///
-/*TODO*///  Use this function to control the HALT line on a CPU
-/*TODO*///
-/*TODO*///***************************************************************************/
-/*TODO*///void cpu_set_halt_line(int cpunum,int state)
-/*TODO*///{
-/*TODO*///	timer_set(TIME_NOW, (cpunum & 7) | (state << 3), cpu_haltcallback);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
 /*TODO*////***************************************************************************
 /*TODO*///
 /*TODO*///  Use this function to install a callback for IRQ acknowledge
@@ -823,14 +834,12 @@ public class cpuintrf {
                 SUSPEND_REASON_HALT | SUSPEND_REASON_RESET | SUSPEND_REASON_DISABLE) == 0 ? 1 : 0;
     }
 
+    public static int cpu_getactivecpu() {
+        int cpunum = (activecpu < 0) ? 0 : activecpu;
+        return cpunum;
+    }
+
     /*TODO*///
-/*TODO*///
-/*TODO*///int cpu_getactivecpu(void)
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	return cpunum;
-/*TODO*///}
-/*TODO*///
 /*TODO*///void cpu_setactivecpu(int cpunum)
 /*TODO*///{
 /*TODO*///	activecpu = cpunum;
@@ -839,15 +848,11 @@ public class cpuintrf {
         return totalcpu;
     }
 
-    /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*///offs_t cpu_get_pc(void)
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	return GETPC(cpunum);
-/*TODO*///}
-/*TODO*///
+    public static int cpu_get_pc() {
+        int cpunum = (activecpu < 0) ? 0 : activecpu;
+        return GETPC(cpunum);
+    }
+
     public static int/*offs_t*/ cpu_get_pc_byte() {
         int cpunum = (activecpu < 0) ? 0 : activecpu;
         int shift = cpuintf[CPU_TYPE(cpunum)].address_shift;
@@ -875,12 +880,12 @@ public class cpuintrf {
 /*TODO*///}
 /*TODO*///
 /*TODO*////* these are available externally, for the timer system */
-/*TODO*///int cycles_currently_ran(void)
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	return cycles_running - ICOUNT(cpunum);
-/*TODO*///}
-/*TODO*///
+    public static int cycles_currently_ran() {
+        int cpunum = (activecpu < 0) ? 0 : activecpu;
+        return cycles_running - ICOUNT(cpunum);
+    }
+
+    /*TODO*///
 /*TODO*///int cycles_left_to_run(void)
 /*TODO*///{
 /*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
@@ -906,12 +911,12 @@ public class cpuintrf {
 /*TODO*///  of wraparound).
 /*TODO*///
 /*TODO*///***************************************************************************/
-/*TODO*///int cpu_gettotalcycles(void)
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	return cpu[cpunum].totalcycles + cycles_currently_ran();
-/*TODO*///}
-/*TODO*///
+    public static int cpu_gettotalcycles() {
+        int cpunum = (activecpu < 0) ? 0 : activecpu;
+        return cpu.get(cpunum).totalcycles + cycles_currently_ran();
+    }
+
+    /*TODO*///
 /*TODO*///
 /*TODO*///
 /*TODO*////***************************************************************************
@@ -954,19 +959,23 @@ public class cpuintrf {
 /*TODO*///}
 /*TODO*///
 /*TODO*///
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///
-/*TODO*///  Scales a given value by the ratio of fcount / fperiod
-/*TODO*///
-/*TODO*///***************************************************************************/
-/*TODO*///int cpu_scalebyfcount(int value)
-/*TODO*///{
-/*TODO*///	int result = (int)((double)value * timer_timeelapsed(refresh_timer) * refresh_period_inv);
-/*TODO*///	if (value >= 0) return (result < value) ? result : value;
-/*TODO*///	else return (result > value) ? result : value;
-/*TODO*///}
-/*TODO*///
+    /**
+     * *************************************************************************
+     *
+     * Scales a given value by the ratio of fcount / fperiod
+     *
+     **************************************************************************
+     */
+    public static int cpu_scalebyfcount(int value) {
+        int result = (int) ((double) value * timer_timeelapsed(refresh_timer) * refresh_period_inv);
+        if (value >= 0) {
+            return (result < value) ? result : value;
+        } else {
+            return (result > value) ? result : value;
+        }
+    }
+
+    /*TODO*///
 /*TODO*///
 /*TODO*///
 /*TODO*////***************************************************************************
@@ -1055,12 +1064,11 @@ public class cpuintrf {
 /*TODO*///  that the interrupt handler will be called once.
 /*TODO*///
 /*TODO*///***************************************************************************/
-/*TODO*///int cpu_getiloops(void)
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	return cpu[cpunum].iloops;
-/*TODO*///}
-/*TODO*///
+    public static int cpu_getiloops() {
+        int cpunum = (activecpu < 0) ? 0 : activecpu;
+        return cpu.get(cpunum).iloops;
+    }
+    /*TODO*///
     /**
      * *************************************************************************
      *
@@ -1238,112 +1246,115 @@ public class cpuintrf {
 /*TODO*///WRITE_HANDLER( cpu_5_irq_line_vector_w ) { cpu_irq_line_vector_w(5, offset, data); }
 /*TODO*///WRITE_HANDLER( cpu_6_irq_line_vector_w ) { cpu_irq_line_vector_w(6, offset, data); }
 /*TODO*///WRITE_HANDLER( cpu_7_irq_line_vector_w ) { cpu_irq_line_vector_w(7, offset, data); }
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///
-/*TODO*///  Use this function to set the state the NMI line of a CPU
-/*TODO*///
-/*TODO*///***************************************************************************/
-/*TODO*///void cpu_set_nmi_line(int cpunum, int state)
-/*TODO*///{
-/*TODO*///	/* don't trigger interrupts on suspended CPUs */
-/*TODO*///	if (cpu_getstatus(cpunum) == 0) return;
-/*TODO*///
-/*TODO*///	LOG(("cpu_set_nmi_line(%d,%d)\n",cpunum,state));
-/*TODO*///	timer_set(TIME_NOW, (cpunum & 7) | (state << 3), cpu_manualnmicallback);
-/*TODO*///}
-/*TODO*///
+    /**
+     * *************************************************************************
+     *
+     * Use this function to set the state the NMI line of a CPU
+     *
+     **************************************************************************
+     */
+    public static void cpu_set_nmi_line(int cpunum, int state) {
+        /* don't trigger interrupts on suspended CPUs */
+        if (cpu_getstatus(cpunum) == 0) {
+            return;
+        }
+
+        logerror("cpu_set_nmi_line(%d,%d)\n", cpunum, state);
+        timer_set(TIME_NOW, (cpunum & 7) | (state << 3), cpu_manualnmicallback);
+    }
+
+    /*TODO*///
 /*TODO*////***************************************************************************
 /*TODO*///
 /*TODO*///  Use this function to set the state of an IRQ line of a CPU
 /*TODO*///  The meaning of irqline varies between the different CPU types
 /*TODO*///
 /*TODO*///***************************************************************************/
-/*TODO*///void cpu_set_irq_line(int cpunum, int irqline, int state)
-/*TODO*///{
-/*TODO*///	/* don't trigger interrupts on suspended CPUs */
-/*TODO*///	if (cpu_getstatus(cpunum) == 0) return;
-/*TODO*///
-/*TODO*///	LOG(("cpu_set_irq_line(%d,%d,%d)\n",cpunum,irqline,state));
-/*TODO*///	timer_set(TIME_NOW, (irqline & 7) | ((cpunum & 7) << 3) | (state << 6), cpu_manualirqcallback);
-/*TODO*///}
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///
-/*TODO*///  Use this function to cause an interrupt immediately (don't have to wait
-/*TODO*///  until the next call to the interrupt handler)
-/*TODO*///
-/*TODO*///***************************************************************************/
-/*TODO*///void cpu_cause_interrupt(int cpunum,int type)
-/*TODO*///{
-/*TODO*///	/* don't trigger interrupts on suspended CPUs */
-/*TODO*///	if (cpu_getstatus(cpunum) == 0) return;
-/*TODO*///
-/*TODO*///	timer_set(TIME_NOW, (cpunum & 7) | (type << 3), cpu_manualintcallback);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*///void cpu_clear_pending_interrupts(int cpunum)
-/*TODO*///{
-/*TODO*///	timer_set(TIME_NOW, cpunum, cpu_clearintcallback);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*///WRITE_HANDLER( interrupt_enable_w )
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	interrupt_enable[cpunum] = data;
-/*TODO*///
-/*TODO*///	/* make sure there are no queued interrupts */
-/*TODO*///	if (data == 0) cpu_clear_pending_interrupts(cpunum);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*///WRITE_HANDLER( interrupt_vector_w )
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	if (interrupt_vector[cpunum] != data)
-/*TODO*///	{
-/*TODO*///		LOG(("CPU#%d interrupt_vector_w $%02x\n", cpunum, data));
-/*TODO*///		interrupt_vector[cpunum] = data;
-/*TODO*///
-/*TODO*///		/* make sure there are no queued interrupts */
-/*TODO*///		cpu_clear_pending_interrupts(cpunum);
-/*TODO*///	}
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*///int interrupt(void)
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	int val;
-/*TODO*///
-/*TODO*///	if (interrupt_enable[cpunum] == 0)
-/*TODO*///		return INT_TYPE_NONE(cpunum);
-/*TODO*///
-/*TODO*///	val = INT_TYPE_IRQ(cpunum);
-/*TODO*///	if (val == -1000)
-/*TODO*///		val = interrupt_vector[cpunum];
-/*TODO*///
-/*TODO*///	return val;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*///int nmi_interrupt(void)
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///
-/*TODO*///	if (interrupt_enable[cpunum] == 0)
-/*TODO*///		return INT_TYPE_NONE(cpunum);
-/*TODO*///
-/*TODO*///	return INT_TYPE_NMI(cpunum);
-/*TODO*///}
-/*TODO*///
+    public static void cpu_set_irq_line(int cpunum, int irqline, int state) {
+        /* don't trigger interrupts on suspended CPUs */
+        if (cpu_getstatus(cpunum) == 0) {
+            return;
+        }
+
+        logerror("cpu_set_irq_line(%d,%d,%d)\n", cpunum, irqline, state);
+        timer_set(TIME_NOW, (irqline & 7) | ((cpunum & 7) << 3) | (state << 6), cpu_manualirqcallback);
+    }
+
+    /**
+     * *************************************************************************
+     *
+     * Use this function to cause an interrupt immediately (don't have to wait
+     * until the next call to the interrupt handler)
+     *
+     **************************************************************************
+     */
+    public static void cpu_cause_interrupt(int cpunum, int type) {
+        /* don't trigger interrupts on suspended CPUs */
+        if (cpu_getstatus(cpunum) == 0) {
+            return;
+        }
+
+        timer_set(TIME_NOW, (cpunum & 7) | (type << 3), cpu_manualintcallback);
+    }
+
+    public static void cpu_clear_pending_interrupts(int cpunum) {
+        timer_set(TIME_NOW, cpunum, cpu_clearintcallback);
+    }
+    public static WriteHandlerPtr interrupt_enable_w = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            {
+                int cpunum = (activecpu < 0) ? 0 : activecpu;
+                interrupt_enable[cpunum] = data;
+
+                /* make sure there are no queued interrupts */
+                if (data == 0) {
+                    cpu_clear_pending_interrupts(cpunum);
+                }
+            }
+        }
+    };
+    public static WriteHandlerPtr interrupt_vector_w = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            int cpunum = (activecpu < 0) ? 0 : activecpu;
+            if (interrupt_vector[cpunum] != data) {
+                logerror("CPU#%d interrupt_vector_w $%02x\n", cpunum, data);
+                interrupt_vector[cpunum] = data;
+
+                /* make sure there are no queued interrupts */
+                cpu_clear_pending_interrupts(cpunum);
+            }
+        }
+    };
+    public static InterruptPtr interrupt = new InterruptPtr() {
+        public int handler() {
+            int cpunum = (activecpu < 0) ? 0 : activecpu;
+            int val;
+
+            if (interrupt_enable[cpunum] == 0) {
+                return INT_TYPE_NONE(cpunum);
+            }
+
+            val = INT_TYPE_IRQ(cpunum);
+            if (val == -1000) {
+                val = interrupt_vector[cpunum];
+            }
+
+            return val;
+        }
+    };
+
+    public static InterruptPtr nmi_interrupt = new InterruptPtr() {
+        public int handler() {
+            int cpunum = (activecpu < 0) ? 0 : activecpu;
+
+            if (interrupt_enable[cpunum] == 0) {
+                return INT_TYPE_NONE(cpunum);
+            }
+
+            return INT_TYPE_NMI(cpunum);
+        }
+    };
+    /*TODO*///
 /*TODO*///
 /*TODO*///
 /*TODO*///#if (HAS_M68000 || HAS_M68010 || HAS_M68020 || HAS_M68EC020)
@@ -1392,86 +1403,75 @@ public class cpuintrf {
 /*TODO*///#endif
 /*TODO*///
 /*TODO*///
-/*TODO*///int ignore_interrupt(void)
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	return INT_TYPE_NONE(cpunum);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////***************************************************************************
+    public static InterruptPtr ignore_interrupt = new InterruptPtr() {
+        public int handler() {
+            int cpunum = (activecpu < 0) ? 0 : activecpu;
+            return INT_TYPE_NONE(cpunum);
+        }
+    };
+
+    /*TODO*////***************************************************************************
 /*TODO*///
 /*TODO*///  CPU timing and synchronization functions.
 /*TODO*///
 /*TODO*///***************************************************************************/
 /*TODO*///
-/*TODO*////* generate a trigger */
-/*TODO*///void cpu_trigger(int trigger)
-/*TODO*///{
-/*TODO*///	timer_trigger(trigger);
-/*TODO*///}
-/*TODO*///
-/*TODO*////* generate a trigger after a specific period of time */
-/*TODO*///void cpu_triggertime(double duration, int trigger)
-/*TODO*///{
-/*TODO*///	timer_set(duration, trigger, cpu_trigger);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////* burn CPU cycles until a timer trigger */
-/*TODO*///void cpu_spinuntil_trigger(int trigger)
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	timer_suspendcpu_trigger(cpunum, trigger);
-/*TODO*///}
-/*TODO*///
-/*TODO*////* burn CPU cycles until the next interrupt */
-/*TODO*///void cpu_spinuntil_int(void)
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	cpu_spinuntil_trigger(TRIGGER_INT + cpunum);
-/*TODO*///}
-/*TODO*///
-/*TODO*////* burn CPU cycles until our timeslice is up */
-/*TODO*///void cpu_spin(void)
-/*TODO*///{
-/*TODO*///	cpu_spinuntil_trigger(TRIGGER_TIMESLICE);
-/*TODO*///}
-/*TODO*///
-/*TODO*////* burn CPU cycles for a specific period of time */
-/*TODO*///void cpu_spinuntil_time(double duration)
-/*TODO*///{
-/*TODO*///	static int timetrig = 0;
-/*TODO*///
-/*TODO*///	cpu_spinuntil_trigger(TRIGGER_SUSPENDTIME + timetrig);
-/*TODO*///	cpu_triggertime(duration, TRIGGER_SUSPENDTIME + timetrig);
-/*TODO*///	timetrig = (timetrig + 1) & 255;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////* yield our timeslice for a specific period of time */
-/*TODO*///void cpu_yielduntil_trigger(int trigger)
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	timer_holdcpu_trigger(cpunum, trigger);
-/*TODO*///}
-/*TODO*///
-/*TODO*////* yield our timeslice until the next interrupt */
-/*TODO*///void cpu_yielduntil_int(void)
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	cpu_yielduntil_trigger(TRIGGER_INT + cpunum);
-/*TODO*///}
-/*TODO*///
-/*TODO*////* yield our current timeslice */
-/*TODO*///void cpu_yield(void)
-/*TODO*///{
-/*TODO*///	cpu_yielduntil_trigger(TRIGGER_TIMESLICE);
-/*TODO*///}
-/*TODO*///
+    public static timer_callback cpu_trigger = new timer_callback() {
+        public void handler(int trigger) {
+            timer_trigger(trigger);
+        }
+    };
+
+    /* generate a trigger after a specific period of time */
+    public static void cpu_triggertime(double duration, int trigger) {
+        timer_set(duration, trigger, cpu_trigger);
+    }
+
+    /* burn CPU cycles until a timer trigger */
+    public static void cpu_spinuntil_trigger(int trigger) {
+        int cpunum = (activecpu < 0) ? 0 : activecpu;
+        timer_suspendcpu_trigger(cpunum, trigger);
+    }
+
+    /* burn CPU cycles until the next interrupt */
+    public static void cpu_spinuntil_int() {
+        int cpunum = (activecpu < 0) ? 0 : activecpu;
+        cpu_spinuntil_trigger(TRIGGER_INT + cpunum);
+    }
+
+    /* burn CPU cycles until our timeslice is up */
+    public static void cpu_spin() {
+        cpu_spinuntil_trigger(TRIGGER_TIMESLICE);
+    }
+
+    /* burn CPU cycles for a specific period of time */
+    static int timetrig = 0;
+
+    public static void cpu_spinuntil_time(double duration) {
+
+        cpu_spinuntil_trigger(TRIGGER_SUSPENDTIME + timetrig);
+        cpu_triggertime(duration, TRIGGER_SUSPENDTIME + timetrig);
+        timetrig = (timetrig + 1) & 255;
+    }
+
+    /* yield our timeslice for a specific period of time */
+    public static void cpu_yielduntil_trigger(int trigger) {
+        int cpunum = (activecpu < 0) ? 0 : activecpu;
+        timer_holdcpu_trigger(cpunum, trigger);
+    }
+
+    /* yield our timeslice until the next interrupt */
+    public static void cpu_yielduntil_int() {
+        int cpunum = (activecpu < 0) ? 0 : activecpu;
+        cpu_yielduntil_trigger(TRIGGER_INT + cpunum);
+    }
+
+    /* yield our current timeslice */
+    public static void cpu_yield() {
+        cpu_yielduntil_trigger(TRIGGER_TIMESLICE);
+    }
+
+    /*TODO*///
 /*TODO*////* yield our timeslice for a specific period of time */
 /*TODO*///void cpu_yielduntil_time(double duration)
 /*TODO*///{
@@ -1490,10 +1490,9 @@ public class cpuintrf {
 /*TODO*///}
 /*TODO*///
 /*TODO*///
-/*TODO*///int cpu_getcurrentframe(void)
-/*TODO*///{
-/*TODO*///	return current_frame;
-/*TODO*///}
+    public static int cpu_getcurrentframe() {
+        return current_frame;
+    }
     /**
      * ************************************************************************
      * <p>
@@ -2024,50 +2023,61 @@ public class cpuintrf {
         /* trigger already generated by cpu_manualirqcallback or cpu_manualnmicallback */
     }
 
-    /*TODO*///static void cpu_clear_interrupts(int cpunum)
-/*TODO*///{
-/*TODO*///	int oldactive = activecpu;
-/*TODO*///	int i;
-/*TODO*///
-/*TODO*///	/* swap to the CPU's context */
-/*TODO*///	activecpu = cpunum;
-/*TODO*///	memory_set_context(activecpu);
-/*TODO*///	if (cpu[activecpu].save_context) SETCONTEXT(activecpu, cpu[activecpu].context);
-/*TODO*///
-/*TODO*///	/* clear NMI line */
-/*TODO*///	SETNMILINE(activecpu,CLEAR_LINE);
-/*TODO*///
-/*TODO*///	/* clear all IRQ lines */
-/*TODO*///	for (i = 0; i < cpu[activecpu].intf->num_irqs; i++)
-/*TODO*///		SETIRQLINE(activecpu,i,CLEAR_LINE);
-/*TODO*///
-/*TODO*///	/* update the CPU's context */
-/*TODO*///	if (cpu[activecpu].save_context) GETCONTEXT(activecpu, cpu[activecpu].context);
-/*TODO*///	activecpu = oldactive;
-/*TODO*///	if (activecpu >= 0) memory_set_context(activecpu);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///static void cpu_reset_cpu(int cpunum)
-/*TODO*///{
-/*TODO*///	int oldactive = activecpu;
-/*TODO*///
-/*TODO*///	/* swap to the CPU's context */
-/*TODO*///	activecpu = cpunum;
-/*TODO*///	memory_set_context(activecpu);
-/*TODO*///	if (cpu[activecpu].save_context) SETCONTEXT(activecpu, cpu[activecpu].context);
-/*TODO*///
-/*TODO*///	/* reset the CPU */
-/*TODO*///	RESET(cpunum);
-/*TODO*///
-/*TODO*///	/* Set the irq callback for the cpu */
-/*TODO*///	SETIRQCALLBACK(cpunum,cpu_irq_callbacks[cpunum]);
-/*TODO*///
-/*TODO*///	/* update the CPU's context */
-/*TODO*///	if (cpu[activecpu].save_context) GETCONTEXT(activecpu, cpu[activecpu].context);
-/*TODO*///	activecpu = oldactive;
-/*TODO*///	if (activecpu >= 0) memory_set_context(activecpu);
-/*TODO*///}
+    static void cpu_clear_interrupts(int cpunum) {
+        int oldactive = activecpu;
+        int i;
+
+        /* swap to the CPU's context */
+        activecpu = cpunum;
+        memory_set_context(activecpu);
+        if (cpu.get(activecpu).save_context != 0) {
+            SETCONTEXT(activecpu, cpu.get(activecpu).context);
+        }
+
+        /* clear NMI line */
+        SETNMILINE(activecpu, CLEAR_LINE);
+
+        /* clear all IRQ lines */
+        for (i = 0; i < cpu.get(activecpu).intf.num_irqs; i++) {
+            SETIRQLINE(activecpu, i, CLEAR_LINE);
+        }
+
+        /* update the CPU's context */
+        if (cpu.get(activecpu).save_context != 0) {
+            cpu.get(activecpu).context = GETCONTEXT(activecpu);
+        }
+        activecpu = oldactive;
+        if (activecpu >= 0) {
+            memory_set_context(activecpu);
+        }
+    }
+
+    static void cpu_reset_cpu(int cpunum) {
+        int oldactive = activecpu;
+
+        /* swap to the CPU's context */
+        activecpu = cpunum;
+        memory_set_context(activecpu);
+        if (cpu.get(activecpu).save_context != 0) {
+            SETCONTEXT(activecpu, cpu.get(activecpu).context);
+        }
+
+        /* reset the CPU */
+        RESET(cpunum);
+
+        /* Set the irq callback for the cpu */
+        SETIRQCALLBACK(cpunum, cpu_irq_callbacks[cpunum]);
+
+        /* update the CPU's context */
+        if (cpu.get(activecpu).save_context != 0) {
+            cpu.get(activecpu).context = GETCONTEXT(activecpu);
+        }
+        activecpu = oldactive;
+        if (activecpu >= 0) {
+            memory_set_context(activecpu);
+        }
+    }
+
     /**
      * ************************************************************************
      * <p>
@@ -2098,59 +2108,60 @@ public class cpuintrf {
         }
     };
 
-    /*TODO*///static void cpu_manualintcallback(int param)
-/*TODO*///{
-/*TODO*///	int intnum = param >> 3;
-/*TODO*///	int cpunum = param & 7;
-/*TODO*///
-/*TODO*///	/* generate the interrupt */
-/*TODO*///	cpu_generate_interrupt(cpunum, 0, intnum);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///static void cpu_clearintcallback(int param)
-/*TODO*///{
-/*TODO*///	/* clear the interrupts */
-/*TODO*///	cpu_clear_interrupts(param);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///static void cpu_resetcallback(int param)
-/*TODO*///{
-/*TODO*///	int state = param >> 3;
-/*TODO*///	int cpunum = param & 7;
-/*TODO*///
-/*TODO*///	/* reset the CPU */
-/*TODO*///	if (state == PULSE_LINE)
-/*TODO*///		cpu_reset_cpu(cpunum);
-/*TODO*///	else if (state == ASSERT_LINE)
-/*TODO*///	{
-/*TODO*////* ASG - do we need this?		cpu_reset_cpu(cpunum);*/
-/*TODO*///		timer_suspendcpu(cpunum, 1, SUSPEND_REASON_RESET);	/* halt cpu */
-/*TODO*///	}
-/*TODO*///	else if (state == CLEAR_LINE)
-/*TODO*///	{
-/*TODO*///		if (timer_iscpususpended(cpunum, SUSPEND_REASON_RESET))
-/*TODO*///			cpu_reset_cpu(cpunum);
-/*TODO*///		timer_suspendcpu(cpunum, 0, SUSPEND_REASON_RESET);	/* restart cpu */
-/*TODO*///	}
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///static void cpu_haltcallback(int param)
-/*TODO*///{
-/*TODO*///	int state = param >> 3;
-/*TODO*///	int cpunum = param & 7;
-/*TODO*///
-/*TODO*///	/* reset the CPU */
-/*TODO*///	if (state == ASSERT_LINE)
-/*TODO*///		timer_suspendcpu(cpunum, 1, SUSPEND_REASON_HALT);	/* halt cpu */
-/*TODO*///	else if (state == CLEAR_LINE)
-/*TODO*///		timer_suspendcpu(cpunum, 0, SUSPEND_REASON_HALT);	/* restart cpu */
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
+    public static timer_callback cpu_manualintcallback = new timer_callback() {
+        public void handler(int param) {
+            int intnum = param >> 3;
+            int cpunum = param & 7;
+
+            /* generate the interrupt */
+            cpu_generate_interrupt(cpunum, null, intnum);
+        }
+    };
+    public static timer_callback cpu_clearintcallback = new timer_callback() {
+        public void handler(int param) {
+            /* clear the interrupts */
+            cpu_clear_interrupts(param);
+        }
+    };
+
+    public static timer_callback cpu_resetcallback = new timer_callback() {
+        public void handler(int param) {
+            int state = param >> 3;
+            int cpunum = param & 7;
+
+            /* reset the CPU */
+            if (state == PULSE_LINE) {
+                cpu_reset_cpu(cpunum);
+            } else if (state == ASSERT_LINE) {
+                /* ASG - do we need this?		cpu_reset_cpu(cpunum);*/
+                timer_suspendcpu(cpunum, 1, SUSPEND_REASON_RESET);
+                /* halt cpu */
+            } else if (state == CLEAR_LINE) {
+                if (timer_iscpususpended(cpunum, SUSPEND_REASON_RESET) != 0) {
+                    cpu_reset_cpu(cpunum);
+                }
+                timer_suspendcpu(cpunum, 0, SUSPEND_REASON_RESET);
+                /* restart cpu */
+            }
+        }
+    };
+
+    public static timer_callback cpu_haltcallback = new timer_callback() {
+        public void handler(int param) {
+            int state = param >> 3;
+            int cpunum = param & 7;
+
+            /* reset the CPU */
+            if (state == ASSERT_LINE) {
+                timer_suspendcpu(cpunum, 1, SUSPEND_REASON_HALT);
+                /* halt cpu */
+            } else if (state == CLEAR_LINE) {
+                timer_suspendcpu(cpunum, 0, SUSPEND_REASON_HALT);
+                /* restart cpu */
+            }
+        }
+    };
+
     /**
      * *************************************************************************
      * <p>
@@ -2484,13 +2495,12 @@ public class cpuintrf {
 /*TODO*///  Retrieve or set the value of a specific register of the active CPU
 /*TODO*///***************************************************************************/
 /*TODO*///
-/*TODO*///unsigned cpu_get_reg(int regnum)
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	return GETREG(cpunum,regnum);
-/*TODO*///}
-/*TODO*///
-/*TODO*///void cpu_set_reg(int regnum, unsigned val)
+    public static int/*unsigned*/ cpu_get_reg(int regnum) {
+        int cpunum = (activecpu < 0) ? 0 : activecpu;
+        return GETREG(cpunum, regnum);
+    }
+
+    /*TODO*///void cpu_set_reg(int regnum, unsigned val)
 /*TODO*///{
 /*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
 /*TODO*///	SETREG(cpunum,regnum,val);
@@ -2712,17 +2722,20 @@ public class cpuintrf {
 /*TODO*///	return 0;
 /*TODO*///}
 /*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///  Returns the address bit mask for a specific CPU type
-/*TODO*///***************************************************************************/
-/*TODO*///unsigned cputype_address_mask(int cpu_type)
-/*TODO*///{
-/*TODO*///	cpu_type &= ~CPU_FLAGS_MASK;
-/*TODO*///	if( cpu_type < CPU_COUNT )
-/*TODO*///		return 0xffffffffUL >> (32 - cpuintf[cpu_type].address_bits);
-/*TODO*///	return 0;
-/*TODO*///}
-/*TODO*///
+    /**
+     * *************************************************************************
+     * Returns the address bit mask for a specific CPU type
+     * *************************************************************************
+     */
+    public static int cputype_address_mask(int cpu_type) {
+        cpu_type &= ~CPU_FLAGS_MASK;
+        if (cpu_type < CPU_COUNT) {
+            return 0xffffffff >>> (32 - cpuintf[cpu_type].address_bits);
+        }
+        return 0;
+    }
+
+    /*TODO*///
 /*TODO*////***************************************************************************
 /*TODO*///  Returns the address shift factor for a specific CPU type
 /*TODO*///***************************************************************************/
@@ -2733,17 +2746,19 @@ public class cpuintrf {
 /*TODO*///		return cpuintf[cpu_type].address_shift;
 /*TODO*///	return 0;
 /*TODO*///}
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///  Returns the endianess for a specific CPU type
-/*TODO*///***************************************************************************/
-/*TODO*///unsigned cputype_endianess(int cpu_type)
-/*TODO*///{
-/*TODO*///	cpu_type &= ~CPU_FLAGS_MASK;
-/*TODO*///	if( cpu_type < CPU_COUNT )
-/*TODO*///		return cpuintf[cpu_type].endianess;
-/*TODO*///	return 0;
-/*TODO*///}
+    /**
+     * *************************************************************************
+     * Returns the endianess for a specific CPU type
+     * *************************************************************************
+     */
+    public static int cputype_endianess(int cpu_type) {
+        cpu_type &= ~CPU_FLAGS_MASK;
+        if (cpu_type < CPU_COUNT) {
+            return cpuintf[cpu_type].endianess;
+        }
+        return 0;
+    }
+
     /**
      * *************************************************************************
      * Returns the data bus width for a specific CPU type
@@ -2780,18 +2795,20 @@ public class cpuintrf {
 /*TODO*///	return 0;
 /*TODO*///}
 /*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///  Returns the name for a specific CPU type
-/*TODO*///***************************************************************************/
-/*TODO*///const char *cputype_name(int cpu_type)
-/*TODO*///{
-/*TODO*///	cpu_type &= ~CPU_FLAGS_MASK;
-/*TODO*///	if( cpu_type < CPU_COUNT )
-/*TODO*///		return IFC_INFO(cpu_type,NULL,CPU_INFO_NAME);
-/*TODO*///	return "";
-/*TODO*///}
-/*TODO*///
-/*TODO*////***************************************************************************
+    /**
+     * *************************************************************************
+     * Returns the name for a specific CPU type
+     * *************************************************************************
+     */
+    public static String cputype_name(int cpu_type) {
+        cpu_type &= ~CPU_FLAGS_MASK;
+        if (cpu_type < CPU_COUNT) {
+            return IFC_INFO(cpu_type, null, CPU_INFO_NAME);
+        }
+        return "";
+    }
+
+    /*TODO*////***************************************************************************
 /*TODO*///  Returns the family name for a specific CPU type
 /*TODO*///***************************************************************************/
 /*TODO*///const char *cputype_core_family(int cpu_type)
@@ -2870,17 +2887,19 @@ public class cpuintrf {
 /*TODO*///		return cputype_address_bits(CPU_TYPE(cpunum));
 /*TODO*///	return 0;
 /*TODO*///}
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///  Returns the address bit mask for a specific CPU number
-/*TODO*///***************************************************************************/
-/*TODO*///unsigned cpunum_address_mask(int cpunum)
-/*TODO*///{
-/*TODO*///	if( cpunum < totalcpu )
-/*TODO*///		return cputype_address_mask(CPU_TYPE(cpunum));
-/*TODO*///	return 0;
-/*TODO*///}
-/*TODO*///
+    /**
+     * *************************************************************************
+     * Returns the address bit mask for a specific CPU number
+     * *************************************************************************
+     */
+    public static int cpunum_address_mask(int cpunum) {
+        if (cpunum < totalcpu) {
+            return cputype_address_mask(CPU_TYPE(cpunum));
+        }
+        return 0;
+    }
+
+    /*TODO*///
 /*TODO*////***************************************************************************
 /*TODO*///  Returns the endianess for a specific CPU number
 /*TODO*///***************************************************************************/
@@ -2964,6 +2983,7 @@ public class cpuintrf {
         }
         return "";
     }
+
     /*TODO*////***************************************************************************
 /*TODO*///  Returns the credits for a specific CPU number
 /*TODO*///***************************************************************************/
@@ -2997,37 +3017,50 @@ public class cpuintrf {
 /*TODO*////***************************************************************************
 /*TODO*///  Return a register value for a specific CPU number of the running machine
 /*TODO*///***************************************************************************/
-/*TODO*///unsigned cpunum_get_reg(int cpunum, int regnum)
-/*TODO*///{
-/*TODO*///	int oldactive;
-/*TODO*///	unsigned val = 0;
-/*TODO*///
-/*TODO*///	if( cpunum == activecpu )
-/*TODO*///		return cpu_get_reg( regnum );
-/*TODO*///
-/*TODO*///	/* swap to the CPU's context */
-/*TODO*///	if (activecpu >= 0)
-/*TODO*///		if (cpu[activecpu].save_context) GETCONTEXT(activecpu, cpu[activecpu].context);
-/*TODO*///	oldactive = activecpu;
-/*TODO*///	activecpu = cpunum;
-/*TODO*///	memory_set_context(activecpu);
-/*TODO*///	if (cpu[activecpu].save_context) SETCONTEXT(activecpu, cpu[activecpu].context);
-/*TODO*///
-/*TODO*///	val = GETREG(activecpu,regnum);
-/*TODO*///
-/*TODO*///	/* update the CPU's context */
-/*TODO*///	if (cpu[activecpu].save_context) GETCONTEXT(activecpu, cpu[activecpu].context);
-/*TODO*///	activecpu = oldactive;
-/*TODO*///	if (activecpu >= 0)
-/*TODO*///	{
-/*TODO*///		memory_set_context(activecpu);
-/*TODO*///		if (cpu[activecpu].save_context) SETCONTEXT(activecpu, cpu[activecpu].context);
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	return val;
-/*TODO*///}
-/*TODO*///
-/*TODO*////***************************************************************************
+    /**
+     * *************************************************************************
+     * Return a register value for a specific CPU number of the running
+     * machine_old
+     * *************************************************************************
+     */
+    public static int/*unsigned*/ cpunum_get_reg(int cpunum, int regnum) {
+        int oldactive;
+        int /*unsigned*/ val = 0;
+
+        if (cpunum == activecpu) {
+            return cpu_get_reg(regnum);
+        }
+
+        /* swap to the CPU's context */
+        if (activecpu >= 0) {
+            if (cpu.get(activecpu).save_context != 0) {
+                cpu.get(activecpu).context = GETCONTEXT(activecpu);
+            }
+        }
+        oldactive = activecpu;
+        activecpu = cpunum;
+        memory_set_context(activecpu);
+        if (cpu.get(activecpu).save_context != 0) {
+            SETCONTEXT(activecpu, cpu.get(activecpu).context);
+        }
+
+        val = GETREG(activecpu, regnum);
+
+        /* update the CPU's context */
+        if (cpu.get(activecpu).save_context != 0) {
+            cpu.get(activecpu).context = GETCONTEXT(activecpu);
+        }
+        activecpu = oldactive;
+        if (activecpu >= 0) {
+            memory_set_context(activecpu);
+            if (cpu.get(activecpu).save_context != 0) {
+                SETCONTEXT(activecpu, cpu.get(activecpu).context);
+            }
+        }
+
+        return val;
+    }
+    /*TODO*////***************************************************************************
 /*TODO*///  Set a register value for a specific CPU number of the running machine
 /*TODO*///***************************************************************************/
 /*TODO*///void cpunum_set_reg(int cpunum, int regnum, unsigned val)

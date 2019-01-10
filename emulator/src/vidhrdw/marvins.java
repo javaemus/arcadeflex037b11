@@ -16,7 +16,7 @@ import static old2.mame.mame.Machine;
 import static old2.mame.tilemapC.*;
 import static old2.mame.tilemapH.*;
 import static vidhrdw.generic.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame.palette.*;
 import static drivers.marvins.*;
 import static mame.commonH.REGION_CPU1;

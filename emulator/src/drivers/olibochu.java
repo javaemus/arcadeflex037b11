@@ -3,7 +3,7 @@
  *
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static mame.commonH.*;
@@ -15,7 +15,7 @@ import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
 import static mame.osdependH.*;
 import static mame.sndintrf.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static old.mame.drawgfx.drawgfx;
 import static sound.ay8910.*;

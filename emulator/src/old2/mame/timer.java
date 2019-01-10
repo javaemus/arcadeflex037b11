@@ -3,8 +3,8 @@
  */
 package old2.mame;
 
-import static old.mame.cpuintrf.*;
-import static mame.cpuintrfH.*;
+import static mame037b11.cpuintrf.*;
+import static mame037b11.cpuintrfH.*;
 import static mame.driverH.*;
 import static old2.mame.mame.*;
 import static old2.mame.timerH.*;

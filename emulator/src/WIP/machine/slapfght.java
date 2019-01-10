@@ -10,8 +10,8 @@ import static old.arcadeflex.osdepend.*;
 import static old2.mame.memoryH.*;
 import static mame.commonH.*;
 import static mame056.common.*;
-import static mame.cpuintrfH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrfH.*;
+import static mame037b11.cpuintrf.*;
 
 public class slapfght {
 

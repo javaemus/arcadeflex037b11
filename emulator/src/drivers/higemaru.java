@@ -3,14 +3,14 @@
  * using automatic conversion tool v0.01
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static mame.driverH.*;
 import static old2.mame.memoryH.*;
 import static mame.commonH.*;
 import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static old.mame.inptportH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.sndintrfH.*;

@@ -12,10 +12,10 @@ import static old.mame.inptportH.InputPortTiny;
 import static old.mame.inptportH.input_macro;
 import static old2.mame.memoryH.*;
 import static mame.sndintrfH.MachineSound;
-
+import static mame037b11.cpuintrfH.*;
 public class driverH {
 
-    public static class MachineCPU {
+/*    public static class MachineCPU {
 
         public MachineCPU(int ct, int cc, MemoryReadAddress[] mr, MemoryWriteAddress[] mw, IOReadPort[] pr, IOWritePort[] pw, InterruptPtr vb, int vbf, InterruptPtr ti, int tif, Object reset) {
             cpu_type = ct;
@@ -52,9 +52,9 @@ public class driverH {
         }
 
         public int cpu_type;/* see #defines below. */
-        public int cpu_clock;/* in Hertz */
-        public MemoryReadAddress[] memory_read;
-        public MemoryWriteAddress[] memory_write;
+/*        public int cpu_clock;/* in Hertz */
+/*        public MemoryReadAddress[] memory_read;
+/*        public MemoryWriteAddress[] memory_write;
         public IOReadPort[] port_read;
         public IOWritePort[] port_write;
         public InterruptPtr vblank_interrupt;
@@ -62,13 +62,13 @@ public class driverH {
  /* use this for interrupts which are not tied to vblank 	*/
  /* usually frequency in Hz, but if you need 				*/
  /* greater precision you can give the period in nanoseconds */
-        public InterruptPtr timed_interrupt;
-        public int timed_interrupts_per_second;
-        /* pointer to a parameter to pass to the CPU cores reset function */
-        public Object reset_param;
+ /*       public InterruptPtr timed_interrupt;
+   /*     public int timed_interrupts_per_second;
+   /*     /* pointer to a parameter to pass to the CPU cores reset function */
+   /*     public Object reset_param;
 
-    }
-
+   /* }*/
+/*
     public static final int CPU_DUMMY = 0;
     public static final int CPU_Z80 = 1;
     public static final int CPU_Z80GB = 2;
@@ -95,22 +95,22 @@ public class driverH {
     public static final int CPU_V30 = 23;
     public static final int CPU_V33 = 24;
     public static final int CPU_I8035 = 25;/* same as CPU_I8039 */
-    public static final int CPU_I8039 = 26;
-    public static final int CPU_I8048 = 27;/* same as CPU_I8039 */
-    public static final int CPU_N7751 = 28;/* same as CPU_I8039 */
-    public static final int CPU_M6800 = 29;/* same as CPU_M6802/CPU_M6808 */
-    public static final int CPU_M6801 = 30;/* same as CPU_M6803 */
-    public static final int CPU_M6802 = 31;/* same as CPU_M6800/CPU_M6808 */
-    public static final int CPU_M6803 = 32;/* same as CPU_M6801 */
-    public static final int CPU_M6808 = 33;/* same as CPU_M6800/CPU_M6802 */
-    public static final int CPU_HD63701 = 34;/* 6808 with some additional opcodes */
-    public static final int CPU_NSC8105 = 35;/* same(?) as CPU_M6802(?) with scrambled opcodes. There is at least one new opcode. */
-    public static final int CPU_M6805 = 36;
-    public static final int CPU_M68705 = 37;/* same as CPU_M6805 */
-    public static final int CPU_HD63705 = 38;/* M6805 family but larger address space, different stack size */
-    public static final int CPU_HD6309 = 39;/* same as CPU_M6809 (actually it's not 100% compatible) */
-    public static final int CPU_M6809 = 40;
-    public static final int CPU_KONAMI = 41;
+/*    public static final int CPU_I8039 = 26;
+/*    public static final int CPU_I8048 = 27;/* same as CPU_I8039 */
+/*    public static final int CPU_N7751 = 28;/* same as CPU_I8039 */
+/*    public static final int CPU_M6800 = 29;/* same as CPU_M6802/CPU_M6808 */
+/*    public static final int CPU_M6801 = 30;/* same as CPU_M6803 */
+/*    public static final int CPU_M6802 = 31;/* same as CPU_M6800/CPU_M6808 */
+/*    public static final int CPU_M6803 = 32;/* same as CPU_M6801 */
+/*    public static final int CPU_M6808 = 33;/* same as CPU_M6800/CPU_M6802 */
+/*    public static final int CPU_HD63701 = 34;/* 6808 with some additional opcodes */
+/*    public static final int CPU_NSC8105 = 35;/* same(?) as CPU_M6802(?) with scrambled opcodes. There is at least one new opcode. */
+/*    public static final int CPU_M6805 = 36;
+/*    public static final int CPU_M68705 = 37;/* same as CPU_M6805 */
+/*    public static final int CPU_HD63705 = 38;/* M6805 family but larger address space, different stack size */
+/*    public static final int CPU_HD6309 = 39;/* same as CPU_M6809 (actually it's not 100% compatible) */
+/*    public static final int CPU_M6809 = 40;
+/*    public static final int CPU_KONAMI = 41;
     public static final int CPU_M68000 = 42;
     public static final int CPU_M68010 = 43;
     public static final int CPU_M68EC020 = 44;
@@ -139,16 +139,16 @@ public class driverH {
     public static final int CPU_G65C816 = 67;
     public static final int CPU_SPC700 = 68;
 
-    public static final int CPU_COUNT = 69;
+    public static final int CPU_COUNT = 69;*/
 
     /* set this if the CPU is used as a slave for audio. It will not be emulated if */
  /* sound is disabled, therefore speeding up a lot the emulation. */
-    public static final int CPU_AUDIO_CPU = 0x8000;
+//    public static final int CPU_AUDIO_CPU = 0x8000;
 
     /* the Z80 can be wired to use 16 bit addressing for I/O ports */
-    public static final int CPU_16BIT_PORT = 0x4000;
+//    public static final int CPU_16BIT_PORT = 0x4000;
 
-    public static final int CPU_FLAGS_MASK = 0xff00;
+//    public static final int CPU_FLAGS_MASK = 0xff00;
 
     public static final int MAX_CPU = 8;/* MAX_CPU is the maximum number of CPUs which cpuintrf.c  can run at the same time. Currently, 8 is enough. */
 

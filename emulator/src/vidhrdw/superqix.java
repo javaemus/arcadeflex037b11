@@ -16,7 +16,7 @@ import static arcadeflex.libc.cstring.*;
 import static old.mame.common.*;
 import static old2.mame.common.*;
 import static mame.commonH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static old2.mame.memoryH.*;
 import static mame056.common.*;
 public class superqix {

@@ -5,10 +5,10 @@
 package machine;
 
 import static arcadeflex.fucPtr.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static old.mame.inptport.*;
 import static arcadeflex.libc.ptr.*;
-import static mame.cpuintrfH.*;
+import static mame037b11.cpuintrfH.*;
 import static cpu.z80.z80H.*;
 import static mame.commonH.*;
 import static old2.mame.timer.*;

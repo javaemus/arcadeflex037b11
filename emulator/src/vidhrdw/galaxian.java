@@ -14,13 +14,13 @@ import static WIP.drivers.scramble.*;
 
 import static mame.drawgfxH.*;
 import static mame.osdependH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame056.common.*;
 import static old2.mame.common.*;
 import static old2.mame.drawgfx.*;
 import static old2.mame.mame.Machine;
 import static mame.commonH.*;
-import static mame.cpuintrfH.*;
+import static mame037b11.cpuintrfH.*;
 import static old.mame.drawgfx.drawgfx;
 import static old.mame.drawgfx.plot_pixel;
 import static old.mame.drawgfx.read_pixel;

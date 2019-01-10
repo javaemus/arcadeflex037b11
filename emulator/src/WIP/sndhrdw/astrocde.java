@@ -10,7 +10,7 @@ import static arcadeflex.libc.ptr.*;
 import static old2.mame.mame.Machine;
 import static sound.samples.*;
 import static sound.samplesH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame.sndintrf.*;
 import static arcadeflex.libc.cstring.*;
 import static cpu.z80.z80H.Z80_BC;

@@ -3,7 +3,7 @@
  * using automatic conversion tool v0.01
  */
 package WIP.drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
@@ -15,13 +15,12 @@ import static mame.palette.*;
 import static mame.commonH.*;
 import static WIP.sndhrdw.senjyo.*;
 import static WIP.vidhrdw.senjyo.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static vidhrdw.generic.*;
 import static mame056.sound.sn76496.*;
 import static mame056.sound.sn76496H.*;
 import static WIP.machine.z80fmly.*;
 import static old2.mame.common.*;
-import static mame.cpuintrfH.*;
 
 public class senjyo {
 

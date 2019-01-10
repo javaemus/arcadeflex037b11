@@ -5,7 +5,7 @@
 package sndhrdw;
 
 import static arcadeflex.fucPtr.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 
 public class frogger {
 

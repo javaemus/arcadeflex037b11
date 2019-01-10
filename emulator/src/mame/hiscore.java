@@ -11,8 +11,9 @@ import static mame.osdependH.*;
 import arcadeflex.util.hiscoreFileParser;
 import static old.arcadeflex.fileio.*;
 import static old.arcadeflex.osdepend.logerror;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrfH.*;
 import static mame.driverH.*;
+import static mame037b11.cpuintrf.*;
 
 public class hiscore {
 

@@ -20,10 +20,7 @@ import static mame056.common.memory_region;
 import static mame056.common.memory_region_length;
 import static mame.commonH.REGION_CPU1;
 import static old.mame.cpuintrf.*;
-import static mame.driverH.CPU_16BIT_PORT;
-import static mame.driverH.CPU_FLAGS_MASK;
-import static mame.driverH.CPU_TMS34010;
-import static mame.driverH.CPU_Z80;
+import static mame037b11.cpuintrfH.*;
 
 public class memory {
 

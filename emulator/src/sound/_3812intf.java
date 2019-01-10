@@ -9,7 +9,7 @@ import static arcadeflex.fucPtr.*;
 import static arcadeflex.fucPtr.WriteHandlerPtr;
 import static common.ptr.*;
 import static arcadeflex.libc.cstdio.*;
-import static mame.cpuintrfH.*;
+import static mame037b11.cpuintrfH.*;
 import static old2.mame.mame.Machine;
 import static mame.sndintrf.snd_interface;
 import static mame.sndintrf.sound_name;

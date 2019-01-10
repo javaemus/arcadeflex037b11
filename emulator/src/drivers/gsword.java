@@ -3,7 +3,7 @@
  * using automatic conversion tool v0.01
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.driverH.*;
 import static old2.mame.memoryH.*;
@@ -12,7 +12,7 @@ import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static mame.sndintrfH.*;
 import static old.mame.common.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static old.mame.inptportH.*;
 import static vidhrdw.gsword.*;
 import static sound.ay8910.*;
@@ -20,7 +20,6 @@ import static sound.ay8910H.*;
 import static old.arcadeflex.osdepend.*;
 import static arcadeflex.libc.ptr.*;
 import static cpu.z80.z80H.*;
-import static mame.cpuintrfH.*;
 import static mame.sndintrf.*;
 import static sound.MSM5205.*;
 import static sound.MSM5205H.*;

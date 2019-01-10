@@ -11,7 +11,7 @@ import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
 import static sound.ay8910H.*;
 import static old.arcadeflex.osdepend.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static old.sound.mixer.*;
 import static mame056.sound.streams.*;
 import static old2.mame.mame.Machine;

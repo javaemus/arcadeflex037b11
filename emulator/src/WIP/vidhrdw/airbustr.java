@@ -21,7 +21,7 @@ import static old2.mame.tilemapC.*;
 import static old2.mame.tilemapH.*;
 import static vidhrdw.generic.*;
 import static old.arcadeflex.osdepend.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static WIP.drivers.airbustr.*;
 
 public class airbustr {

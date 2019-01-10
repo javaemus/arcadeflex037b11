@@ -6,12 +6,11 @@ package mame037b11;
 import static arcadeflex.fucPtr.*;
 import arcadeflex.libc.ptr.UBytePtr;
 import static common.libc.cstring.memset;
-import static mame.driverH.*;
 import static mame056.commonH.REGION_CPU1;
 import static mame.driverH.MAX_CPU;
 import static mame037b11.memoryH.*;
 import static mame037b11.cpuintrf.*;
-import static mame037b11.cpuintrfH.CPU_Z80;
+import static mame037b11.cpuintrfH.*;
 import static mame056.common.*;
 import static old.arcadeflex.libc_old.*;
 import static old2.mame.mame.*;
@@ -220,8 +219,8 @@ public class memory {
 /*TODO*///	memory_shutdown - free memory
 /*TODO*///-------------------------------------------------*/
 /*TODO*///
-/*TODO*///void memory_shutdown(void)
-/*TODO*///{
+public static void memory_shutdown()
+{
 /*TODO*///	struct ExtMemory *ext;
 /*TODO*///	int cpu;
 /*TODO*///
@@ -243,7 +242,7 @@ public class memory {
 /*TODO*///	for (ext = ext_memory; ext->data; ext++)
 /*TODO*///		free(ext->data);
 /*TODO*///	memset(ext_memory, 0, sizeof(ext_memory));
-/*TODO*///}
+}
 /*TODO*///
 /*TODO*///
 /*TODO*////*-------------------------------------------------

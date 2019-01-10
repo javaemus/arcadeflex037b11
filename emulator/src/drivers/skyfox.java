@@ -3,7 +3,7 @@
  * using automatic conversion tool v0.01
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static mame.commonH.*;
 import static vidhrdw.skyfox.*;
 import static vidhrdw.generic.*;
@@ -14,7 +14,7 @@ import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static mame056.common.*;
 import static mame.sndintrf.*;

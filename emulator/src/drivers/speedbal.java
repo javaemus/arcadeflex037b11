@@ -3,7 +3,7 @@
  * ported to 0.36
  */
 package drivers;
-
+import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.driverH.*;
 import static old2.mame.memoryH.*;
@@ -17,7 +17,7 @@ import static arcadeflex.libc.ptr.*;
 import static sound._3812intfH.*;
 import static sound._3812intf.*;
 import static mame.palette.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static vidhrdw.speedbal.*;
 
 public class speedbal {

@@ -5,7 +5,7 @@
 package drivers;
 
 import static mame.commonH.*;
-
+import static mame037b11.cpuintrfH.*;
 import static sound._2610intfH.*;
 import static sound._2610intf.*;
 import static sound._2151intfH.*;
@@ -15,7 +15,7 @@ import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static sound._2203intfH.*;
 import static sound._2203intf.*;
@@ -26,7 +26,6 @@ import static mame.palette.*;
 import static old.arcadeflex.osdepend.*;
 import static cpu.z80.z80H.*;
 import static old2.mame.drawgfx.decodechar;
-import static mame.cpuintrfH.*;
 import static WIP.sndhrdw.rastan.*;
 import arcadeflex.libc.ptr.UBytePtr;
 import static old.sound.mixerH.*;

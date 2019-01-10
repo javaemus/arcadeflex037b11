@@ -5,6 +5,7 @@ package mame037b11;
 
 
 import static arcadeflex.fucPtr.InterruptPtr;
+import static mame037b11.cpuintrf.*;
 
 
 public class cpuintrfH {
@@ -191,8 +192,10 @@ public class cpuintrfH {
 
         public abstract void set_context(Object reg);
 
-        /*TODO*///        void*( * get_cycle_table)( int which);
-/*TODO*///        void( * set_cycle_table)( int which,void*new_table);
+        public abstract int[] get_cycle_table(int which);
+
+        public abstract void set_cycle_table(int which, int[] new_table);
+        
         public abstract int get_pc();
 
         public abstract void set_pc(int val);
@@ -226,10 +229,14 @@ public class cpuintrfH {
         public double overclock;
         public int no_int, irq_int, nmi_int;
         public int databus_width;
-        /*TODO*///         mem_read_handler memory_read;
-/*TODO*///         mem_write_handler memory_write;
-/*TODO*///         mem_read_handler internal_read;
-/*TODO*///         mem_write_handler internal_write;
+        public abstract int memory_read(int offset);
+
+        public abstract void memory_write(int offset, int data);
+
+        public abstract int internal_read(int offset);
+
+        public abstract void internal_write(int offset, int data);
+
         public int pgm_memory_base;
 
         public abstract void set_op_base(int pc);
@@ -238,31 +245,59 @@ public class cpuintrfH {
         public int address_bits, endianess, align_unit, max_inst_len;
     }
 
-
 /* Returns previous pc (start of opcode causing read/write) */
-/* int cpu_getpreviouspc(void); */
-/*TODO*///     #define cpu_getpreviouspc() cpu_get_reg(REG_PREVIOUSPC)
+    public static int cpu_getpreviouspc() {
+        return cpu_get_reg(REG_PREVIOUSPC);
+    }
 
-/* Returns the return address from the top of the stack (Z80 only) */
-/* int cpu_getreturnpc(void); */
-/* This can now be handled with a generic function */
-/*TODO*///             #define cpu_geturnpc() cpu_get_reg(REG_SP_CONTENTS)
+    /* Returns the return address from the top of the stack (Z80 only) */
+ /* int cpu_getreturnpc(void); */
+ /* This can now be handled with a generic function */
+    public static int cpu_geturnpc() {
+        return cpu_get_reg(REG_SP_CONTENTS);
+    }
 
+    /* daisy-chain link */
+    public static abstract interface Interrupt_entryPtr {
+
+        public abstract int handler(int i);
+    }
+
+    public static abstract interface ResetPtr {
+
+        public abstract void handler(int i);
+    }
+
+    public static abstract interface Interrupt_retiPtr {
+
+        public abstract void handler(int i);
+    }
 
     /* daisy-chain link */
     public static class Z80_DaisyChain {
-        /*TODO*///       void (*reset)(int);             /* reset callback     */
-/*TODO*///         int  (*interrupt_entry)(int);   /* entry callback     */
-/*TODO*///         void (*interrupt_reti)(int);    /* reti callback      */
-        int irq_param;                  /* callback paramater */
+
+        public ResetPtr reset;/* reset callback     */
+        public Interrupt_entryPtr interrupt_entry;/* entry callback     */
+        public Interrupt_retiPtr interrupt_reti;/* reti callback      */
+        public int irq_param;
+
+        /* callback paramater */
+        public Z80_DaisyChain(ResetPtr reset, Interrupt_entryPtr interrupt_entry, Interrupt_retiPtr interrupt_reti, int irq_param) {
+            this.reset = reset;
+            this.interrupt_entry = interrupt_entry;
+            this.interrupt_reti = interrupt_reti;
+            this.irq_param = irq_param;
+        }
     }
 
-    public static final int Z80_MAXDAISY = 4;		/* maximum of daisy chan device */
+    public static final int Z80_MAXDAISY = 4;/* maximum of daisy chan device */
 
-    public static final int Z80_INT_REQ = 0x01;   /* interrupt request mask       */
-    public static final int Z80_INT_IEO = 0x02;    /* interrupt disable mask(IEO)  */
+    public static final int Z80_INT_REQ = 0x01;/* interrupt request mask       */
+    public static final int Z80_INT_IEO = 0x02;/* interrupt disable mask(IEO)  */
 
-/*TODO*///     #define Z80_VECTOR(device,state) (((device)<<8)|(state))
+    public static int Z80_VECTOR(int device, int state) {
+        return (((device) << 8) & 0xFF | (state) & 0xFF);
+    }
 
 
 }

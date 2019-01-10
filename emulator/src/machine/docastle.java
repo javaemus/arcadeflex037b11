@@ -8,7 +8,7 @@ import static arcadeflex.fucPtr.ReadHandlerPtr;
 import static arcadeflex.fucPtr.WriteHandlerPtr;
 import static old.arcadeflex.osdepend.logerror;
 import static cpu.z80.z80H.Z80_NMI_INT;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 
 public class docastle {
 
