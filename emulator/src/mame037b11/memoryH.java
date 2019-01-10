@@ -5,8 +5,18 @@ package mame037b11;
 
 import static arcadeflex.fucPtr.*;
 import arcadeflex.libc.ptr.UBytePtr;
+import static mame037b11.memory.*;
 
 public class memoryH {
+
+    public static abstract interface opbase_handlerPtr {
+
+        public abstract int handler(int address);
+    }
+        public static abstract interface setopbase {
+
+        public abstract void handler(int pc);
+    }
 
     /*TODO*////* obsolete, to be removed */
 /*TODO*///#define READ_WORD(a)			(*(UINT16 *)(a))
@@ -573,6 +583,7 @@ public class memoryH {
         public int handler;
         public WriteHandlerPtr _handler;/* handler callback */
     }
+
     /*TODO*///
 /*TODO*///struct IO_WritePort16
 /*TODO*///{
@@ -603,14 +614,14 @@ public class memoryH {
     public static boolean IS_MEMPORT_MARKER(Memory_WriteAddress ma) {
         return (ma.start == MEMPORT_MARKER && ma.end < MEMPORT_MARKER);
     }
-    
-        public static boolean IS_MEMPORT_MARKER(IO_ReadPort ma) {
+
+    public static boolean IS_MEMPORT_MARKER(IO_ReadPort ma) {
         return (ma.start == MEMPORT_MARKER && ma.end < MEMPORT_MARKER);
     }
-        
-        public static boolean IS_MEMPORT_MARKER(IO_WritePort ma) {
+
+    public static boolean IS_MEMPORT_MARKER(IO_WritePort ma) {
         return (ma.start == MEMPORT_MARKER && ma.end < MEMPORT_MARKER);
-    }    
+    }
 
     /*TODO*///#define IS_MEMPORT_END(ma)			((ma)->start == MEMPORT_MARKER && (ma)->end == 0)
     public static boolean IS_MEMPORT_END(Memory_ReadAddress ma) {
@@ -620,13 +631,15 @@ public class memoryH {
     public static boolean IS_MEMPORT_END(Memory_WriteAddress ma) {
         return ((ma).start == MEMPORT_MARKER && (ma).end == 0);
     }
+
     public static boolean IS_MEMPORT_END(IO_ReadPort ma) {
         return ((ma).start == MEMPORT_MARKER && (ma).end == 0);
     }
+
     public static boolean IS_MEMPORT_END(IO_WritePort ma) {
         return ((ma).start == MEMPORT_MARKER && (ma).end == 0);
     }
-/*TODO*///
+    /*TODO*///
 /*TODO*////* ----- macros for defining the start/stop points ----- */
 /*TODO*///#define MEMPORT_ARRAY_START(t,n,f)	const struct t n[] = { { MEMPORT_MARKER, (f) },
 /*TODO*///#define MEMPORT_ARRAY_END			{ MEMPORT_MARKER, 0 } };
@@ -677,12 +690,12 @@ public class memoryH {
     public static final int LEVEL1_BITS_PREF = 12;/* preferred number of bits in the 1st level lookup */
     public static final int LEVEL1_BITS_BIAS = 4;/* number of bits used to bias the L1 bits computation */
     public static final int SPARSE_THRESH = 20;/* number of address bits above which we use sparse memory */
-/*TODO*///#define PORT_BITS				16						/* address bits used for all port I/O */
+ /*TODO*///#define PORT_BITS				16						/* address bits used for all port I/O */
 /*TODO*///
 /*TODO*////* ----- external memory constants ----- */
 /* ----- external memory constants ----- */
     public static final int MAX_EXT_MEMORY = 64;/* maximum external memory areas we can allocate */
-/*TODO*///
+ /*TODO*///
 /*TODO*///
     /* ----- macros for determining the number of bits to use ----- */
     public static int LEVEL1_BITS(int x) {
@@ -698,15 +711,22 @@ public class memoryH {
         return ((1 << LEVEL2_BITS(x)) - 1);
     }
 
-    /*TODO*////* ----- table lookup helpers ----- */
-/*TODO*///#define LEVEL1_INDEX(a,b,m)		((a) >> (LEVEL2_BITS((b)-(m)) + (m)))
-/*TODO*///#define LEVEL2_INDEX(e,a,b,m)	((1 << LEVEL1_BITS((b)-(m))) + (((e) & SUBTABLE_MASK) << LEVEL2_BITS((b)-(m))) + (((a) >> (m)) & LEVEL2_MASK((b)-(m))))
-/*TODO*///
+    /* ----- table lookup helpers ----- */
+    public static int LEVEL1_INDEX(int a, int b, int m) {
+        return ((a) >>> (LEVEL2_BITS((b) - (m)) + (m)));
+    }
+
+    public static int LEVEL2_INDEX(int e,int a,int b,int m)
+    {
+        return ((1 << LEVEL1_BITS((b)-(m))) + (((e) & SUBTABLE_MASK) << LEVEL2_BITS((b)-(m))) + (((a) >> (m)) & LEVEL2_MASK((b)-(m))));
+    }
+
 /* ----- sparse memory space detection ----- */
     public static boolean IS_SPARSE(int a) {
         return ((a) > SPARSE_THRESH);
     }
-/*TODO*///
+
+    /*TODO*///
 /*TODO*///
 /*TODO*////***************************************************************************
 /*TODO*///
@@ -769,8 +789,11 @@ public class memoryH {
 /*TODO*///DECLARE_HANDLERS_8BIT(20)
 /*TODO*///DECLARE_HANDLERS_8BIT(21)
 /*TODO*///DECLARE_HANDLERS_8BIT(24)
-/*TODO*///#define change_pc16(pc)			change_pc_generic(pc, 16, 0, cpu_setopbase16)
-/*TODO*///#define change_pc20(pc)			change_pc_generic(pc, 20, 0, cpu_setopbase20)
+    public static void change_pc16(int pc) {
+        change_pc_generic(pc, 16, 0, cpu_setOPbase16);
+    }
+
+    /*TODO*///#define change_pc20(pc)			change_pc_generic(pc, 20, 0, cpu_setopbase20)
 /*TODO*///#define change_pc21(pc)			change_pc_generic(pc, 21, 0, cpu_setopbase21)
 /*TODO*///#define change_pc24(pc)			change_pc_generic(pc, 24, 0, cpu_setopbase24)
 /*TODO*///
@@ -933,11 +956,17 @@ public class memoryH {
 /*TODO*///
 /*TODO*////* ----- opcode reading ----- */
 /*TODO*///#define cpu_readop(A)				(OP_ROM[(A) & memory_amask])
+    /* ----- opcode reading ----- */
+    public static char cpu_readop(int A) {
+        return OP_ROM.read(A& memory_amask);
+    }
 /*TODO*///#define cpu_readop16(A)				(*(data16_t *)&OP_ROM[(A) & memory_amask])
 /*TODO*///#define cpu_readop32(A)				(*(data32_t *)&OP_ROM[(A) & memory_amask])
 /*TODO*///
-/*TODO*////* ----- opcode argument reading ----- */
-/*TODO*///#define cpu_readop_arg(A)			(OP_RAM[(A) & memory_amask])
+    /* ----- opcode argument reading ----- */
+    public static char cpu_readop_arg(int A) {
+        return OP_RAM.read(A& memory_amask);
+    }
 /*TODO*///#define cpu_readop_arg16(A)			(*(data16_t *)&OP_RAM[(A) & memory_amask])
 /*TODO*///#define cpu_readop_arg32(A)			(*(data32_t *)&OP_RAM[(A) & memory_amask])
 /*TODO*///
@@ -947,8 +976,13 @@ public class memoryH {
 /*TODO*///	if (readmem_lookup[LEVEL1_INDEX((pc) & memory_amask,abits,minbits)] != opcode_entry)\
 /*TODO*///		setop(pc);																		\
 /*TODO*///} while (0)																				\
-/*TODO*///
-/*TODO*///
+    public static void change_pc_generic(int pc, int abits, int minbits, setopbase setop) {
+        if (readmem_lookup.read(LEVEL1_INDEX((pc) & memory_amask, abits, minbits)) != opcode_entry) {
+            setop.handler(pc);
+        }
+    }
+
+    /*TODO*///
 /*TODO*////* ----- forces the next branch to generate a call to the opbase handler ----- */
 /*TODO*///#define catch_nextBranch()			(opcode_entry = 0xff)
 /*TODO*///

@@ -4,6 +4,7 @@
 -Commented old stuff from memory
 -Added new memory handlers to bankp driver (still not working)
 -Fixed a few cpuintrf issues
+-More work in memory . Now bankp works!
 
 09/01/2018
 ==========

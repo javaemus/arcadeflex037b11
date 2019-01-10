@@ -15,8 +15,8 @@ package cpu.z80;
 import static cpu.z80.z80H.*;
 import static mame037b11.cpuintrfH.*;
 import static mame037b11.cpuintrf.*;
-import static old2.mame.memoryH.*;
-import static old2.mame.memory.*;
+import static mame037b11.memoryH.*;
+import static mame037b11.memory.*;
 import static old.arcadeflex.osdepend.*;
 
 public class z80 extends cpu_interface {
@@ -344,14 +344,14 @@ public class z80 extends cpu_interface {
      * Input a byte from given I/O port
      ***************************************************************/
     public static int IN(int port) {
-        return cpu_readport(port) & 0xff;
+        return cpu_readport16(port) & 0xff;
     }
 
     /***************************************************************
      * Output a byte to given I/O port
      ***************************************************************/
     public static void OUT(int port, int value) {
-        cpu_writeport(port, value & 0xFF);
+        cpu_writeport16(port, value & 0xFF);
     }
 
     /**
@@ -1464,7 +1464,7 @@ public class z80 extends cpu_interface {
                 }
             }
             Z80.WZ = Z80.PC;//TODO check if it has to run always and not only if IFF1!=0
-            change_pc(Z80.PC);
+            change_pc16(Z80.PC);
         }
     }
 
@@ -1697,7 +1697,7 @@ public class z80 extends cpu_interface {
                 dci++;
             }
         }
-        change_pc(Z80.PC);
+        change_pc16(Z80.PC);
     }
 
     @Override
@@ -1855,7 +1855,7 @@ public class z80 extends cpu_interface {
         Z80.irq[3] = Regs.irq[3];
         Z80.irq_callback = Regs.irq_callback;
         Z80.extra_cycles = Regs.extra_cycles;
-        change_pc(Z80.PC);
+        change_pc16(Z80.PC);
     }
 
     /**
@@ -1901,7 +1901,7 @@ public class z80 extends cpu_interface {
     @Override
     public void set_pc(int val) {
         Z80.PC = val & 0xFFFF;
-        change_pc(Z80.PC);
+        change_pc16(Z80.PC);
     }
 
     /**

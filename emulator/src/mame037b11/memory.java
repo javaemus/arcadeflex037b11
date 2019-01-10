@@ -14,6 +14,7 @@ import static mame037b11.cpuintrfH.*;
 import static mame056.common.*;
 import static old.arcadeflex.libc_old.*;
 import static old2.mame.mame.*;
+import static old.arcadeflex.osdepend.*;
 
 public class memory {
 
@@ -126,7 +127,7 @@ public class memory {
 
         UBytePtr rombase;/* ROM base pointer */
         UBytePtr rambase;/* RAM base pointer */
- /*TODO*///	opbase_handler 		opbase;				/* opcode base handler */
+        opbase_handlerPtr opbase;/* opcode base handler */
         memport_data mem = new memport_data();/* memory tables */
         memport_data port = new memport_data();/* port tables */
     }
@@ -136,21 +137,19 @@ public class memory {
 -------------------------------------------------*/
     public static UBytePtr OP_ROM = new UBytePtr();/* opcode ROM base */
     public static UBytePtr OP_RAM = new UBytePtr();/* opcode RAM base */
- /*TODO*///UINT8		 				opcode_entry;					/* opcode readmem entry */
-/*TODO*///
-/*TODO*///UINT8 *						readmem_lookup;					/* memory read lookup table */
-/*TODO*///static UINT8 *				writemem_lookup;				/* memory write lookup table */
-/*TODO*///static UINT8 *				readport_lookup;				/* port read lookup table */
-/*TODO*///static UINT8 *				writeport_lookup;				/* port write lookup table */
-/*TODO*///
-/*TODO*///offs_t						memory_amask;					/* memory address mask */
-/*TODO*///static offs_t				port_amask;						/* port address mask */
-/*TODO*///
+    public static int opcode_entry;/* opcode readmem entry */
+    public static UBytePtr readmem_lookup;/* memory read lookup table */
+    public static UBytePtr writemem_lookup;/* memory write lookup table */
+    public static UBytePtr readport_lookup;/* port read lookup table */
+    public static UBytePtr writeport_lookup;/* port write lookup table */
+    public static int memory_amask;/* memory address mask */
+    public static int port_amask;/* port address mask */
+
     public static UBytePtr[] cpu_bankbase = new UBytePtr[STATIC_COUNT];/* array of bank bases */
     public static ExtMemory[] ext_memory = ExtMemory.create(MAX_EXT_MEMORY);/* externally-allocated memory */
- /*TODO*///
-/*TODO*///static opbase_handler		opbasefunc;						/* opcode base override */
-/*TODO*///
+
+    public static opbase_handlerPtr opbasefunc;/* opcode base override */
+
     public static handler_data[] rmemhandler8 = handler_data.create(ENTRY_COUNT);/* 8-bit memory read handlers */
     public static handler_data[] rmemhandler16 = handler_data.create(ENTRY_COUNT);/* 16-bit memory read handlers */
     public static handler_data[] rmemhandler32 = handler_data.create(ENTRY_COUNT);/* 32-bit memory read handlers */
@@ -177,10 +176,11 @@ public class memory {
 -------------------------------------------------*/
     public static int memory_init() {
 
-        /*TODO*///	/* init the static handlers */
-/*TODO*///	if (!init_static())
-/*TODO*///		return 0;
-/*TODO*///
+        /* init the static handlers */
+        if (init_static() == 0) {
+            return 0;
+        }
+
         /* init the CPUs */
         if (init_cpudata() == 0) {
             return 0;
@@ -219,9 +219,8 @@ public class memory {
 /*TODO*///	memory_shutdown - free memory
 /*TODO*///-------------------------------------------------*/
 /*TODO*///
-public static void memory_shutdown()
-{
-/*TODO*///	struct ExtMemory *ext;
+    public static void memory_shutdown() {
+        /*TODO*///	struct ExtMemory *ext;
 /*TODO*///	int cpu;
 /*TODO*///
 /*TODO*///	/* free all the tables */
@@ -242,8 +241,9 @@ public static void memory_shutdown()
 /*TODO*///	for (ext = ext_memory; ext->data; ext++)
 /*TODO*///		free(ext->data);
 /*TODO*///	memset(ext_memory, 0, sizeof(ext_memory));
-}
-/*TODO*///
+    }
+
+    /*TODO*///
 /*TODO*///
 /*TODO*////*-------------------------------------------------
 /*TODO*///	memory_set_opcode_base - set the base of
@@ -260,20 +260,19 @@ public static void memory_shutdown()
         memory_set_context - set the memory context
     -------------------------------------------------*/
     public static void memory_set_context(int activecpu) {
-        throw new UnsupportedOperationException("unsupported");
-        /*TODO*///	OP_RAM = cpu_bankbase[STATIC_RAM] = cpudata[activecpu].rambase;
-/*TODO*///	OP_ROM = cpudata[activecpu].rombase;
-/*TODO*///	opcode_entry = STATIC_ROM;
-/*TODO*///
-/*TODO*///	readmem_lookup = cpudata[activecpu].mem.read.table;
-/*TODO*///	writemem_lookup = cpudata[activecpu].mem.write.table;
-/*TODO*///	readport_lookup = cpudata[activecpu].port.read.table;
-/*TODO*///	writeport_lookup = cpudata[activecpu].port.write.table;
-/*TODO*///
-/*TODO*///	memory_amask = cpudata[activecpu].mem.mask;
-/*TODO*///	port_amask = cpudata[activecpu].port.mask;
-/*TODO*///
-/*TODO*///	opbasefunc = cpudata[activecpu].opbase;
+        OP_RAM = cpu_bankbase[STATIC_RAM] = cpudata[activecpu].rambase;
+        OP_ROM = cpudata[activecpu].rombase;
+        opcode_entry = STATIC_ROM;
+
+        readmem_lookup = cpudata[activecpu].mem.read.table;
+        writemem_lookup = cpudata[activecpu].mem.write.table;
+        readport_lookup = cpudata[activecpu].port.read.table;
+        writeport_lookup = cpudata[activecpu].port.write.table;
+
+        memory_amask = cpudata[activecpu].mem.mask;
+        port_amask = cpudata[activecpu].port.mask;
+
+        opbasefunc = cpudata[activecpu].opbase;
     }
 
     /*TODO*///
@@ -869,7 +868,14 @@ public static void memory_shutdown()
 /*TODO*///	setting all 6 handlers for a given index
 /*TODO*///-------------------------------------------------*/
 /*TODO*///
-/*TODO*///static void set_static_handler(int idx,
+    static void set_static_handler(int idx, ReadHandlerPtr r8handler, WriteHandlerPtr w8handler) {
+        rmemhandler8[idx].handler = r8handler;
+        wmemhandler8[idx].handler = w8handler;
+        rporthandler8[idx].handler = r8handler;
+        wporthandler8[idx].handler = w8handler;
+    }
+
+    /*TODO*///static void set_static_handler(int idx,
 /*TODO*///		read8_handler r8handler, read16_handler r16handler, read32_handler r32handler,
 /*TODO*///		write8_handler w8handler, write16_handler w16handler, write32_handler w32handler)
 /*TODO*///{
@@ -1549,35 +1555,35 @@ public static void memory_shutdown()
 /*TODO*///	READBYTE - generic byte-sized read handler
 /*TODO*///-------------------------------------------------*/
 /*TODO*///
-/*TODO*///#define READBYTE8(name,abits,lookup,handlist,mask)										\
-/*TODO*///data8_t name(offs_t address)															\
-/*TODO*///{																						\
-/*TODO*///	UINT8 entry;																		\
-/*TODO*///	MEMREADSTART																		\
-/*TODO*///																						\
-/*TODO*///	/* perform lookup */																\
-/*TODO*///	address &= mask;																	\
-/*TODO*///	entry = lookup[LEVEL1_INDEX(address,abits,0)];										\
-/*TODO*///	if (entry >= SUBTABLE_BASE)															\
-/*TODO*///		entry = lookup[LEVEL2_INDEX(entry,address,abits,0)];							\
-/*TODO*///																						\
-/*TODO*///	/* for compatibility with setbankhandler, 8-bit systems */							\
-/*TODO*///	/* must call handlers for banks */													\
-/*TODO*///	if (entry == STATIC_RAM)															\
-/*TODO*///		MEMREADEND(cpu_bankbase[STATIC_RAM][address])									\
-/*TODO*///																						\
-/*TODO*///	/* fall back to the handler */														\
-/*TODO*///	else																				\
-/*TODO*///	{																					\
-/*TODO*///		read8_handler handler = (read8_handler)handlist[entry].handler;					\
-/*TODO*///		MEMREADEND((*handler)(address - handlist[entry].offset))						\
-/*TODO*///	}																					\
-/*TODO*///	return 0;																			\
-/*TODO*///}																						\
+/*TODO*///#define READBYTE8(name,abits,lookup,handlist,mask)										
+/*TODO*///data8_t name(offs_t address)															
+/*TODO*///{																						
+/*TODO*///	UINT8 entry;																		
+/*TODO*///	MEMREADSTART																		
+/*TODO*///																						
+/*TODO*///	/* perform lookup */																
+/*TODO*///	address &= mask;																	
+/*TODO*///	entry = lookup[LEVEL1_INDEX(address,abits,0)];										
+/*TODO*///	if (entry >= SUBTABLE_BASE)															
+/*TODO*///		entry = lookup[LEVEL2_INDEX(entry,address,abits,0)];							
+/*TODO*///																						
+/*TODO*///	/* for compatibility with setbankhandler, 8-bit systems */							
+/*TODO*///	/* must call handlers for banks */													
+/*TODO*///	if (entry == STATIC_RAM)															
+/*TODO*///		MEMREADEND(cpu_bankbase[STATIC_RAM][address])									
+/*TODO*///																						
+/*TODO*///	/* fall back to the handler */														
+/*TODO*///	else																				
+/*TODO*///	{																					
+/*TODO*///		read8_handler handler = (read8_handler)handlist[entry].handler;					
+/*TODO*///		MEMREADEND((*handler)(address - handlist[entry].offset))						
+/*TODO*///	}																					
+/*TODO*///	return 0;																			
+/*TODO*///}																						
 /*TODO*///
-/*TODO*///#define READBYTE16BE(name,abits,lookup,handlist,mask)									\
-/*TODO*///data8_t name(offs_t address)															\
-/*TODO*///{																						\
+/*TODO*///#define READBYTE16BE(name,abits,lookup,handlist,mask)									
+/*TODO*///data8_t name(offs_t address)															
+/*TODO*///{																						
 /*TODO*///	UINT8 entry;																		\
 /*TODO*///	MEMREADSTART																		\
 /*TODO*///																						\
@@ -1806,34 +1812,34 @@ public static void memory_shutdown()
 /*TODO*///	WRITEBYTE - generic byte-sized write handler
 /*TODO*///-------------------------------------------------*/
 /*TODO*///
-/*TODO*///#define WRITEBYTE8(name,abits,lookup,handlist,mask)										\
-/*TODO*///void name(offs_t address, data8_t data)													\
-/*TODO*///{																						\
-/*TODO*///	UINT8 entry;																		\
-/*TODO*///	MEMWRITESTART																		\
-/*TODO*///																						\
-/*TODO*///	/* perform lookup */																\
-/*TODO*///	address &= mask;																	\
-/*TODO*///	entry = lookup[LEVEL1_INDEX(address,abits,0)];										\
-/*TODO*///	if (entry >= SUBTABLE_BASE)															\
-/*TODO*///		entry = lookup[LEVEL2_INDEX(entry,address,abits,0)];							\
-/*TODO*///																						\
-/*TODO*///	/* for compatibility with setbankhandler, 8-bit systems */							\
-/*TODO*///	/* must call handlers for banks */													\
-/*TODO*///	if (entry == (FPTR)MRA_RAM)															\
-/*TODO*///		MEMWRITEEND(cpu_bankbase[STATIC_RAM][address] = data)							\
-/*TODO*///																						\
-/*TODO*///	/* fall back to the handler */														\
-/*TODO*///	else																				\
-/*TODO*///	{																					\
-/*TODO*///		write8_handler handler = (write8_handler)handlist[entry].handler;				\
-/*TODO*///		MEMWRITEEND((*handler)(address - handlist[entry].offset, data))					\
-/*TODO*///	}																					\
-/*TODO*///}																						\
+/*TODO*///#define WRITEBYTE8(name,abits,lookup,handlist,mask)										
+/*TODO*///void name(offs_t address, data8_t data)													
+/*TODO*///{																						
+/*TODO*///	UINT8 entry;																		
+/*TODO*///	MEMWRITESTART																		
+/*TODO*///																						
+/*TODO*///	/* perform lookup */																
+/*TODO*///	address &= mask;																	
+/*TODO*///	entry = lookup[LEVEL1_INDEX(address,abits,0)];										
+/*TODO*///	if (entry >= SUBTABLE_BASE)															
+/*TODO*///		entry = lookup[LEVEL2_INDEX(entry,address,abits,0)];							
+/*TODO*///																						
+/*TODO*///	/* for compatibility with setbankhandler, 8-bit systems */							
+/*TODO*///	/* must call handlers for banks */													
+/*TODO*///	if (entry == (FPTR)MRA_RAM)															
+/*TODO*///		MEMWRITEEND(cpu_bankbase[STATIC_RAM][address] = data)							
+/*TODO*///																						
+/*TODO*///	/* fall back to the handler */														
+/*TODO*///	else																				
+/*TODO*///	{																					
+/*TODO*///		write8_handler handler = (write8_handler)handlist[entry].handler;				
+/*TODO*///		MEMWRITEEND((*handler)(address - handlist[entry].offset, data))					
+/*TODO*///	}																					
+/*TODO*///}																						
 /*TODO*///
-/*TODO*///#define WRITEBYTE16BE(name,abits,lookup,handlist,mask)									\
-/*TODO*///void name(offs_t address, data8_t data)													\
-/*TODO*///{																						\
+/*TODO*///#define WRITEBYTE16BE(name,abits,lookup,handlist,mask)									
+/*TODO*///void name(offs_t address, data8_t data)													
+/*TODO*///{																						
 /*TODO*///	UINT8 entry;																		\
 /*TODO*///	MEMWRITESTART																		\
 /*TODO*///																						\
@@ -2096,9 +2102,89 @@ public static void memory_shutdown()
 /*TODO*///	OP_ROM = base - table[entry].offset + (OP_ROM - OP_RAM);							\
 /*TODO*///	OP_RAM = base - table[entry].offset;												\
 /*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
+    public static setopbase cpu_setOPbase16 = new setopbase() {
+        public void handler(int pc) {
+            UBytePtr base;
+            int entry;
+
+            /* allow overrides */
+            if (opbasefunc != null) {
+                throw new UnsupportedOperationException("Unsupported");
+                /*TODO*///		pc = (*opbasefunc)(pc);															
+/*TODO*///		if (pc == ~0)																	
+/*TODO*///			return; 
+            }
+
+            /* perform the lookup */
+            pc &= memory_amask;
+            entry = readmem_lookup.read(LEVEL1_INDEX(pc, 8, 0));
+            if (entry >= SUBTABLE_BASE) {
+                entry = readmem_lookup.read(LEVEL2_INDEX(entry, pc, 8, 0));
+            }
+            opcode_entry = entry;
+
+            /* RAM/ROM/RAMROM */
+            if (entry >= STATIC_RAM && entry <= STATIC_RAMROM) {
+                base = cpu_bankbase[STATIC_RAM];
+            } /*TODO*///	/* banked memory */																	
+            /*TODO*///	else if (entry >= STATIC_BANK1 && entry <= STATIC_RAM)								
+            /*TODO*///		base = cpu_bankbase[entry];														
+            /*TODO*///																						
+            /* other memory -- could be very slow! */ else {
+                throw new UnsupportedOperationException("Unsupported");
+                /*TODO*///		logerror("cpu #%d (PC=%08X): warning - op-code execute on mapped I/O\n",		
+/*TODO*///					cpu_getactivecpu(),cpu_get_pc());									
+/*TODO*///		/*base = memory_find_base(cpu_getactivecpu(), pc);*/							
+/*TODO*///		return;																			
+            }
+
+            /* compute the adjusted base */
+            OP_ROM = new UBytePtr(base, -rmemhandler8[entry].offset + (OP_ROM.offset - OP_RAM.offset));
+            OP_RAM = new UBytePtr(base, -rmemhandler8[entry].offset);
+        }
+    };
+
+    public static int cpu_readmem16(int address) {
+        int entry;
+        /* perform lookup */
+        address &= memory_amask;
+        entry = readmem_lookup.read(LEVEL1_INDEX(address, 16, 0));
+        if (entry >= SUBTABLE_BASE) {
+            entry = readmem_lookup.read(LEVEL2_INDEX(entry, address, 16, 0));
+        }
+
+        /* for compatibility with setbankhandler, 8-bit systems */
+ /* must call handlers for banks */
+        if (entry == STATIC_RAM) {
+            return cpu_bankbase[STATIC_RAM].read(address);
+        } /* fall back to the handler */ else {
+            ReadHandlerPtr handler = (ReadHandlerPtr) rmemhandler8[entry].handler;
+            return handler.handler(address - rmemhandler8[entry].offset);
+        }
+        //return 0;
+    }
+
+    public static void cpu_writemem16(int address, int data) {
+        int entry;
+
+        /* perform lookup */
+        address &= memory_amask;
+        entry = writemem_lookup.read(LEVEL1_INDEX(address, 16, 0));
+        if (entry >= SUBTABLE_BASE) {
+            entry = writemem_lookup.read(LEVEL2_INDEX(entry, address, 16, 0));
+        }
+
+        /* for compatibility with setbankhandler, 8-bit systems */
+ /* must call handlers for banks */
+        if (entry == MRA_RAM) {
+            cpu_bankbase[STATIC_RAM].write(address, data);
+        } /* fall back to the handler */ else {
+            WriteHandlerPtr handler = (WriteHandlerPtr) wmemhandler8[entry].handler;
+            handler.handler(address - wmemhandler8[entry].offset, data);
+        }
+    }
+
+    /*TODO*////*-------------------------------------------------
 /*TODO*///	GENERATE_HANDLERS - macros to spew out all
 /*TODO*///	the handlers needed for a given memory type
 /*TODO*///-------------------------------------------------*/
@@ -2202,7 +2288,45 @@ public static void memory_shutdown()
 /*TODO*///	the port handlers we need to generate
 /*TODO*///-------------------------------------------------*/
 /*TODO*///
-/*TODO*///READBYTE8    (cpu_readport16,            16, readport_lookup,  rporthandler8,  port_amask)
+    public static int cpu_readport16(int address) {
+        int entry;
+        /* perform lookup */
+        address &= port_amask;
+        entry = readport_lookup.read(LEVEL1_INDEX(address, 16, 0));
+        if (entry >= SUBTABLE_BASE) {
+            entry = readport_lookup.read(LEVEL2_INDEX(entry, address, 16, 0));
+        }
+
+        /* for compatibility with setbankhandler, 8-bit systems */
+ /* must call handlers for banks */
+        if (entry == STATIC_RAM) {
+            return cpu_bankbase[STATIC_RAM].read(address);
+        } /* fall back to the handler */ else {
+            ReadHandlerPtr handler = (ReadHandlerPtr) rporthandler8[entry].handler;
+            return handler.handler(address - rporthandler8[entry].offset);
+        }
+    }
+
+    public static void cpu_writeport16(int address, int data) {
+        int entry;
+        /* perform lookup */
+        address &= port_amask;
+        entry = writeport_lookup.read(LEVEL1_INDEX(address, 16, 0));
+        if (entry >= SUBTABLE_BASE) {
+            entry = writeport_lookup.read(LEVEL2_INDEX(entry, address, 16, 0));
+        }
+
+        /* for compatibility with setbankhandler, 8-bit systems */
+ /* must call handlers for banks */
+        if (entry == MRA_RAM) {
+            cpu_bankbase[STATIC_RAM].write(address, data);
+        } /* fall back to the handler */ else {
+            WriteHandlerPtr handler = (WriteHandlerPtr) wporthandler8[entry].handler;
+            handler.handler(address - wporthandler8[entry].offset, data);
+        }
+    }
+
+    /*TODO*///READBYTE8    (cpu_readport16,            16, readport_lookup,  rporthandler8,  port_amask)
 /*TODO*///WRITEBYTE8   (cpu_writeport16,           16, writeport_lookup, wporthandler8,  port_amask)
 /*TODO*///
 /*TODO*///READBYTE16BE (cpu_readport16bew,         16, readport_lookup,  rporthandler16, port_amask)
@@ -2259,13 +2383,16 @@ public static void memory_shutdown()
 /*TODO*///	basic static handlers
 /*TODO*///-------------------------------------------------*/
 /*TODO*///
-/*TODO*///static READ_HANDLER( mrh8_bad )
-/*TODO*///{
-/*TODO*///	logerror("cpu #%d (PC=%08X): unmapped memory byte read from %08X\n", cpu_getactivecpu(), cpu_get_pc(), offset);
-/*TODO*///	if (cpu_address_bits() <= SPARSE_THRESH) return cpu_bankbase[STATIC_RAM][offset];
-/*TODO*///	return 0;
-/*TODO*///}
-/*TODO*///static READ16_HANDLER( mrh16_bad )
+    public static ReadHandlerPtr mrh8_bad = new ReadHandlerPtr() {
+        public int handler(int offset) {
+            logerror("cpu #%d (PC=%08X): unmapped memory byte read from %08X\n", cpu_getactivecpu(), cpu_get_pc(), offset);
+            if (cpu_address_bits() <= SPARSE_THRESH) {
+                return cpu_bankbase[STATIC_RAM].read(offset);
+            }
+            return 0;
+        }
+    };
+    /*TODO*///static READ16_HANDLER( mrh16_bad )
 /*TODO*///{
 /*TODO*///	logerror("cpu #%d (PC=%08X): unmapped memory word read from %08X\n", cpu_getactivecpu(), cpu_get_pc(), offset*2);
 /*TODO*///	if (cpu_address_bits() <= SPARSE_THRESH) return ((data16_t *)cpu_bankbase[STATIC_RAM])[offset];
@@ -2278,12 +2405,15 @@ public static void memory_shutdown()
 /*TODO*///	return 0;
 /*TODO*///}
 /*TODO*///
-/*TODO*///static WRITE_HANDLER( mwh8_bad )
-/*TODO*///{
-/*TODO*///	logerror("cpu #%d (PC=%08X): unmapped memory byte write to %08X = %02X\n", cpu_getactivecpu(), cpu_get_pc(), offset, data);
-/*TODO*///	if (cpu_address_bits() <= SPARSE_THRESH) cpu_bankbase[STATIC_RAM][offset] = data;
-/*TODO*///}
-/*TODO*///static WRITE16_HANDLER( mwh16_bad )
+    public static WriteHandlerPtr mwh8_bad = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            logerror("cpu #%d (PC=%08X): unmapped memory byte write to %08X = %02X\n", cpu_getactivecpu(), cpu_get_pc(), offset, data);
+            if (cpu_address_bits() <= SPARSE_THRESH) {
+                cpu_bankbase[STATIC_RAM].write(offset, data);
+            }
+        }
+    };
+    /*TODO*///static WRITE16_HANDLER( mwh16_bad )
 /*TODO*///{
 /*TODO*///	logerror("cpu #%d (PC=%08X): unmapped memory word write to %08X = %04X & %04X\n", cpu_getactivecpu(), cpu_get_pc(), offset*2, data, mem_mask ^ 0xffff);
 /*TODO*///	if (cpu_address_bits() <= SPARSE_THRESH) COMBINE_DATA(&((data16_t *)cpu_bankbase[STATIC_RAM])[offset]);
@@ -2294,12 +2424,13 @@ public static void memory_shutdown()
 /*TODO*///	if (cpu_address_bits() <= SPARSE_THRESH) COMBINE_DATA(&((data32_t *)cpu_bankbase[STATIC_RAM])[offset]);
 /*TODO*///}
 /*TODO*///
-/*TODO*///static READ_HANDLER( prh8_bad )
-/*TODO*///{
-/*TODO*///	logerror("cpu #%d (PC=%08X): unmapped port byte read from %08X\n", cpu_getactivecpu(), cpu_get_pc(), offset);
-/*TODO*///	return 0;
-/*TODO*///}
-/*TODO*///static READ16_HANDLER( prh16_bad )
+    public static ReadHandlerPtr prh8_bad = new ReadHandlerPtr() {
+        public int handler(int offset) {
+            logerror("cpu #%d (PC=%08X): unmapped port byte read from %08X\n", cpu_getactivecpu(), cpu_get_pc(), offset);
+            return 0;
+        }
+    };
+    /*TODO*///static READ16_HANDLER( prh16_bad )
 /*TODO*///{
 /*TODO*///	logerror("cpu #%d (PC=%08X): unmapped port word read from %08X\n", cpu_getactivecpu(), cpu_get_pc(), offset*2);
 /*TODO*///	return 0;
@@ -2310,11 +2441,12 @@ public static void memory_shutdown()
 /*TODO*///	return 0;
 /*TODO*///}
 /*TODO*///
-/*TODO*///static WRITE_HANDLER( pwh8_bad )
-/*TODO*///{
-/*TODO*///	logerror("cpu #%d (PC=%08X): unmapped port byte write to %08X = %02X\n", cpu_getactivecpu(), cpu_get_pc(), offset, data);
-/*TODO*///}
-/*TODO*///static WRITE16_HANDLER( pwh16_bad )
+    public static WriteHandlerPtr pwh8_bad = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            logerror("cpu #%d (PC=%08X): unmapped port byte write to %08X = %02X\n", cpu_getactivecpu(), cpu_get_pc(), offset, data);
+        }
+    };
+    /*TODO*///static WRITE16_HANDLER( pwh16_bad )
 /*TODO*///{
 /*TODO*///	logerror("cpu #%d (PC=%08X): unmapped port word write to %08X = %04X & %04X\n", cpu_getactivecpu(), cpu_get_pc(), offset*2, data, mem_mask ^ 0xffff);
 /*TODO*///}
@@ -2324,7 +2456,12 @@ public static void memory_shutdown()
 /*TODO*///}
 /*TODO*///
 /*TODO*///static WRITE_HANDLER( mwh8_rom )       { logerror("cpu #%d (PC=%08X): byte write to ROM %08X = %02X\n", cpu_getactivecpu(), cpu_get_pc(), offset, data); }
-/*TODO*///static WRITE16_HANDLER( mwh16_rom )    { logerror("cpu #%d (PC=%08X): word write to %08X = %04X & %04X\n", cpu_getactivecpu(), cpu_get_pc(), offset*2, data, mem_mask ^ 0xffff); }
+    public static WriteHandlerPtr mwh8_rom = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            throw new UnsupportedOperationException("Unsupported");
+        }
+    };
+    /*TODO*///static WRITE16_HANDLER( mwh16_rom )    { logerror("cpu #%d (PC=%08X): word write to %08X = %04X & %04X\n", cpu_getactivecpu(), cpu_get_pc(), offset*2, data, mem_mask ^ 0xffff); }
 /*TODO*///static WRITE32_HANDLER( mwh32_rom )    { logerror("cpu #%d (PC=%08X): dword write to %08X = %08X & %08X\n", cpu_getactivecpu(), cpu_get_pc(), offset*4, data, mem_mask ^ 0xffffffff); }
 /*TODO*///
 /*TODO*///static READ_HANDLER( mrh8_nop )        { return 0; }
@@ -2335,10 +2472,17 @@ public static void memory_shutdown()
 /*TODO*///static WRITE16_HANDLER( mwh16_nop )    {  }
 /*TODO*///static WRITE32_HANDLER( mwh32_nop )    {  }
 /*TODO*///
-/*TODO*///static READ_HANDLER( mrh8_ram )        { return cpu_bankbase[STATIC_RAM][offset]; }
-/*TODO*///static WRITE_HANDLER( mwh8_ram )       { cpu_bankbase[STATIC_RAM][offset] = data; }
-/*TODO*///
-/*TODO*///static WRITE_HANDLER( mwh8_ramrom )    { cpu_bankbase[STATIC_RAM][offset] = cpu_bankbase[STATIC_RAM][offset + (OP_ROM - OP_RAM)] = data; }
+    public static ReadHandlerPtr mrh8_ram = new ReadHandlerPtr() {
+        public int handler(int offset) {
+            return cpu_bankbase[STATIC_RAM].read(offset);
+        }
+    };
+    public static WriteHandlerPtr mwh8_ram = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            cpu_bankbase[STATIC_RAM].write(offset, data);
+        }
+    };
+    /*TODO*///static WRITE_HANDLER( mwh8_ramrom )    { cpu_bankbase[STATIC_RAM][offset] = cpu_bankbase[STATIC_RAM][offset + (OP_ROM - OP_RAM)] = data; }
 /*TODO*///static WRITE16_HANDLER( mwh16_ramrom ) { COMBINE_DATA(&cpu_bankbase[STATIC_RAM][offset*2]); COMBINE_DATA(&cpu_bankbase[0][offset*2 + (OP_ROM - OP_RAM)]); }
 /*TODO*///static WRITE32_HANDLER( mwh32_ramrom ) { COMBINE_DATA(&cpu_bankbase[STATIC_RAM][offset*4]); COMBINE_DATA(&cpu_bankbase[0][offset*4 + (OP_ROM - OP_RAM)]); }
 /*TODO*///
@@ -2589,9 +2733,8 @@ public static void memory_shutdown()
 /*TODO*///	handlers
 /*TODO*///-------------------------------------------------*/
 /*TODO*///
-/*TODO*///static int init_static(void)
-/*TODO*///{
-/*TODO*///	memset(rmemhandler8,  0, sizeof(rmemhandler8));
+    static int init_static() {
+        /*TODO*///	memset(rmemhandler8,  0, sizeof(rmemhandler8));
 /*TODO*///	memset(rmemhandler8s, 0, sizeof(rmemhandler8s));
 /*TODO*///	memset(rmemhandler16, 0, sizeof(rmemhandler16));
 /*TODO*///	memset(rmemhandler32, 0, sizeof(rmemhandler32));
@@ -2631,22 +2774,25 @@ public static void memory_shutdown()
 /*TODO*///	set_static_handler(STATIC_BANK22, mrh8_bank22, NULL,         NULL,         mwh8_bank22, NULL,         NULL);
 /*TODO*///	set_static_handler(STATIC_BANK23, mrh8_bank23, NULL,         NULL,         mwh8_bank23, NULL,         NULL);
 /*TODO*///	set_static_handler(STATIC_BANK24, mrh8_bank24, NULL,         NULL,         mwh8_bank24, NULL,         NULL);
-/*TODO*///	set_static_handler(STATIC_UNMAP,  mrh8_bad,    mrh16_bad,    mrh32_bad,    mwh8_bad,    mwh16_bad,    mwh32_bad);
+        set_static_handler(STATIC_UNMAP, mrh8_bad, mwh8_bad);
+        /*TODO*///	set_static_handler(STATIC_UNMAP,  mrh8_bad,    mrh16_bad,    mrh32_bad,    mwh8_bad,    mwh16_bad,    mwh32_bad);
 /*TODO*///	set_static_handler(STATIC_NOP,    mrh8_nop,    mrh16_nop,    mrh32_nop,    mwh8_nop,    mwh16_nop,    mwh32_nop);
 /*TODO*///	set_static_handler(STATIC_RAM,    mrh8_ram,    NULL,         NULL,         mwh8_ram,    NULL,         NULL);
 /*TODO*///	set_static_handler(STATIC_ROM,    NULL,        NULL,         NULL,         mwh8_rom,    mwh16_rom,    mwh32_rom);
 /*TODO*///	set_static_handler(STATIC_RAMROM, NULL,        NULL,         NULL,         mwh8_ramrom, mwh16_ramrom, mwh32_ramrom);
 /*TODO*///
-/*TODO*///	/* override port unmapped handlers */
-/*TODO*///	rporthandler8 [STATIC_UNMAP].handler = (void *)prh8_bad;
-/*TODO*///	rporthandler16[STATIC_UNMAP].handler = (void *)prh16_bad;
+        set_static_handler(STATIC_RAM, mrh8_ram, mwh8_ram);
+        set_static_handler(STATIC_ROM, null, mwh8_rom);
+        /*TODO*///	/* override port unmapped handlers */
+        rporthandler8[STATIC_UNMAP].handler = prh8_bad;
+        /*TODO*///	rporthandler16[STATIC_UNMAP].handler = (void *)prh16_bad;
 /*TODO*///	rporthandler32[STATIC_UNMAP].handler = (void *)prh32_bad;
-/*TODO*///	wporthandler8 [STATIC_UNMAP].handler = (void *)pwh8_bad;
-/*TODO*///	wporthandler16[STATIC_UNMAP].handler = (void *)pwh16_bad;
+        wporthandler8[STATIC_UNMAP].handler = pwh8_bad;
+        /*TODO*///	wporthandler16[STATIC_UNMAP].handler = (void *)pwh16_bad;
 /*TODO*///	wporthandler32[STATIC_UNMAP].handler = (void *)pwh32_bad;
 /*TODO*///
-/*TODO*///	return 1;
-/*TODO*///}
+        return 1;
+    }
 
     /*-------------------------------------------------
     	debugging

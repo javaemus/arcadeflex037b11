@@ -2515,12 +2515,12 @@ public class cpuintrf {
 /*TODO*////***************************************************************************
 /*TODO*///  Returns the number of address bits for the active CPU
 /*TODO*///***************************************************************************/
-/*TODO*///unsigned cpu_address_bits(void)
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	return cpuintf[CPU_TYPE(cpunum)].address_bits;
-/*TODO*///}
-/*TODO*///
+    public static int cpu_address_bits()
+    {
+            int cpunum = (activecpu < 0) ? 0 : activecpu;
+            return cpuintf[CPU_TYPE(cpunum)].address_bits;
+    }
+    /*TODO*///
 /*TODO*////***************************************************************************
 /*TODO*///  Returns the address bit mask for the active CPU
 /*TODO*///***************************************************************************/
