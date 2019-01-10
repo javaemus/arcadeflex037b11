@@ -19,7 +19,7 @@ import static old.arcadeflex.osdepend.logerror;
 import static mame056.common.memory_region;
 import static mame056.common.memory_region_length;
 import static mame.commonH.REGION_CPU1;
-import static old.mame.cpuintrf.*;
+import static mame037b11.cpuintrf.*;
 import static mame037b11.cpuintrfH.*;
 
 public class memory {
@@ -30,11 +30,13 @@ public class memory {
     }
 
     public static int ABITS1(int index) {
-        return (cpuintf[Machine.drv.cpu[index].cpu_type & ~CPU_FLAGS_MASK].abits1);
+        throw new UnsupportedOperationException("Unsupported");
+/*TODO*///        return (cpuintf[Machine.drv.cpu[index].cpu_type & ~CPU_FLAGS_MASK].abits1);
     }
 
     public static int ABITS2(int index) {
-        return (cpuintf[Machine.drv.cpu[index].cpu_type & ~CPU_FLAGS_MASK].abits2);
+        throw new UnsupportedOperationException("Unsupported");
+/*TODO*///        return (cpuintf[Machine.drv.cpu[index].cpu_type & ~CPU_FLAGS_MASK].abits2);
     }
 
     public static int ABITS3(int index) {
@@ -42,7 +44,8 @@ public class memory {
     }
 
     public static int ABITSMIN(int index) {
-        return (cpuintf[Machine.drv.cpu[index].cpu_type & ~CPU_FLAGS_MASK].abitsmin);
+        throw new UnsupportedOperationException("Unsupported");
+ /*TODO*///       return (cpuintf[Machine.drv.cpu[index].cpu_type & ~CPU_FLAGS_MASK].abitsmin);
     }
 
     public static int ALIGNUNIT(int index) {
@@ -564,19 +567,19 @@ public class memory {
                 int lowest = 0x7fffffff, end, lastend;
 
                 /* find the base of the lowest memory region that extends past the end */
-                for (int mra = 0; Machine.drv.cpu[cpu].memory_read[mra].start != -1; mra++) {
-                    if (Machine.drv.cpu[cpu].memory_read[mra].end >= size
-                            && Machine.drv.cpu[cpu].memory_read[mra].start < lowest) {
-                        lowest = Machine.drv.cpu[cpu].memory_read[mra].start;
-                    }
-                }
+/*TODO*///                for (int mra = 0; Machine.drv.cpu[cpu].memory_read[mra].start != -1; mra++) {
+/*TODO*///                     if (Machine.drv.cpu[cpu].memory_read[mra].end >= size
+/*TODO*///                             && Machine.drv.cpu[cpu].memory_read[mra].start < lowest) {
+/*TODO*///                         lowest = Machine.drv.cpu[cpu].memory_read[mra].start;
+/*TODO*///                     }
+/*TODO*///                 }
 
-                for (int mwa = 0; Machine.drv.cpu[cpu].memory_write[mwa].start != -1; mwa++) {
-                    if (Machine.drv.cpu[cpu].memory_write[mwa].end >= size
-                            && Machine.drv.cpu[cpu].memory_write[mwa].start < lowest) {
-                        lowest = Machine.drv.cpu[cpu].memory_write[mwa].start;
-                    }
-                }
+/*TODO*///                 for (int mwa = 0; Machine.drv.cpu[cpu].memory_write[mwa].start != -1; mwa++) {
+/*TODO*///                     if (Machine.drv.cpu[cpu].memory_write[mwa].end >= size
+/*TODO*///                             && Machine.drv.cpu[cpu].memory_write[mwa].start < lowest) {
+/*TODO*///                         lowest = Machine.drv.cpu[cpu].memory_write[mwa].start;
+/*TODO*///                     }
+/*TODO*///                 }
 
                 /* done if nothing found */
                 if (lowest == 0x7fffffff) {
@@ -590,17 +593,17 @@ public class memory {
                     lastend = end;
 
                     /* find the base of the lowest memory region that extends past the end */
-                    for (int mra = 0; Machine.drv.cpu[cpu].memory_read[mra].start != -1; mra++) {
-                        if (Machine.drv.cpu[cpu].memory_read[mra].start <= end && Machine.drv.cpu[cpu].memory_read[mra].end > end) {
-                            end = Machine.drv.cpu[cpu].memory_read[mra].end;
-                        }
-                    }
+ /*TODO*///                    for (int mra = 0; Machine.drv.cpu[cpu].memory_read[mra].start != -1; mra++) {
+            /*TODO*///             if (Machine.drv.cpu[cpu].memory_read[mra].start <= end && Machine.drv.cpu[cpu].memory_read[mra].end > end) {
+            /*TODO*///                 end = Machine.drv.cpu[cpu].memory_read[mra].end;
+            /*TODO*///             }
+            /*TODO*///         }
 
-                    for (int mwa = 0; Machine.drv.cpu[cpu].memory_write[mwa].start != -1; mwa++) {
-                        if (Machine.drv.cpu[cpu].memory_write[mwa].start <= end && Machine.drv.cpu[cpu].memory_write[mwa].end > end) {
-                            end = Machine.drv.cpu[cpu].memory_write[mwa].end;
-                        }
-                    }
+            /*TODO*///         for (int mwa = 0; Machine.drv.cpu[cpu].memory_write[mwa].start != -1; mwa++) {
+            /*TODO*///             if (Machine.drv.cpu[cpu].memory_write[mwa].start <= end && Machine.drv.cpu[cpu].memory_write[mwa].end > end) {
+            /*TODO*///                 end = Machine.drv.cpu[cpu].memory_write[mwa].end;
+            /*TODO*///             }
+            /*TODO*///         }
 
                 }
 
@@ -703,26 +706,26 @@ public class memory {
             /* initialize the memory base pointers for memory hooks */
             int _mra = 0;//_mra = Machine->drv->cpu[cpu].memory_read;
             if (Machine.drv.cpu[cpu].memory_read != null && Machine.drv.cpu[cpu].memory_read[_mra] != null) {
-                while (Machine.drv.cpu[cpu].memory_read[_mra].start != -1) {
+/*TODO*///                 while (Machine.drv.cpu[cpu].memory_read[_mra].start != -1) {
                     /*				if (_mra->base) *_mra->base = memory_find_base (cpu, _mra->start); */
  /*				if (_mra->size) *_mra->size = _mra->end - _mra->start + 1; */
-                    _mra++;
-                }
+            /*TODO*///         _mra++;
+            /*TODO*///     }
             }
             int _mwa = 0;//_mwa = Machine->drv->cpu[cpu].memory_write;
             if (Machine.drv.cpu[cpu].memory_write != null && Machine.drv.cpu[cpu].memory_write[_mwa] != null) {
-                while (Machine.drv.cpu[cpu].memory_write[_mwa].start != -1) {
+ /*TODO*///                while (Machine.drv.cpu[cpu].memory_write[_mwa].start != -1) {
 
-                    if (Machine.drv.cpu[cpu].memory_write[_mwa].base != null) {
-                        UBytePtr b = memory_find_base(cpu, Machine.drv.cpu[cpu].memory_write[_mwa].start);
-                        Machine.drv.cpu[cpu].memory_write[_mwa].base.memory = b.memory;
-                        Machine.drv.cpu[cpu].memory_write[_mwa].base.offset = b.offset;
-                    }
-                    if (Machine.drv.cpu[cpu].memory_write[_mwa].size != null) {
-                        Machine.drv.cpu[cpu].memory_write[_mwa].size[0] = Machine.drv.cpu[cpu].memory_write[_mwa].end - Machine.drv.cpu[cpu].memory_write[_mwa].start + 1;
-                    }
-                    _mwa++;
-                }
+            /*TODO*///         if (Machine.drv.cpu[cpu].memory_write[_mwa].base != null) {
+            /*TODO*///             UBytePtr b = memory_find_base(cpu, Machine.drv.cpu[cpu].memory_write[_mwa].start);
+            /*TODO*/// /*TODO*///             Machine.drv.cpu[cpu].memory_write[_mwa].base.memory = b.memory;
+            /*TODO*///             Machine.drv.cpu[cpu].memory_write[_mwa].base.offset = b.offset;
+            /*TODO*///         }
+            /*TODO*///         if (Machine.drv.cpu[cpu].memory_write[_mwa].size != null) {
+            /*TODO*///             Machine.drv.cpu[cpu].memory_write[_mwa].size[0] = Machine.drv.cpu[cpu].memory_write[_mwa].end - Machine.drv.cpu[cpu].memory_write[_mwa].start + 1;
+            /*TODO*///         }
+            /*TODO*///         _mwa++;
+            /*TODO*///     }
             }
 
             /* initialize port structures */
@@ -737,34 +740,34 @@ public class memory {
                 Machine.drv.cpu[cpu].port_read = empty_readport;
             }
 
-            while (true) {
-                if (install_port_read_handler_common(cpu, Machine.drv.cpu[cpu].port_read[ioread].start, Machine.drv.cpu[cpu].port_read[ioread].end, Machine.drv.cpu[cpu].port_read[ioread]._handler, 0) == null) {
-                    memory_shutdown();
-                    return 0;
-                }
-                if (Machine.drv.cpu[cpu].port_read[ioread].start == -1) {
-                    break;
-                }
+      /*TODO*///       while (true) {
+/*TODO*///                 if (install_port_read_handler_common(cpu, Machine.drv.cpu[cpu].port_read[ioread].start, Machine.drv.cpu[cpu].port_read[ioread].end, Machine.drv.cpu[cpu].port_read[ioread]._handler, 0) == null) {
+            /*TODO*///         memory_shutdown();
+            /*TODO*///         return 0;
+            /*TODO*///     }
+            /*TODO*///     if (Machine.drv.cpu[cpu].port_read[ioread].start == -1) {
+            /*TODO*///         break;
+            /*TODO*///     }
 
-                ioread++;
-            }
+            /*TODO*///     ioread++;
+ /*TODO*///            }
 
-            int iowrite = 0;//iowrite = Machine -> drv -> cpu[cpu].port_write;
-            if (Machine.drv.cpu[cpu].port_write == null) {
-                Machine.drv.cpu[cpu].port_write = empty_writeport;
-            }
+/*TODO*///             int iowrite = 0;//iowrite = Machine -> drv -> cpu[cpu].port_write;
+           /*TODO*///  if (Machine.drv.cpu[cpu].port_write == null) {
+           /*TODO*///      Machine.drv.cpu[cpu].port_write = empty_writeport;
+           /*TODO*///  }
 
-            while (true) {
-                if (install_port_write_handler_common(cpu, Machine.drv.cpu[cpu].port_write[iowrite].start, Machine.drv.cpu[cpu].port_write[iowrite].end, Machine.drv.cpu[cpu].port_write[iowrite]._handler, 0) == null) {
-                    memory_shutdown();
-                    return 0;
-                }
-                if (Machine.drv.cpu[cpu].port_write[iowrite].start == -1) {
-                    break;
-                }
+           /*TODO*///  while (true) {
+    /*TODO*///             if (install_port_write_handler_common(cpu, Machine.drv.cpu[cpu].port_write[iowrite].start, Machine.drv.cpu[cpu].port_write[iowrite].end, Machine.drv.cpu[cpu].port_write[iowrite]._handler, 0) == null) {
+               /*TODO*/// /*TODO*///      memory_shutdown();
+               /*TODO*///      return 0;
+               /*TODO*///  }
+               /*TODO*///  if (Machine.drv.cpu[cpu].port_write[iowrite].start == -1) {
+               /*TODO*///      break;
+               /*TODO*///  }
 
-                iowrite++;
-            }
+               /*TODO*///  iowrite++;
+  /*TODO*///           }
 
             portmask[cpu] = 0xffff;
             if ((Machine.drv.cpu[cpu].cpu_type & ~CPU_FLAGS_MASK) == CPU_Z80
@@ -849,24 +852,24 @@ public class memory {
 
             /* memory read handler build */
             int mra = 0;
-            while (Machine.drv.cpu[cpu].memory_read[mra].start != -1) {
-                mra++;
-            }
+/*TODO*///             while (Machine.drv.cpu[cpu].memory_read[mra].start != -1) {
+               /*TODO*///  mra++;
+            /*TODO*/// }
             mra--;
-            while (mra >= 0) { //while (mra >= memoryread)
-                install_mem_read_handler(cpu, Machine.drv.cpu[cpu].memory_read[mra].start, Machine.drv.cpu[cpu].memory_read[mra].end, Machine.drv.cpu[cpu].memory_read[mra]._handler, Machine.drv.cpu[cpu].memory_read[mra].handler);
-                mra--;
-            }
+/*TODO*///             while (mra >= 0) { //while (mra >= memoryread)
+           /*TODO*///      install_mem_read_handler(cpu, Machine.drv.cpu[cpu].memory_read[mra].start, Machine.drv.cpu[cpu].memory_read[mra].end, Machine.drv.cpu[cpu].memory_read[mra]._handler, Machine.drv.cpu[cpu].memory_read[mra].handler);
+           /*TODO*///      mra--;
+           /*TODO*///  }
             /* memory write handler build */
             int mwa = 0;
-            while (Machine.drv.cpu[cpu].memory_write[mwa].start != -1) {
-                mwa++;
-            }
+           /*TODO*///  while (Machine.drv.cpu[cpu].memory_write[mwa].start != -1) {
+           /*TODO*///      mwa++;
+           /*TODO*///  }
             mwa--;
-            while (mwa >= 0) {
-                install_mem_write_handler(cpu, Machine.drv.cpu[cpu].memory_write[mwa].start, Machine.drv.cpu[cpu].memory_write[mwa].end, Machine.drv.cpu[cpu].memory_write[mwa]._handler, Machine.drv.cpu[cpu].memory_write[mwa].handler);
-                mwa--;
-            }
+           /*TODO*///  while (mwa >= 0) {
+           /*TODO*///      install_mem_write_handler(cpu, Machine.drv.cpu[cpu].memory_write[mwa].start, Machine.drv.cpu[cpu].memory_write[mwa].end, Machine.drv.cpu[cpu].memory_write[mwa]._handler, Machine.drv.cpu[cpu].memory_write[mwa].handler);
+           /*TODO*///      mwa--;
+           /*TODO*///  }
         }
 
         logerror("used read  elements %d/%d , functions %d/%d\n",

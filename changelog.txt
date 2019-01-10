@@ -1,6 +1,8 @@
 10/01/2018
 ==========
 -Finished cpuintrf for 0.37b11. Still not compileable due to changes need to memory
+-Commented old stuff from memory
+-Added new memory handlers to bankp driver (still not working)
 
 09/01/2018
 ==========

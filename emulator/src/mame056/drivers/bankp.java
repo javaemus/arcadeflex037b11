@@ -1,15 +1,16 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
  */
-package drivers;
+package mame056.drivers;
 import static mame037b11.cpuintrfH.*;
+import static mame037b11.memoryH.*;
 import static arcadeflex.fucPtr.*;
 import static mame056.commonH.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
-import static old2.mame.memoryH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.generic.*;
@@ -19,39 +20,47 @@ import static mame056.sound.sn76496.*;
 
 public class bankp {
 
-    static MemoryReadAddress readmem[]
+    static Memory_ReadAddress readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0xdfff, MRA_ROM),
-                new MemoryReadAddress(0xe000, 0xe7ff, MRA_RAM),
-                new MemoryReadAddress(0xf000, 0xffff, MRA_RAM),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0xdfff, MRA_ROM),
+                new Memory_ReadAddress(0xe000, 0xe7ff, MRA_RAM),
+                new Memory_ReadAddress(0xf000, 0xffff, MRA_RAM),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)
+            };
 
-    static MemoryWriteAddress writemem[]
+    static Memory_WriteAddress writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0xdfff, MWA_ROM),
-                new MemoryWriteAddress(0xe000, 0xe7ff, MWA_RAM),
-                new MemoryWriteAddress(0xf000, 0xf3ff, videoram_w, videoram, videoram_size),
-                new MemoryWriteAddress(0xf400, 0xf7ff, colorram_w, colorram),
-                new MemoryWriteAddress(0xf800, 0xfbff, bankp_videoram2_w, bankp_videoram2),
-                new MemoryWriteAddress(0xfc00, 0xffff, bankp_colorram2_w, bankp_colorram2),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0xdfff, MWA_ROM),
+                new Memory_WriteAddress(0xe000, 0xe7ff, MWA_RAM),
+                new Memory_WriteAddress(0xf000, 0xf3ff, videoram_w, videoram, videoram_size),
+                new Memory_WriteAddress(0xf400, 0xf7ff, colorram_w, colorram),
+                new Memory_WriteAddress(0xf800, 0xfbff, bankp_videoram2_w, bankp_videoram2),
+                new Memory_WriteAddress(0xfc00, 0xffff, bankp_colorram2_w, bankp_colorram2),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)
+            };
 
-    static IOReadPort readport[]
+    static IO_ReadPort readport[]
             = {
-                new IOReadPort(0x00, 0x00, input_port_0_r), /* IN0 */
-                new IOReadPort(0x01, 0x01, input_port_1_r), /* IN1 */
-                new IOReadPort(0x02, 0x02, input_port_2_r), /* IN2 */
-                new IOReadPort(0x04, 0x04, input_port_3_r), /* DSW */
-                new IOReadPort(-1) /* end of table */};
+                new IO_ReadPort(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_IO | MEMPORT_WIDTH_8),
+                new IO_ReadPort(0x00, 0x00, input_port_0_r), /* IN0 */
+                new IO_ReadPort(0x01, 0x01, input_port_1_r), /* IN1 */
+                new IO_ReadPort(0x02, 0x02, input_port_2_r), /* IN2 */
+                new IO_ReadPort(0x04, 0x04, input_port_3_r), /* DSW */
+                new IO_ReadPort(MEMPORT_MARKER, 0)
+            };
 
-    static IOWritePort writeport[]
+    static IO_WritePort writeport[]
             = {
-                new IOWritePort(0x00, 0x00, SN76496_0_w),
-                new IOWritePort(0x01, 0x01, SN76496_1_w),
-                new IOWritePort(0x02, 0x02, SN76496_2_w),
-                new IOWritePort(0x05, 0x05, bankp_scroll_w),
-                new IOWritePort(0x07, 0x07, bankp_out_w),
-                new IOWritePort(-1) /* end of table */};
+                new IO_WritePort(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_IO | MEMPORT_WIDTH_8),
+                new IO_WritePort(0x00, 0x00, SN76496_0_w),
+                new IO_WritePort(0x01, 0x01, SN76496_1_w),
+                new IO_WritePort(0x02, 0x02, SN76496_2_w),
+                new IO_WritePort(0x05, 0x05, bankp_scroll_w),
+                new IO_WritePort(0x07, 0x07, bankp_out_w),
+                new IO_WritePort(MEMPORT_MARKER, 0)
+            };
 
     static InputPortPtr input_ports_bankp = new InputPortPtr() {
         public void handler() {

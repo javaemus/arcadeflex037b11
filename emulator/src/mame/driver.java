@@ -17,7 +17,7 @@ import static drivers.wiping.*;
 import static drivers.ladybug.*;
 import static drivers.hexa.*;
 import static drivers._1942.*;
-import static drivers.bankp.*;
+import static mame056.drivers.bankp.*;
 import static drivers.blueprnt.*;
 import static drivers.higemaru.*;
 import static drivers.wiz.*;
