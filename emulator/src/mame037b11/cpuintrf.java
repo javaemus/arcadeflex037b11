@@ -131,7 +131,7 @@ public class cpuintrf {
 
 
     /* and a list of driver interception hooks */
-    public static irqcallbacksPtr[] drv_irq_callbacks;//static int (*drv_irq_callbacks[MAX_CPU])(int) = { NULL, };
+    public static irqcallbacksPtr[] drv_irq_callbacks=new irqcallbacksPtr[MAX_CPU];//static int (*drv_irq_callbacks[MAX_CPU])(int) = { NULL, };
 
     /*TODO*////* Default window layout for the debugger */
 /*TODO*///UINT8 default_win_layout[] = {

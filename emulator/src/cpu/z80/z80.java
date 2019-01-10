@@ -36,7 +36,7 @@ public class z80 extends cpu_interface {
         endianess = CPU_IS_LE;
         align_unit = 1;
         max_inst_len = 4;
-        databus_width=16;
+        databus_width=8;
         icount = z80_ICount;
         pgm_memory_base=0;
         //intialize interfaces
