@@ -6,7 +6,7 @@ package WIP.machine;
 
 import static mame056.common.*;
 import static mame.commonH.*;
-import static old2.mame.memory.*;
+import static mame037b11.memory.*;
 import static arcadeflex.libc.ptr.*;
 
 public class segacrpt {

@@ -243,18 +243,14 @@ public class memory {
 /*TODO*///	memset(ext_memory, 0, sizeof(ext_memory));
     }
 
-    /*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	memory_set_opcode_base - set the base of
-/*TODO*///	ROM
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///void memory_set_opcode_base(int cpu, void *base)
-/*TODO*///{
-/*TODO*///	cpudata[cpu].rombase = base;
-/*TODO*///}
-/*TODO*///
+    /*-------------------------------------------------
+	memory_set_opcode_base - set the base of
+	ROM
+    -------------------------------------------------*/
+    public static void memory_set_opcode_base(int cpu, UBytePtr base) {
+        cpudata[cpu].rombase = base;
+    }
+
 
     /*-------------------------------------------------
         memory_set_context - set the memory context
@@ -767,8 +763,8 @@ public class memory {
             /* get the subtable index */
             subindex = tabledata.table.read(l1stop);
             if (subindex < SUBTABLE_BASE) {
-                throw new UnsupportedOperationException("Unsupported");
-                /*TODO*///			subindex = tabledata->table[l1stop] = alloc_new_subtable(memport, tabledata, subindex);
+                tabledata.table.write(l1stop, alloc_new_subtable(memport, tabledata, subindex));
+                subindex = tabledata.table.read(l1stop);
             }
             subindex &= SUBTABLE_MASK;
 
@@ -1143,6 +1139,9 @@ public class memory {
             }
             Object mra_obj = Machine.drv.cpu[cpunum].port_read;
             Object mwa_obj = Machine.drv.cpu[cpunum].port_write;
+            if (mra_obj == null) {
+                return 1; //driver doesn't have ports
+            }
             if (mra_obj instanceof IO_ReadPort[]) {
                 IO_ReadPort[] mra = (IO_ReadPort[]) mra_obj;
                 int mra_ptr = 0;
@@ -1474,6 +1473,10 @@ public class memory {
         for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
             Object mra_obj = Machine.drv.cpu[cpunum].port_read;
             Object mwa_obj = Machine.drv.cpu[cpunum].port_write;
+            if(mra_obj==null)
+            {
+                return 1;//driver doens't have ports
+            }
             if (mra_obj instanceof IO_ReadPort[]) {
                 IO_ReadPort[] mra = (IO_ReadPort[]) mra_obj;
                 int mra_ptr = 0;
@@ -2458,18 +2461,26 @@ public class memory {
 /*TODO*///static WRITE_HANDLER( mwh8_rom )       { logerror("cpu #%d (PC=%08X): byte write to ROM %08X = %02X\n", cpu_getactivecpu(), cpu_get_pc(), offset, data); }
     public static WriteHandlerPtr mwh8_rom = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            throw new UnsupportedOperationException("Unsupported");
+            logerror("cpu #%d (PC=%08X): byte write to ROM %08X = %02X\n", cpu_getactivecpu(), cpu_get_pc(), offset, data);
         }
     };
     /*TODO*///static WRITE16_HANDLER( mwh16_rom )    { logerror("cpu #%d (PC=%08X): word write to %08X = %04X & %04X\n", cpu_getactivecpu(), cpu_get_pc(), offset*2, data, mem_mask ^ 0xffff); }
 /*TODO*///static WRITE32_HANDLER( mwh32_rom )    { logerror("cpu #%d (PC=%08X): dword write to %08X = %08X & %08X\n", cpu_getactivecpu(), cpu_get_pc(), offset*4, data, mem_mask ^ 0xffffffff); }
 /*TODO*///
-/*TODO*///static READ_HANDLER( mrh8_nop )        { return 0; }
-/*TODO*///static READ16_HANDLER( mrh16_nop )     { return 0; }
+    public static ReadHandlerPtr mrh8_nop = new ReadHandlerPtr() {
+        public int handler(int offset) {
+            return 0;
+        }
+    };
+    /*TODO*///static READ16_HANDLER( mrh16_nop )     { return 0; }
 /*TODO*///static READ32_HANDLER( mrh32_nop )     { return 0; }
 /*TODO*///
-/*TODO*///static WRITE_HANDLER( mwh8_nop )       {  }
-/*TODO*///static WRITE16_HANDLER( mwh16_nop )    {  }
+    public static WriteHandlerPtr mwh8_nop = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+
+        }
+    };
+    /*TODO*///static WRITE16_HANDLER( mwh16_nop )    {  }
 /*TODO*///static WRITE32_HANDLER( mwh32_nop )    {  }
 /*TODO*///
     public static ReadHandlerPtr mrh8_ram = new ReadHandlerPtr() {
@@ -2482,8 +2493,13 @@ public class memory {
             cpu_bankbase[STATIC_RAM].write(offset, data);
         }
     };
-    /*TODO*///static WRITE_HANDLER( mwh8_ramrom )    { cpu_bankbase[STATIC_RAM][offset] = cpu_bankbase[STATIC_RAM][offset + (OP_ROM - OP_RAM)] = data; }
-/*TODO*///static WRITE16_HANDLER( mwh16_ramrom ) { COMBINE_DATA(&cpu_bankbase[STATIC_RAM][offset*2]); COMBINE_DATA(&cpu_bankbase[0][offset*2 + (OP_ROM - OP_RAM)]); }
+    public static WriteHandlerPtr mwh8_ramrom = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            cpu_bankbase[STATIC_RAM].write(offset + (OP_ROM.offset - OP_RAM.offset), data);
+            cpu_bankbase[STATIC_RAM].write(offset, data);
+        }
+    };
+    /*TODO*///static WRITE16_HANDLER( mwh16_ramrom ) { COMBINE_DATA(&cpu_bankbase[STATIC_RAM][offset*2]); COMBINE_DATA(&cpu_bankbase[0][offset*2 + (OP_ROM - OP_RAM)]); }
 /*TODO*///static WRITE32_HANDLER( mwh32_ramrom ) { COMBINE_DATA(&cpu_bankbase[STATIC_RAM][offset*4]); COMBINE_DATA(&cpu_bankbase[0][offset*4 + (OP_ROM - OP_RAM)]); }
 /*TODO*///
     public static ReadHandlerPtr mrh8_bank1 = new ReadHandlerPtr() {
@@ -2776,10 +2792,12 @@ public class memory {
 /*TODO*///	set_static_handler(STATIC_BANK24, mrh8_bank24, NULL,         NULL,         mwh8_bank24, NULL,         NULL);
         set_static_handler(STATIC_UNMAP, mrh8_bad, mwh8_bad);
         /*TODO*///	set_static_handler(STATIC_UNMAP,  mrh8_bad,    mrh16_bad,    mrh32_bad,    mwh8_bad,    mwh16_bad,    mwh32_bad);
-/*TODO*///	set_static_handler(STATIC_NOP,    mrh8_nop,    mrh16_nop,    mrh32_nop,    mwh8_nop,    mwh16_nop,    mwh32_nop);
+        set_static_handler(STATIC_NOP, mrh8_nop, mwh8_nop);
+        /*TODO*///	set_static_handler(STATIC_NOP,    mrh8_nop,    mrh16_nop,    mrh32_nop,    mwh8_nop,    mwh16_nop,    mwh32_nop);
 /*TODO*///	set_static_handler(STATIC_RAM,    mrh8_ram,    NULL,         NULL,         mwh8_ram,    NULL,         NULL);
 /*TODO*///	set_static_handler(STATIC_ROM,    NULL,        NULL,         NULL,         mwh8_rom,    mwh16_rom,    mwh32_rom);
-/*TODO*///	set_static_handler(STATIC_RAMROM, NULL,        NULL,         NULL,         mwh8_ramrom, mwh16_ramrom, mwh32_ramrom);
+        set_static_handler(STATIC_RAMROM, null, mwh8_ramrom);
+        /*TODO*///	set_static_handler(STATIC_RAMROM, NULL,        NULL,         NULL,         mwh8_ramrom, mwh16_ramrom, mwh32_ramrom);
 /*TODO*///
         set_static_handler(STATIC_RAM, mrh8_ram, mwh8_ram);
         set_static_handler(STATIC_ROM, null, mwh8_rom);

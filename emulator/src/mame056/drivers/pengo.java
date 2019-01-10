@@ -1,21 +1,23 @@
 /**
+ * ported to 0.56
  * ported to 0.37b7
  */
-package drivers;
+package mame056.drivers;
+
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static WIP.machine.segacrpt.*;
 import static mame056.common.*;
-import static mame.commonH.*;
+import static mame056.commonH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old.mame.inputH.*;
-import static old2.mame.memory.*;
-import static old2.mame.memoryH.*;
+import static mame037b11.memory.*;
+import static mame037b11.memoryH.*;
 import static mame.sndintrfH.*;
 import static sound.namco.*;
 import static sound.namcoH.*;
@@ -24,33 +26,35 @@ import static vidhrdw.generic.*;
 
 public class pengo {
 
-    static MemoryReadAddress readmem[]
+    static Memory_ReadAddress readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x7fff, MRA_ROM),
-                new MemoryReadAddress(0x8000, 0x8fff, MRA_RAM), /* video and color RAM, scratchpad RAM, sprite codes */
-                new MemoryReadAddress(0x9000, 0x903f, input_port_3_r), /* DSW1 */
-                new MemoryReadAddress(0x9040, 0x907f, input_port_2_r), /* DSW0 */
-                new MemoryReadAddress(0x9080, 0x90bf, input_port_1_r), /* IN1 */
-                new MemoryReadAddress(0x90c0, 0x90ff, input_port_0_r), /* IN0 */
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x7fff, MRA_ROM),
+                new Memory_ReadAddress(0x8000, 0x8fff, MRA_RAM), /* video and color RAM, scratchpad RAM, sprite codes */
+                new Memory_ReadAddress(0x9000, 0x903f, input_port_3_r), /* DSW1 */
+                new Memory_ReadAddress(0x9040, 0x907f, input_port_2_r), /* DSW0 */
+                new Memory_ReadAddress(0x9080, 0x90bf, input_port_1_r), /* IN1 */
+                new Memory_ReadAddress(0x90c0, 0x90ff, input_port_0_r), /* IN0 */
+                new Memory_ReadAddress(MEMPORT_MARKER, 0) /* end of table */};
 
-    static MemoryWriteAddress writemem[]
+    static Memory_WriteAddress writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x7fff, MWA_ROM),
-                new MemoryWriteAddress(0x8000, 0x83ff, videoram_w, videoram, videoram_size),
-                new MemoryWriteAddress(0x8400, 0x87ff, colorram_w, colorram),
-                new MemoryWriteAddress(0x8800, 0x8fef, MWA_RAMROM),
-                new MemoryWriteAddress(0x8ff0, 0x8fff, MWA_RAM, spriteram, spriteram_size),
-                new MemoryWriteAddress(0x9000, 0x901f, pengo_sound_w, namco_soundregs),
-                new MemoryWriteAddress(0x9020, 0x902f, MWA_RAM, spriteram_2),
-                new MemoryWriteAddress(0x9040, 0x9040, interrupt_enable_w),
-                new MemoryWriteAddress(0x9041, 0x9041, pengo_sound_enable_w),
-                new MemoryWriteAddress(0x9042, 0x9042, MWA_NOP),
-                new MemoryWriteAddress(0x9043, 0x9043, pengo_flipscreen_w),
-                new MemoryWriteAddress(0x9044, 0x9046, MWA_NOP),
-                new MemoryWriteAddress(0x9047, 0x9047, pengo_gfxbank_w),
-                new MemoryWriteAddress(0x9070, 0x9070, MWA_NOP),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x7fff, MWA_ROM),
+                new Memory_WriteAddress(0x8000, 0x83ff, videoram_w, videoram, videoram_size),
+                new Memory_WriteAddress(0x8400, 0x87ff, colorram_w, colorram),
+                new Memory_WriteAddress(0x8800, 0x8fef, MWA_RAMROM),
+                new Memory_WriteAddress(0x8ff0, 0x8fff, MWA_RAM, spriteram, spriteram_size),
+                new Memory_WriteAddress(0x9000, 0x901f, pengo_sound_w, namco_soundregs),
+                new Memory_WriteAddress(0x9020, 0x902f, MWA_RAM, spriteram_2),
+                new Memory_WriteAddress(0x9040, 0x9040, interrupt_enable_w),
+                new Memory_WriteAddress(0x9041, 0x9041, pengo_sound_enable_w),
+                new Memory_WriteAddress(0x9042, 0x9042, MWA_NOP),
+                new Memory_WriteAddress(0x9043, 0x9043, pengo_flipscreen_w),
+                new Memory_WriteAddress(0x9044, 0x9046, MWA_NOP),
+                new Memory_WriteAddress(0x9047, 0x9047, pengo_gfxbank_w),
+                new Memory_WriteAddress(0x9070, 0x9070, MWA_NOP),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0) /* end of table */};
 
     static InputPortPtr input_ports_pengo = new InputPortPtr() {
         public void handler() {
@@ -227,16 +231,14 @@ public class pengo {
 
     /**
      * *************************************************************************
-     * <p>
+     *
      * Game driver(s)
-     * <p>
-     * *************************************************************************
+     *
+     **************************************************************************
      */
     static RomLoadPtr rom_pengo = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(2 * 0x10000, REGION_CPU1);
-            /* 64k for code + 64k for decrypted opcodes */
-
+            ROM_REGION(2 * 0x10000, REGION_CPU1, 0);/* 64k for code + 64k for decrypted opcodes */
             ROM_LOAD("ic8", 0x0000, 0x1000, 0xf37066a8);
             ROM_LOAD("ic7", 0x1000, 0x1000, 0xbaf48143);
             ROM_LOAD("ic15", 0x2000, 0x1000, 0xadf0eba0);
@@ -246,30 +248,26 @@ public class pengo {
             ROM_LOAD("ic32", 0x6000, 0x1000, 0xaf7b12c4);
             ROM_LOAD("ic31", 0x7000, 0x1000, 0x933950fe);
 
-            ROM_REGION(0x2000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x2000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("ic92", 0x0000, 0x2000, 0xd7eec6cd);
 
-            ROM_REGION(0x2000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x2000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("ic105", 0x0000, 0x2000, 0x5bfd26e9);
 
-            ROM_REGION(0x0420, REGION_PROMS);
+            ROM_REGION(0x0420, REGION_PROMS, 0);
             ROM_LOAD("pr1633.078", 0x0000, 0x0020, 0x3a5844ec);
             ROM_LOAD("pr1634.088", 0x0020, 0x0400, 0x766b139b);
 
-            ROM_REGION(0x0200, REGION_SOUND1);/* sound PROMs */
-
+            ROM_REGION(0x0200, REGION_SOUND1, 0);/* sound PROMs */
             ROM_LOAD("pr1635.051", 0x0000, 0x0100, 0xc29dea27);
             ROM_LOAD("pr1636.070", 0x0100, 0x0100, 0x77245b66);/* timing - not used */
-
             ROM_END();
         }
     };
 
     static RomLoadPtr rom_pengo2 = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(2 * 0x10000, REGION_CPU1);
-            /* 64k for code + 64k for decrypted opcodes */
-
+            ROM_REGION(2 * 0x10000, REGION_CPU1, 0);/* 64k for code + 64k for decrypted opcodes */
             ROM_LOAD("ic8.2", 0x0000, 0x1000, 0xe4924b7b);
             ROM_LOAD("ic7.2", 0x1000, 0x1000, 0x72e7775d);
             ROM_LOAD("ic15.2", 0x2000, 0x1000, 0x7410ef1e);
@@ -279,29 +277,26 @@ public class pengo {
             ROM_LOAD("ic32", 0x6000, 0x1000, 0xaf7b12c4);
             ROM_LOAD("ic31.2", 0x7000, 0x1000, 0x669555c1);
 
-            ROM_REGION(0x2000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x2000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("ic92", 0x0000, 0x2000, 0xd7eec6cd);
 
-            ROM_REGION(0x2000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x2000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("ic105", 0x0000, 0x2000, 0x5bfd26e9);
 
-            ROM_REGION(0x0420, REGION_PROMS);
+            ROM_REGION(0x0420, REGION_PROMS, 0);
             ROM_LOAD("pr1633.078", 0x0000, 0x0020, 0x3a5844ec);
             ROM_LOAD("pr1634.088", 0x0020, 0x0400, 0x766b139b);
 
-            ROM_REGION(0x0200, REGION_SOUND1);/* sound PROMs */
-
+            ROM_REGION(0x0200, REGION_SOUND1, 0);/* sound PROMs */
             ROM_LOAD("pr1635.051", 0x0000, 0x0100, 0xc29dea27);
             ROM_LOAD("pr1636.070", 0x0100, 0x0100, 0x77245b66);/* timing - not used */
-
             ROM_END();
         }
     };
 
     static RomLoadPtr rom_pengo2u = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);/* 64k for code */
-
+            ROM_REGION(0x10000, REGION_CPU1, 0);/* 64k for code */
             ROM_LOAD("pengo.u8", 0x0000, 0x1000, 0x3dfeb20e);
             ROM_LOAD("pengo.u7", 0x1000, 0x1000, 0x1db341bd);
             ROM_LOAD("pengo.u15", 0x2000, 0x1000, 0x7c2842d5);
@@ -311,30 +306,26 @@ public class pengo {
             ROM_LOAD("pengo.u32", 0x6000, 0x1000, 0xe5920728);
             ROM_LOAD("pengo.u31", 0x7000, 0x1000, 0x13de47ed);
 
-            ROM_REGION(0x2000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x2000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("ic92", 0x0000, 0x2000, 0xd7eec6cd);
 
-            ROM_REGION(0x2000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x2000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("ic105", 0x0000, 0x2000, 0x5bfd26e9);
 
-            ROM_REGION(0x0420, REGION_PROMS);
+            ROM_REGION(0x0420, REGION_PROMS, 0);
             ROM_LOAD("pr1633.078", 0x0000, 0x0020, 0x3a5844ec);
             ROM_LOAD("pr1634.088", 0x0020, 0x0400, 0x766b139b);
 
-            ROM_REGION(0x0200, REGION_SOUND1);/* sound PROMs */
-
+            ROM_REGION(0x0200, REGION_SOUND1, 0);/* sound PROMs */
             ROM_LOAD("pr1635.051", 0x0000, 0x0100, 0xc29dea27);
             ROM_LOAD("pr1636.070", 0x0100, 0x0100, 0x77245b66);/* timing - not used */
-
             ROM_END();
         }
     };
 
     static RomLoadPtr rom_penta = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(2 * 0x10000, REGION_CPU1);
-            /* 64k for code + 64k for decrypted opcodes */
-
+            ROM_REGION(2 * 0x10000, REGION_CPU1, 0);/* 64k for code + 64k for decrypted opcodes */
             ROM_LOAD("008_pn01.bin", 0x0000, 0x1000, 0x22f328df);
             ROM_LOAD("007_pn05.bin", 0x1000, 0x1000, 0x15bbc7d3);
             ROM_LOAD("015_pn02.bin", 0x2000, 0x1000, 0xde82b74a);
@@ -344,21 +335,19 @@ public class pengo {
             ROM_LOAD("032_pn04.bin", 0x6000, 0x1000, 0xbfde44c1);
             ROM_LOAD("031_pn08.bin", 0x7000, 0x1000, 0x64e8c30d);
 
-            ROM_REGION(0x2000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x2000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("092_pn09.bin", 0x0000, 0x2000, 0x6afeba9d);
 
-            ROM_REGION(0x2000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x2000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("ic105", 0x0000, 0x2000, 0x5bfd26e9);
 
-            ROM_REGION(0x0420, REGION_PROMS);
+            ROM_REGION(0x0420, REGION_PROMS, 0);
             ROM_LOAD("pr1633.078", 0x0000, 0x0020, 0x3a5844ec);
             ROM_LOAD("pr1634.088", 0x0020, 0x0400, 0x766b139b);
 
-            ROM_REGION(0x0200, REGION_SOUND1);/* sound PROMs */
-
+            ROM_REGION(0x0200, REGION_SOUND1, 0);/* sound PROMs */
             ROM_LOAD("pr1635.051", 0x0000, 0x0100, 0xc29dea27);
             ROM_LOAD("pr1636.070", 0x0100, 0x0100, 0x77245b66);/* timing - not used */
-
             ROM_END();
         }
     };

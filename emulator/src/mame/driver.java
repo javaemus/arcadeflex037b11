@@ -9,7 +9,7 @@ import static mame.driverH.*;
 import static drivers.retofinv.*;
 import static drivers.jrpacman.*;
 import static drivers.amidar.*;
-import static drivers.pengo.*;
+import static mame056.drivers.pengo.*;
 import static drivers.pacman.*;
 import static drivers.docastle.*;
 import static drivers.frogger.*;

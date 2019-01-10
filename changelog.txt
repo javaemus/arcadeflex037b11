@@ -1,3 +1,7 @@
+11/01/2018
+==========
+-More fixes to memory . Now pengo driver is also playable!
+
 10/01/2018
 ==========
 -Finished cpuintrf for 0.37b11. Still not compileable due to changes need to memory

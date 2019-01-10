@@ -13,7 +13,8 @@ public class memoryH {
 
         public abstract int handler(int address);
     }
-        public static abstract interface setopbase {
+
+    public static abstract interface setopbase {
 
         public abstract void handler(int pc);
     }
@@ -256,12 +257,12 @@ public class memoryH {
 /*TODO*///#define MWA_BANK22				((mem_write_handler)STATIC_BANK22)
 /*TODO*///#define MWA_BANK23				((mem_write_handler)STATIC_BANK23)
 /*TODO*///#define MWA_BANK24				((mem_write_handler)STATIC_BANK24)
-/*TODO*///#define MWA_NOP					((mem_write_handler)STATIC_NOP)
+    public static final int MWA_NOP = STATIC_NOP;
     public static final int MWA_RAM = STATIC_RAM;
     public static final int MWA_ROM = STATIC_ROM;
+    public static final int MWA_RAMROM = STATIC_RAMROM;
 
-    /*TODO*///#define MWA_RAMROM				((mem_write_handler)STATIC_RAMROM)
-/*TODO*///
+    /*TODO*///
 /*TODO*////* 16-bit reads */
 /*TODO*///#define MRA16_BANK1				((mem_read16_handler)STATIC_BANK1)
 /*TODO*///#define MRA16_BANK2				((mem_read16_handler)STATIC_BANK2)
@@ -440,6 +441,13 @@ public class memoryH {
             this._handler = null;
         }
 
+        public Memory_ReadAddress(int start, int end, ReadHandlerPtr _handler) {
+            this.start = start;
+            this.end = end;
+            this.handler = -15000;//random number for not matching something else
+            this._handler = _handler;
+        }
+
         int start, end;/* start, end addresses, inclusive */
         ReadHandlerPtr _handler;/* handler callback */
         int handler;
@@ -475,6 +483,33 @@ public class memoryH {
             this.end = end;
             this.handler = handler;
             this._handler = null;
+            this.base = null;
+            this.size = null;
+        }
+
+        public Memory_WriteAddress(int start, int end, int handler, UBytePtr base) {
+            this.start = start;
+            this.end = end;
+            this.handler = handler;
+            this._handler = null;
+            this.base = base;
+            this.size = null;
+        }
+
+        public Memory_WriteAddress(int start, int end, int handler, UBytePtr base, int[] size) {
+            this.start = start;
+            this.end = end;
+            this.handler = handler;
+            this._handler = null;
+            this.base = base;
+            this.size = size;
+        }
+
+        public Memory_WriteAddress(int start, int end, WriteHandlerPtr _handler) {
+            this.start = start;
+            this.end = end;
+            this.handler = -15000;//random number for not matching something else
+            this._handler = _handler;
             this.base = null;
             this.size = null;
         }
@@ -716,12 +751,11 @@ public class memoryH {
         return ((a) >>> (LEVEL2_BITS((b) - (m)) + (m)));
     }
 
-    public static int LEVEL2_INDEX(int e,int a,int b,int m)
-    {
-        return ((1 << LEVEL1_BITS((b)-(m))) + (((e) & SUBTABLE_MASK) << LEVEL2_BITS((b)-(m))) + (((a) >> (m)) & LEVEL2_MASK((b)-(m))));
+    public static int LEVEL2_INDEX(int e, int a, int b, int m) {
+        return ((1 << LEVEL1_BITS((b) - (m))) + (((e) & SUBTABLE_MASK) << LEVEL2_BITS((b) - (m))) + (((a) >> (m)) & LEVEL2_MASK((b) - (m))));
     }
 
-/* ----- sparse memory space detection ----- */
+    /* ----- sparse memory space detection ----- */
     public static boolean IS_SPARSE(int a) {
         return ((a) > SPARSE_THRESH);
     }
@@ -958,16 +992,18 @@ public class memoryH {
 /*TODO*///#define cpu_readop(A)				(OP_ROM[(A) & memory_amask])
     /* ----- opcode reading ----- */
     public static char cpu_readop(int A) {
-        return OP_ROM.read(A& memory_amask);
+        return OP_ROM.read(A & memory_amask);
     }
-/*TODO*///#define cpu_readop16(A)				(*(data16_t *)&OP_ROM[(A) & memory_amask])
+
+    /*TODO*///#define cpu_readop16(A)				(*(data16_t *)&OP_ROM[(A) & memory_amask])
 /*TODO*///#define cpu_readop32(A)				(*(data32_t *)&OP_ROM[(A) & memory_amask])
 /*TODO*///
     /* ----- opcode argument reading ----- */
     public static char cpu_readop_arg(int A) {
-        return OP_RAM.read(A& memory_amask);
+        return OP_RAM.read(A & memory_amask);
     }
-/*TODO*///#define cpu_readop_arg16(A)			(*(data16_t *)&OP_RAM[(A) & memory_amask])
+
+    /*TODO*///#define cpu_readop_arg16(A)			(*(data16_t *)&OP_RAM[(A) & memory_amask])
 /*TODO*///#define cpu_readop_arg32(A)			(*(data32_t *)&OP_RAM[(A) & memory_amask])
 /*TODO*///
 /*TODO*////* ----- bank switching for CPU cores ----- */
