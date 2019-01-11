@@ -996,11 +996,12 @@ public class memory {
             }
             Object mra_obj = Machine.drv.cpu[cpunum].memory_read;
             Object mwa_obj = Machine.drv.cpu[cpunum].memory_write;
-            if (mra_obj instanceof Memory_ReadAddress[]) {
-                Memory_ReadAddress[] mra = (Memory_ReadAddress[]) mra_obj;
-                int mra_ptr = 0;
-                /* verify the read handlers */
-                if (mra != null) {
+
+            /* verify the read handlers */
+            if (mra_obj != null) {
+                if (mra_obj instanceof Memory_ReadAddress[]) {
+                    Memory_ReadAddress[] mra = (Memory_ReadAddress[]) mra_obj;
+                    int mra_ptr = 0;
                     /* verify the MEMPORT_READ_START header */
                     if (mra[mra_ptr].start == MEMPORT_MARKER && mra[mra_ptr].end != 0) {
                         if ((mra[mra_ptr].end & MEMPORT_TYPE_MASK) != MEMPORT_TYPE_MEM) {
@@ -1023,11 +1024,16 @@ public class memory {
 /*TODO*///					bankdata[bank].used = 1;
 /*TODO*///					bankdata[bank].cpunum = -1;
 /*TODO*///				}
+                } else {
+                    //do the same for 16,32bit handlers
+                    throw new UnsupportedOperationException("Unsupported");
                 }
-                /* verify the write handlers */
-                Memory_WriteAddress[] mwa = (Memory_WriteAddress[]) mwa_obj;
-                int mwa_ptr = 0;
-                if (mwa != null) {
+            }
+            /* verify the write handlers */
+            if (mwa_obj != null) {
+                if (mwa_obj instanceof Memory_WriteAddress[]) {
+                    Memory_WriteAddress[] mwa = (Memory_WriteAddress[]) mwa_obj;
+                    int mwa_ptr = 0;
                     /* verify the MEMPORT_WRITE_START header */
                     if (mwa[mwa_ptr].start == MEMPORT_MARKER && mwa[mwa_ptr].end != 0) {
                         if ((mwa[mwa_ptr].end & MEMPORT_TYPE_MASK) != MEMPORT_TYPE_MEM) {
@@ -1041,6 +1047,7 @@ public class memory {
                         }
                         mwa_ptr++;
                     }
+
                     /*TODO*///
 /*TODO*///			/* track banks used */
 /*TODO*///			for (; !IS_MEMPORT_END(mwa); mwa++)
@@ -1051,11 +1058,12 @@ public class memory {
 /*TODO*///					bankdata[bank].cpunum = -1;
 /*TODO*///				}
 /*TODO*///				mwa++;
+                } else {
+                    //do the same for 16,32bit handlers
+                    throw new UnsupportedOperationException("Unsupported");
                 }
-            } else {
-                //do the same for 16,32bit handlers
-                throw new UnsupportedOperationException("Unsupported");
             }
+
             /*TODO*///		const struct Memory_ReadAddress *mra = Machine->drv->cpu[cpunum].memory_read;
 /*TODO*///		const struct Memory_WriteAddress *mwa = Machine->drv->cpu[cpunum].memory_write;
 /*TODO*///
@@ -1379,11 +1387,12 @@ public class memory {
         for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
             Object mra_obj = Machine.drv.cpu[cpunum].memory_read;
             Object mwa_obj = Machine.drv.cpu[cpunum].memory_write;
-            if (mra_obj instanceof Memory_ReadAddress[]) {
-                Memory_ReadAddress[] mra = (Memory_ReadAddress[]) mra_obj;
-                int mra_ptr = 0;
-                /* install the read handlers */
-                if (mra != null) {
+
+            /* install the read handlers */
+            if (mra_obj != null) {
+                if (mra_obj instanceof Memory_ReadAddress[]) {
+                    Memory_ReadAddress[] mra = (Memory_ReadAddress[]) mra_obj;
+                    int mra_ptr = 0;
                     /* first find the end and check for address bits */
                     for (mra_ptr = 0; !IS_MEMPORT_END(mra[mra_ptr]); mra_ptr++) {
                         if (IS_MEMPORT_MARKER(mra[mra_ptr]) && ((mra[mra_ptr].end & MEMPORT_ABITS_MASK) != 0)) {
@@ -1397,11 +1406,17 @@ public class memory {
                             install_mem_handler(cpudata[cpunum].mem, 0, mra[mra_ptr].start, mra[mra_ptr].end, mra[mra_ptr].handler, (Object) mra[mra_ptr]._handler);
                         }
                     }
+                } else {
+                    //16,32bit handling
+                    throw new UnsupportedOperationException("Unsupported");
                 }
-                Memory_WriteAddress[] mwa = (Memory_WriteAddress[]) mwa_obj;
-                int mwa_ptr = 0;
-                /* install the write handlers */
-                if (mwa != null) {
+            }
+
+            /* install the write handlers */
+            if (mwa_obj != null) {
+                if (mwa_obj instanceof Memory_WriteAddress[]) {
+                    Memory_WriteAddress[] mwa = (Memory_WriteAddress[]) mwa_obj;
+                    int mwa_ptr = 0;
                     /* first find the end and check for address bits */
                     for (mwa_ptr = 0; !IS_MEMPORT_END(mwa[mwa_ptr]); mwa_ptr++) {
                         if (IS_MEMPORT_MARKER(mwa[mwa_ptr]) && (mwa[mwa_ptr].end & MEMPORT_ABITS_MASK) != 0) {
@@ -1423,11 +1438,12 @@ public class memory {
                             }
                         }
                     }
+                } else {
+                    //16,32bit handling
+                    throw new UnsupportedOperationException("Unsupported");
                 }
-            } else {
-                //16,32bit handling
-                throw new UnsupportedOperationException("Unsupported");
             }
+
             /*TODO*///		const struct Memory_ReadAddress *mra, *mra_start = Machine->drv->cpu[cpunum].memory_read;
 /*TODO*///		const struct Memory_WriteAddress *mwa, *mwa_start = Machine->drv->cpu[cpunum].memory_write;
 /*TODO*///
