@@ -18,7 +18,7 @@ import static old.mame.common.*;
 import static old.mame.inptportH.*;
 import static vidhrdw.rallyx.*;
 import static mame.sndintrf.*;
-import static sndhrdw.timeplt.*;
+import static mame056.sndhrdw.timeplt.*;
 
 public class locomotn {
 

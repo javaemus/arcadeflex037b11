@@ -22,7 +22,7 @@ import static drivers.blueprnt.*;
 import static drivers.higemaru.*;
 import static drivers.wiz.*;
 import static drivers.solomon.*;
-import static drivers.pooyan.*;
+import static mame056.drivers.pooyan.*;
 import static drivers.bombjack.*;
 import static drivers.pbaction.*;
 import static drivers.cop01.*;

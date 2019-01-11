@@ -16,9 +16,9 @@ import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static old.mame.common.*;
 import static vidhrdw.generic.*;
-import static sndhrdw.timeplt.*;
+import static mame056.sndhrdw.timeplt.*;
 import static vidhrdw.timeplt.*;
-import static sndhrdw.timeplt.*;
+import static mame056.sndhrdw.timeplt.*;
 
 public class timeplt {
 

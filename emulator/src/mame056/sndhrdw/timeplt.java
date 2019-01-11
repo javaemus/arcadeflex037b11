@@ -1,10 +1,10 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- * using automatic conversion tool v0.01
  */
-package sndhrdw;
+package mame056.sndhrdw;
 
-import static old2.mame.memoryH.*;
+import static mame037b11.memoryH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.sndintrf.*;
 import static sound.ay8910.*;
@@ -90,26 +90,28 @@ public class timeplt {
             last = data;
         }
     };
-    public static MemoryReadAddress timeplt_sound_readmem[]
+    public static Memory_ReadAddress timeplt_sound_readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x1fff, MRA_ROM),
-                new MemoryReadAddress(0x2000, 0x23ff, MRA_RAM),
-                new MemoryReadAddress(0x3000, 0x33ff, MRA_RAM),
-                new MemoryReadAddress(0x4000, 0x4000, AY8910_read_port_0_r),
-                new MemoryReadAddress(0x6000, 0x6000, AY8910_read_port_1_r),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x1fff, MRA_ROM),
+                new Memory_ReadAddress(0x2000, 0x23ff, MRA_RAM),
+                new Memory_ReadAddress(0x3000, 0x33ff, MRA_RAM),
+                new Memory_ReadAddress(0x4000, 0x4000, AY8910_read_port_0_r),
+                new Memory_ReadAddress(0x6000, 0x6000, AY8910_read_port_1_r),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    public static MemoryWriteAddress timeplt_sound_writemem[]
+    public static Memory_WriteAddress timeplt_sound_writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x1fff, MWA_ROM),
-                new MemoryWriteAddress(0x2000, 0x23ff, MWA_RAM),
-                new MemoryWriteAddress(0x3000, 0x33ff, MWA_RAM),
-                new MemoryWriteAddress(0x4000, 0x4000, AY8910_write_port_0_w),
-                new MemoryWriteAddress(0x5000, 0x5000, AY8910_control_port_0_w),
-                new MemoryWriteAddress(0x6000, 0x6000, AY8910_write_port_1_w),
-                new MemoryWriteAddress(0x7000, 0x7000, AY8910_control_port_1_w),
-                new MemoryWriteAddress(0x8000, 0x8fff, timeplt_filter_w),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x1fff, MWA_ROM),
+                new Memory_WriteAddress(0x2000, 0x23ff, MWA_RAM),
+                new Memory_WriteAddress(0x3000, 0x33ff, MWA_RAM),
+                new Memory_WriteAddress(0x4000, 0x4000, AY8910_write_port_0_w),
+                new Memory_WriteAddress(0x5000, 0x5000, AY8910_control_port_0_w),
+                new Memory_WriteAddress(0x6000, 0x6000, AY8910_write_port_1_w),
+                new Memory_WriteAddress(0x7000, 0x7000, AY8910_control_port_1_w),
+                new Memory_WriteAddress(0x8000, 0x8fff, timeplt_filter_w),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
     public static AY8910interface timeplt_ay8910_interface = new AY8910interface(
             2, /* 2 chips */
