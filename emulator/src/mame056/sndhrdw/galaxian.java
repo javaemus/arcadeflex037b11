@@ -1,8 +1,8 @@
-/*
+/**
+ * ported to 0.56
  * ported to v0.37b7
- * using automatic conversion tool v0.01
  */
-package sndhrdw;
+package mame056.sndhrdw;
 
 import static arcadeflex.fucPtr.*;
 
@@ -562,7 +562,7 @@ public class galaxian {
              */
 
             mixer_set_sample_frequency(channellfo + 0, sizeof(backgroundwave) * freq * (100 + 2 * 470) / (100 + 2 * 470));
-            mixer_set_sample_frequency(channellfo + 1, sizeof(backgroundwave) * freq * (100 + 2 * 300) / (100 + 2 * 470));
+            mixer_set_sample_frequency(channellfo + 1, sizeof(backgroundwave) * freq * (100 + 2 * 330) / (100 + 2 * 470));
             mixer_set_sample_frequency(channellfo + 2, sizeof(backgroundwave) * freq * (100 + 2 * 220) / (100 + 2 * 470));
         }
     };

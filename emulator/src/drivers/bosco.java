@@ -16,7 +16,7 @@ import static sound.namco.*;
 import static sound.namcoH.*;
 import static machine.bosco.*;
 import static vidhrdw.bosco.*;
-import static sndhrdw.bosco.*;
+import static mame056.sndhrdw.bosco.*;
 import static vidhrdw.generic.*;
 import static sound.samplesH.*;
 

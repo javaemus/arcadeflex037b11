@@ -18,7 +18,7 @@ import static mame.sndintrf.soundlatch_r;
 import static mame.sndintrf.soundlatch_w;
 import static mame.sndintrfH.*;
 import static vidhrdw.cclimber.*;
-import static sndhrdw.cclimber.*;
+import static mame056.sndhrdw.cclimber.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static mame056.common.*;

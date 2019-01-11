@@ -1,8 +1,8 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- * using automatic conversion tool v0.01
  */
-package sndhrdw;
+package mame056.sndhrdw;
 
 import static mame.sndintrfH.*;
 import static old2.mame.mame.*;

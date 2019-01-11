@@ -2,7 +2,7 @@
  * ported to 0.37b7
  * ported to 0.36
  */
-package sndhrdw;
+package mame056.sndhrdw;
 
 import static arcadeflex.fucPtr.*;
 import static sound.samples.*;

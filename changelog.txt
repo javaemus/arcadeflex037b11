@@ -4,6 +4,7 @@
 -Improved memory ports handlers instances
 -Improved memory handlers instances
 -Converted pooyan driver to 0.56
+-Converted a few sndhrdw drivers to 0.56
 
 10/01/2018
 ==========

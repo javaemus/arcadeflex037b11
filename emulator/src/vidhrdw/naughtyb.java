@@ -11,7 +11,7 @@ import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
 import static mame.osdependH.osd_bitmap;
 import static vidhrdw.generic.*;
-import static sndhrdw.pleiads.*;
+import static mame056.sndhrdw.pleiads.*;
 import static common.libc.cstring.*;
 import static old2.mame.common.bitmap_alloc;
 import static old2.mame.common.bitmap_free;

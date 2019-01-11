@@ -15,7 +15,7 @@ import static mame.sndintrfH.*;
 import static vidhrdw.generic.*;
 import static sound.tms36xxH.*;
 import static vidhrdw.naughtyb.*;
-import static sndhrdw.pleiads.*;
+import static mame056.sndhrdw.pleiads.*;
 
 public class naughtyb {
 

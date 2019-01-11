@@ -19,7 +19,7 @@ import static vidhrdw.zaxxon.*;
 import static sound.samplesH.*;
 import static old2.mame.memory.*;
 import static WIP.machine.segacrpt.*;
-import static sndhrdw.zaxxon.*;
+import static mame056.sndhrdw.zaxxon.*;
 import static arcadeflex.libc.ptr.*;
 import static common.libc.cstdlib.*;
 import static old.mame.common.*;

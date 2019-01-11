@@ -15,7 +15,7 @@ import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.generic.*;
 import static vidhrdw.wiping.*;
-import static sndhrdw.wiping.*;
+import static mame056.sndhrdw.wiping.*;
 
 public class wiping {
 

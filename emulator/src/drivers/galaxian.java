@@ -30,7 +30,7 @@ import static mame.sndintrf.*;
 import static old.mame.common.*;
 import static old2.mame.common.*;
 
-import static sndhrdw.galaxian.*;
+import static mame056.sndhrdw.galaxian.*;
 
 import static sound.ay8910.*;
 import static sound.ay8910H.*;

@@ -1,7 +1,8 @@
 /**
+ *  ported to 0.56
  *  ported to 0.37b7
  */
-package sndhrdw;
+package mame056.sndhrdw;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;

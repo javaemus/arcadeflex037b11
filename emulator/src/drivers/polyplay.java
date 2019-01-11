@@ -16,7 +16,7 @@ import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static old.mame.inputH.*;
 import static vidhrdw.generic.*;
-import static sndhrdw.polyplay.*;
+import static mame056.sndhrdw.polyplay.*;
 import static vidhrdw.polyplay.*;
 import static old2.mame.timer.*;
 import static old2.mame.timerH.*;
