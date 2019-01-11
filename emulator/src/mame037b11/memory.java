@@ -1139,14 +1139,12 @@ public class memory {
             }
             Object mra_obj = Machine.drv.cpu[cpunum].port_read;
             Object mwa_obj = Machine.drv.cpu[cpunum].port_write;
-            if (mra_obj == null) {
-                return 1; //driver doesn't have ports
-            }
-            if (mra_obj instanceof IO_ReadPort[]) {
-                IO_ReadPort[] mra = (IO_ReadPort[]) mra_obj;
-                int mra_ptr = 0;
-                /* verify the read handlers */
-                if (mra != null) {
+
+            /* verify the read handlers */
+            if (mra_obj != null) {
+                if (mra_obj instanceof IO_ReadPort[]) {
+                    IO_ReadPort[] mra = (IO_ReadPort[]) mra_obj;
+                    int mra_ptr = 0;
                     /* verify the PORT_READ_START header */
                     if (mra[mra_ptr].start == MEMPORT_MARKER && mra[mra_ptr].end != 0) {
                         if ((mra[mra_ptr].end & MEMPORT_TYPE_MASK) != MEMPORT_TYPE_IO) {
@@ -1159,12 +1157,17 @@ public class memory {
                             return fatalerror("cpu #%d uses wrong data width port handlers! (width = %d, memory = %08x)\n", cpunum, cpunum_databus_width(cpunum), mra[mra_ptr].end);
                         }
                     }
+                } else {
+                    //do the same for 16,32bit handlers
+                    throw new UnsupportedOperationException("Unsupported");
                 }
+            }
 
-                /* verify the write handlers */
-                IO_WritePort[] mwa = (IO_WritePort[]) mwa_obj;
-                int mwa_ptr = 0;
-                if (mwa != null) {
+            /* verify the write handlers */
+            if (mwa_obj != null) {
+                if (mwa_obj instanceof IO_WritePort[]) {
+                    IO_WritePort[] mwa = (IO_WritePort[]) mwa_obj;
+                    int mwa_ptr = 0;
                     /* verify the PORT_WRITE_START header */
                     if (mwa[mwa_ptr].start == MEMPORT_MARKER && mwa[mwa_ptr].end != 0) {
                         if ((mwa[mwa_ptr].end & MEMPORT_TYPE_MASK) != MEMPORT_TYPE_IO) {
@@ -1177,11 +1180,12 @@ public class memory {
                             return fatalerror("cpu #%d uses wrong data width port handlers! (width = %d, memory = %08x)\n", cpunum, cpunum_databus_width(cpunum), mwa[mwa_ptr].end);
                         }
                     }
+                } else {
+                    //do the same for 16,32bit handlers
+                    throw new UnsupportedOperationException("Unsupported");
                 }
-            } else {
-                //do the same for 16,32bit handlers
-                throw new UnsupportedOperationException("Unsupported");
             }
+
             /*TODO*///		const struct IO_ReadPort *mra = Machine->drv->cpu[cpunum].port_read;
             /*TODO*///		const struct IO_WritePort *mwa = Machine->drv->cpu[cpunum].port_write;
             /*TODO*///
@@ -1473,16 +1477,13 @@ public class memory {
         for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
             Object mra_obj = Machine.drv.cpu[cpunum].port_read;
             Object mwa_obj = Machine.drv.cpu[cpunum].port_write;
-            if(mra_obj==null)
-            {
-                return 1;//driver doens't have ports
-            }
-            if (mra_obj instanceof IO_ReadPort[]) {
-                IO_ReadPort[] mra = (IO_ReadPort[]) mra_obj;
-                int mra_ptr = 0;
 
-                /* install the read handlers */
-                if (mra != null) {
+
+            /* install the read handlers */
+            if (mra_obj != null) {
+                if (mra_obj instanceof IO_ReadPort[]) {
+                    IO_ReadPort[] mra = (IO_ReadPort[]) mra_obj;
+                    int mra_ptr = 0;
                     /* first find the end and check for address bits */
                     for (mra_ptr = 0; !IS_MEMPORT_END(mra[mra_ptr]); mra_ptr++) {
                         if (IS_MEMPORT_MARKER(mra[mra_ptr]) && (mra[mra_ptr].end & MEMPORT_ABITS_MASK) != 0) {
@@ -1496,11 +1497,17 @@ public class memory {
                             install_port_handler(cpudata[cpunum].port, 0, mra[mra_ptr].start, mra[mra_ptr].end, mra[mra_ptr].handler, mra[mra_ptr]._handler);
                         }
                     }
+                } else {
+                    //16bit -32 bit support
+                    throw new UnsupportedOperationException("Unsupported");
                 }
-                IO_WritePort[] mwa = (IO_WritePort[]) mwa_obj;
-                int mwa_ptr = 0;
-                /* install the write handlers */
-                if (mwa != null) {
+            }
+
+            /* install the write handlers */
+            if (mwa_obj != null) {
+                if (mwa_obj instanceof IO_WritePort[]) {
+                    IO_WritePort[] mwa = (IO_WritePort[]) mwa_obj;
+                    int mwa_ptr = 0;
                     /* first find the end and check for address bits */
                     for (mwa_ptr = 0; !IS_MEMPORT_END(mwa[mwa_ptr]); mwa_ptr++) {
                         if (IS_MEMPORT_MARKER(mwa[mwa_ptr]) && (mwa[mwa_ptr].end & MEMPORT_ABITS_MASK) != 0) {
@@ -1514,10 +1521,10 @@ public class memory {
                             install_port_handler(cpudata[cpunum].port, 1, mwa[mwa_ptr].start, mwa[mwa_ptr].end, mwa[mwa_ptr].handler, mwa[mwa_ptr]._handler);
                         }
                     }
+                } else {
+                    //16bit -32 bit support
+                    throw new UnsupportedOperationException("Unsupported");
                 }
-            } else {
-                //16bit -32 bit support
-                throw new UnsupportedOperationException("Unsupported");
             }
             /*TODO*///
             /*TODO*///		/* install the read handlers */

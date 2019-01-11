@@ -1,6 +1,7 @@
 11/01/2018
 ==========
 -More fixes to memory . Now pengo driver is also playable!
+-Improved memory ports handlers instances
 
 10/01/2018
 ==========
