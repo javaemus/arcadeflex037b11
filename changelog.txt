@@ -5,6 +5,7 @@
 -Improved memory handlers instances
 -Converted pooyan driver to 0.56
 -Converted a few sndhrdw drivers to 0.56
+-Added memory classes from 0.56
 
 10/01/2018
 ==========
