@@ -5,44 +5,21 @@ package mame056;
 
 import static arcadeflex.fucPtr.*;
 import arcadeflex.libc.ptr.UBytePtr;
-
+import static mame056.memory.*;
 
 public class memoryH {
 
-    /*TODO*////***************************************************************************
-/*TODO*///
-/*TODO*///	memory.h
-/*TODO*///
-/*TODO*///	Functions which handle the CPU memory and I/O port access.
-/*TODO*///
-/*TODO*///***************************************************************************/
-/*TODO*///
-/*TODO*///#ifndef _MEMORY_H
-/*TODO*///#define _MEMORY_H
-/*TODO*///
-/*TODO*///#include "osd_cpu.h"
-/*TODO*///#include <stddef.h>
-/*TODO*///
-/*TODO*///#ifdef __cplusplus
-/*TODO*///extern "C" {
-/*TODO*///#endif
-/*TODO*///
-/*TODO*////*
-/*TODO*/// * Versions of GNU C earlier that 2.7 appear to have problems with the
-/*TODO*/// * __attribute__ definition of UNUSEDARG, so we act as if it was not a
-/*TODO*/// * GNU compiler.
-/*TODO*/// */
-/*TODO*///
-/*TODO*///#ifdef __GNUC__
-/*TODO*///#if (__GNUC__ < 2) || ((__GNUC__ == 2) && (__GNUC_MINOR__ <= 7))
-/*TODO*///#define UNUSEDARG
-/*TODO*///#else
-/*TODO*///#define UNUSEDARG __attribute__((__unused__))
-/*TODO*///#endif
-/*TODO*///#else
-/*TODO*///#define UNUSEDARG
-/*TODO*///#endif
-/*TODO*///
+    public static abstract interface opbase_handlerPtr {
+
+        public abstract int handler(int address);
+    }
+
+    public static abstract interface setopbase {
+
+        public abstract void handler(int pc);
+    }
+
+    /*TODO*///
 /*TODO*///
 /*TODO*///
 /*TODO*////* obsolete, to be removed */
@@ -65,27 +42,14 @@ public class memoryH {
 /*TODO*///typedef UINT32			offs_t;
 /*TODO*///
     /* ----- typedefs for the various common memory/port handlers ----- */
-    public static abstract interface read8_handler extends ReadHandlerPtr {
-    };
-
-    public static abstract interface write8_handler extends WriteHandlerPtr {
-
-    };
-
-    /*TODO*///typedef data16_t		(*read16_handler) (UNUSEDARG offs_t offset, UNUSEDARG data16_t mem_mask);
+ /*TODO*///typedef data16_t		(*read16_handler) (UNUSEDARG offs_t offset, UNUSEDARG data16_t mem_mask);
 /*TODO*///typedef void			(*write16_handler)(UNUSEDARG offs_t offset, UNUSEDARG data16_t data, UNUSEDARG data16_t mem_mask);
 /*TODO*///typedef data32_t		(*read32_handler) (UNUSEDARG offs_t offset, UNUSEDARG data32_t mem_mask);
 /*TODO*///typedef void			(*write32_handler)(UNUSEDARG offs_t offset, UNUSEDARG data32_t data, UNUSEDARG data32_t mem_mask);
 /*TODO*///typedef offs_t			(*opbase_handler) (UNUSEDARG offs_t address);
 /*TODO*///
     /* ----- typedefs for the various common memory handlers ----- */
-    public static abstract interface mem_read_handler extends read8_handler {
-    };
-
-    public static abstract interface mem_write_handler extends write8_handler {
-    };
-
-    /*TODO*///typedef read16_handler	mem_read16_handler;
+ /*TODO*///typedef read16_handler	mem_read16_handler;
 /*TODO*///typedef write16_handler	mem_write16_handler;
 /*TODO*///typedef read32_handler	mem_read32_handler;
 /*TODO*///typedef write32_handler	mem_write32_handler;
@@ -260,7 +224,7 @@ public class memoryH {
 /*TODO*///#define MRA_BANK22				((mem_read_handler)STATIC_BANK22)
 /*TODO*///#define MRA_BANK23				((mem_read_handler)STATIC_BANK23)
 /*TODO*///#define MRA_BANK24				((mem_read_handler)STATIC_BANK24)
-/*TODO*///#define MRA_NOP					((mem_read_handler)STATIC_NOP)
+    public static final int MRA_NOP = STATIC_NOP;
     public static final int MRA_RAM = STATIC_RAM;
     public static final int MRA_ROM = STATIC_ROM;
 
@@ -292,12 +256,13 @@ public class memoryH {
 /*TODO*///#define MWA_BANK22				((mem_write_handler)STATIC_BANK22)
 /*TODO*///#define MWA_BANK23				((mem_write_handler)STATIC_BANK23)
 /*TODO*///#define MWA_BANK24				((mem_write_handler)STATIC_BANK24)
-/*TODO*///#define MWA_NOP					((mem_write_handler)STATIC_NOP)
+    public static final int MWA_NOP = STATIC_NOP;
     public static final int MWA_RAM = STATIC_RAM;
     public static final int MWA_ROM = STATIC_ROM;
 
-    /*TODO*///#define MWA_RAMROM				((mem_write_handler)STATIC_RAMROM)
-/*TODO*///
+    public static final int MWA_RAMROM = STATIC_RAMROM;
+
+    /*TODO*///
 /*TODO*////* 16-bit reads */
 /*TODO*///#define MRA16_BANK1				((mem_read16_handler)STATIC_BANK1)
 /*TODO*///#define MRA16_BANK2				((mem_read16_handler)STATIC_BANK2)
@@ -475,6 +440,13 @@ public class memoryH {
             this._handler = null;
         }
 
+        public Memory_ReadAddress(int start, int end, ReadHandlerPtr _handler) {
+            this.start = start;
+            this.end = end;
+            this.handler = -15000;//random number for not matching something else
+            this._handler = _handler;
+        }
+
         int start, end;/* start, end addresses, inclusive */
         ReadHandlerPtr _handler;/* handler callback */
         int handler;
@@ -510,6 +482,33 @@ public class memoryH {
             this.end = end;
             this.handler = handler;
             this._handler = null;
+            this.base = null;
+            this.size = null;
+        }
+
+        public Memory_WriteAddress(int start, int end, int handler, UBytePtr base) {
+            this.start = start;
+            this.end = end;
+            this.handler = handler;
+            this._handler = null;
+            this.base = base;
+            this.size = null;
+        }
+
+        public Memory_WriteAddress(int start, int end, int handler, UBytePtr base, int[] size) {
+            this.start = start;
+            this.end = end;
+            this.handler = handler;
+            this._handler = null;
+            this.base = base;
+            this.size = size;
+        }
+
+        public Memory_WriteAddress(int start, int end, WriteHandlerPtr _handler) {
+            this.start = start;
+            this.end = end;
+            this.handler = -15000;//random number for not matching something else
+            this._handler = _handler;
             this.base = null;
             this.size = null;
         }
@@ -618,13 +617,7 @@ public class memoryH {
         public WriteHandlerPtr _handler;/* handler callback */
     }
 
-    /*TODO*///struct IO_WritePort
-/*TODO*///{
-/*TODO*///	offs_t				start, end;		
-/*TODO*///	port_write_handler	handler;		
-/*TODO*///};
-/*TODO*///
-/*TODO*///struct IO_WritePort16
+    /*TODO*///struct IO_WritePort16
 /*TODO*///{
 /*TODO*///	offs_t				start, end;		/* start, end addresses, inclusive */
 /*TODO*///	port_write16_handler handler;		/* handler callback */
@@ -653,14 +646,14 @@ public class memoryH {
     public static boolean IS_MEMPORT_MARKER(Memory_WriteAddress ma) {
         return (ma.start == MEMPORT_MARKER && ma.end < MEMPORT_MARKER);
     }
-    
-        public static boolean IS_MEMPORT_MARKER(IO_ReadPort ma) {
+
+    public static boolean IS_MEMPORT_MARKER(IO_ReadPort ma) {
         return (ma.start == MEMPORT_MARKER && ma.end < MEMPORT_MARKER);
     }
-        
-        public static boolean IS_MEMPORT_MARKER(IO_WritePort ma) {
+
+    public static boolean IS_MEMPORT_MARKER(IO_WritePort ma) {
         return (ma.start == MEMPORT_MARKER && ma.end < MEMPORT_MARKER);
-    }    
+    }
 
     /*TODO*///#define IS_MEMPORT_END(ma)			((ma)->start == MEMPORT_MARKER && (ma)->end == 0)
     public static boolean IS_MEMPORT_END(Memory_ReadAddress ma) {
@@ -670,9 +663,11 @@ public class memoryH {
     public static boolean IS_MEMPORT_END(Memory_WriteAddress ma) {
         return ((ma).start == MEMPORT_MARKER && (ma).end == 0);
     }
+
     public static boolean IS_MEMPORT_END(IO_ReadPort ma) {
         return ((ma).start == MEMPORT_MARKER && (ma).end == 0);
     }
+
     public static boolean IS_MEMPORT_END(IO_WritePort ma) {
         return ((ma).start == MEMPORT_MARKER && (ma).end == 0);
     }
@@ -758,14 +753,20 @@ public class memoryH {
         return ((1 << LEVEL2_BITS(x)) - 1);
     }
 
-    /*TODO*////* ----- table lookup helpers ----- */
-/*TODO*///#define LEVEL1_INDEX(a,b,m)		((a) >> (LEVEL2_BITS((b)-(m)) + (m)))
-/*TODO*///#define LEVEL2_INDEX(e,a,b,m)	((1 << LEVEL1_BITS((b)-(m))) + (((e) & SUBTABLE_MASK) << LEVEL2_BITS((b)-(m))) + (((a) >> (m)) & LEVEL2_MASK((b)-(m))))
-/*TODO*///
-/* ----- sparse memory space detection ----- */
+    /* ----- table lookup helpers ----- */
+    public static int LEVEL1_INDEX(int a, int b, int m) {
+        return ((a) >>> (LEVEL2_BITS((b) - (m)) + (m)));
+    }
+
+    public static int LEVEL2_INDEX(int e, int a, int b, int m) {
+        return ((1 << LEVEL1_BITS((b) - (m))) + (((e) & SUBTABLE_MASK) << LEVEL2_BITS((b) - (m))) + (((a) >> (m)) & LEVEL2_MASK((b) - (m))));
+    }
+
+    /* ----- sparse memory space detection ----- */
     public static boolean IS_SPARSE(int a) {
         return ((a) > SPARSE_THRESH);
     }
+
     /*TODO*///
 /*TODO*///
 /*TODO*////***************************************************************************
@@ -862,8 +863,11 @@ public class memoryH {
 /*TODO*///DECLARE_MEM_HANDLERS_8BIT(20)
 /*TODO*///DECLARE_MEM_HANDLERS_8BIT(21)
 /*TODO*///DECLARE_MEM_HANDLERS_8BIT(24)
-/*TODO*///#define change_pc16(pc)			change_pc_generic(pc, 16, 0, cpu_setopbase16)
-/*TODO*///#define change_pc17(pc) 		change_pc_generic(pc, 17, 0, cpu_setopbase17)
+    public static void change_pc16(int pc) {
+        change_pc_generic(pc, 16, 0, cpu_setOPbase16);
+    }
+
+    /*TODO*///#define change_pc17(pc) 		change_pc_generic(pc, 17, 0, cpu_setopbase17)
 /*TODO*///#define change_pc20(pc)			change_pc_generic(pc, 20, 0, cpu_setopbase20)
 /*TODO*///#define change_pc21(pc)			change_pc_generic(pc, 21, 0, cpu_setopbase21)
 /*TODO*///#define change_pc24(pc)			change_pc_generic(pc, 24, 0, cpu_setopbase24)
@@ -999,11 +1003,11 @@ public class memoryH {
 /*TODO*///
 /*TODO*///***************************************************************************/
 /*TODO*///
-/* ----- 16/32-bit memory accessing ----- */
-public static void COMBINE_DATA(int varptr, int data, int mem_mask){
-    varptr = ((varptr & mem_mask) | (data & ~mem_mask));
-}
 /*TODO*///
+/*TODO*////* ----- 16/32-bit memory accessing ----- */
+/*TODO*///#define COMBINE_DATA(varptr)		(*(varptr) = (*(varptr) & mem_mask) | (data & ~mem_mask))
+/*TODO*///
+    /*TODO*///
 /*TODO*////* ----- 16-bit memory accessing ----- */
 /*TODO*///#define ACCESSING_LSB16				((mem_mask & 0x00ff) == 0)
 /*TODO*///#define ACCESSING_MSB16				((mem_mask & 0xff00) == 0)
@@ -1016,23 +1020,29 @@ public static void COMBINE_DATA(int varptr, int data, int mem_mask){
 /*TODO*///#define ACCESSING_LSB32				((mem_mask & 0x000000ff) == 0)
 /*TODO*///#define ACCESSING_MSB32				((mem_mask & 0xff000000) == 0)
 /*TODO*///
-/*TODO*////* ----- opcode reading ----- */
-/*TODO*///#define cpu_readop(A)				(OP_ROM[(A) & mem_amask])
-/*TODO*///#define cpu_readop16(A)				(*(data16_t *)&OP_ROM[(A) & mem_amask])
+/* ----- opcode reading ----- */
+    public static char cpu_readop(int A) {
+        return OP_ROM.read(A & mem_amask);
+    }
+
+    /*TODO*///#define cpu_readop16(A)				(*(data16_t *)&OP_ROM[(A) & mem_amask])
 /*TODO*///#define cpu_readop32(A)				(*(data32_t *)&OP_ROM[(A) & mem_amask])
 /*TODO*///
-/*TODO*////* ----- opcode argument reading ----- */
-/*TODO*///#define cpu_readop_arg(A)			(OP_RAM[(A) & mem_amask])
-/*TODO*///#define cpu_readop_arg16(A)			(*(data16_t *)&OP_RAM[(A) & mem_amask])
+/* ----- opcode argument reading ----- */
+    public static char cpu_readop_arg(int A) {
+        return OP_RAM.read(A & mem_amask);
+    }
+
+    /*TODO*///#define cpu_readop_arg16(A)			(*(data16_t *)&OP_RAM[(A) & mem_amask])
 /*TODO*///#define cpu_readop_arg32(A)			(*(data32_t *)&OP_RAM[(A) & mem_amask])
 /*TODO*///
-/*TODO*////* ----- bank switching for CPU cores ----- */
-/*TODO*///#define change_pc_generic(pc,abits,minbits,setop)										\
-/*TODO*///do {																					\
-/*TODO*///	if (readmem_lookup[LEVEL1_INDEX((pc) & mem_amask,abits,minbits)] != opcode_entry)	\
-/*TODO*///		setop(pc);																		\
-/*TODO*///} while (0)																				\
-/*TODO*///
+    /* ----- bank switching for CPU cores ----- */
+    public static void change_pc_generic(int pc, int abits, int minbits, setopbase setop) {
+        if (readmem_lookup.read(LEVEL1_INDEX((pc) & mem_amask, abits, minbits)) != opcode_entry) {
+            setop.handler(pc);
+        }
+    }
+    /*TODO*///
 /*TODO*///
 /*TODO*////* ----- forces the next branch to generate a call to the opbase handler ----- */
 /*TODO*///#define catch_nextBranch()			(opcode_entry = 0xff)

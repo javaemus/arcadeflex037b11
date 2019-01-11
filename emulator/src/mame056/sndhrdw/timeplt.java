@@ -4,7 +4,7 @@
  */
 package mame056.sndhrdw;
 
-import static mame037b11.memoryH.*;
+import static mame056.memoryH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.sndintrf.*;
 import static sound.ay8910.*;

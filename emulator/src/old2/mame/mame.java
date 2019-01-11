@@ -27,7 +27,7 @@ import static mame.gfxobjC.*;
 import static mame.spriteC.*;
 import static mame.ui_text.*;
 import static mame.osdependH.*;
-import static mame037b11.memory.*;
+import static mame056.memory.*;
 import static old2.mame.common.*;
 
 import static old.arcadeflex.fileio.osd_fclose;

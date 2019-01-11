@@ -15,8 +15,8 @@ package cpu.z80;
 import static cpu.z80.z80H.*;
 import static mame037b11.cpuintrfH.*;
 import static mame037b11.cpuintrf.*;
-import static mame037b11.memoryH.*;
-import static mame037b11.memory.*;
+import static mame056.memoryH.*;
+import static mame056.memory.*;
 import static old.arcadeflex.osdepend.*;
 
 public class z80 extends cpu_interface {

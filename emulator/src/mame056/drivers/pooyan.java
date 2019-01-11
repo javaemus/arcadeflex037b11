@@ -12,7 +12,7 @@ import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
-import static mame037b11.memoryH.*;
+import static mame056.memoryH.*;
 import static mame.sndintrf.*;
 import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;

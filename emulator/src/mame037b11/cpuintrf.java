@@ -22,7 +22,7 @@ import old2.mame.timer.timer_callback;
 import old2.mame.timer.timer_entry;
 import static old2.mame.timer.*;
 import static old2.mame.timerH.*;
-import static mame037b11.memory.*;
+import static mame056.memory.*;
 
 public class cpuintrf {
 
@@ -3283,4 +3283,16 @@ public class cpuintrf {
 /*TODO*///}
 /*TODO*///
 /*TODO*///
+    
+    /***
+     * Hacked 0.56 cpu functions
+     */
+    public static int activecpu_address_bits()
+    {
+        return cpu_address_bits();
+    }
+    public static int activecpu_get_pc()
+    {
+        return cpu_get_pc();
+    }
 }

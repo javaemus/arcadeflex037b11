@@ -1,3 +1,7 @@
+12/01/2018
+==========
+-Now we using memory from 0.56 version 
+
 11/01/2018
 ==========
 -More fixes to memory . Now pengo driver is also playable!
