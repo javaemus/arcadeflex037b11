@@ -392,7 +392,7 @@ public class memoryH {
 /*TODO*///#define IORP_NOP				((port_read_handler)STATIC_NOP)
 /*TODO*///
 /*TODO*////* 8-bit port writes */
-/*TODO*///#define IOWP_NOP				((port_write_handler)STATIC_NOP)
+public static final int IOWP_NOP=STATIC_NOP;
 /*TODO*///
 /*TODO*////* 16-bit port reads */
 /*TODO*///#define IORP16_NOP				((port_read16_handler)STATIC_NOP)

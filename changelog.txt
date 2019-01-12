@@ -3,6 +3,8 @@
 -Now we using memory from 0.56 version 
 -Added cheekyms driver to 0.56
 -Added bank 1 support to memory . 1942,appoooh drivers appears to work fine with that 1943 still have issues...
+-Fixed issue in cpu_setOPbase16 . Now 1943 works
+-Added blktiger driver to 0.56
 
 11/01/2018
 ==========

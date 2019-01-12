@@ -767,15 +767,15 @@ public class memory {
         if (handler != STATIC_RAM && handler != STATIC_ROM && handler != STATIC_RAMROM) {
             tabledata.handlers[handler].offset = start;
         }
-        
-	/* remember the base for banks */
-	if (handler >= STATIC_BANK1 && handler <= STATIC_BANKMAX)
-	{
-		if (iswrite!=0)
-			bankdata[handler].writeoffset = start;
-		else
-			bankdata[handler].readoffset = start;
-	}
+
+        /* remember the base for banks */
+        if (handler >= STATIC_BANK1 && handler <= STATIC_BANKMAX) {
+            if (iswrite != 0) {
+                bankdata[handler].writeoffset = start;
+            } else {
+                bankdata[handler].readoffset = start;
+            }
+        }
         /* handle the starting edge if it's not on a block boundary */
         if (l2start != 0) {
             /* get the subtable index */
@@ -882,9 +882,9 @@ public class memory {
         /* set the handler */
         idx = get_handler_index(tabledata.handlers, handler, _handler, start);
         populate_table(memport, iswrite, start, end, idx);
-        
-	/* if this is a bank, set the bankbase as well */
-	if (HANDLER_IS_BANK(handler)){
+
+        /* if this is a bank, set the bankbase as well */
+        if (HANDLER_IS_BANK(handler)) {
             cpu_bankbase[HANDLER_TO_BANK(handler)] = memory_find_base(memport.cpunum, start);
         }
     }
@@ -1057,7 +1057,7 @@ public class memory {
                         if (!IS_MEMPORT_MARKER(mra[mra_ptr]) && HANDLER_IS_BANK(mra[mra_ptr].handler)) {
                             bank = HANDLER_TO_BANK(mra[mra_ptr].handler);
                             bankdata[bank].used = 1;
-                            bankdata[bank].cpunum = -1; 
+                            bankdata[bank].cpunum = -1;
                         }
                     }
                 } else {
@@ -2441,20 +2441,17 @@ public class memory {
 
             /* perform the lookup */
             pc &= mem_amask;
-            entry = readmem_lookup.read(LEVEL1_INDEX(pc, 8, 0));
+            entry = readmem_lookup.read(LEVEL1_INDEX(pc, 16, 0));
             if (entry >= SUBTABLE_BASE) {
-                entry = readmem_lookup.read(LEVEL2_INDEX(entry, pc, 8, 0));
+                entry = readmem_lookup.read(LEVEL2_INDEX(entry, pc, 16, 0));
             }
             opcode_entry = entry;
             /* RAM/ROM/RAMROM */
             if (entry >= STATIC_RAM && entry <= STATIC_RAMROM) {
                 base = cpu_bankbase[STATIC_RAM];
-            } 	/* banked memory */																	
-            	else if (entry >= STATIC_BANK1 && entry <= STATIC_RAM){	
-            		base = cpu_bankbase[entry];			
-                }
-            																						
-            /* other memory -- could be very slow! */ else {
+            } /* banked memory */ else if (entry >= STATIC_BANK1 && entry <= STATIC_RAM) {
+                base = cpu_bankbase[entry];
+            } /* other memory -- could be very slow! */ else {
                 throw new UnsupportedOperationException("Unsupported");
                 /*TODO*///		logerror("cpu #%d (PC=%08X): warning - op-code execute on mapped I/O\n",		
 /*TODO*///					cpu_getactivecpu(), activecpu_get_pc());									
@@ -3120,7 +3117,7 @@ public class memory {
         /*TODO*///	memset(wporthandler16, 0, sizeof(wporthandler16));
         /*TODO*///	memset(wporthandler32, 0, sizeof(wporthandler32));
         /*TODO*///
-        set_static_handler(STATIC_BANK1,mrh8_bank1,mwh8_bank1);/*TODO*///	set_static_handler(STATIC_BANK1,  mrh8_bank1,  NULL,         NULL,         mwh8_bank1,  NULL,         NULL);
+        set_static_handler(STATIC_BANK1, mrh8_bank1, mwh8_bank1);/*TODO*///	set_static_handler(STATIC_BANK1,  mrh8_bank1,  NULL,         NULL,         mwh8_bank1,  NULL,         NULL);
         /*TODO*///	set_static_handler(STATIC_BANK2,  mrh8_bank2,  NULL,         NULL,         mwh8_bank2,  NULL,         NULL);
         /*TODO*///	set_static_handler(STATIC_BANK3,  mrh8_bank3,  NULL,         NULL,         mwh8_bank3,  NULL,         NULL);
         /*TODO*///	set_static_handler(STATIC_BANK4,  mrh8_bank4,  NULL,         NULL,         mwh8_bank4,  NULL,         NULL);
@@ -3231,10 +3228,8 @@ public class memory {
         int cpunum;
 
         /* skip if we can't open the file */
-        if (file
-                == null) {
+        if (file == null) {
             return;
-
         }
 
         /* loop over CPUs */

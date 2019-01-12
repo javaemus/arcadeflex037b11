@@ -38,7 +38,7 @@ import static drivers.cclimber.*;
 import static drivers._1943.*;
 import static drivers.commando.*;
 import static drivers.tecmo.*;
-import static drivers.blktiger.*;
+import static mame056.drivers.blktiger.*;
 import static drivers.appoooh.*;
 import static drivers.espial.*;
 import static drivers.funkybee.*;

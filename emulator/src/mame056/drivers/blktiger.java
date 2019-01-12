@@ -1,20 +1,22 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- * using automatic conversion tool v0.01
+ * 
  */
-package drivers;
+package mame056.drivers;
+
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static old.arcadeflex.osdepend.logerror;
 import static cpu.z80.z80H.*;
-import static mame.commonH.*;
+import static mame056.commonH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
-import static old2.mame.memoryH.*;
+import static mame056.memoryH.*;
 import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
 import static sound._2203intf.*;
@@ -54,71 +56,77 @@ public class blktiger {
         }
     };
 
-    static MemoryReadAddress readmem[]
+    static Memory_ReadAddress readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x7fff, MRA_ROM),
-                new MemoryReadAddress(0x8000, 0xbfff, MRA_BANK1),
-                new MemoryReadAddress(0xc000, 0xcfff, blktiger_bgvideoram_r),
-                new MemoryReadAddress(0xd000, 0xffff, MRA_RAM),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x7fff, MRA_ROM),
+                new Memory_ReadAddress(0x8000, 0xbfff, MRA_BANK1),
+                new Memory_ReadAddress(0xc000, 0xcfff, blktiger_bgvideoram_r),
+                new Memory_ReadAddress(0xd000, 0xffff, MRA_RAM),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress writemem[]
+    static Memory_WriteAddress writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0xbfff, MWA_ROM),
-                new MemoryWriteAddress(0xc000, 0xcfff, blktiger_bgvideoram_w),
-                new MemoryWriteAddress(0xd000, 0xd7ff, blktiger_txvideoram_w, blktiger_txvideoram),
-                new MemoryWriteAddress(0xd800, 0xdbff, paletteram_xxxxBBBBRRRRGGGG_split1_w, paletteram),
-                new MemoryWriteAddress(0xdc00, 0xdfff, paletteram_xxxxBBBBRRRRGGGG_split2_w, paletteram_2),
-                new MemoryWriteAddress(0xe000, 0xfdff, MWA_RAM),
-                new MemoryWriteAddress(0xfe00, 0xffff, MWA_RAM, spriteram, spriteram_size),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0xbfff, MWA_ROM),
+                new Memory_WriteAddress(0xc000, 0xcfff, blktiger_bgvideoram_w),
+                new Memory_WriteAddress(0xd000, 0xd7ff, blktiger_txvideoram_w, blktiger_txvideoram),
+                new Memory_WriteAddress(0xd800, 0xdbff, paletteram_xxxxBBBBRRRRGGGG_split1_w, paletteram),
+                new Memory_WriteAddress(0xdc00, 0xdfff, paletteram_xxxxBBBBRRRRGGGG_split2_w, paletteram_2),
+                new Memory_WriteAddress(0xe000, 0xfdff, MWA_RAM),
+                new Memory_WriteAddress(0xfe00, 0xffff, MWA_RAM, spriteram, spriteram_size),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
-    static IOReadPort readport[]
+    static IO_ReadPort readport[]
             = {
-                new IOReadPort(0x00, 0x00, input_port_0_r),
-                new IOReadPort(0x01, 0x01, input_port_1_r),
-                new IOReadPort(0x02, 0x02, input_port_2_r),
-                new IOReadPort(0x03, 0x03, input_port_3_r),
-                new IOReadPort(0x04, 0x04, input_port_4_r),
-                new IOReadPort(0x05, 0x05, input_port_5_r),
-                new IOReadPort(0x07, 0x07, blktiger_protection_r),
-                new IOReadPort(-1) /* end of table */};
+                new IO_ReadPort(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_IO | MEMPORT_WIDTH_8),
+                new IO_ReadPort(0x00, 0x00, input_port_0_r),
+                new IO_ReadPort(0x01, 0x01, input_port_1_r),
+                new IO_ReadPort(0x02, 0x02, input_port_2_r),
+                new IO_ReadPort(0x03, 0x03, input_port_3_r),
+                new IO_ReadPort(0x04, 0x04, input_port_4_r),
+                new IO_ReadPort(0x05, 0x05, input_port_5_r),
+                new IO_ReadPort(0x07, 0x07, blktiger_protection_r),
+                new IO_ReadPort(MEMPORT_MARKER, 0)};
 
-    static IOWritePort writeport[]
+    static IO_WritePort writeport[]
             = {
-                new IOWritePort(0x00, 0x00, soundlatch_w),
-                new IOWritePort(0x01, 0x01, blktiger_bankswitch_w),
-                new IOWritePort(0x03, 0x03, blktiger_coinlockout_w),
-                new IOWritePort(0x04, 0x04, blktiger_video_control_w),
-                new IOWritePort(0x06, 0x06, watchdog_reset_w),
-                new IOWritePort(0x07, 0x07, IOWP_NOP), /* Software protection (7) */
-                new IOWritePort(0x08, 0x09, blktiger_scrollx_w),
-                new IOWritePort(0x0a, 0x0b, blktiger_scrolly_w),
-                new IOWritePort(0x0c, 0x0c, blktiger_video_enable_w),
-                new IOWritePort(0x0d, 0x0d, blktiger_bgvideoram_bank_w),
-                new IOWritePort(0x0e, 0x0e, blktiger_screen_layout_w),
-                new IOWritePort(-1) /* end of table */};
+                new IO_WritePort(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_IO | MEMPORT_WIDTH_8),
+                new IO_WritePort(0x00, 0x00, soundlatch_w),
+                new IO_WritePort(0x01, 0x01, blktiger_bankswitch_w),
+                new IO_WritePort(0x03, 0x03, blktiger_coinlockout_w),
+                new IO_WritePort(0x04, 0x04, blktiger_video_control_w),
+                new IO_WritePort(0x06, 0x06, watchdog_reset_w),
+                new IO_WritePort(0x07, 0x07, IOWP_NOP), /* Software protection (7) */
+                new IO_WritePort(0x08, 0x09, blktiger_scrollx_w),
+                new IO_WritePort(0x0a, 0x0b, blktiger_scrolly_w),
+                new IO_WritePort(0x0c, 0x0c, blktiger_video_enable_w),
+                new IO_WritePort(0x0d, 0x0d, blktiger_bgvideoram_bank_w),
+                new IO_WritePort(0x0e, 0x0e, blktiger_screen_layout_w),
+                new IO_WritePort(MEMPORT_MARKER, 0)};
 
-    static MemoryReadAddress sound_readmem[]
+    static Memory_ReadAddress sound_readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x7fff, MRA_ROM),
-                new MemoryReadAddress(0xc000, 0xc7ff, MRA_RAM),
-                new MemoryReadAddress(0xc800, 0xc800, soundlatch_r),
-                new MemoryReadAddress(0xe000, 0xe000, YM2203_status_port_0_r),
-                new MemoryReadAddress(0xe001, 0xe001, YM2203_read_port_0_r),
-                new MemoryReadAddress(0xe002, 0xe002, YM2203_status_port_1_r),
-                new MemoryReadAddress(0xe003, 0xe003, YM2203_read_port_1_r),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x7fff, MRA_ROM),
+                new Memory_ReadAddress(0xc000, 0xc7ff, MRA_RAM),
+                new Memory_ReadAddress(0xc800, 0xc800, soundlatch_r),
+                new Memory_ReadAddress(0xe000, 0xe000, YM2203_status_port_0_r),
+                new Memory_ReadAddress(0xe001, 0xe001, YM2203_read_port_0_r),
+                new Memory_ReadAddress(0xe002, 0xe002, YM2203_status_port_1_r),
+                new Memory_ReadAddress(0xe003, 0xe003, YM2203_read_port_1_r),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress sound_writemem[]
+    static Memory_WriteAddress sound_writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x7fff, MWA_ROM),
-                new MemoryWriteAddress(0xc000, 0xc7ff, MWA_RAM),
-                new MemoryWriteAddress(0xe000, 0xe000, YM2203_control_port_0_w),
-                new MemoryWriteAddress(0xe001, 0xe001, YM2203_write_port_0_w),
-                new MemoryWriteAddress(0xe002, 0xe002, YM2203_control_port_1_w),
-                new MemoryWriteAddress(0xe003, 0xe003, YM2203_write_port_1_w),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x7fff, MWA_ROM),
+                new Memory_WriteAddress(0xc000, 0xc7ff, MWA_RAM),
+                new Memory_WriteAddress(0xe000, 0xe000, YM2203_control_port_0_w),
+                new Memory_WriteAddress(0xe001, 0xe001, YM2203_write_port_0_w),
+                new Memory_WriteAddress(0xe002, 0xe002, YM2203_control_port_1_w),
+                new Memory_WriteAddress(0xe003, 0xe003, YM2203_write_port_1_w),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
     static InputPortPtr input_ports_blktiger = new InputPortPtr() {
         public void handler() {
@@ -309,32 +317,32 @@ public class blktiger {
      */
     static RomLoadPtr rom_blktiger = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x50000, REGION_CPU1);/* 64k for code + banked ROMs images */
+            ROM_REGION(0x50000, REGION_CPU1, 0);/* 64k for code + banked ROMs images */
             ROM_LOAD("blktiger.5e", 0x00000, 0x08000, 0xa8f98f22);/* CODE */
             ROM_LOAD("blktiger.6e", 0x10000, 0x10000, 0x7bef96e8);/* 0+1 */
             ROM_LOAD("blktiger.8e", 0x20000, 0x10000, 0x4089e157);/* 2+3 */
             ROM_LOAD("blktiger.9e", 0x30000, 0x10000, 0xed6af6ec);/* 4+5 */
             ROM_LOAD("blktiger.10e", 0x40000, 0x10000, 0xae59b72e);/* 6+7 */
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the audio CPU */
             ROM_LOAD("blktiger.1l", 0x0000, 0x8000, 0x2cf54274);
 
-            ROM_REGION(0x08000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x08000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("blktiger.2n", 0x00000, 0x08000, 0x70175d78);/* characters */
 
-            ROM_REGION(0x40000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("blktiger.5b", 0x00000, 0x10000, 0xc4524993);/* tiles */
             ROM_LOAD("blktiger.4b", 0x10000, 0x10000, 0x7932c86f);
             ROM_LOAD("blktiger.9b", 0x20000, 0x10000, 0xdc49593a);
             ROM_LOAD("blktiger.8b", 0x30000, 0x10000, 0x7ed7a122);
 
-            ROM_REGION(0x40000, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("blktiger.5a", 0x00000, 0x10000, 0xe2f17438);/* sprites */
             ROM_LOAD("blktiger.4a", 0x10000, 0x10000, 0x5fccbd27);
             ROM_LOAD("blktiger.9a", 0x20000, 0x10000, 0xfc33ccc6);
             ROM_LOAD("blktiger.8a", 0x30000, 0x10000, 0xf449de01);
 
-            ROM_REGION(0x0400, REGION_PROMS);/* PROMs (function unknown) */
+            ROM_REGION(0x0400, REGION_PROMS, 0);/* PROMs (function unknown) */
             ROM_LOAD("mb7114e.8j", 0x0000, 0x0100, 0x29b459e5);
             ROM_LOAD("mb7114e.9j", 0x0100, 0x0100, 0x8b741e66);
             ROM_LOAD("mb7114e.11k", 0x0200, 0x0100, 0x27201c75);
@@ -345,32 +353,32 @@ public class blktiger {
 
     static RomLoadPtr rom_bktigerb = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x50000, REGION_CPU1);/* 64k for code + banked ROMs images */
+            ROM_REGION(0x50000, REGION_CPU1, 0);/* 64k for code + banked ROMs images */
             ROM_LOAD("btiger1.f6", 0x00000, 0x08000, 0x9d8464e8);/* CODE */
             ROM_LOAD("blktiger.6e", 0x10000, 0x10000, 0x7bef96e8);/* 0+1 */
             ROM_LOAD("btiger3.j6", 0x20000, 0x10000, 0x52c56ed1);/* 2+3 */
             ROM_LOAD("blktiger.9e", 0x30000, 0x10000, 0xed6af6ec);/* 4+5 */
             ROM_LOAD("blktiger.10e", 0x40000, 0x10000, 0xae59b72e);/* 6+7 */
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the audio CPU */
             ROM_LOAD("blktiger.1l", 0x0000, 0x8000, 0x2cf54274);
 
-            ROM_REGION(0x08000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x08000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("blktiger.2n", 0x00000, 0x08000, 0x70175d78);/* characters */
 
-            ROM_REGION(0x40000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("blktiger.5b", 0x00000, 0x10000, 0xc4524993);/* tiles */
             ROM_LOAD("blktiger.4b", 0x10000, 0x10000, 0x7932c86f);
             ROM_LOAD("blktiger.9b", 0x20000, 0x10000, 0xdc49593a);
             ROM_LOAD("blktiger.8b", 0x30000, 0x10000, 0x7ed7a122);
 
-            ROM_REGION(0x40000, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("blktiger.5a", 0x00000, 0x10000, 0xe2f17438);/* sprites */
             ROM_LOAD("blktiger.4a", 0x10000, 0x10000, 0x5fccbd27);
             ROM_LOAD("blktiger.9a", 0x20000, 0x10000, 0xfc33ccc6);
             ROM_LOAD("blktiger.8a", 0x30000, 0x10000, 0xf449de01);
 
-            ROM_REGION(0x0400, REGION_PROMS);/* PROMs (function unknown) */
+            ROM_REGION(0x0400, REGION_PROMS, 0);/* PROMs (function unknown) */
             ROM_LOAD("mb7114e.8j", 0x0000, 0x0100, 0x29b459e5);
             ROM_LOAD("mb7114e.9j", 0x0100, 0x0100, 0x8b741e66);
             ROM_LOAD("mb7114e.11k", 0x0200, 0x0100, 0x27201c75);
@@ -381,32 +389,32 @@ public class blktiger {
 
     static RomLoadPtr rom_blkdrgon = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x50000, REGION_CPU1);/* 64k for code + banked ROMs images */
+            ROM_REGION(0x50000, REGION_CPU1, 0);/* 64k for code + banked ROMs images */
             ROM_LOAD("blkdrgon.5e", 0x00000, 0x08000, 0x27ccdfbc);/* CODE */
             ROM_LOAD("blkdrgon.6e", 0x10000, 0x10000, 0x7d39c26f);/* 0+1 */
             ROM_LOAD("blkdrgon.8e", 0x20000, 0x10000, 0xd1bf3757);/* 2+3 */
             ROM_LOAD("blkdrgon.9e", 0x30000, 0x10000, 0x4d1d6680);/* 4+5 */
             ROM_LOAD("blkdrgon.10e", 0x40000, 0x10000, 0xc8d0c45e);/* 6+7 */
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the audio CPU */
             ROM_LOAD("blktiger.1l", 0x0000, 0x8000, 0x2cf54274);
 
-            ROM_REGION(0x08000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x08000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("blkdrgon.2n", 0x00000, 0x08000, 0x3821ab29);/* characters */
 
-            ROM_REGION(0x40000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("blkdrgon.5b", 0x00000, 0x10000, 0x22d0a4b0);/* tiles */
             ROM_LOAD("blkdrgon.4b", 0x10000, 0x10000, 0xc8b5fc52);
             ROM_LOAD("blkdrgon.9b", 0x20000, 0x10000, 0x9498c378);
             ROM_LOAD("blkdrgon.8b", 0x30000, 0x10000, 0x5b0df8ce);
 
-            ROM_REGION(0x40000, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("blktiger.5a", 0x00000, 0x10000, 0xe2f17438);/* sprites */
             ROM_LOAD("blktiger.4a", 0x10000, 0x10000, 0x5fccbd27);
             ROM_LOAD("blktiger.9a", 0x20000, 0x10000, 0xfc33ccc6);
             ROM_LOAD("blktiger.8a", 0x30000, 0x10000, 0xf449de01);
 
-            ROM_REGION(0x0400, REGION_PROMS);/* PROMs (function unknown) */
+            ROM_REGION(0x0400, REGION_PROMS, 0);/* PROMs (function unknown) */
             ROM_LOAD("mb7114e.8j", 0x0000, 0x0100, 0x29b459e5);
             ROM_LOAD("mb7114e.9j", 0x0100, 0x0100, 0x8b741e66);
             ROM_LOAD("mb7114e.11k", 0x0200, 0x0100, 0x27201c75);
@@ -417,32 +425,32 @@ public class blktiger {
 
     static RomLoadPtr rom_blkdrgnb = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x50000, REGION_CPU1);/* 64k for code + banked ROMs images */
+            ROM_REGION(0x50000, REGION_CPU1, 0);/* 64k for code + banked ROMs images */
             ROM_LOAD("j1-5e", 0x00000, 0x08000, 0x97e84412);/* CODE */
             ROM_LOAD("blkdrgon.6e", 0x10000, 0x10000, 0x7d39c26f);/* 0+1 */
             ROM_LOAD("j3-8e", 0x20000, 0x10000, 0xf4cd0f39);/* 2+3 */
             ROM_LOAD("blkdrgon.9e", 0x30000, 0x10000, 0x4d1d6680);/* 4+5 */
             ROM_LOAD("blkdrgon.10e", 0x40000, 0x10000, 0xc8d0c45e);/* 6+7 */
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the audio CPU */
             ROM_LOAD("blktiger.1l", 0x0000, 0x8000, 0x2cf54274);
 
-            ROM_REGION(0x08000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x08000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("j15-2n", 0x00000, 0x08000, 0x852ad2b7);/* characters */
 
-            ROM_REGION(0x40000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("blkdrgon.5b", 0x00000, 0x10000, 0x22d0a4b0);/* tiles */
             ROM_LOAD("j11-4b", 0x10000, 0x10000, 0x053ab15c);
             ROM_LOAD("blkdrgon.9b", 0x20000, 0x10000, 0x9498c378);
             ROM_LOAD("j13-8b", 0x30000, 0x10000, 0x663d5afa);
 
-            ROM_REGION(0x40000, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("blktiger.5a", 0x00000, 0x10000, 0xe2f17438);/* sprites */
             ROM_LOAD("blktiger.4a", 0x10000, 0x10000, 0x5fccbd27);
             ROM_LOAD("blktiger.9a", 0x20000, 0x10000, 0xfc33ccc6);
             ROM_LOAD("blktiger.8a", 0x30000, 0x10000, 0xf449de01);
 
-            ROM_REGION(0x0400, REGION_PROMS);/* PROMs (function unknown) */
+            ROM_REGION(0x0400, REGION_PROMS, 0);/* PROMs (function unknown) */
             ROM_LOAD("mb7114e.8j", 0x0000, 0x0100, 0x29b459e5);
             ROM_LOAD("mb7114e.9j", 0x0100, 0x0100, 0x8b741e66);
             ROM_LOAD("mb7114e.11k", 0x0200, 0x0100, 0x27201c75);
