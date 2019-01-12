@@ -1,16 +1,17 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- * using automatic conversion tool v0.01
  */
-package drivers;
+package mame056.drivers;
+
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
-import static mame.commonH.*;
+import static mame056.commonH.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
-import static old2.mame.memoryH.*;
+import static mame056.memoryH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.MachineSound;
 import static mame.sndintrfH.*;
@@ -20,32 +21,36 @@ import static vidhrdw.generic.*;
 
 public class cheekyms {
 
-    static MemoryReadAddress readmem[]
+    static Memory_ReadAddress readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x1fff, MRA_ROM),
-                new MemoryReadAddress(0x3000, 0x33ff, MRA_RAM),
-                new MemoryReadAddress(0x3800, 0x3bff, MRA_RAM), /* screen RAM */
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x1fff, MRA_ROM),
+                new Memory_ReadAddress(0x3000, 0x33ff, MRA_RAM),
+                new Memory_ReadAddress(0x3800, 0x3bff, MRA_RAM),/* screen RAM */
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress writemem[]
+    static Memory_WriteAddress writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x1fff, MWA_ROM),
-                new MemoryWriteAddress(0x3000, 0x33ff, MWA_RAM),
-                new MemoryWriteAddress(0x3800, 0x3bff, videoram_w, videoram, videoram_size),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x1fff, MWA_ROM),
+                new Memory_WriteAddress(0x3000, 0x33ff, MWA_RAM),
+                new Memory_WriteAddress(0x3800, 0x3bff, videoram_w, videoram, videoram_size),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
-    static IOReadPort readport[]
+    static IO_ReadPort readport[]
             = {
-                new IOReadPort(0x00, 0x00, input_port_0_r),
-                new IOReadPort(0x01, 0x01, input_port_1_r),
-                new IOReadPort(-1) /* end of table */};
+                new IO_ReadPort(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_IO | MEMPORT_WIDTH_8),
+                new IO_ReadPort(0x00, 0x00, input_port_0_r),
+                new IO_ReadPort(0x01, 0x01, input_port_1_r),
+                new IO_ReadPort(MEMPORT_MARKER, 0)};
 
-    static IOWritePort writeport[]
+    static IO_WritePort writeport[]
             = {
-                new IOWritePort(0x20, 0x3f, cheekyms_sprite_w),
-                new IOWritePort(0x40, 0x40, cheekyms_port_40_w),
-                new IOWritePort(0x80, 0x80, cheekyms_port_80_w),
-                new IOWritePort(-1) /* end of table */};
+                new IO_WritePort(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_IO | MEMPORT_WIDTH_8),
+                new IO_WritePort(0x20, 0x3f, cheekyms_sprite_w),
+                new IO_WritePort(0x40, 0x40, cheekyms_port_40_w),
+                new IO_WritePort(0x80, 0x80, cheekyms_port_80_w),
+                new IO_WritePort(MEMPORT_MARKER, 0)};
 
     public static InterruptPtr cheekyms_interrupt = new InterruptPtr() {
         public int handler() {
@@ -181,27 +186,24 @@ public class cheekyms {
      */
     static RomLoadPtr rom_cheekyms = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);/* 64k for code */
+            ROM_REGION(0x10000, REGION_CPU1, 0);/* 64k for code */
             ROM_LOAD("cm03.c5", 0x0000, 0x0800, 0x1ad0cb40);
             ROM_LOAD("cm04.c6", 0x0800, 0x0800, 0x2238f607);
             ROM_LOAD("cm05.c7", 0x1000, 0x0800, 0x4169eba8);
             ROM_LOAD("cm06.c8", 0x1800, 0x0800, 0x7031660c);
 
-            ROM_REGION(0x1000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x1000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("cm01.c1", 0x0000, 0x0800, 0x26f73bd7);
             ROM_LOAD("cm02.c2", 0x0800, 0x0800, 0x885887c3);
 
-            ROM_REGION(0x1000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x1000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("cm07.n5", 0x0000, 0x0800, 0x2738c88d);
             ROM_LOAD("cm08.n6", 0x0800, 0x0800, 0xb3fbd4ac);
 
-            ROM_REGION(0x0060, REGION_PROMS);
-            ROM_LOAD("cm.m8", 0x0000, 0x0020, 0x2386bc68);
-            /* Character colors \ Selected by Bit 6 of Port 0x80 */
-            ROM_LOAD("cm.m9", 0x0020, 0x0020, 0xdb9c59a5);
-            /* Character colors /                                */
-            ROM_LOAD("cm.p3", 0x0040, 0x0020, 0x6ac41516);
-            /* Sprite colors */
+            ROM_REGION(0x0060, REGION_PROMS, 0);
+            ROM_LOAD("cm.m8", 0x0000, 0x0020, 0x2386bc68);/* Character colors \ Selected by Bit 6 of Port 0x80 */
+            ROM_LOAD("cm.m9", 0x0020, 0x0020, 0xdb9c59a5);/* Character colors /                                */
+            ROM_LOAD("cm.p3", 0x0040, 0x0020, 0x6ac41516);/* Sprite colors */
             ROM_END();
         }
     };

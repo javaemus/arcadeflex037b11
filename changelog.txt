@@ -1,6 +1,7 @@
 12/01/2018
 ==========
 -Now we using memory from 0.56 version 
+-Added cheekyms driver to 0.56
 
 11/01/2018
 ==========

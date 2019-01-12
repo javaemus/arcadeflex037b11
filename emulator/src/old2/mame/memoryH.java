@@ -5,10 +5,8 @@ package old2.mame;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
-import static mame037b11.cpuintrf.cpu_get_pc;
 import static old2.mame.memory.OP_RAM;
 import static old2.mame.memory.OP_ROM;
-import static old2.mame.memory.cpu_bankbase;
 import static old2.mame.memory.cpu_setOPbase16;
 import static old2.mame.memory.u8_cur_mrhard;
 import static old2.mame.memory.u8_ophw;
@@ -475,6 +473,7 @@ public class memoryH {
 /*TODO*///
     /* -----  bank switching macro ----- */
     public static void cpu_setbank(int bank, UBytePtr _base) {
+        throw new UnsupportedOperationException("Unsuported");
     /*    if (bank >= 1 && bank <= MAX_BANKS) {
             cpu_bankbase[bank] = _base;
             if (u8_ophw == bank) {

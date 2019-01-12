@@ -44,7 +44,7 @@ import static drivers.espial.*;
 import static drivers.funkybee.*;
 import static drivers.exedexes.*;
 import static drivers.kchamp.*;
-import static drivers.cheekyms.*;
+import static mame056.drivers.cheekyms.*;
 import static drivers.naughtyb.*;
 import static drivers.snk.*;
 import static drivers.taito_l.*;
