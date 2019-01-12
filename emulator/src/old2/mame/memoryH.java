@@ -442,21 +442,6 @@ public class memoryH {
 
     /*TODO*///#define cpu_readop_arg16(A) READ_WORD(&OP_RAM[A])
 
-    /* ----- bank switching for CPU cores ----- */
-    public static void change_pc_generic(int pc, int abits2, int abitsmin, int shift, setopbase setop) {
-        if (u8_cur_mrhard[pc >>> (abits2 + abitsmin + shift)] != u8_ophw) {
-            setop.handler(pc);
-        }
-    }
-
-    public static void change_pc(int pc) {
-        change_pc_generic(pc, ABITS2_16, ABITS_MIN_16, 0, cpu_setOPbase16);
-    }
-
-    public static void change_pc16(int pc) {
-        change_pc_generic(pc, ABITS2_16, ABITS_MIN_16, 0, cpu_setOPbase16);
-    }
-
     /*TODO*///#define change_pc16bew(pc)	 change_pc_generic(pc, ABITS2_16BEW, ABITS_MIN_16BEW, 0, cpu_setOPbase16bew)
 /*TODO*///#define change_pc16lew(pc)	 change_pc_generic(pc, ABITS2_16LEW, ABITS_MIN_16LEW, 0, cpu_setOPbase16lew)
 /*TODO*///#define change_pc20(pc) 	 change_pc_generic(pc, ABITS2_20, ABITS_MIN_20, 0, cpu_setOPbase20)

@@ -5,6 +5,7 @@ package mame056;
 
 import static arcadeflex.fucPtr.*;
 import arcadeflex.libc.ptr.UBytePtr;
+import static mame037b11.cpuintrf.*;
 import static mame056.memory.*;
 
 public class memoryH {
@@ -200,8 +201,8 @@ public class memoryH {
 /*TODO*///***************************************************************************/
 /*TODO*///
 /*TODO*////* 8-bit reads */
-/*TODO*///#define MRA_BANK1				((mem_read_handler)STATIC_BANK1)
-/*TODO*///#define MRA_BANK2				((mem_read_handler)STATIC_BANK2)
+    public static final int MRA_BANK1 = STATIC_BANK1;
+    /*TODO*///#define MRA_BANK2				((mem_read_handler)STATIC_BANK2)
 /*TODO*///#define MRA_BANK3				((mem_read_handler)STATIC_BANK3)
 /*TODO*///#define MRA_BANK4				((mem_read_handler)STATIC_BANK4)
 /*TODO*///#define MRA_BANK5				((mem_read_handler)STATIC_BANK5)
@@ -1048,18 +1049,18 @@ public class memoryH {
 /*TODO*///#define catch_nextBranch()			(opcode_entry = 0xff)
 /*TODO*///
 /*TODO*////* ----- bank switching macro ----- */
-/*TODO*///#define cpu_setbank(bank, base) 														\
-/*TODO*///do {																					\
-/*TODO*///	if (bank >= STATIC_BANK1 && bank <= STATIC_BANKMAX)									\
-/*TODO*///	{																					\
-/*TODO*///		cpu_bankbase[bank] = (UINT8 *)(base);											\
-/*TODO*///		if (opcode_entry == bank && cpu_getactivecpu() >= 0)							\
-/*TODO*///		{																				\
-/*TODO*///			opcode_entry = 0xff;														\
-/*TODO*///			cpu_set_op_base(cpu_get_pc_byte());											\
-/*TODO*///		}																				\
-/*TODO*///	}																					\
-/*TODO*///} while (0)
-/*TODO*///
-/*TODO*///    
+/*TODO*///#define cpu_setbank(bank, base) 														
+/*TODO*///do {	
+    public static void cpu_setbank(int bank,UBytePtr base)
+    {
+	if (bank >= STATIC_BANK1 && bank <= STATIC_BANKMAX)									
+	{																					
+		cpu_bankbase[bank] = base;											
+		if (opcode_entry == bank && cpu_getactivecpu() >= 0)							
+		{				
+			opcode_entry = 0xff;														
+			cpu_set_op_base(cpu_get_pc_byte());											
+		}																				
+	}																					
+    }   
 }

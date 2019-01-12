@@ -892,12 +892,12 @@ public class cpuintrf {
 /*TODO*///	return ICOUNT(cpunum);
 /*TODO*///}
 /*TODO*///
-/*TODO*///void cpu_set_op_base(unsigned val)
-/*TODO*///{
-/*TODO*///	int cpunum = (activecpu < 0) ? 0 : activecpu;
-/*TODO*///	SET_OP_BASE(cpunum,val);
-/*TODO*///}
-/*TODO*///
+    public static void cpu_set_op_base(int val)
+    {
+            int cpunum = (activecpu < 0) ? 0 : activecpu;
+            SET_OP_BASE(cpunum,val);
+    }
+    /*TODO*///
 /*TODO*///
 /*TODO*////***************************************************************************
 /*TODO*///

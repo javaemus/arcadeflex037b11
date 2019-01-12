@@ -6,13 +6,13 @@ package drivers;
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
-import static mame.commonH.*;
+import static mame056.commonH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
-import static old2.mame.memoryH.*;
+import static mame056.memoryH.*;
 import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
 import static sound.ay8910.*;
@@ -44,49 +44,53 @@ public class _1942 {
         }
     };
 
-    static MemoryReadAddress readmem[]
+    static Memory_ReadAddress readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x7fff, MRA_ROM),
-                new MemoryReadAddress(0x8000, 0xbfff, MRA_BANK1),
-                new MemoryReadAddress(0xc000, 0xc000, input_port_0_r), /* IN0 */
-                new MemoryReadAddress(0xc001, 0xc001, input_port_1_r), /* IN1 */
-                new MemoryReadAddress(0xc002, 0xc002, input_port_2_r), /* IN2 */
-                new MemoryReadAddress(0xc003, 0xc003, input_port_3_r), /* DSW0 */
-                new MemoryReadAddress(0xc004, 0xc004, input_port_4_r), /* DSW1 */
-                new MemoryReadAddress(0xd000, 0xdbff, MRA_RAM),
-                new MemoryReadAddress(0xe000, 0xefff, MRA_RAM),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x7fff, MRA_ROM),
+                new Memory_ReadAddress(0x8000, 0xbfff, MRA_BANK1),
+                new Memory_ReadAddress(0xc000, 0xc000, input_port_0_r), /* IN0 */
+                new Memory_ReadAddress(0xc001, 0xc001, input_port_1_r), /* IN1 */
+                new Memory_ReadAddress(0xc002, 0xc002, input_port_2_r), /* IN2 */
+                new Memory_ReadAddress(0xc003, 0xc003, input_port_3_r), /* DSW0 */
+                new Memory_ReadAddress(0xc004, 0xc004, input_port_4_r), /* DSW1 */
+                new Memory_ReadAddress(0xd000, 0xdbff, MRA_RAM),
+                new Memory_ReadAddress(0xe000, 0xefff, MRA_RAM),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress writemem[]
+    static Memory_WriteAddress writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0xbfff, MWA_ROM),
-                new MemoryWriteAddress(0xc800, 0xc800, soundlatch_w),
-                new MemoryWriteAddress(0xc802, 0xc803, c1942_scroll_w),
-                new MemoryWriteAddress(0xc804, 0xc804, c1942_c804_w),
-                new MemoryWriteAddress(0xc805, 0xc805, c1942_palette_bank_w),
-                new MemoryWriteAddress(0xc806, 0xc806, c1942_bankswitch_w),
-                new MemoryWriteAddress(0xcc00, 0xcc7f, MWA_RAM, c1942_spriteram, c1942_spriteram_size),
-                new MemoryWriteAddress(0xd000, 0xd7ff, c1942_fgvideoram_w, c1942_fgvideoram),
-                new MemoryWriteAddress(0xd800, 0xdbff, c1942_bgvideoram_w, c1942_bgvideoram),
-                new MemoryWriteAddress(0xe000, 0xefff, MWA_RAM),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0xbfff, MWA_ROM),
+                new Memory_WriteAddress(0xc800, 0xc800, soundlatch_w),
+                new Memory_WriteAddress(0xc802, 0xc803, c1942_scroll_w),
+                new Memory_WriteAddress(0xc804, 0xc804, c1942_c804_w),
+                new Memory_WriteAddress(0xc805, 0xc805, c1942_palette_bank_w),
+                new Memory_WriteAddress(0xc806, 0xc806, c1942_bankswitch_w),
+                new Memory_WriteAddress(0xcc00, 0xcc7f, MWA_RAM, c1942_spriteram, c1942_spriteram_size),
+                new Memory_WriteAddress(0xd000, 0xd7ff, c1942_fgvideoram_w, c1942_fgvideoram),
+                new Memory_WriteAddress(0xd800, 0xdbff, c1942_bgvideoram_w, c1942_bgvideoram),
+                new Memory_WriteAddress(0xe000, 0xefff, MWA_RAM),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryReadAddress sound_readmem[]
+    static Memory_ReadAddress sound_readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x3fff, MRA_ROM),
-                new MemoryReadAddress(0x4000, 0x47ff, MRA_RAM),
-                new MemoryReadAddress(0x6000, 0x6000, soundlatch_r),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x3fff, MRA_ROM),
+                new Memory_ReadAddress(0x4000, 0x47ff, MRA_RAM),
+                new Memory_ReadAddress(0x6000, 0x6000, soundlatch_r),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress sound_writemem[]
+    static Memory_WriteAddress sound_writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x3fff, MWA_ROM),
-                new MemoryWriteAddress(0x4000, 0x47ff, MWA_RAM),
-                new MemoryWriteAddress(0x8000, 0x8000, AY8910_control_port_0_w),
-                new MemoryWriteAddress(0x8001, 0x8001, AY8910_write_port_0_w),
-                new MemoryWriteAddress(0xc000, 0xc000, AY8910_control_port_1_w),
-                new MemoryWriteAddress(0xc001, 0xc001, AY8910_write_port_1_w),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x3fff, MWA_ROM),
+                new Memory_WriteAddress(0x4000, 0x47ff, MWA_RAM),
+                new Memory_WriteAddress(0x8000, 0x8000, AY8910_control_port_0_w),
+                new Memory_WriteAddress(0x8001, 0x8001, AY8910_write_port_0_w),
+                new Memory_WriteAddress(0xc000, 0xc000, AY8910_control_port_1_w),
+                new Memory_WriteAddress(0xc001, 0xc001, AY8910_write_port_1_w),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
     static InputPortPtr input_ports_1942 = new InputPortPtr() {
         public void handler() {
@@ -265,144 +269,140 @@ public class _1942 {
             }
     );
 
-    /**
-     * *************************************************************************
-     *
-     * Game driver(s)
-     *
-     **************************************************************************
-     */
-    static RomLoadPtr rom_1942 = new RomLoadPtr() {
-        public void handler() {
-            ROM_REGION(0x1c000, REGION_CPU1);/* 64k for code + 3*16k for the banked ROMs images */
-            ROM_LOAD("1-n3a.bin", 0x00000, 0x4000, 0x40201bab);
-            ROM_LOAD("1-n4.bin", 0x04000, 0x4000, 0xa60ac644);
-            ROM_LOAD("1-n5.bin", 0x10000, 0x4000, 0x835f7b24);
-            ROM_LOAD("1-n6.bin", 0x14000, 0x2000, 0x821c6481);
-            ROM_LOAD("1-n7.bin", 0x18000, 0x4000, 0x5df525e1);
+/***************************************************************************
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
-            ROM_LOAD("1-c11.bin", 0x0000, 0x4000, 0xbd87f06b);
+  Game driver(s)
 
-            ROM_REGION(0x2000, REGION_GFX1 | REGIONFLAG_DISPOSE);
-            ROM_LOAD("1-f2.bin", 0x0000, 0x2000, 0x6ebca191);/* characters */
+***************************************************************************/
 
-            ROM_REGION(0xc000, REGION_GFX2 | REGIONFLAG_DISPOSE);
-            ROM_LOAD("2-a1.bin", 0x0000, 0x2000, 0x3884d9eb);/* tiles */
-            ROM_LOAD("2-a2.bin", 0x2000, 0x2000, 0x999cf6e0);
-            ROM_LOAD("2-a3.bin", 0x4000, 0x2000, 0x8edb273a);
-            ROM_LOAD("2-a4.bin", 0x6000, 0x2000, 0x3a2726c3);
-            ROM_LOAD("2-a5.bin", 0x8000, 0x2000, 0x1bd3d8bb);
-            ROM_LOAD("2-a6.bin", 0xa000, 0x2000, 0x658f02c4);
-
-            ROM_REGION(0x10000, REGION_GFX3 | REGIONFLAG_DISPOSE);
-            ROM_LOAD("2-l1.bin", 0x00000, 0x4000, 0x2528bec6);/* sprites */
-            ROM_LOAD("2-l2.bin", 0x04000, 0x4000, 0xf89287aa);
-            ROM_LOAD("2-n1.bin", 0x08000, 0x4000, 0x024418f8);
-            ROM_LOAD("2-n2.bin", 0x0c000, 0x4000, 0xe2c7e489);
-
-            ROM_REGION(0x0a00, REGION_PROMS);
-            ROM_LOAD("08e_sb-5.bin", 0x0000, 0x0100, 0x93ab8153);/* red component */
-            ROM_LOAD("09e_sb-6.bin", 0x0100, 0x0100, 0x8ab44f7d);/* green component */
-            ROM_LOAD("10e_sb-7.bin", 0x0200, 0x0100, 0xf4ade9a4);/* blue component */
-            ROM_LOAD("f01_sb-0.bin", 0x0300, 0x0100, 0x6047d91b);/* char lookup table */
-            ROM_LOAD("06d_sb-4.bin", 0x0400, 0x0100, 0x4858968d);/* tile lookup table */
-            ROM_LOAD("03k_sb-8.bin", 0x0500, 0x0100, 0xf6fad943);/* sprite lookup table */
-            //ROM_LOAD("01d_sb-2.bin", 0x0600, 0x0100, 0x8bb8b3df);/* tile palette selector? (not used) */
-            //ROM_LOAD("02d_sb-3.bin", 0x0700, 0x0100, 0x3b0c99af);/* tile palette selector? (not used) */
-            //ROM_LOAD("k06_sb-1.bin", 0x0800, 0x0100, 0x712ac508);/* interrupt timing (not used) */
-            //ROM_LOAD("01m_sb-9.bin", 0x0900, 0x0100, 0x4921635c);/* video timing? (not used) */
-            ROM_END();
-        }
-    };
-
-    static RomLoadPtr rom_1942a = new RomLoadPtr() {
-        public void handler() {
-            ROM_REGION(0x1c000, REGION_CPU1);/* 64k for code + 3*16k for the banked ROMs images */
-            ROM_LOAD("1-n3.bin", 0x00000, 0x4000, 0x612975f2);
-            ROM_LOAD("1-n4.bin", 0x04000, 0x4000, 0xa60ac644);
-            ROM_LOAD("1-n5.bin", 0x10000, 0x4000, 0x835f7b24);
-            ROM_LOAD("1-n6.bin", 0x14000, 0x2000, 0x821c6481);
-            ROM_LOAD("1-n7.bin", 0x18000, 0x4000, 0x5df525e1);
-
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
-            ROM_LOAD("1-c11.bin", 0x0000, 0x4000, 0xbd87f06b);
-
-            ROM_REGION(0x2000, REGION_GFX1 | REGIONFLAG_DISPOSE);
-            ROM_LOAD("1-f2.bin", 0x0000, 0x2000, 0x6ebca191);/* characters */
-
-            ROM_REGION(0xc000, REGION_GFX2 | REGIONFLAG_DISPOSE);
-            ROM_LOAD("2-a1.bin", 0x0000, 0x2000, 0x3884d9eb);/* tiles */
-            ROM_LOAD("2-a2.bin", 0x2000, 0x2000, 0x999cf6e0);
-            ROM_LOAD("2-a3.bin", 0x4000, 0x2000, 0x8edb273a);
-            ROM_LOAD("2-a4.bin", 0x6000, 0x2000, 0x3a2726c3);
-            ROM_LOAD("2-a5.bin", 0x8000, 0x2000, 0x1bd3d8bb);
-            ROM_LOAD("2-a6.bin", 0xa000, 0x2000, 0x658f02c4);
-
-            ROM_REGION(0x10000, REGION_GFX3 | REGIONFLAG_DISPOSE);
-            ROM_LOAD("2-l1.bin", 0x00000, 0x4000, 0x2528bec6);/* sprites */
-            ROM_LOAD("2-l2.bin", 0x04000, 0x4000, 0xf89287aa);
-            ROM_LOAD("2-n1.bin", 0x08000, 0x4000, 0x024418f8);
-            ROM_LOAD("2-n2.bin", 0x0c000, 0x4000, 0xe2c7e489);
-
-            ROM_REGION(0x0a00, REGION_PROMS);
-            ROM_LOAD("08e_sb-5.bin", 0x0000, 0x0100, 0x93ab8153);/* red component */
-            ROM_LOAD("09e_sb-6.bin", 0x0100, 0x0100, 0x8ab44f7d);/* green component */
-            ROM_LOAD("10e_sb-7.bin", 0x0200, 0x0100, 0xf4ade9a4);/* blue component */
-            ROM_LOAD("f01_sb-0.bin", 0x0300, 0x0100, 0x6047d91b);/* char lookup table */
-            ROM_LOAD("06d_sb-4.bin", 0x0400, 0x0100, 0x4858968d);/* tile lookup table */
-            ROM_LOAD("03k_sb-8.bin", 0x0500, 0x0100, 0xf6fad943);/* sprite lookup table */
-            //ROM_LOAD("01d_sb-2.bin", 0x0600, 0x0100, 0x8bb8b3df);/* tile palette selector? (not used) */
-            //ROM_LOAD("02d_sb-3.bin", 0x0700, 0x0100, 0x3b0c99af);/* tile palette selector? (not used) */
-            //ROM_LOAD("k06_sb-1.bin", 0x0800, 0x0100, 0x712ac508);/* interrupt timing (not used) */
-            //ROM_LOAD("01m_sb-9.bin", 0x0900, 0x0100, 0x4921635c);/* video timing? (not used) */
-            ROM_END();
-        }
-    };
-
-    static RomLoadPtr rom_1942b = new RomLoadPtr() {
-        public void handler() {
-            ROM_REGION(0x1c000, REGION_CPU1);/* 64k for code + 3*16k for the banked ROMs images */
-            ROM_LOAD("srb-03.n3", 0x00000, 0x4000, 0xd9dafcc3);
-            ROM_LOAD("srb-04.n4", 0x04000, 0x4000, 0xda0cf924);
-            ROM_LOAD("srb-05.n5", 0x10000, 0x4000, 0xd102911c);
-            ROM_LOAD("srb-06.n6", 0x14000, 0x2000, 0x466f8248);
-            ROM_LOAD("srb-07.n7", 0x18000, 0x4000, 0x0d31038c);
-
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
-            ROM_LOAD("1-c11.bin", 0x0000, 0x4000, 0xbd87f06b);
-
-            ROM_REGION(0x2000, REGION_GFX1 | REGIONFLAG_DISPOSE);
-            ROM_LOAD("1-f2.bin", 0x0000, 0x2000, 0x6ebca191);/* characters */
-
-            ROM_REGION(0xc000, REGION_GFX2 | REGIONFLAG_DISPOSE);
-            ROM_LOAD("2-a1.bin", 0x0000, 0x2000, 0x3884d9eb);/* tiles */
-            ROM_LOAD("2-a2.bin", 0x2000, 0x2000, 0x999cf6e0);
-            ROM_LOAD("2-a3.bin", 0x4000, 0x2000, 0x8edb273a);
-            ROM_LOAD("2-a4.bin", 0x6000, 0x2000, 0x3a2726c3);
-            ROM_LOAD("2-a5.bin", 0x8000, 0x2000, 0x1bd3d8bb);
-            ROM_LOAD("2-a6.bin", 0xa000, 0x2000, 0x658f02c4);
-
-            ROM_REGION(0x10000, REGION_GFX3 | REGIONFLAG_DISPOSE);
-            ROM_LOAD("2-l1.bin", 0x00000, 0x4000, 0x2528bec6);/* sprites */
-            ROM_LOAD("2-l2.bin", 0x04000, 0x4000, 0xf89287aa);
-            ROM_LOAD("2-n1.bin", 0x08000, 0x4000, 0x024418f8);
-            ROM_LOAD("2-n2.bin", 0x0c000, 0x4000, 0xe2c7e489);
-
-            ROM_REGION(0x0a00, REGION_PROMS);
-            ROM_LOAD("08e_sb-5.bin", 0x0000, 0x0100, 0x93ab8153);/* red component */
-            ROM_LOAD("09e_sb-6.bin", 0x0100, 0x0100, 0x8ab44f7d);/* green component */
-            ROM_LOAD("10e_sb-7.bin", 0x0200, 0x0100, 0xf4ade9a4);/* blue component */
-            ROM_LOAD("f01_sb-0.bin", 0x0300, 0x0100, 0x6047d91b);/* char lookup table */
-            ROM_LOAD("06d_sb-4.bin", 0x0400, 0x0100, 0x4858968d);/* tile lookup table */
-            ROM_LOAD("03k_sb-8.bin", 0x0500, 0x0100, 0xf6fad943);/* sprite lookup table */
-            //ROM_LOAD("01d_sb-2.bin", 0x0600, 0x0100, 0x8bb8b3df);/* tile palette selector? (not used) */
-            //ROM_LOAD("02d_sb-3.bin", 0x0700, 0x0100, 0x3b0c99af);/* tile palette selector? (not used) */
-            //ROM_LOAD("k06_sb-1.bin", 0x0800, 0x0100, 0x712ac508);/* interrupt timing (not used) */
-            //ROM_LOAD("01m_sb-9.bin", 0x0900, 0x0100, 0x4921635c);/* video timing? (not used) */
-            ROM_END();
-        }
-    };
+	/***************************************************************************
+	
+	  Game driver(s)
+	
+	***************************************************************************/
+	
+	static RomLoadPtr rom_1942 = new RomLoadPtr(){ public void handler(){ 
+		ROM_REGION( 0x1c000, REGION_CPU1, 0 );/* 64k for code + 3*16k for the banked ROMs images */
+		ROM_LOAD( "1-n3a.bin",    0x00000, 0x4000, 0x40201bab );
+		ROM_LOAD( "1-n4.bin",     0x04000, 0x4000, 0xa60ac644 );
+		ROM_LOAD( "1-n5.bin",     0x10000, 0x4000, 0x835f7b24 );
+		ROM_LOAD( "1-n6.bin",     0x14000, 0x2000, 0x821c6481 );
+		ROM_LOAD( "1-n7.bin",     0x18000, 0x4000, 0x5df525e1 );
+	
+		ROM_REGION( 0x10000, REGION_CPU2, 0 );/* 64k for the audio CPU */
+		ROM_LOAD( "1-c11.bin",    0x0000, 0x4000, 0xbd87f06b );
+	
+		ROM_REGION( 0x2000, REGION_GFX1, ROMREGION_DISPOSE );
+		ROM_LOAD( "1-f2.bin",     0x0000, 0x2000, 0x6ebca191 );/* characters */
+	
+		ROM_REGION( 0xc000, REGION_GFX2, ROMREGION_DISPOSE );
+		ROM_LOAD( "2-a1.bin",     0x0000, 0x2000, 0x3884d9eb );/* tiles */
+		ROM_LOAD( "2-a2.bin",     0x2000, 0x2000, 0x999cf6e0 );
+		ROM_LOAD( "2-a3.bin",     0x4000, 0x2000, 0x8edb273a );
+		ROM_LOAD( "2-a4.bin",     0x6000, 0x2000, 0x3a2726c3 );
+		ROM_LOAD( "2-a5.bin",     0x8000, 0x2000, 0x1bd3d8bb );
+		ROM_LOAD( "2-a6.bin",     0xa000, 0x2000, 0x658f02c4 );
+	
+		ROM_REGION( 0x10000, REGION_GFX3, ROMREGION_DISPOSE );
+		ROM_LOAD( "2-l1.bin",     0x00000, 0x4000, 0x2528bec6 );/* sprites */
+		ROM_LOAD( "2-l2.bin",     0x04000, 0x4000, 0xf89287aa );
+		ROM_LOAD( "2-n1.bin",     0x08000, 0x4000, 0x024418f8 );
+		ROM_LOAD( "2-n2.bin",     0x0c000, 0x4000, 0xe2c7e489 );
+	
+		ROM_REGION( 0x0a00, REGION_PROMS, 0 );
+		ROM_LOAD( "08e_sb-5.bin", 0x0000, 0x0100, 0x93ab8153 );/* red component */
+		ROM_LOAD( "09e_sb-6.bin", 0x0100, 0x0100, 0x8ab44f7d );/* green component */
+		ROM_LOAD( "10e_sb-7.bin", 0x0200, 0x0100, 0xf4ade9a4 );/* blue component */
+		ROM_LOAD( "f01_sb-0.bin", 0x0300, 0x0100, 0x6047d91b );/* char lookup table */
+		ROM_LOAD( "06d_sb-4.bin", 0x0400, 0x0100, 0x4858968d );/* tile lookup table */
+		ROM_LOAD( "03k_sb-8.bin", 0x0500, 0x0100, 0xf6fad943 );/* sprite lookup table */
+		ROM_LOAD( "01d_sb-2.bin", 0x0600, 0x0100, 0x8bb8b3df );/* tile palette selector? (not used) */
+		ROM_LOAD( "02d_sb-3.bin", 0x0700, 0x0100, 0x3b0c99af );/* tile palette selector? (not used) */
+		ROM_LOAD( "k06_sb-1.bin", 0x0800, 0x0100, 0x712ac508 );/* interrupt timing (not used) */
+		ROM_LOAD( "01m_sb-9.bin", 0x0900, 0x0100, 0x4921635c );/* video timing? (not used) */
+	ROM_END(); }}; 
+	
+	static RomLoadPtr rom_1942a = new RomLoadPtr(){ public void handler(){ 
+		ROM_REGION( 0x1c000, REGION_CPU1, 0 );/* 64k for code + 3*16k for the banked ROMs images */
+		ROM_LOAD( "1-n3.bin",     0x00000, 0x4000, 0x612975f2 );
+		ROM_LOAD( "1-n4.bin",     0x04000, 0x4000, 0xa60ac644 );
+		ROM_LOAD( "1-n5.bin",     0x10000, 0x4000, 0x835f7b24 );
+		ROM_LOAD( "1-n6.bin",     0x14000, 0x2000, 0x821c6481 );
+		ROM_LOAD( "1-n7.bin",     0x18000, 0x4000, 0x5df525e1 );
+	
+		ROM_REGION( 0x10000, REGION_CPU2, 0 );/* 64k for the audio CPU */
+		ROM_LOAD( "1-c11.bin",    0x0000, 0x4000, 0xbd87f06b );
+	
+		ROM_REGION( 0x2000, REGION_GFX1, ROMREGION_DISPOSE );
+		ROM_LOAD( "1-f2.bin",     0x0000, 0x2000, 0x6ebca191 );/* characters */
+	
+		ROM_REGION( 0xc000, REGION_GFX2, ROMREGION_DISPOSE );
+		ROM_LOAD( "2-a1.bin",     0x0000, 0x2000, 0x3884d9eb );/* tiles */
+		ROM_LOAD( "2-a2.bin",     0x2000, 0x2000, 0x999cf6e0 );
+		ROM_LOAD( "2-a3.bin",     0x4000, 0x2000, 0x8edb273a );
+		ROM_LOAD( "2-a4.bin",     0x6000, 0x2000, 0x3a2726c3 );
+		ROM_LOAD( "2-a5.bin",     0x8000, 0x2000, 0x1bd3d8bb );
+		ROM_LOAD( "2-a6.bin",     0xa000, 0x2000, 0x658f02c4 );
+	
+		ROM_REGION( 0x10000, REGION_GFX3, ROMREGION_DISPOSE );
+		ROM_LOAD( "2-l1.bin",     0x00000, 0x4000, 0x2528bec6 );/* sprites */
+		ROM_LOAD( "2-l2.bin",     0x04000, 0x4000, 0xf89287aa );
+		ROM_LOAD( "2-n1.bin",     0x08000, 0x4000, 0x024418f8 );
+		ROM_LOAD( "2-n2.bin",     0x0c000, 0x4000, 0xe2c7e489 );
+	
+		ROM_REGION( 0x0a00, REGION_PROMS, 0 );
+		ROM_LOAD( "08e_sb-5.bin", 0x0000, 0x0100, 0x93ab8153 );/* red component */
+		ROM_LOAD( "09e_sb-6.bin", 0x0100, 0x0100, 0x8ab44f7d );/* green component */
+		ROM_LOAD( "10e_sb-7.bin", 0x0200, 0x0100, 0xf4ade9a4 );/* blue component */
+		ROM_LOAD( "f01_sb-0.bin", 0x0300, 0x0100, 0x6047d91b );/* char lookup table */
+		ROM_LOAD( "06d_sb-4.bin", 0x0400, 0x0100, 0x4858968d );/* tile lookup table */
+		ROM_LOAD( "03k_sb-8.bin", 0x0500, 0x0100, 0xf6fad943 );/* sprite lookup table */
+		ROM_LOAD( "01d_sb-2.bin", 0x0600, 0x0100, 0x8bb8b3df );/* tile palette selector? (not used) */
+		ROM_LOAD( "02d_sb-3.bin", 0x0700, 0x0100, 0x3b0c99af );/* tile palette selector? (not used) */
+		ROM_LOAD( "k06_sb-1.bin", 0x0800, 0x0100, 0x712ac508 );/* interrupt timing (not used) */
+		ROM_LOAD( "01m_sb-9.bin", 0x0900, 0x0100, 0x4921635c );/* video timing? (not used) */
+	ROM_END(); }}; 
+	
+	static RomLoadPtr rom_1942b = new RomLoadPtr(){ public void handler(){ 
+		ROM_REGION( 0x1c000, REGION_CPU1, 0 );/* 64k for code + 3*16k for the banked ROMs images */
+		ROM_LOAD( "srb-03.n3",    0x00000, 0x4000, 0xd9dafcc3 );
+		ROM_LOAD( "srb-04.n4",    0x04000, 0x4000, 0xda0cf924 );
+		ROM_LOAD( "srb-05.n5",    0x10000, 0x4000, 0xd102911c );
+		ROM_LOAD( "srb-06.n6",    0x14000, 0x2000, 0x466f8248 );
+		ROM_LOAD( "srb-07.n7",    0x18000, 0x4000, 0x0d31038c );
+	
+		ROM_REGION( 0x10000, REGION_CPU2, 0 );/* 64k for the audio CPU */
+		ROM_LOAD( "1-c11.bin",    0x0000, 0x4000, 0xbd87f06b );
+	
+		ROM_REGION( 0x2000, REGION_GFX1, ROMREGION_DISPOSE );
+		ROM_LOAD( "1-f2.bin",     0x0000, 0x2000, 0x6ebca191 );/* characters */
+	
+		ROM_REGION( 0xc000, REGION_GFX2, ROMREGION_DISPOSE );
+		ROM_LOAD( "2-a1.bin",     0x0000, 0x2000, 0x3884d9eb );/* tiles */
+		ROM_LOAD( "2-a2.bin",     0x2000, 0x2000, 0x999cf6e0 );
+		ROM_LOAD( "2-a3.bin",     0x4000, 0x2000, 0x8edb273a );
+		ROM_LOAD( "2-a4.bin",     0x6000, 0x2000, 0x3a2726c3 );
+		ROM_LOAD( "2-a5.bin",     0x8000, 0x2000, 0x1bd3d8bb );
+		ROM_LOAD( "2-a6.bin",     0xa000, 0x2000, 0x658f02c4 );
+	
+		ROM_REGION( 0x10000, REGION_GFX3, ROMREGION_DISPOSE );
+		ROM_LOAD( "2-l1.bin",     0x00000, 0x4000, 0x2528bec6 );/* sprites */
+		ROM_LOAD( "2-l2.bin",     0x04000, 0x4000, 0xf89287aa );
+		ROM_LOAD( "2-n1.bin",     0x08000, 0x4000, 0x024418f8 );
+		ROM_LOAD( "2-n2.bin",     0x0c000, 0x4000, 0xe2c7e489 );
+	
+		ROM_REGION( 0x0a00, REGION_PROMS, 0 );
+		ROM_LOAD( "08e_sb-5.bin", 0x0000, 0x0100, 0x93ab8153 );/* red component */
+		ROM_LOAD( "09e_sb-6.bin", 0x0100, 0x0100, 0x8ab44f7d );/* green component */
+		ROM_LOAD( "10e_sb-7.bin", 0x0200, 0x0100, 0xf4ade9a4 );/* blue component */
+		ROM_LOAD( "f01_sb-0.bin", 0x0300, 0x0100, 0x6047d91b );/* char lookup table */
+		ROM_LOAD( "06d_sb-4.bin", 0x0400, 0x0100, 0x4858968d );/* tile lookup table */
+		ROM_LOAD( "03k_sb-8.bin", 0x0500, 0x0100, 0xf6fad943 );/* sprite lookup table */
+		ROM_LOAD( "01d_sb-2.bin", 0x0600, 0x0100, 0x8bb8b3df );/* tile palette selector? (not used) */
+		ROM_LOAD( "02d_sb-3.bin", 0x0700, 0x0100, 0x3b0c99af );/* tile palette selector? (not used) */
+		ROM_LOAD( "k06_sb-1.bin", 0x0800, 0x0100, 0x712ac508 );/* interrupt timing (not used) */
+		ROM_LOAD( "01m_sb-9.bin", 0x0900, 0x0100, 0x4921635c );/* video timing? (not used) */
+	ROM_END(); }}; 
 
     public static GameDriver driver_1942 = new GameDriver("1984", "1942", "_1942.java", rom_1942, null, machine_driver_1942, input_ports_1942, null, ROT270, "Capcom", "1942 (set 1)");
     public static GameDriver driver_1942a = new GameDriver("1984", "1942a", "_1942.java", rom_1942a, driver_1942, machine_driver_1942, input_ports_1942, null, ROT270, "Capcom", "1942 (set 2)");

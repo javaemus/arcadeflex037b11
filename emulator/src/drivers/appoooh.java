@@ -7,7 +7,7 @@ package drivers;
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.driverH.*;
-import static old2.mame.memoryH.*;
+import static mame056.memoryH.*;
 import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
@@ -20,7 +20,7 @@ import static sound.MSM5205H.*;
 import static sound.MSM5205.*;
 import static arcadeflex.libc.ptr.*;
 import static mame056.common.*;
-import static mame.commonH.*;
+import static mame056.commonH.*;
 import static mame037b11.cpuintrf.*;
 
 public class appoooh {
@@ -55,45 +55,49 @@ public class appoooh {
         }
     };
 
-    static MemoryReadAddress readmem[]
+    static Memory_ReadAddress readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x9fff, MRA_ROM),
-                new MemoryReadAddress(0xa000, 0xdfff, MRA_BANK1),
-                new MemoryReadAddress(0xe000, 0xe7ff, MRA_RAM),
-                new MemoryReadAddress(0xe800, 0xefff, MRA_RAM), /* RAM ? */
-                new MemoryReadAddress(0xf000, 0xffff, MRA_RAM),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x9fff, MRA_ROM),
+                new Memory_ReadAddress(0xa000, 0xdfff, MRA_BANK1),
+                new Memory_ReadAddress(0xe000, 0xe7ff, MRA_RAM),
+                new Memory_ReadAddress(0xe800, 0xefff, MRA_RAM), /* RAM ? */
+                new Memory_ReadAddress(0xf000, 0xffff, MRA_RAM),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress writemem[]
+    static Memory_WriteAddress writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0xdfff, MWA_ROM),
-                new MemoryWriteAddress(0xe000, 0xe7ff, MWA_RAM),
-                new MemoryWriteAddress(0xe800, 0xefff, MWA_RAM), /* RAM ? */
-                new MemoryWriteAddress(0xf000, 0xf01f, MWA_RAM, spriteram, spriteram_size),
-                new MemoryWriteAddress(0xf020, 0xf3ff, videoram_w, videoram, videoram_size),
-                new MemoryWriteAddress(0xf420, 0xf7ff, colorram_w, colorram),
-                new MemoryWriteAddress(0xf800, 0xf81f, MWA_RAM, appoooh_spriteram2),
-                new MemoryWriteAddress(0xf820, 0xfbff, appoooh_videoram2_w, appoooh_videoram2),
-                new MemoryWriteAddress(0xfc20, 0xffff, appoooh_colorram2_w, appoooh_colorram2),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0xdfff, MWA_ROM),
+                new Memory_WriteAddress(0xe000, 0xe7ff, MWA_RAM),
+                new Memory_WriteAddress(0xe800, 0xefff, MWA_RAM), /* RAM ? */
+                new Memory_WriteAddress(0xf000, 0xf01f, MWA_RAM, spriteram, spriteram_size),
+                new Memory_WriteAddress(0xf020, 0xf3ff, videoram_w, videoram, videoram_size),
+                new Memory_WriteAddress(0xf420, 0xf7ff, colorram_w, colorram),
+                new Memory_WriteAddress(0xf800, 0xf81f, MWA_RAM, appoooh_spriteram2),
+                new Memory_WriteAddress(0xf820, 0xfbff, appoooh_videoram2_w, appoooh_videoram2),
+                new Memory_WriteAddress(0xfc20, 0xffff, appoooh_colorram2_w, appoooh_colorram2),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
-    static IOReadPort readport[]
+    static IO_ReadPort readport[]
             = {
-                new IOReadPort(0x00, 0x00, input_port_0_r), /* IN0 */
-                new IOReadPort(0x01, 0x01, input_port_1_r), /* IN1 */
-                new IOReadPort(0x03, 0x03, input_port_3_r), /* DSW */
-                new IOReadPort(0x04, 0x04, input_port_2_r), /* IN2 */
-                new IOReadPort(-1) /* end of table */};
+                new IO_ReadPort(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_IO | MEMPORT_WIDTH_8),
+                new IO_ReadPort(0x00, 0x00, input_port_0_r), /* IN0 */
+                new IO_ReadPort(0x01, 0x01, input_port_1_r), /* IN1 */
+                new IO_ReadPort(0x03, 0x03, input_port_3_r), /* DSW */
+                new IO_ReadPort(0x04, 0x04, input_port_2_r), /* IN2 */
+                new IO_ReadPort(MEMPORT_MARKER, 0)};
 
-    static IOWritePort writeport[]
+    static IO_WritePort writeport[]
             = {
-                new IOWritePort(0x00, 0x00, SN76496_0_w),
-                new IOWritePort(0x01, 0x01, SN76496_1_w),
-                new IOWritePort(0x02, 0x02, SN76496_2_w),
-                new IOWritePort(0x03, 0x03, appoooh_adpcm_w),
-                new IOWritePort(0x04, 0x04, appoooh_out_w),
-                new IOWritePort(0x05, 0x05, appoooh_scroll_w), /* unknown */
-                new IOWritePort(-1) /* end of table */};
+                new IO_WritePort(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_IO | MEMPORT_WIDTH_8),
+                new IO_WritePort(0x00, 0x00, SN76496_0_w),
+                new IO_WritePort(0x01, 0x01, SN76496_1_w),
+                new IO_WritePort(0x02, 0x02, SN76496_2_w),
+                new IO_WritePort(0x03, 0x03, appoooh_adpcm_w),
+                new IO_WritePort(0x04, 0x04, appoooh_out_w),
+                new IO_WritePort(0x05, 0x05, appoooh_scroll_w), /* unknown */
+                new IO_WritePort(MEMPORT_MARKER, 0)};
 
     static InputPortPtr input_ports_appoooh = new InputPortPtr() {
         public void handler() {
@@ -245,55 +249,40 @@ public class appoooh {
      *
      **************************************************************************
      */
-    static RomLoadPtr rom_appoooh = new RomLoadPtr() {
-        public void handler() {
-            ROM_REGION(0x14000, REGION_CPU1);/* 64k for code + 16k bank */
-
-            ROM_LOAD("epr-5906.bin", 0x00000, 0x2000, 0xfffae7fe);
-            ROM_LOAD("epr-5907.bin", 0x02000, 0x2000, 0x57696cd6);
-            ROM_LOAD("epr-5908.bin", 0x04000, 0x2000, 0x4537cddc);
-            ROM_LOAD("epr-5909.bin", 0x06000, 0x2000, 0xcf82718d);
-            ROM_LOAD("epr-5910.bin", 0x08000, 0x2000, 0x312636da);
-            ROM_LOAD("epr-5911.bin", 0x0a000, 0x2000, 0x0bc2acaa);/* bank0      */
-
-            ROM_LOAD("epr-5913.bin", 0x0c000, 0x2000, 0xf5a0e6a7);/* a000-dfff  */
-
-            ROM_LOAD("epr-5912.bin", 0x10000, 0x2000, 0x3c3915ab);/* bank1     */
-
-            ROM_LOAD("epr-5914.bin", 0x12000, 0x2000, 0x58792d4a);/* a000-dfff */
-
-            ROM_REGION(0x0c000, REGION_GFX1 | REGIONFLAG_DISPOSE);
-            ROM_LOAD("epr-5895.bin", 0x00000, 0x4000, 0x4b0d4294);/* playfield #1 chars */
-
-            ROM_LOAD("epr-5896.bin", 0x04000, 0x4000, 0x7bc84d75);
-            ROM_LOAD("epr-5897.bin", 0x08000, 0x4000, 0x745f3ffa);
-
-            ROM_REGION(0x0c000, REGION_GFX2 | REGIONFLAG_DISPOSE);
-            ROM_LOAD("epr-5898.bin", 0x00000, 0x4000, 0xcf01644d);/* playfield #2 chars */
-
-            ROM_LOAD("epr-5899.bin", 0x04000, 0x4000, 0x885ad636);
-            ROM_LOAD("epr-5900.bin", 0x08000, 0x4000, 0xa8ed13f3);
-
-            ROM_REGION(0x0220, REGION_PROMS);
-            ROM_LOAD("pr5921.prm", 0x0000, 0x020, 0xf2437229);
-            /* palette */
-
-            ROM_LOAD("pr5922.prm", 0x0020, 0x100, 0x85c542bf);
-            /* charset #1 lookup table */
-
-            ROM_LOAD("pr5923.prm", 0x0120, 0x100, 0x16acbd53);
-            /* charset #2 lookup table */
-
-            ROM_REGION(0xa000, REGION_SOUND1);/* adpcm voice data */
-
-            ROM_LOAD("epr-5901.bin", 0x0000, 0x2000, 0x170a10a4);
-            ROM_LOAD("epr-5902.bin", 0x2000, 0x2000, 0xf6981640);
-            ROM_LOAD("epr-5903.bin", 0x4000, 0x2000, 0x0439df50);
-            ROM_LOAD("epr-5904.bin", 0x6000, 0x2000, 0x9988f2ae);
-            ROM_LOAD("epr-5905.bin", 0x8000, 0x2000, 0xfb5cd70e);
-            ROM_END();
-        }
-    };
+	static RomLoadPtr rom_appoooh = new RomLoadPtr(){ public void handler(){ 
+		ROM_REGION( 0x14000, REGION_CPU1, 0 );/* 64k for code + 16k bank */
+		ROM_LOAD( "epr-5906.bin", 0x00000, 0x2000, 0xfffae7fe );
+		ROM_LOAD( "epr-5907.bin", 0x02000, 0x2000, 0x57696cd6 );
+		ROM_LOAD( "epr-5908.bin", 0x04000, 0x2000, 0x4537cddc );
+		ROM_LOAD( "epr-5909.bin", 0x06000, 0x2000, 0xcf82718d );
+		ROM_LOAD( "epr-5910.bin", 0x08000, 0x2000, 0x312636da );
+		ROM_LOAD( "epr-5911.bin", 0x0a000, 0x2000, 0x0bc2acaa );/* bank0      */
+		ROM_LOAD( "epr-5913.bin", 0x0c000, 0x2000, 0xf5a0e6a7 );/* a000-dfff  */
+		ROM_LOAD( "epr-5912.bin", 0x10000, 0x2000, 0x3c3915ab );/* bank1     */
+		ROM_LOAD( "epr-5914.bin", 0x12000, 0x2000, 0x58792d4a );/* a000-dfff */
+	
+		ROM_REGION( 0x0c000, REGION_GFX1, ROMREGION_DISPOSE );
+		ROM_LOAD( "epr-5895.bin", 0x00000, 0x4000, 0x4b0d4294 );/* playfield #1 chars */
+		ROM_LOAD( "epr-5896.bin", 0x04000, 0x4000, 0x7bc84d75 );
+		ROM_LOAD( "epr-5897.bin", 0x08000, 0x4000, 0x745f3ffa );
+	
+		ROM_REGION( 0x0c000, REGION_GFX2, ROMREGION_DISPOSE );
+		ROM_LOAD( "epr-5898.bin", 0x00000, 0x4000, 0xcf01644d );/* playfield #2 chars */
+		ROM_LOAD( "epr-5899.bin", 0x04000, 0x4000, 0x885ad636 );
+		ROM_LOAD( "epr-5900.bin", 0x08000, 0x4000, 0xa8ed13f3 );
+	
+		ROM_REGION( 0x0220, REGION_PROMS, 0 );
+		ROM_LOAD( "pr5921.prm",   0x0000, 0x020, 0xf2437229 );	/* palette */
+		ROM_LOAD( "pr5922.prm",   0x0020, 0x100, 0x85c542bf );	/* charset #1 lookup table */
+		ROM_LOAD( "pr5923.prm",   0x0120, 0x100, 0x16acbd53 );	/* charset #2 lookup table */
+	
+		ROM_REGION( 0xa000, REGION_SOUND1, 0 );/* adpcm voice data */
+		ROM_LOAD( "epr-5901.bin", 0x0000, 0x2000, 0x170a10a4 );
+		ROM_LOAD( "epr-5902.bin", 0x2000, 0x2000, 0xf6981640 );
+		ROM_LOAD( "epr-5903.bin", 0x4000, 0x2000, 0x0439df50 );
+		ROM_LOAD( "epr-5904.bin", 0x6000, 0x2000, 0x9988f2ae );
+		ROM_LOAD( "epr-5905.bin", 0x8000, 0x2000, 0xfb5cd70e );
+	ROM_END(); }}; 
 
     public static GameDriver driver_appoooh = new GameDriver("1984", "appoooh", "appoooh.java", rom_appoooh, null, machine_driver_appoooh, input_ports_appoooh, null, ROT0, "Sega", "Appoooh");
 }

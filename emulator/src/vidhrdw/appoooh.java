@@ -8,7 +8,7 @@ import static arcadeflex.libc.ptr.*;
 import static arcadeflex.fucPtr.*;
 import static common.libc.cstring.*;
 import static common.libc.expressions.*;
-import static mame.commonH.*;
+import static mame056.commonH.*;
 import static mame.osdependH.*;
 import static mame.drawgfxH.*;
 import static mame037b11.cpuintrf.*;
@@ -16,8 +16,7 @@ import static vidhrdw.generic.*;
 import static old.mame.drawgfx.*;
 import static old2.mame.mame.*;
 import static old2.mame.common.*;
-import static old.mame.common.*;
-import static old2.mame.memoryH.*;
+import static mame056.memoryH.*;
 import static mame056.common.*;
 
 public class appoooh {

@@ -6,17 +6,17 @@ package vidhrdw;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
-import static old.mame.common.*;
-import static old2.mame.common.*;
-import static mame.commonH.REGION_CPU1;
-import static mame.commonH.REGION_GFX5;
+import static mame056.commonH.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static old2.mame.memoryH.cpu_setbank;
+import static mame056.memoryH.*;
 import static mame.osdependH.osd_bitmap;
 import static vidhrdw.generic.*;
 import static mame056.common.*;
+import static old.mame.common.coin_counter_w;
+import static old2.mame.common.bitmap_alloc;
+import static old2.mame.common.bitmap_free;
 
 public class _1943 {
 

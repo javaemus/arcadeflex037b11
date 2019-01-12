@@ -335,8 +335,10 @@ public class common {
             return Machine.memory_region[num].base;
         } else {
             for (i = 0; i < MAX_MEMORY_REGIONS; i++) {
-                if (Machine.memory_region[i].type == num) {
-                    return Machine.memory_region[i].base;
+                if (Machine.memory_region[i] != null) {
+                    if (Machine.memory_region[i].type == num) {
+                        return Machine.memory_region[i].base;
+                    }
                 }
             }
         }
@@ -356,8 +358,10 @@ public class common {
             return Machine.memory_region[num].length;
         } else {
             for (i = 0; i < MAX_MEMORY_REGIONS; i++) {
-                if (Machine.memory_region[i].type == num) {
-                    return Machine.memory_region[i].length;
+                if (Machine.memory_region[i] != null) {
+                    if (Machine.memory_region[i].type == num) {
+                        return Machine.memory_region[i].length;
+                    }
                 }
             }
         }
