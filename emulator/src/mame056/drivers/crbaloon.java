@@ -1,17 +1,18 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- * using automatic conversion tool v0.01
  */
-package drivers;
+package mame056.drivers;
+
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
-import static mame.commonH.*;
+import static mame056.commonH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
-import static old2.mame.memoryH.*;
+import static mame056.memoryH.*;
 import static mame.sndintrfH.MachineSound;
 import static mame.sndintrfH.*;
 import static vidhrdw.generic.*;
@@ -142,34 +143,38 @@ public class crbaloon {
         }
     };
 
-    static MemoryReadAddress readmem[]
+    static Memory_ReadAddress readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x2fff, MRA_ROM),
-                new MemoryReadAddress(0x4000, 0x43ff, MRA_RAM),
-                new MemoryReadAddress(0x4800, 0x4bff, MRA_RAM),
-                new MemoryReadAddress(0x5000, 0x53ff, MRA_RAM),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x2fff, MRA_ROM),
+                new Memory_ReadAddress(0x4000, 0x43ff, MRA_RAM),
+                new Memory_ReadAddress(0x4800, 0x4bff, MRA_RAM),
+                new Memory_ReadAddress(0x5000, 0x53ff, MRA_RAM),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress writemem[]
+    static Memory_WriteAddress writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x2fff, MWA_ROM),
-                new MemoryWriteAddress(0x4000, 0x43ff, MWA_RAM),
-                new MemoryWriteAddress(0x4800, 0x4bff, videoram_w, videoram, videoram_size),
-                new MemoryWriteAddress(0x5000, 0x53ff, colorram_w, colorram),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x2fff, MWA_ROM),
+                new Memory_WriteAddress(0x4000, 0x43ff, MWA_RAM),
+                new Memory_WriteAddress(0x4800, 0x4bff, videoram_w, videoram, videoram_size),
+                new Memory_WriteAddress(0x5000, 0x53ff, colorram_w, colorram),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
-    static IOReadPort readport[]
+    static IO_ReadPort readport[]
             = {
-                new IOReadPort(0x00, 0x0f, crbaloon_IN_r),
-                new IOReadPort(-1) /* end of table */};
+                new IO_ReadPort(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_IO | MEMPORT_WIDTH_8),
+                new IO_ReadPort(0x00, 0x0f, crbaloon_IN_r),
+                new IO_ReadPort(MEMPORT_MARKER, 0)};
 
-    static IOWritePort writeport[]
+    static IO_WritePort writeport[]
             = {
-                new IOWritePort(0x02, 0x04, crbaloon_spritectrl_w),
-                new IOWritePort(0x06, 0x06, crbaloon_06_w),
-                new IOWritePort(0x08, 0x08, crbaloon_08_w),
-                new IOWritePort(0x0a, 0x0a, crbaloon_0a_w),
-                new IOWritePort(-1) /* end of table */};
+                new IO_WritePort(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_IO | MEMPORT_WIDTH_8),
+                new IO_WritePort(0x02, 0x04, crbaloon_spritectrl_w),
+                new IO_WritePort(0x06, 0x06, crbaloon_06_w),
+                new IO_WritePort(0x08, 0x08, crbaloon_08_w),
+                new IO_WritePort(0x0a, 0x0a, crbaloon_0a_w),
+                new IO_WritePort(MEMPORT_MARKER, 0)};
 
     static InputPortPtr input_ports_crbaloon = new InputPortPtr() {
         public void handler() {
@@ -333,7 +338,7 @@ public class crbaloon {
      */
     static RomLoadPtr rom_crbaloon = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);
+            ROM_REGION(0x10000, REGION_CPU1, 0);
             /* 64k for code */
             ROM_LOAD("cl01.bin", 0x0000, 0x0800, 0x9d4eef0b);
             ROM_LOAD("cl02.bin", 0x0800, 0x0800, 0x10f7a6f7);
@@ -342,10 +347,10 @@ public class crbaloon {
             ROM_LOAD("cl05.bin", 0x2000, 0x0800, 0xc8f1e2be);
             ROM_LOAD("cl06.bin", 0x2800, 0x0800, 0x7d465691);
 
-            ROM_REGION(0x0800, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x0800, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("cl07.bin", 0x0000, 0x0800, 0x2c1fbea8);
 
-            ROM_REGION(0x0800, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x0800, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("cl08.bin", 0x0000, 0x0800, 0xba898659);
             ROM_END();
         }
@@ -353,7 +358,7 @@ public class crbaloon {
 
     static RomLoadPtr rom_crbalon2 = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);
+            ROM_REGION(0x10000, REGION_CPU1, 0);
             /* 64k for code */
             ROM_LOAD("cl01.bin", 0x0000, 0x0800, 0x9d4eef0b);
             ROM_LOAD("crazybal.ep2", 0x0800, 0x0800, 0x87572086);
@@ -362,10 +367,10 @@ public class crbaloon {
             ROM_LOAD("cl05.bin", 0x2000, 0x0800, 0xc8f1e2be);
             ROM_LOAD("crazybal.ep6", 0x2800, 0x0800, 0xfed6ff5c);
 
-            ROM_REGION(0x0800, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x0800, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("cl07.bin", 0x0000, 0x0800, 0x2c1fbea8);
 
-            ROM_REGION(0x0800, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x0800, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("cl08.bin", 0x0000, 0x0800, 0xba898659);
             ROM_END();
         }

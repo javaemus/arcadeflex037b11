@@ -59,7 +59,7 @@ import static drivers.gsword.*;
 import static drivers.route16.*;
 import static drivers.rallyx.*;
 import static drivers.kingobox.*;
-import static drivers.crbaloon.*;
+import static mame056.drivers.crbaloon.*;
 import static drivers.galaga.*;
 import static drivers.yamato.*;
 import static drivers.tsamurai.*;
