@@ -1,17 +1,18 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- * using automatic conversion tool v0.01
  */
-package drivers;
+package mame056.drivers;
+
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
-import static mame.commonH.*;
+import static mame056.commonH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
-import static old2.mame.memoryH.*;
+import static mame056.memoryH.*;
 import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
 import static sound.ay8910.*;
@@ -26,58 +27,64 @@ public class exedexes {
     public static InterruptPtr exedexes_interrupt = new InterruptPtr() {
         public int handler() {
             if (cpu_getiloops() != 0) {
-                return 0x00cf;	/* RST 08h */
+                return 0x00cf;
+                /* RST 08h */
             } else {
-                return 0x00d7;	/* RST 10h - vblank */
+                return 0x00d7;
+                /* RST 10h - vblank */
             }
         }
     };
 
-    static MemoryReadAddress readmem[]
+    static Memory_ReadAddress readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0xbfff, MRA_ROM),
-                new MemoryReadAddress(0xc000, 0xc000, input_port_0_r),
-                new MemoryReadAddress(0xc001, 0xc001, input_port_1_r),
-                new MemoryReadAddress(0xc002, 0xc002, input_port_2_r),
-                new MemoryReadAddress(0xc003, 0xc003, input_port_3_r),
-                new MemoryReadAddress(0xc004, 0xc004, input_port_4_r),
-                new MemoryReadAddress(0xd000, 0xd7ff, MRA_RAM),
-                new MemoryReadAddress(0xe000, 0xefff, MRA_RAM), /* Work RAM */
-                new MemoryReadAddress(0xf000, 0xffff, MRA_RAM), /* Sprite RAM */
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0xbfff, MRA_ROM),
+                new Memory_ReadAddress(0xc000, 0xc000, input_port_0_r),
+                new Memory_ReadAddress(0xc001, 0xc001, input_port_1_r),
+                new Memory_ReadAddress(0xc002, 0xc002, input_port_2_r),
+                new Memory_ReadAddress(0xc003, 0xc003, input_port_3_r),
+                new Memory_ReadAddress(0xc004, 0xc004, input_port_4_r),
+                new Memory_ReadAddress(0xd000, 0xd7ff, MRA_RAM),
+                new Memory_ReadAddress(0xe000, 0xefff, MRA_RAM), /* Work RAM */
+                new Memory_ReadAddress(0xf000, 0xffff, MRA_RAM), /* Sprite RAM */
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress writemem[]
+    static Memory_WriteAddress writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0xbfff, MWA_ROM),
-                new MemoryWriteAddress(0xc800, 0xc800, soundlatch_w),
-                new MemoryWriteAddress(0xc804, 0xc804, exedexes_c804_w), /* coin counters + text layer enable */
-                new MemoryWriteAddress(0xc806, 0xc806, MWA_NOP), /* Watchdog ?? */
-                new MemoryWriteAddress(0xd000, 0xd3ff, videoram_w, videoram, videoram_size),
-                new MemoryWriteAddress(0xd400, 0xd7ff, colorram_w, colorram),
-                new MemoryWriteAddress(0xd800, 0xd801, MWA_RAM, exedexes_nbg_yscroll),
-                new MemoryWriteAddress(0xd802, 0xd803, MWA_RAM, exedexes_nbg_xscroll),
-                new MemoryWriteAddress(0xd804, 0xd805, MWA_RAM, exedexes_bg_scroll),
-                new MemoryWriteAddress(0xd807, 0xd807, exedexes_gfxctrl_w), /* layer enables */
-                new MemoryWriteAddress(0xe000, 0xefff, MWA_RAM),
-                new MemoryWriteAddress(0xf000, 0xffff, MWA_RAM, spriteram, spriteram_size),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0xbfff, MWA_ROM),
+                new Memory_WriteAddress(0xc800, 0xc800, soundlatch_w),
+                new Memory_WriteAddress(0xc804, 0xc804, exedexes_c804_w), /* coin counters + text layer enable */
+                new Memory_WriteAddress(0xc806, 0xc806, MWA_NOP), /* Watchdog ?? */
+                new Memory_WriteAddress(0xd000, 0xd3ff, videoram_w, videoram, videoram_size),
+                new Memory_WriteAddress(0xd400, 0xd7ff, colorram_w, colorram),
+                new Memory_WriteAddress(0xd800, 0xd801, MWA_RAM, exedexes_nbg_yscroll),
+                new Memory_WriteAddress(0xd802, 0xd803, MWA_RAM, exedexes_nbg_xscroll),
+                new Memory_WriteAddress(0xd804, 0xd805, MWA_RAM, exedexes_bg_scroll),
+                new Memory_WriteAddress(0xd807, 0xd807, exedexes_gfxctrl_w), /* layer enables */
+                new Memory_WriteAddress(0xe000, 0xefff, MWA_RAM),
+                new Memory_WriteAddress(0xf000, 0xffff, MWA_RAM, spriteram, spriteram_size),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryReadAddress sound_readmem[]
+    static Memory_ReadAddress sound_readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x3fff, MRA_ROM),
-                new MemoryReadAddress(0x4000, 0x47ff, MRA_RAM),
-                new MemoryReadAddress(0x6000, 0x6000, soundlatch_r),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x3fff, MRA_ROM),
+                new Memory_ReadAddress(0x4000, 0x47ff, MRA_RAM),
+                new Memory_ReadAddress(0x6000, 0x6000, soundlatch_r),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress sound_writemem[]
+    static Memory_WriteAddress sound_writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x3fff, MWA_ROM),
-                new MemoryWriteAddress(0x4000, 0x47ff, MWA_RAM),
-                new MemoryWriteAddress(0x8000, 0x8000, AY8910_control_port_0_w),
-                new MemoryWriteAddress(0x8001, 0x8001, AY8910_write_port_0_w),
-                new MemoryWriteAddress(0x8002, 0x8002, SN76496_0_w),
-                new MemoryWriteAddress(0x8003, 0x8003, SN76496_1_w),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x3fff, MWA_ROM),
+                new Memory_WriteAddress(0x4000, 0x47ff, MWA_RAM),
+                new Memory_WriteAddress(0x8000, 0x8000, AY8910_control_port_0_w),
+                new Memory_WriteAddress(0x8001, 0x8001, AY8910_write_port_0_w),
+                new Memory_WriteAddress(0x8002, 0x8002, SN76496_0_w),
+                new Memory_WriteAddress(0x8003, 0x8003, SN76496_1_w),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
     static InputPortPtr input_ports_exedexes = new InputPortPtr() {
         public void handler() {
@@ -272,34 +279,34 @@ public class exedexes {
 
     static RomLoadPtr rom_exedexes = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);
+            ROM_REGION(0x10000, REGION_CPU1, 0);
             /* 64k for code */
             ROM_LOAD("11m_ee04.bin", 0x0000, 0x4000, 0x44140dbd);
             ROM_LOAD("10m_ee03.bin", 0x4000, 0x4000, 0xbf72cfba);
             ROM_LOAD("09m_ee02.bin", 0x8000, 0x4000, 0x7ad95e2f);
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the audio CPU */
             ROM_LOAD("11e_ee01.bin", 0x00000, 0x4000, 0x73cdf3b2);
 
-            ROM_REGION(0x02000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x02000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("05c_ee00.bin", 0x00000, 0x2000, 0xcadb75bd);/* Characters */
 
-            ROM_REGION(0x04000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x04000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("h01_ee08.bin", 0x00000, 0x4000, 0x96a65c1d);/* 32x32 tiles planes 0-1 */
 
-            ROM_REGION(0x08000, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x08000, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("a03_ee06.bin", 0x00000, 0x4000, 0x6039bdd1);/* 16x16 tiles planes 0-1 */
             ROM_LOAD("a02_ee05.bin", 0x04000, 0x4000, 0xb32d8252);/* 16x16 tiles planes 2-3 */
 
-            ROM_REGION(0x08000, REGION_GFX4 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x08000, REGION_GFX4, ROMREGION_DISPOSE);
             ROM_LOAD("j11_ee10.bin", 0x00000, 0x4000, 0xbc83e265);/* Sprites planes 0-1 */
             ROM_LOAD("j12_ee11.bin", 0x04000, 0x4000, 0x0e0f300d);/* Sprites planes 2-3 */
 
-            ROM_REGION(0x6000, REGION_GFX5);/* background tilemaps */
+            ROM_REGION(0x6000, REGION_GFX5, 0);/* background tilemaps */
             ROM_LOAD("c01_ee07.bin", 0x0000, 0x4000, 0x3625a68d);/* Front Tile Map */
             ROM_LOAD("h04_ee09.bin", 0x4000, 0x2000, 0x6057c907);/* Back Tile map */
 
-            ROM_REGION(0x0b20, REGION_PROMS);
+            ROM_REGION(0x0b20, REGION_PROMS, 0);
             ROM_LOAD("02d_e-02.bin", 0x0000, 0x0100, 0x8d0d5935);/* red component */
             ROM_LOAD("03d_e-03.bin", 0x0100, 0x0100, 0xd3c17efc);/* green component */
             ROM_LOAD("04d_e-04.bin", 0x0200, 0x0100, 0x58ba964c);/* blue component */
@@ -308,44 +315,44 @@ public class exedexes {
             ROM_LOAD("c04_e-07.bin", 0x0500, 0x0100, 0x850064e0);/* 16x16 tile lookup table */
             ROM_LOAD("l09_e-11.bin", 0x0600, 0x0100, 0x2bb68710);/* sprite lookup table */
             ROM_LOAD("l10_e-12.bin", 0x0700, 0x0100, 0x173184ef);/* sprite palette bank */
-            //ROM_LOAD("06l_e-06.bin", 0x0800, 0x0100, 0x712ac508);/* interrupt timing (not used) */
-            //ROM_LOAD("k06_e-08.bin", 0x0900, 0x0100, 0x0eaf5158);/* video timing (not used) */
-            //ROM_LOAD("l03_e-09.bin", 0x0a00, 0x0100, 0x0d968558);/* unknown (all 0) */
-            //ROM_LOAD("03e_e-01.bin", 0x0b00, 0x0020, 0x1acee376);/* unknown (priority?) */
+            ROM_LOAD("06l_e-06.bin", 0x0800, 0x0100, 0x712ac508);/* interrupt timing (not used) */
+            ROM_LOAD("k06_e-08.bin", 0x0900, 0x0100, 0x0eaf5158);/* video timing (not used) */
+            ROM_LOAD("l03_e-09.bin", 0x0a00, 0x0100, 0x0d968558);/* unknown (all 0) */
+            ROM_LOAD("03e_e-01.bin", 0x0b00, 0x0020, 0x1acee376);/* unknown (priority?) */
             ROM_END();
         }
     };
 
     static RomLoadPtr rom_savgbees = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);
+            ROM_REGION(0x10000, REGION_CPU1, 0);
             /* 64k for code */
             ROM_LOAD("ee04e.11m", 0x0000, 0x4000, 0xc0caf442);
             ROM_LOAD("ee03e.10m", 0x4000, 0x4000, 0x9cd70ae1);
             ROM_LOAD("ee02e.9m", 0x8000, 0x4000, 0xa04e6368);
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the audio CPU */
             ROM_LOAD("ee01e.11e", 0x00000, 0x4000, 0x93d3f952);
 
-            ROM_REGION(0x02000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x02000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("ee00e.5c", 0x00000, 0x2000, 0x5972f95f);/* Characters */
 
-            ROM_REGION(0x04000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x04000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("h01_ee08.bin", 0x00000, 0x4000, 0x96a65c1d);/* 32x32 tiles planes 0-1 */
 
-            ROM_REGION(0x08000, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x08000, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("a03_ee06.bin", 0x00000, 0x4000, 0x6039bdd1);/* 16x16 tiles planes 0-1 */
             ROM_LOAD("a02_ee05.bin", 0x04000, 0x4000, 0xb32d8252);/* 16x16 tiles planes 2-3 */
 
-            ROM_REGION(0x08000, REGION_GFX4 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x08000, REGION_GFX4, ROMREGION_DISPOSE);
             ROM_LOAD("j11_ee10.bin", 0x00000, 0x4000, 0xbc83e265);/* Sprites planes 0-1 */
             ROM_LOAD("j12_ee11.bin", 0x04000, 0x4000, 0x0e0f300d);/* Sprites planes 2-3 */
 
-            ROM_REGION(0x6000, REGION_GFX5);/* background tilemaps */
+            ROM_REGION(0x6000, REGION_GFX5, 0);/* background tilemaps */
             ROM_LOAD("c01_ee07.bin", 0x0000, 0x4000, 0x3625a68d);/* Front Tile Map */
             ROM_LOAD("h04_ee09.bin", 0x4000, 0x2000, 0x6057c907);/* Back Tile map */
 
-            ROM_REGION(0x0b20, REGION_PROMS);
+            ROM_REGION(0x0b20, REGION_PROMS, 0);
             ROM_LOAD("02d_e-02.bin", 0x0000, 0x0100, 0x8d0d5935);/* red component */
             ROM_LOAD("03d_e-03.bin", 0x0100, 0x0100, 0xd3c17efc);/* green component */
             ROM_LOAD("04d_e-04.bin", 0x0200, 0x0100, 0x58ba964c);/* blue component */
@@ -354,10 +361,10 @@ public class exedexes {
             ROM_LOAD("c04_e-07.bin", 0x0500, 0x0100, 0x850064e0);/* 16x16 tile lookup table */
             ROM_LOAD("l09_e-11.bin", 0x0600, 0x0100, 0x2bb68710);/* sprite lookup table */
             ROM_LOAD("l10_e-12.bin", 0x0700, 0x0100, 0x173184ef);/* sprite palette bank */
-            //ROM_LOAD("06l_e-06.bin", 0x0800, 0x0100, 0x712ac508);/* interrupt timing (not used) */
-            //ROM_LOAD("k06_e-08.bin", 0x0900, 0x0100, 0x0eaf5158);/* video timing (not used) */
-            //ROM_LOAD("l03_e-09.bin", 0x0a00, 0x0100, 0x0d968558);/* unknown (all 0) */
-            //ROM_LOAD("03e_e-01.bin", 0x0b00, 0x0020, 0x1acee376);/* unknown (priority?) */
+            ROM_LOAD("06l_e-06.bin", 0x0800, 0x0100, 0x712ac508);/* interrupt timing (not used) */
+            ROM_LOAD("k06_e-08.bin", 0x0900, 0x0100, 0x0eaf5158);/* video timing (not used) */
+            ROM_LOAD("l03_e-09.bin", 0x0a00, 0x0100, 0x0d968558);/* unknown (all 0) */
+            ROM_LOAD("03e_e-01.bin", 0x0b00, 0x0020, 0x1acee376);/* unknown (priority?) */
             ROM_END();
         }
     };

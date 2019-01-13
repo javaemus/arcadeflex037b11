@@ -42,7 +42,7 @@ import static mame056.drivers.blktiger.*;
 import static drivers.appoooh.*;
 import static drivers.espial.*;
 import static drivers.funkybee.*;
-import static drivers.exedexes.*;
+import static mame056.drivers.exedexes.*;
 import static drivers.kchamp.*;
 import static mame056.drivers.cheekyms.*;
 import static drivers.naughtyb.*;
