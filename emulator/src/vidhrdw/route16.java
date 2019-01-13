@@ -12,7 +12,7 @@ import static old2.mame.mame.Machine;
 import static mame.osdependH.osd_bitmap;
 import static mame.commonH.REGION_CPU1;
 import static old.mame.common.*;
-import static sound.sn76477.*;
+import static mame056.sound.sn76477.*;
 import static old2.mame.common.*;
 import static mame037b11.cpuintrf.*;
 import static mame.palette.*;

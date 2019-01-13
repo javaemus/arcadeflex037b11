@@ -32,7 +32,7 @@ import sound.tms36xx;
 import sound.y8950intf;
 import sound._2610intf;
 import sound._5110intf;
-import sound.sn76477;
+import mame056.sound.sn76477;
 import sound._2608intf;
 import sound.adpcm;
 import sound.okim6295;

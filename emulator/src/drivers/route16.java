@@ -14,7 +14,7 @@ import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
 import static mame.sndintrfH.MachineSound;
 import static mame.sndintrfH.*;
-import static sound.sn76477H.*;
+import static mame056.sound.sn76477H.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static mame056.sound.dac.*;

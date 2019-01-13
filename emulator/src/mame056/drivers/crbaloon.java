@@ -17,8 +17,8 @@ import static mame.sndintrfH.MachineSound;
 import static mame.sndintrfH.*;
 import static vidhrdw.generic.*;
 import static vidhrdw.crbaloon.*;
-import static sound.sn76477.*;
-import static sound.sn76477H.*;
+import static mame056.sound.sn76477.*;
+import static mame056.sound.sn76477H.*;
 import static old.arcadeflex.osdepend.*;
 
 public class crbaloon {

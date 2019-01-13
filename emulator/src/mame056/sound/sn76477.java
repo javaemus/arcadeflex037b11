@@ -1,12 +1,13 @@
 /**
+ * ported to v0.56
  * ported to v0.37b7
  */
-package sound;
+package mame056.sound;
 
 import static mame.sndintrf.*;
 import static mame.sndintrfH.MachineSound;
 import static mame.sndintrfH.*;
-import static sound.sn76477H.*;
+import static mame056.sound.sn76477H.*;
 import static mame056.sound.streams.*;
 import static old2.mame.timer.*;
 import static old2.mame.timerH.*;
