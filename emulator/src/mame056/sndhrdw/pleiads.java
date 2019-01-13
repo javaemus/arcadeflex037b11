@@ -9,7 +9,7 @@ import static arcadeflex.fucPtr.*;
 import common.ptr.ShortPtr;
 import static old.arcadeflex.osdepend.logerror;
 import static mame.sndintrfH.MachineSound;
-import static sound.tms36xx.*;
+import static mame056.sound.tms36xx.*;
 import static mame056.sound.streams.*;
 import static old2.mame.mame.Machine;
 

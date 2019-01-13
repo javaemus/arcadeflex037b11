@@ -13,7 +13,7 @@ import static old2.mame.memoryH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.generic.*;
-import static sound.tms36xxH.*;
+import static mame056.sound.tms36xxH.*;
 import static vidhrdw.naughtyb.*;
 import static mame056.sndhrdw.pleiads.*;
 

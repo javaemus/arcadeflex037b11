@@ -1,7 +1,8 @@
 /**
+ * ported to v0.56
  * ported to 0.37b7
  */
-package sound;
+package mame056.sound;
 
 import static mame.sndintrf.*;
 import static common.libc.cstdio.*;
@@ -11,7 +12,7 @@ import static old2.mame.mame.Machine;
 import static old.arcadeflex.osdepend.logerror;
 import static mame.sndintrfH.MachineSound;
 import static mame.sndintrfH.SOUND_TMS36XX;
-import static sound.tms36xxH.*;
+import static mame056.sound.tms36xxH.*;
 import static mame056.sound.streams.*;
 
 public class tms36xx extends snd_interface {

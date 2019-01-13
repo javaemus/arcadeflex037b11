@@ -1,7 +1,8 @@
 /**
- * ported to 0.37b7
+ * ported to v0.56
+ * ported to v0.37b7
  */
-package sound;
+package mame056.sound;
 
 public class tms36xxH {
 

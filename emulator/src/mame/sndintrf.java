@@ -28,7 +28,7 @@ import sound.ym2413;
 import sound.speaker;
 import mame056.sound.dac;
 import mame056.sound.samples;
-import sound.tms36xx;
+import mame056.sound.tms36xx;
 import sound.y8950intf;
 import sound._2610intf;
 import sound._5110intf;
