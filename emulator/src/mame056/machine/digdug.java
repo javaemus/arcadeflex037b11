@@ -1,8 +1,9 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
  *
  */
-package machine;
+package mame056.machine;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;

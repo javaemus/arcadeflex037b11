@@ -26,7 +26,7 @@ import static mame056.drivers.pooyan.*;
 import static drivers.bombjack.*;
 import static drivers.pbaction.*;
 import static drivers.cop01.*;
-import static drivers.digdug.*;
+import static mame056.drivers.digdug.*;
 import static drivers.superqix.*;
 import static drivers.mrdo.*;
 import static drivers.pingpong.*;
