@@ -50,7 +50,7 @@ import static drivers.snk.*;
 import static drivers.taito_l.*;
 import static drivers.zaxxon.*;
 import static drivers.congo.*;
-import static drivers.exctsccr.*;
+import static mame056.drivers.exctsccr.*;
 import static drivers.magix.*;
 import static drivers.bking2.*;
 import static drivers.pkunwar.*;

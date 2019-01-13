@@ -1,21 +1,22 @@
-/*
- * Changelog:
- * 02/09/2017 - Added working exctsccr driver
+/**
+ * ported to v0.56
+ * ported to v0.37b7
  */
-package drivers;
+package mame056.drivers;
+
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
-import static mame.commonH.*;
+import static mame056.commonH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
-import static old2.mame.memoryH.*;
+import static mame056.memoryH.*;
 import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.exctsccr.*;
-import static machine.exctsccr.*;
+import static mame056.machine.exctsccr.*;
 import static vidhrdw.generic.*;
 import static mame056.sound.dac.*;
 import static mame056.sound.dacH.*;
@@ -37,114 +38,123 @@ public class exctsccr {
      *
      **************************************************************************
      */
-    static MemoryReadAddress readmem[]
+    static Memory_ReadAddress readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x5fff, MRA_ROM),
-                new MemoryReadAddress(0x6000, 0x63ff, MRA_RAM), /* Alpha mcu (protection) */
-                new MemoryReadAddress(0x7c00, 0x7fff, MRA_RAM), /* work ram */
-                new MemoryReadAddress(0x8000, 0x83ff, videoram_r),
-                new MemoryReadAddress(0x8400, 0x87ff, colorram_r),
-                new MemoryReadAddress(0x8800, 0x8bff, MRA_RAM), /* ??? */
-                new MemoryReadAddress(0xa000, 0xa000, input_port_0_r),
-                new MemoryReadAddress(0xa040, 0xa040, input_port_1_r),
-                new MemoryReadAddress(0xa080, 0xa080, input_port_3_r),
-                new MemoryReadAddress(0xa0c0, 0xa0c0, input_port_2_r),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x5fff, MRA_ROM),
+                new Memory_ReadAddress(0x6000, 0x63ff, MRA_RAM), /* Alpha mcu (protection) */
+                new Memory_ReadAddress(0x7c00, 0x7fff, MRA_RAM), /* work ram */
+                new Memory_ReadAddress(0x8000, 0x83ff, videoram_r),
+                new Memory_ReadAddress(0x8400, 0x87ff, colorram_r),
+                new Memory_ReadAddress(0x8800, 0x8bff, MRA_RAM), /* ??? */
+                new Memory_ReadAddress(0xa000, 0xa000, input_port_0_r),
+                new Memory_ReadAddress(0xa040, 0xa040, input_port_1_r),
+                new Memory_ReadAddress(0xa080, 0xa080, input_port_3_r),
+                new Memory_ReadAddress(0xa0c0, 0xa0c0, input_port_2_r),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress writemem[]
+    static Memory_WriteAddress writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x5fff, MWA_ROM),
-                new MemoryWriteAddress(0x6000, 0x63ff, exctsccr_mcu_w, exctsccr_mcu_ram), /* Alpha mcu (protection) */
-                new MemoryWriteAddress(0x7c00, 0x7fff, MWA_RAM), /* work ram */
-                new MemoryWriteAddress(0x8000, 0x83ff, videoram_w, videoram, videoram_size),
-                new MemoryWriteAddress(0x8400, 0x87ff, colorram_w, colorram),
-                new MemoryWriteAddress(0x8800, 0x8bff, MWA_RAM), /* ??? */
-                new MemoryWriteAddress(0xa000, 0xa000, MWA_NOP), /* ??? */
-                new MemoryWriteAddress(0xa001, 0xa001, MWA_NOP), /* ??? */
-                new MemoryWriteAddress(0xa002, 0xa002, exctsccr_gfx_bank_w),
-                new MemoryWriteAddress(0xa003, 0xa003, MWA_NOP), /* Cocktail mode ( 0xff = flip screen, 0x00 = normal ) */
-                new MemoryWriteAddress(0xa006, 0xa006, exctsccr_mcu_control_w), /* MCU control */
-                new MemoryWriteAddress(0xa007, 0xa007, MWA_NOP), /* This is also MCU control, but i dont need it */
-                new MemoryWriteAddress(0xa040, 0xa06f, MWA_RAM, spriteram), /* Sprite pos */
-                new MemoryWriteAddress(0xa080, 0xa080, soundlatch_w),
-                new MemoryWriteAddress(0xa0c0, 0xa0c0, watchdog_reset_w),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x5fff, MWA_ROM),
+                new Memory_WriteAddress(0x6000, 0x63ff, exctsccr_mcu_w, exctsccr_mcu_ram), /* Alpha mcu (protection) */
+                new Memory_WriteAddress(0x7c00, 0x7fff, MWA_RAM), /* work ram */
+                new Memory_WriteAddress(0x8000, 0x83ff, videoram_w, videoram, videoram_size),
+                new Memory_WriteAddress(0x8400, 0x87ff, colorram_w, colorram),
+                new Memory_WriteAddress(0x8800, 0x8bff, MWA_RAM), /* ??? */
+                new Memory_WriteAddress(0xa000, 0xa000, MWA_NOP), /* ??? */
+                new Memory_WriteAddress(0xa001, 0xa001, MWA_NOP), /* ??? */
+                new Memory_WriteAddress(0xa002, 0xa002, exctsccr_gfx_bank_w),
+                new Memory_WriteAddress(0xa003, 0xa003, MWA_NOP), /* Cocktail mode ( 0xff = flip screen, 0x00 = normal ) */
+                new Memory_WriteAddress(0xa006, 0xa006, exctsccr_mcu_control_w), /* MCU control */
+                new Memory_WriteAddress(0xa007, 0xa007, MWA_NOP), /* This is also MCU control, but i dont need it */
+                new Memory_WriteAddress(0xa040, 0xa06f, MWA_RAM, spriteram), /* Sprite pos */
+                new Memory_WriteAddress(0xa080, 0xa080, soundlatch_w),
+                new Memory_WriteAddress(0xa0c0, 0xa0c0, watchdog_reset_w),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryReadAddress sound_readmem[]
+    static Memory_ReadAddress sound_readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x8fff, MRA_ROM),
-                new MemoryReadAddress(0xa000, 0xa7ff, MRA_RAM),
-                new MemoryReadAddress(0xc00d, 0xc00d, soundlatch_r),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x8fff, MRA_ROM),
+                new Memory_ReadAddress(0xa000, 0xa7ff, MRA_RAM),
+                new Memory_ReadAddress(0xc00d, 0xc00d, soundlatch_r),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress sound_writemem[]
+    static Memory_WriteAddress sound_writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x8fff, MWA_ROM),
-                new MemoryWriteAddress(0xa000, 0xa7ff, MWA_RAM),
-                new MemoryWriteAddress(0xc008, 0xc009, exctsccr_DAC_data_w),
-                new MemoryWriteAddress(0xc00c, 0xc00c, soundlatch_w), /* used to clear the latch */
-                new MemoryWriteAddress(0xc00f, 0xc00f, MWA_NOP), /* ??? */
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x8fff, MWA_ROM),
+                new Memory_WriteAddress(0xa000, 0xa7ff, MWA_RAM),
+                new Memory_WriteAddress(0xc008, 0xc009, exctsccr_DAC_data_w),
+                new Memory_WriteAddress(0xc00c, 0xc00c, soundlatch_w), /* used to clear the latch */
+                new Memory_WriteAddress(0xc00f, 0xc00f, MWA_NOP), /* ??? */
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
-    static IOWritePort sound_writeport[]
+    static IO_WritePort sound_writeport[]
             = {
-                new IOWritePort(0x82, 0x82, AY8910_write_port_0_w),
-                new IOWritePort(0x83, 0x83, AY8910_control_port_0_w),
-                new IOWritePort(0x86, 0x86, AY8910_write_port_1_w),
-                new IOWritePort(0x87, 0x87, AY8910_control_port_1_w),
-                new IOWritePort(0x8a, 0x8a, AY8910_write_port_2_w),
-                new IOWritePort(0x8b, 0x8b, AY8910_control_port_2_w),
-                new IOWritePort(0x8e, 0x8e, AY8910_write_port_3_w),
-                new IOWritePort(0x8f, 0x8f, AY8910_control_port_3_w),
-                new IOWritePort(-1) /* end of table */};
+                new IO_WritePort(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_IO | MEMPORT_WIDTH_8),
+                new IO_WritePort(0x82, 0x82, AY8910_write_port_0_w),
+                new IO_WritePort(0x83, 0x83, AY8910_control_port_0_w),
+                new IO_WritePort(0x86, 0x86, AY8910_write_port_1_w),
+                new IO_WritePort(0x87, 0x87, AY8910_control_port_1_w),
+                new IO_WritePort(0x8a, 0x8a, AY8910_write_port_2_w),
+                new IO_WritePort(0x8b, 0x8b, AY8910_control_port_2_w),
+                new IO_WritePort(0x8e, 0x8e, AY8910_write_port_3_w),
+                new IO_WritePort(0x8f, 0x8f, AY8910_control_port_3_w),
+                new IO_WritePort(MEMPORT_MARKER, 0)};
 
     /* Bootleg */
-    static MemoryReadAddress bl_readmem[]
+    static Memory_ReadAddress bl_readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x5fff, MRA_ROM),
-                new MemoryReadAddress(0x8000, 0x83ff, videoram_r),
-                new MemoryReadAddress(0x8400, 0x87ff, colorram_r),
-                new MemoryReadAddress(0x8800, 0x8fff, MRA_RAM), /* ??? */
-                new MemoryReadAddress(0xa000, 0xa000, input_port_0_r),
-                new MemoryReadAddress(0xa040, 0xa040, input_port_1_r),
-                new MemoryReadAddress(0xa080, 0xa080, input_port_3_r),
-                new MemoryReadAddress(0xa0c0, 0xa0c0, input_port_2_r),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x5fff, MRA_ROM),
+                new Memory_ReadAddress(0x8000, 0x83ff, videoram_r),
+                new Memory_ReadAddress(0x8400, 0x87ff, colorram_r),
+                new Memory_ReadAddress(0x8800, 0x8fff, MRA_RAM), /* ??? */
+                new Memory_ReadAddress(0xa000, 0xa000, input_port_0_r),
+                new Memory_ReadAddress(0xa040, 0xa040, input_port_1_r),
+                new Memory_ReadAddress(0xa080, 0xa080, input_port_3_r),
+                new Memory_ReadAddress(0xa0c0, 0xa0c0, input_port_2_r),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress bl_writemem[]
+    static Memory_WriteAddress bl_writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x5fff, MWA_ROM),
-                new MemoryWriteAddress(0x7000, 0x7000, AY8910_write_port_0_w),
-                new MemoryWriteAddress(0x7001, 0x7001, AY8910_control_port_0_w),
-                new MemoryWriteAddress(0x8000, 0x83ff, videoram_w, videoram, videoram_size),
-                new MemoryWriteAddress(0x8400, 0x87ff, colorram_w, colorram),
-                new MemoryWriteAddress(0x8800, 0x8fff, MWA_RAM), /* ??? */
-                new MemoryWriteAddress(0xa000, 0xa000, MWA_NOP), /* ??? */
-                new MemoryWriteAddress(0xa001, 0xa001, MWA_NOP), /* ??? */
-                new MemoryWriteAddress(0xa002, 0xa002, exctsccr_gfx_bank_w), /* ??? */
-                new MemoryWriteAddress(0xa003, 0xa003, MWA_NOP), /* Cocktail mode ( 0xff = flip screen, 0x00 = normal ) */
-                new MemoryWriteAddress(0xa006, 0xa006, MWA_NOP), /* no MCU, but some leftover code still writes here */
-                new MemoryWriteAddress(0xa007, 0xa007, MWA_NOP), /* no MCU, but some leftover code still writes here */
-                new MemoryWriteAddress(0xa040, 0xa06f, MWA_RAM, spriteram), /* Sprite Pos */
-                new MemoryWriteAddress(0xa080, 0xa080, soundlatch_w),
-                new MemoryWriteAddress(0xa0c0, 0xa0c0, watchdog_reset_w),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x5fff, MWA_ROM),
+                new Memory_WriteAddress(0x7000, 0x7000, AY8910_write_port_0_w),
+                new Memory_WriteAddress(0x7001, 0x7001, AY8910_control_port_0_w),
+                new Memory_WriteAddress(0x8000, 0x83ff, videoram_w, videoram, videoram_size),
+                new Memory_WriteAddress(0x8400, 0x87ff, colorram_w, colorram),
+                new Memory_WriteAddress(0x8800, 0x8fff, MWA_RAM), /* ??? */
+                new Memory_WriteAddress(0xa000, 0xa000, MWA_NOP), /* ??? */
+                new Memory_WriteAddress(0xa001, 0xa001, MWA_NOP), /* ??? */
+                new Memory_WriteAddress(0xa002, 0xa002, exctsccr_gfx_bank_w), /* ??? */
+                new Memory_WriteAddress(0xa003, 0xa003, MWA_NOP), /* Cocktail mode ( 0xff = flip screen, 0x00 = normal ) */
+                new Memory_WriteAddress(0xa006, 0xa006, MWA_NOP), /* no MCU, but some leftover code still writes here */
+                new Memory_WriteAddress(0xa007, 0xa007, MWA_NOP), /* no MCU, but some leftover code still writes here */
+                new Memory_WriteAddress(0xa040, 0xa06f, MWA_RAM, spriteram), /* Sprite Pos */
+                new Memory_WriteAddress(0xa080, 0xa080, soundlatch_w),
+                new Memory_WriteAddress(0xa0c0, 0xa0c0, watchdog_reset_w),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryReadAddress bl_sound_readmem[]
+    static Memory_ReadAddress bl_sound_readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x5fff, MRA_ROM),
-                new MemoryReadAddress(0x6000, 0x6000, soundlatch_r),
-                new MemoryReadAddress(0xe000, 0xe3ff, MRA_RAM),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x5fff, MRA_ROM),
+                new Memory_ReadAddress(0x6000, 0x6000, soundlatch_r),
+                new Memory_ReadAddress(0xe000, 0xe3ff, MRA_RAM),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress bl_sound_writemem[]
+    static Memory_WriteAddress bl_sound_writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x5fff, MWA_ROM),
-                new MemoryWriteAddress(0x8000, 0x8000, MWA_NOP), /* 0 = DAC sound off, 1 = DAC sound on */
-                new MemoryWriteAddress(0xa000, 0xa000, soundlatch_w), /* used to clear the latch */
-                new MemoryWriteAddress(0xc000, 0xc000, exctsccr_DAC_data_w),
-                new MemoryWriteAddress(0xe000, 0xe3ff, MWA_RAM),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x5fff, MWA_ROM),
+                new Memory_WriteAddress(0x8000, 0x8000, MWA_NOP), /* 0 = DAC sound off, 1 = DAC sound on */
+                new Memory_WriteAddress(0xa000, 0xa000, soundlatch_w), /* used to clear the latch */
+                new Memory_WriteAddress(0xc000, 0xc000, exctsccr_DAC_data_w),
+                new Memory_WriteAddress(0xe000, 0xe3ff, MWA_RAM),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
     /**
      * *************************************************************************
@@ -426,13 +436,13 @@ public class exctsccr {
      */
     static RomLoadPtr rom_exctsccr = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);
+            ROM_REGION(0x10000, REGION_CPU1, 0);
             /* 64k for code */
             ROM_LOAD("1_g10.bin", 0x0000, 0x2000, 0xaa68df66);
             ROM_LOAD("2_h10.bin", 0x2000, 0x2000, 0x2d8f8326);
             ROM_LOAD("3_j10.bin", 0x4000, 0x2000, 0xdce4a04d);
 
-            ROM_REGION(0x10000, REGION_CPU2);
+            ROM_REGION(0x10000, REGION_CPU2, 0);
             /* 64k for code */
             ROM_LOAD("0_h6.bin", 0x0000, 0x2000, 0x3babbd6b);
             ROM_LOAD("9_f6.bin", 0x2000, 0x2000, 0x639998f5);
@@ -440,16 +450,16 @@ public class exctsccr {
             ROM_LOAD("7_c6.bin", 0x6000, 0x2000, 0x6d51521e);
             ROM_LOAD("1_a6.bin", 0x8000, 0x1000, 0x20f2207e);
 
-            ROM_REGION(0x06000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x06000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("4_a5.bin", 0x0000, 0x2000, 0xc342229b);
             ROM_LOAD("5_b5.bin", 0x2000, 0x2000, 0x35f4f8c9);
             ROM_LOAD("6_c5.bin", 0x4000, 0x2000, 0xeda40e32);
 
-            ROM_REGION(0x02000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x02000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("2_k5.bin", 0x0000, 0x1000, 0x7f9cace2);
             ROM_LOAD("3_l5.bin", 0x1000, 0x1000, 0xdb2d9e0d);
 
-            ROM_REGION(0x0220, REGION_PROMS);
+            ROM_REGION(0x0220, REGION_PROMS, 0);
             ROM_LOAD("prom1.e1", 0x0000, 0x0020, 0xd9b10bf0);/* palette */
             ROM_LOAD("prom2.8r", 0x0020, 0x0100, 0x8a9c0edf);/* lookup table */
             ROM_LOAD("prom3.k5", 0x0120, 0x0100, 0xb5db1c2c);/* lookup table */
@@ -459,13 +469,13 @@ public class exctsccr {
 
     static RomLoadPtr rom_exctscca = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);
+            ROM_REGION(0x10000, REGION_CPU1, 0);
             /* 64k for code */
             ROM_LOAD("1_g10.bin", 0x0000, 0x2000, 0xaa68df66);
             ROM_LOAD("2_h10.bin", 0x2000, 0x2000, 0x2d8f8326);
             ROM_LOAD("3_j10.bin", 0x4000, 0x2000, 0xdce4a04d);
 
-            ROM_REGION(0x10000, REGION_CPU2);
+            ROM_REGION(0x10000, REGION_CPU2, 0);
             /* 64k for code */
             ROM_LOAD("exctsccc.000", 0x0000, 0x2000, 0x642fc42f);
             ROM_LOAD("exctsccc.009", 0x2000, 0x2000, 0xd88b3236);
@@ -473,16 +483,16 @@ public class exctsccr {
             ROM_LOAD("7_c6.bin", 0x6000, 0x2000, 0x6d51521e);
             ROM_LOAD("1_a6.bin", 0x8000, 0x1000, 0x20f2207e);
 
-            ROM_REGION(0x06000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x06000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("4_a5.bin", 0x0000, 0x2000, 0xc342229b);
             ROM_LOAD("5_b5.bin", 0x2000, 0x2000, 0x35f4f8c9);
             ROM_LOAD("6_c5.bin", 0x4000, 0x2000, 0xeda40e32);
 
-            ROM_REGION(0x02000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x02000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("2_k5.bin", 0x0000, 0x1000, 0x7f9cace2);
             ROM_LOAD("3_l5.bin", 0x1000, 0x1000, 0xdb2d9e0d);
 
-            ROM_REGION(0x0220, REGION_PROMS);
+            ROM_REGION(0x0220, REGION_PROMS, 0);
             ROM_LOAD("prom1.e1", 0x0000, 0x0020, 0xd9b10bf0);/* palette */
             ROM_LOAD("prom2.8r", 0x0020, 0x0100, 0x8a9c0edf);/* lookup table */
             ROM_LOAD("prom3.k5", 0x0120, 0x0100, 0xb5db1c2c);/* lookup table */
@@ -493,27 +503,27 @@ public class exctsccr {
     /* Bootleg */
     static RomLoadPtr rom_exctsccb = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);/* 64k for code */
+            ROM_REGION(0x10000, REGION_CPU1, 0);/* 64k for code */
             ROM_LOAD("es-1.e2", 0x0000, 0x2000, 0x997c6a82);
             ROM_LOAD("es-2.g2", 0x2000, 0x2000, 0x5c66e792);
             ROM_LOAD("es-3.h2", 0x4000, 0x2000, 0xe0d504c0);
 
-            ROM_REGION(0x10000, REGION_CPU2);/* sound */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* sound */
             ROM_LOAD("es-a.k2", 0x0000, 0x2000, 0x99e87b78);
             ROM_LOAD("es-b.l2", 0x2000, 0x2000, 0x8b3db794);
             ROM_LOAD("es-c.m2", 0x4000, 0x2000, 0x7bed2f81);
 
-            ROM_REGION(0x06000, REGION_GFX1 | REGIONFLAG_DISPOSE);
-            /* I'm using the ROMs from exctscc2, national flags would be wrong otherwise */
+            ROM_REGION(0x06000, REGION_GFX1, ROMREGION_DISPOSE);
+            /* I'm using the ROMs from exctscc2, national flags are wrong (ITA replaces USA) */
             ROM_LOAD("vr.5a", 0x0000, 0x2000, BADCRC(0x4ff1783d));
             ROM_LOAD("vr.5b", 0x2000, 0x2000, BADCRC(0x5605b60b));
             ROM_LOAD("vr.5c", 0x4000, 0x2000, BADCRC(0x1fb84ee6));
 
-            ROM_REGION(0x02000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x02000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("vr.5k", 0x0000, 0x1000, BADCRC(0x1d37edfa));
             ROM_LOAD("vr.5l", 0x1000, 0x1000, BADCRC(0xb97f396c));
 
-            ROM_REGION(0x0220, REGION_PROMS);
+            ROM_REGION(0x0220, REGION_PROMS, 0);
             ROM_LOAD("prom1.e1", 0x0000, 0x0020, 0xd9b10bf0);/* palette */
             ROM_LOAD("prom2.8r", 0x0020, 0x0100, 0x8a9c0edf);/* lookup table */
             ROM_LOAD("prom3.k5", 0x0120, 0x0100, 0xb5db1c2c);/* lookup table */
@@ -523,12 +533,12 @@ public class exctsccr {
 
     static RomLoadPtr rom_exctscc2 = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);/* 64k for code */
+            ROM_REGION(0x10000, REGION_CPU1, 0);/* 64k for code */
             ROM_LOAD("vr.3j", 0x0000, 0x2000, 0xc6115362);
             ROM_LOAD("vr.3k", 0x2000, 0x2000, 0xde36ba00);
             ROM_LOAD("vr.3l", 0x4000, 0x2000, 0x1ddfdf65);
 
-            ROM_REGION(0x10000, REGION_CPU2);
+            ROM_REGION(0x10000, REGION_CPU2, 0);
             /* 64k for code */
             ROM_LOAD("vr.7d", 0x0000, 0x2000, 0x2c675a43);
             ROM_LOAD("vr.7e", 0x2000, 0x2000, 0xe571873d);
@@ -536,16 +546,16 @@ public class exctsccr {
             ROM_LOAD("7_c6.bin", 0x6000, 0x2000, 0x6d51521e);/* vr.7h */
             ROM_LOAD("1_a6.bin", 0x8000, 0x1000, 0x20f2207e);/* vr.7k */
 
-            ROM_REGION(0x06000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x06000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("vr.5a", 0x0000, 0x2000, 0x4ff1783d);
             ROM_LOAD("vr.5b", 0x2000, 0x2000, 0x5605b60b);
             ROM_LOAD("vr.5c", 0x4000, 0x2000, 0x1fb84ee6);
 
-            ROM_REGION(0x02000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x02000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("vr.5k", 0x0000, 0x1000, 0x1d37edfa);
             ROM_LOAD("vr.5l", 0x1000, 0x1000, 0xb97f396c);
 
-            ROM_REGION(0x0220, REGION_PROMS);
+            ROM_REGION(0x0220, REGION_PROMS, 0);
             ROM_LOAD("prom1.e1", 0x0000, 0x0020, 0xd9b10bf0);/* palette */
             ROM_LOAD("prom2.8r", 0x0020, 0x0100, 0x8a9c0edf);/* lookup table */
             ROM_LOAD("prom3.k5", 0x0120, 0x0100, 0xb5db1c2c);/* lookup table */

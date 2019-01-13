@@ -10,6 +10,7 @@
 -Ported TMS36XX sound to 0.56
 -Ported digdug driver,machine to 0.56
 -Ported exedexes driver to 0.56
+-Ported exctsccr driver,machine to 0.56
 
 12/01/2018
 ==========

@@ -1,8 +1,8 @@
-/*
- * Changelog:
- * 02/09/2017 - Added working exctsccr driver
+/**
+ * ported to v0.56
+ * ported to 0.v37b7
  */
-package machine;
+package mame056.machine;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
