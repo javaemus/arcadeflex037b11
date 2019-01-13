@@ -1,13 +1,15 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
  * ported to v0.36
  * 
  */
-package drivers;
+package mame056.drivers;
+
 import static mame037b11.cpuintrfH.*;
 import static mame.driverH.*;
-import static old2.mame.memoryH.*;
-import static mame.commonH.*;
+import static mame056.memoryH.*;
+import static mame056.commonH.*;
 import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
@@ -57,53 +59,57 @@ public class blueprnt {
         }
     };
 
-    static MemoryReadAddress readmem[]
+    static Memory_ReadAddress readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x5fff, MRA_ROM),
-                new MemoryReadAddress(0x8000, 0x87ff, MRA_RAM),
-                new MemoryReadAddress(0x9000, 0x93ff, MRA_RAM),
-                new MemoryReadAddress(0x9400, 0x97ff, videoram_r), /* mirror address, I THINK */
-                new MemoryReadAddress(0xa000, 0xa01f, MRA_RAM),
-                new MemoryReadAddress(0xb000, 0xb0ff, MRA_RAM),
-                new MemoryReadAddress(0xc000, 0xc000, input_port_0_r),
-                new MemoryReadAddress(0xc001, 0xc001, input_port_1_r),
-                new MemoryReadAddress(0xc003, 0xc003, blueprnt_sh_dipsw_r),
-                new MemoryReadAddress(0xe000, 0xe000, watchdog_reset_r),
-                new MemoryReadAddress(0xf000, 0xf3ff, MRA_RAM),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x5fff, MRA_ROM),
+                new Memory_ReadAddress(0x8000, 0x87ff, MRA_RAM),
+                new Memory_ReadAddress(0x9000, 0x93ff, MRA_RAM),
+                new Memory_ReadAddress(0x9400, 0x97ff, videoram_r), /* mirror address, I THINK */
+                new Memory_ReadAddress(0xa000, 0xa01f, MRA_RAM),
+                new Memory_ReadAddress(0xb000, 0xb0ff, MRA_RAM),
+                new Memory_ReadAddress(0xc000, 0xc000, input_port_0_r),
+                new Memory_ReadAddress(0xc001, 0xc001, input_port_1_r),
+                new Memory_ReadAddress(0xc003, 0xc003, blueprnt_sh_dipsw_r),
+                new Memory_ReadAddress(0xe000, 0xe000, watchdog_reset_r),
+                new Memory_ReadAddress(0xf000, 0xf3ff, MRA_RAM),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress writemem[]
+    static Memory_WriteAddress writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x5fff, MWA_ROM),
-                new MemoryWriteAddress(0x8000, 0x87ff, MWA_RAM),
-                new MemoryWriteAddress(0x9000, 0x93ff, videoram_w, videoram, videoram_size),
-                new MemoryWriteAddress(0xa000, 0xa01f, MWA_RAM, blueprnt_scrollram),
-                new MemoryWriteAddress(0xb000, 0xb0ff, MWA_RAM, spriteram, spriteram_size),
-                new MemoryWriteAddress(0xc000, 0xc000, blueprnt_coin_w),
-                new MemoryWriteAddress(0xd000, 0xd000, blueprnt_sound_command_w),
-                new MemoryWriteAddress(0xe000, 0xe000, blueprnt_flipscreen_w), /* + gfx bank */
-                new MemoryWriteAddress(0xf000, 0xf3ff, colorram_w, colorram),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x5fff, MWA_ROM),
+                new Memory_WriteAddress(0x8000, 0x87ff, MWA_RAM),
+                new Memory_WriteAddress(0x9000, 0x93ff, videoram_w, videoram, videoram_size),
+                new Memory_WriteAddress(0xa000, 0xa01f, MWA_RAM, blueprnt_scrollram),
+                new Memory_WriteAddress(0xb000, 0xb0ff, MWA_RAM, spriteram, spriteram_size),
+                new Memory_WriteAddress(0xc000, 0xc000, blueprnt_coin_w),
+                new Memory_WriteAddress(0xd000, 0xd000, blueprnt_sound_command_w),
+                new Memory_WriteAddress(0xe000, 0xe000, blueprnt_flipscreen_w), /* + gfx bank */
+                new Memory_WriteAddress(0xf000, 0xf3ff, colorram_w, colorram),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryReadAddress sound_readmem[]
+    static Memory_ReadAddress sound_readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x0fff, MRA_ROM),
-                new MemoryReadAddress(0x2000, 0x2fff, MRA_ROM),
-                new MemoryReadAddress(0x4000, 0x43ff, MRA_RAM),
-                new MemoryReadAddress(0x6002, 0x6002, AY8910_read_port_0_r),
-                new MemoryReadAddress(0x8002, 0x8002, AY8910_read_port_1_r),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x0fff, MRA_ROM),
+                new Memory_ReadAddress(0x2000, 0x2fff, MRA_ROM),
+                new Memory_ReadAddress(0x4000, 0x43ff, MRA_RAM),
+                new Memory_ReadAddress(0x6002, 0x6002, AY8910_read_port_0_r),
+                new Memory_ReadAddress(0x8002, 0x8002, AY8910_read_port_1_r),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress sound_writemem[]
+    static Memory_WriteAddress sound_writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x0fff, MWA_ROM),
-                new MemoryWriteAddress(0x2000, 0x2fff, MWA_ROM),
-                new MemoryWriteAddress(0x4000, 0x43ff, MWA_RAM),
-                new MemoryWriteAddress(0x6000, 0x6000, AY8910_control_port_0_w),
-                new MemoryWriteAddress(0x6001, 0x6001, AY8910_write_port_0_w),
-                new MemoryWriteAddress(0x8000, 0x8000, AY8910_control_port_1_w),
-                new MemoryWriteAddress(0x8001, 0x8001, AY8910_write_port_1_w),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x0fff, MWA_ROM),
+                new Memory_WriteAddress(0x2000, 0x2fff, MWA_ROM),
+                new Memory_WriteAddress(0x4000, 0x43ff, MWA_RAM),
+                new Memory_WriteAddress(0x6000, 0x6000, AY8910_control_port_0_w),
+                new Memory_WriteAddress(0x6001, 0x6001, AY8910_write_port_0_w),
+                new Memory_WriteAddress(0x8000, 0x8000, AY8910_control_port_1_w),
+                new Memory_WriteAddress(0x8001, 0x8001, AY8910_write_port_1_w),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
     static InputPortPtr input_ports_blueprnt = new InputPortPtr() {
         public void handler() {
@@ -348,22 +354,22 @@ public class blueprnt {
      */
     static RomLoadPtr rom_blueprnt = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);/* 64k for code */
+            ROM_REGION(0x10000, REGION_CPU1, 0);/* 64k for code */
             ROM_LOAD("1m", 0x0000, 0x1000, 0xb20069a6);
             ROM_LOAD("1n", 0x1000, 0x1000, 0x4a30302e);
             ROM_LOAD("1p", 0x2000, 0x1000, 0x6866ca07);
             ROM_LOAD("1r", 0x3000, 0x1000, 0x5d3cfac3);
             ROM_LOAD("1s", 0x4000, 0x1000, 0xa556cac4);
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the audio CPU */
             ROM_LOAD("3u", 0x0000, 0x1000, 0xfd38777a);
             ROM_LOAD("3v", 0x2000, 0x1000, 0x33d5bf5b);
 
-            ROM_REGION(0x2000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x2000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("c3", 0x0000, 0x1000, 0xac2a61bc);
             ROM_LOAD("d3", 0x1000, 0x1000, 0x81fe85d7);
 
-            ROM_REGION(0x3000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x3000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("d17", 0x0000, 0x1000, 0xa73b6483);
             ROM_LOAD("d18", 0x1000, 0x1000, 0x7d622550);
             ROM_LOAD("d20", 0x2000, 0x1000, 0x2fcb4f26);
@@ -373,22 +379,22 @@ public class blueprnt {
 
     static RomLoadPtr rom_blueprnj = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);/* 64k for code */
+            ROM_REGION(0x10000, REGION_CPU1, 0);/* 64k for code */
             ROM_LOAD("bp_01.bin", 0x0000, 0x1000, 0x2e746693);
             ROM_LOAD("bp_02.bin", 0x1000, 0x1000, 0xa0eb0b8e);
             ROM_LOAD("bp_03.bin", 0x2000, 0x1000, 0xc34981bb);
             ROM_LOAD("bp_04.bin", 0x3000, 0x1000, 0x525e77b5);
             ROM_LOAD("bp_05.bin", 0x4000, 0x1000, 0x431a015f);
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the audio CPU */
             ROM_LOAD("3u", 0x0000, 0x1000, 0xfd38777a);
             ROM_LOAD("3v", 0x2000, 0x1000, 0x33d5bf5b);
 
-            ROM_REGION(0x2000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x2000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("bp_09.bin", 0x0000, 0x0800, 0x43718c34);
             ROM_LOAD("bp_08.bin", 0x1000, 0x0800, 0xd3ce077d);
 
-            ROM_REGION(0x3000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x3000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("bp_10.bin", 0x0000, 0x1000, 0x83da108f);
             ROM_LOAD("bp_11.bin", 0x1000, 0x1000, 0xb440f32f);
             ROM_LOAD("bp_12.bin", 0x2000, 0x1000, 0x23026765);
@@ -398,7 +404,7 @@ public class blueprnt {
 
     static RomLoadPtr rom_saturn = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);/* 64k for code */
+            ROM_REGION(0x10000, REGION_CPU1, 0);/* 64k for code */
             ROM_LOAD("r1", 0x0000, 0x1000, 0x18a6d68e);
             ROM_LOAD("r2", 0x1000, 0x1000, 0xa7dd2665);
             ROM_LOAD("r3", 0x2000, 0x1000, 0xb9cfa791);
@@ -406,15 +412,15 @@ public class blueprnt {
             ROM_LOAD("r5", 0x4000, 0x1000, 0x43444d00);
             ROM_LOAD("r6", 0x5000, 0x1000, 0x4d4821f6);
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the audio CPU */
             ROM_LOAD("r7", 0x0000, 0x1000, 0xdd43e02f);
             ROM_LOAD("r8", 0x2000, 0x1000, 0x7f9d0877);
 
-            ROM_REGION(0x2000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x2000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("r10", 0x0000, 0x1000, 0x35987d61);
             ROM_LOAD("r9", 0x1000, 0x1000, 0xca6a7fda);
 
-            ROM_REGION(0x3000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x3000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("r11", 0x0000, 0x1000, 0x6e4e6e5d);
             ROM_LOAD("r12", 0x1000, 0x1000, 0x46fc049e);
             ROM_LOAD("r13", 0x2000, 0x1000, 0x8b3e8c32);
