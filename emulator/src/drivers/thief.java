@@ -15,8 +15,8 @@ import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
-import static sound.samples.*;
-import static sound.samplesH.*;
+import static mame056.sound.samples.*;
+import static mame056.sound.samplesH.*;
 import static vidhrdw.thief.*;
 
 public class thief {

@@ -24,8 +24,8 @@ import static machine.galaga.*;
 import static old2.mame.common.flip_screen_w;
 import static vidhrdw.galaga.*;
 import static vidhrdw.generic.*;
-import static sound.samples.*;
-import static sound.samplesH.*;
+import static mame056.sound.samples.*;
+import static mame056.sound.samplesH.*;
 
 public class galaga {
 

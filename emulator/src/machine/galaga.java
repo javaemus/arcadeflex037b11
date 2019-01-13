@@ -15,7 +15,7 @@ import static vidhrdw.generic.*;
 import static cpu.z80.z80H.*;
 import static old2.mame.timer.*;
 import static old2.mame.timerH.*;
-import static sound.samples.*;
+import static mame056.sound.samples.*;
 import static vidhrdw.galaga.*;
 import static old.arcadeflex.osdepend.*;
 

@@ -19,8 +19,8 @@ import static vidhrdw.generic.*;
 import static mame056.sndhrdw.timeplt.*;
 import static vidhrdw.rallyx.*;
 import static old2.mame.mame.*;
-import static sound.samples.*;
-import static sound.samplesH.*;
+import static mame056.sound.samples.*;
+import static mame056.sound.samplesH.*;
 import static sound.namco.*;
 import static sound.namcoH.*;
 

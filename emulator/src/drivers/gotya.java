@@ -15,7 +15,7 @@ import static old.mame.inptportH.*;
 import static arcadeflex.fucPtr.*;
 import static mame056.sndhrdw.gotya.*;
 import static vidhrdw.gotya.*;
-import static sound.samplesH.*;
+import static mame056.sound.samplesH.*;
 import static vidhrdw.generic.*;
 
 public class gotya {

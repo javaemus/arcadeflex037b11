@@ -16,7 +16,7 @@ import static mame.sndintrfH.*;
 import static WIP.vidhrdw.astrocde.*;
 import static WIP.machine.astrocde.*;
 import static vidhrdw.generic.*;
-import static sound.samplesH.*;
+import static mame056.sound.samplesH.*;
 import static old2.mame.memory.*;
 import static WIP.sndhrdw.astrocde.*;
 import static WIP.sndhrdw.gorf.*;

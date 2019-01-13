@@ -5,7 +5,7 @@
 package mame056.sndhrdw;
 
 import static arcadeflex.fucPtr.*;
-import static sound.samples.*;
+import static mame056.sound.samples.*;
 
 public class zaxxon {
 

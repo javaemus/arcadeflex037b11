@@ -17,12 +17,12 @@ import static old.mame.common.*;
 import static old.mame.inptportH.*;
 import static old.mame.inputH.*;
 import static vidhrdw.zaxxon.*;
-import static sound.samplesH.*;
+import static mame056.sound.samplesH.*;
 import static mame056.sound.sn76496H.*;
 import static mame056.sound.sn76496.*;
 import static drivers.zaxxon.*;
 import static mame.sndintrf.*;
-import static sound.samples.*;
+import static mame056.sound.samples.*;
 
 public class congo {
 

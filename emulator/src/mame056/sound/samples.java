@@ -1,8 +1,8 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- *
  */
-package sound;
+package mame056.sound;
 
 import static arcadeflex.libc.ptr.*;
 import static common.libc.cstdio.*;

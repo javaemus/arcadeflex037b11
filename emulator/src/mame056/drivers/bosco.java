@@ -19,7 +19,7 @@ import static mame056.machine.bosco.*;
 import static vidhrdw.bosco.*;
 import static mame056.sndhrdw.bosco.*;
 import static vidhrdw.generic.*;
-import static sound.samplesH.*;
+import static mame056.sound.samplesH.*;
 
 public class bosco {
 

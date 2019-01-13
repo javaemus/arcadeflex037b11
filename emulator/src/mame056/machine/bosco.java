@@ -13,7 +13,7 @@ import static cpu.z80.z80H.*;
 import static mame.commonH.*;
 import static old2.mame.timer.*;
 import static old2.mame.timerH.*;
-import static sound.samples.*;
+import static mame056.sound.samples.*;
 import static old.arcadeflex.osdepend.*;
 import static mame056.common.*;
 import static mame056.sndhrdw.bosco.*;

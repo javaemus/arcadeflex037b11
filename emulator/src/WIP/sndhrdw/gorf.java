@@ -7,7 +7,7 @@ package WIP.sndhrdw;
 import static arcadeflex.fucPtr.*;
 import static common.libc.expressions.*;
 import static common.libc.cstring.*;
-import static sound.samples.*;
+import static mame056.sound.samples.*;
 import static mame037b11.cpuintrf.*;
 import static cpu.z80.z80H.Z80_BC;
 import mame.commonH.GameSamples;

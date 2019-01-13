@@ -16,7 +16,7 @@ import static mame037b11.cpuintrf.*;
 import static old.mame.inptportH.*;
 import static old.mame.inputH.*;
 import static vidhrdw.zaxxon.*;
-import static sound.samplesH.*;
+import static mame056.sound.samplesH.*;
 import static old2.mame.memory.*;
 import static WIP.machine.segacrpt.*;
 import static mame056.sndhrdw.zaxxon.*;
