@@ -27,7 +27,7 @@ import static sound.okim6295.*;
 import static sound.okim6295H.*;
 import static sound._2413intfH.*;
 import static sound.ym2413.*;
-import static machine.kabuki.*;
+import static mame056.machine.kabuki.*;
 import static old.arcadeflex.osdepend.*;
 import static mame056.common.*;
 

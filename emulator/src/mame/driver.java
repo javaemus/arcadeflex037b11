@@ -94,7 +94,7 @@ import static drivers.ambush.*;
 import static drivers.minivadr.*;
 import static drivers.sauro.*;
 import static drivers.mitchell.*;
-import static drivers.cbasebal.*;
+import static mame056.drivers.cbasebal.*;
 import static drivers.goindol.*;
 import static drivers.olibochu.*;
 import static drivers.mermaid.*;

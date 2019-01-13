@@ -1,13 +1,14 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- * using automatic conversion tool v0.01
  */
-package drivers;
+package mame056.drivers;
+
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.driverH.*;
-import static old2.mame.memoryH.*;
-import static mame.commonH.*;
+import static mame056.memoryH.*;
+import static mame056.commonH.*;
 import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static mame.sndintrfH.*;
@@ -22,7 +23,7 @@ import static sound.okim6295.*;
 import static sound.okim6295H.*;
 import static sound._2413intfH.*;
 import static sound.ym2413.*;
-import static machine.kabuki.*;
+import static mame056.machine.kabuki.*;
 import static mame.palette.*;
 import static vidhrdw.generic.*;
 import static mame056.common.*;
@@ -145,43 +146,47 @@ public class cbasebal {
         }
     };
 
-    static MemoryReadAddress cbasebal_readmem[]
+    static Memory_ReadAddress cbasebal_readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x7fff, MRA_ROM),
-                new MemoryReadAddress(0x8000, 0xbfff, MRA_BANK1),
-                new MemoryReadAddress(0xc000, 0xcfff, bankedram_r),
-                new MemoryReadAddress(0xe000, 0xffff, MRA_RAM),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x7fff, MRA_ROM),
+                new Memory_ReadAddress(0x8000, 0xbfff, MRA_BANK1),
+                new Memory_ReadAddress(0xc000, 0xcfff, bankedram_r),
+                new Memory_ReadAddress(0xe000, 0xffff, MRA_RAM),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress cbasebal_writemem[]
+    static Memory_WriteAddress cbasebal_writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0xbfff, MWA_ROM),
-                new MemoryWriteAddress(0xc000, 0xcfff, bankedram_w, paletteram), /* palette + vram + scrollram */
-                new MemoryWriteAddress(0xe000, 0xfdff, MWA_RAM), /* work RAM */
-                new MemoryWriteAddress(0xfe00, 0xffff, MWA_RAM, spriteram, spriteram_size),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0xbfff, MWA_ROM),
+                new Memory_WriteAddress(0xc000, 0xcfff, bankedram_w, paletteram), /* palette + vram + scrollram */
+                new Memory_WriteAddress(0xe000, 0xfdff, MWA_RAM), /* work RAM */
+                new Memory_WriteAddress(0xfe00, 0xffff, MWA_RAM, spriteram, spriteram_size),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
-    static IOReadPort cbasebal_readport[]
+    static IO_ReadPort cbasebal_readport[]
             = {
-                new IOReadPort(0x10, 0x10, input_port_0_r),
-                new IOReadPort(0x11, 0x11, input_port_1_r),
-                new IOReadPort(0x12, 0x12, eeprom_r),
-                new IOReadPort(-1) /* end of table */};
+                new IO_ReadPort(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_IO | MEMPORT_WIDTH_8),
+                new IO_ReadPort(0x10, 0x10, input_port_0_r),
+                new IO_ReadPort(0x11, 0x11, input_port_1_r),
+                new IO_ReadPort(0x12, 0x12, eeprom_r),
+                new IO_ReadPort(MEMPORT_MARKER, 0)};
 
-    static IOWritePort cbasebal_writeport[]
+    static IO_WritePort cbasebal_writeport[]
             = {
-                new IOWritePort(0x00, 0x00, cbasebal_bankswitch_w),
-                new IOWritePort(0x01, 0x01, eeprom_cs_w),
-                new IOWritePort(0x02, 0x02, eeprom_clock_w),
-                new IOWritePort(0x03, 0x03, eeprom_serial_w),
-                new IOWritePort(0x05, 0x05, OKIM6295_data_0_w),
-                new IOWritePort(0x06, 0x06, YM2413_register_port_0_w),
-                new IOWritePort(0x07, 0x07, YM2413_data_port_0_w),
-                new IOWritePort(0x08, 0x09, cbasebal_scrollx_w),
-                new IOWritePort(0x0a, 0x0b, cbasebal_scrolly_w),
-                new IOWritePort(0x13, 0x13, cbasebal_gfxctrl_w),
-                new IOWritePort(0x14, 0x14, cbasebal_coinctrl_w),
-                new IOWritePort(-1) /* end of table */};
+                new IO_WritePort(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_IO | MEMPORT_WIDTH_8),
+                new IO_WritePort(0x00, 0x00, cbasebal_bankswitch_w),
+                new IO_WritePort(0x01, 0x01, eeprom_cs_w),
+                new IO_WritePort(0x02, 0x02, eeprom_clock_w),
+                new IO_WritePort(0x03, 0x03, eeprom_serial_w),
+                new IO_WritePort(0x05, 0x05, OKIM6295_data_0_w),
+                new IO_WritePort(0x06, 0x06, YM2413_register_port_0_w),
+                new IO_WritePort(0x07, 0x07, YM2413_data_port_0_w),
+                new IO_WritePort(0x08, 0x09, cbasebal_scrollx_w),
+                new IO_WritePort(0x0a, 0x0b, cbasebal_scrolly_w),
+                new IO_WritePort(0x13, 0x13, cbasebal_gfxctrl_w),
+                new IO_WritePort(0x14, 0x14, cbasebal_coinctrl_w),
+                new IO_WritePort(MEMPORT_MARKER, 0)};
 
     static InputPortPtr input_ports_cbasebal = new InputPortPtr() {
         public void handler() {
@@ -310,29 +315,29 @@ public class cbasebal {
 
     static RomLoadPtr rom_cbasebal = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(2 * 0x90000, REGION_CPU1);/* 576k for code + 576k for decrypted opcodes */
+            ROM_REGION(2 * 0x90000, REGION_CPU1, 0);/* 576k for code + 576k for decrypted opcodes */
             ROM_LOAD("cbj10.11j", 0x00000, 0x08000, 0xbbff0acc);
             ROM_LOAD("cbj07.16f", 0x10000, 0x20000, 0x8111d13f);
             ROM_LOAD("cbj06.14f", 0x30000, 0x20000, 0x9aaa0e37);
             ROM_LOAD("cbj05.13f", 0x50000, 0x20000, 0xd0089f37);
             /* 0x70000-0x8ffff empty (space for 04) */
 
-            ROM_REGION(0x10000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x10000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("cbj13.16m", 0x00000, 0x10000, 0x2359fa0a);/* text */
 
-            ROM_REGION(0x80000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x80000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("cbj02.1f", 0x00000, 0x20000, 0xd6740535);/* tiles */
             ROM_LOAD("cbj03.2f", 0x20000, 0x20000, 0x88098dcd);
             ROM_LOAD("cbj08.1j", 0x40000, 0x20000, 0x5f3344bf);
             ROM_LOAD("cbj09.2j", 0x60000, 0x20000, 0xaafffdae);
 
-            ROM_REGION(0x80000, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x80000, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("cbj11.1m", 0x00000, 0x20000, 0xbdc1507d);/* sprites */
             ROM_LOAD("cbj12.2m", 0x20000, 0x20000, 0x973f3efe);
             ROM_LOAD("cbj14.1n", 0x40000, 0x20000, 0x765dabaa);
             ROM_LOAD("cbj15.2n", 0x60000, 0x20000, 0x74756de5);
 
-            ROM_REGION(0x80000, REGION_SOUND1);/* OKIM */
+            ROM_REGION(0x80000, REGION_SOUND1, 0);/* OKIM */
             ROM_LOAD("cbj01.1e", 0x00000, 0x20000, 0x1d8968bd);
             ROM_END();
         }

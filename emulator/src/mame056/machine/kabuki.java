@@ -1,12 +1,13 @@
 /**
+ * ported to 0.56
  * ported to 0.37b7
  * ported to 0.36
  */
-package machine;
+package mame056.machine;
 
 import static mame.commonH.*;
 import static mame056.common.*;
-import static old2.mame.memory.*;
+import static mame056.memory.*;
 import static arcadeflex.libc.ptr.*;
 import static common.libc.cstring.memcpy;
 
