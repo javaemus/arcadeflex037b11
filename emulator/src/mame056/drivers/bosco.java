@@ -1,20 +1,21 @@
-/*
- * ported to v0.37b7
- * using automatic conversion tool v0.01
+/**
+ * ported to v0.56
+ * ported to v0.37b7 
  */
-package drivers;
+package mame056.drivers;
+
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
-import static mame.commonH.*;
+import static mame056.commonH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptportH.*;
-import static old2.mame.memoryH.*;
+import static mame056.memoryH.*;
 import static mame.sndintrfH.*;
 import static sound.namco.*;
 import static sound.namcoH.*;
-import static machine.bosco.*;
+import static mame056.machine.bosco.*;
 import static vidhrdw.bosco.*;
 import static mame056.sndhrdw.bosco.*;
 import static vidhrdw.generic.*;
@@ -22,86 +23,92 @@ import static sound.samplesH.*;
 
 public class bosco {
 
-    static MemoryReadAddress readmem_cpu1[]
+    static Memory_ReadAddress readmem_cpu1[]
             = {
-                new MemoryReadAddress(0x0000, 0x3fff, MRA_ROM),
-                new MemoryReadAddress(0x6800, 0x6807, bosco_dsw_r),
-                new MemoryReadAddress(0x7000, 0x700f, bosco_customio_data_1_r),
-                new MemoryReadAddress(0x7100, 0x7100, bosco_customio_1_r),
-                new MemoryReadAddress(0x7800, 0x97ff, bosco_sharedram_r),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x3fff, MRA_ROM),
+                new Memory_ReadAddress(0x6800, 0x6807, bosco_dsw_r),
+                new Memory_ReadAddress(0x7000, 0x700f, bosco_customio_data_1_r),
+                new Memory_ReadAddress(0x7100, 0x7100, bosco_customio_1_r),
+                new Memory_ReadAddress(0x7800, 0x97ff, bosco_sharedram_r),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryReadAddress readmem_cpu2[]
+    static Memory_ReadAddress readmem_cpu2[]
             = {
-                new MemoryReadAddress(0x0000, 0x1fff, MRA_ROM),
-                new MemoryReadAddress(0x6800, 0x6807, bosco_dsw_r),
-                new MemoryReadAddress(0x9000, 0x900f, bosco_customio_data_2_r),
-                new MemoryReadAddress(0x9100, 0x9100, bosco_customio_2_r),
-                new MemoryReadAddress(0x7800, 0x97ff, bosco_sharedram_r),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x1fff, MRA_ROM),
+                new Memory_ReadAddress(0x6800, 0x6807, bosco_dsw_r),
+                new Memory_ReadAddress(0x9000, 0x900f, bosco_customio_data_2_r),
+                new Memory_ReadAddress(0x9100, 0x9100, bosco_customio_2_r),
+                new Memory_ReadAddress(0x7800, 0x97ff, bosco_sharedram_r),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryReadAddress readmem_cpu3[]
+    static Memory_ReadAddress readmem_cpu3[]
             = {
-                new MemoryReadAddress(0x0000, 0x1fff, MRA_ROM),
-                new MemoryReadAddress(0x6800, 0x6807, bosco_dsw_r),
-                new MemoryReadAddress(0x7800, 0x97ff, bosco_sharedram_r),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x1fff, MRA_ROM),
+                new Memory_ReadAddress(0x6800, 0x6807, bosco_dsw_r),
+                new Memory_ReadAddress(0x7800, 0x97ff, bosco_sharedram_r),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress writemem_cpu1[]
+    static Memory_WriteAddress writemem_cpu1[]
             = {
-                new MemoryWriteAddress(0x0000, 0x3fff, MWA_ROM),
-                new MemoryWriteAddress(0x6800, 0x681f, pengo_sound_w, namco_soundregs),
-                new MemoryWriteAddress(0x6820, 0x6820, bosco_interrupt_enable_1_w),
-                new MemoryWriteAddress(0x6822, 0x6822, bosco_interrupt_enable_3_w),
-                new MemoryWriteAddress(0x6823, 0x6823, bosco_halt_w),
-                new MemoryWriteAddress(0x6830, 0x6830, watchdog_reset_w),
-                new MemoryWriteAddress(0x7000, 0x700f, bosco_customio_data_1_w),
-                new MemoryWriteAddress(0x7100, 0x7100, bosco_customio_1_w),
-                new MemoryWriteAddress(0x8000, 0x83ff, videoram_w, videoram, videoram_size),
-                new MemoryWriteAddress(0x8400, 0x87ff, bosco_videoram2_w, bosco_videoram2),
-                new MemoryWriteAddress(0x8800, 0x8bff, colorram_w, colorram),
-                new MemoryWriteAddress(0x8c00, 0x8fff, bosco_colorram2_w, bosco_colorram2),
-                new MemoryWriteAddress(0x7800, 0x97ff, bosco_sharedram_w, bosco_sharedram),
-                new MemoryWriteAddress(0x83d4, 0x83df, MWA_RAM, spriteram, spriteram_size), /* these are here just to initialize */
-                new MemoryWriteAddress(0x8bd4, 0x8bdf, MWA_RAM, spriteram_2), /* the pointers. */
-                new MemoryWriteAddress(0x83f4, 0x83ff, MWA_RAM, bosco_radarx, bosco_radarram_size), /* ditto */
-                new MemoryWriteAddress(0x8bf4, 0x8bff, MWA_RAM, bosco_radary),
-                new MemoryWriteAddress(0x9810, 0x9810, bosco_scrollx_w),
-                new MemoryWriteAddress(0x9820, 0x9820, bosco_scrolly_w),
-                new MemoryWriteAddress(0x9830, 0x9830, bosco_starcontrol_w),
-                new MemoryWriteAddress(0x9840, 0x9840, MWA_RAM, bosco_staronoff),
-                new MemoryWriteAddress(0x9870, 0x9870, bosco_flipscreen_w),
-                new MemoryWriteAddress(0x9804, 0x980f, MWA_RAM, bosco_radarattr),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x3fff, MWA_ROM),
+                new Memory_WriteAddress(0x6800, 0x681f, pengo_sound_w, namco_soundregs),
+                new Memory_WriteAddress(0x6820, 0x6820, bosco_interrupt_enable_1_w),
+                new Memory_WriteAddress(0x6822, 0x6822, bosco_interrupt_enable_3_w),
+                new Memory_WriteAddress(0x6823, 0x6823, bosco_halt_w),
+                new Memory_WriteAddress(0x6830, 0x6830, watchdog_reset_w),
+                new Memory_WriteAddress(0x7000, 0x700f, bosco_customio_data_1_w),
+                new Memory_WriteAddress(0x7100, 0x7100, bosco_customio_1_w),
+                new Memory_WriteAddress(0x8000, 0x83ff, videoram_w, videoram, videoram_size),
+                new Memory_WriteAddress(0x8400, 0x87ff, bosco_videoram2_w, bosco_videoram2),
+                new Memory_WriteAddress(0x8800, 0x8bff, colorram_w, colorram),
+                new Memory_WriteAddress(0x8c00, 0x8fff, bosco_colorram2_w, bosco_colorram2),
+                new Memory_WriteAddress(0x7800, 0x97ff, bosco_sharedram_w, bosco_sharedram),
+                new Memory_WriteAddress(0x83d4, 0x83df, MWA_RAM, spriteram, spriteram_size), /* these are here just to initialize */
+                new Memory_WriteAddress(0x8bd4, 0x8bdf, MWA_RAM, spriteram_2), /* the pointers. */
+                new Memory_WriteAddress(0x83f4, 0x83ff, MWA_RAM, bosco_radarx, bosco_radarram_size), /* ditto */
+                new Memory_WriteAddress(0x8bf4, 0x8bff, MWA_RAM, bosco_radary),
+                new Memory_WriteAddress(0x9810, 0x9810, bosco_scrollx_w),
+                new Memory_WriteAddress(0x9820, 0x9820, bosco_scrolly_w),
+                new Memory_WriteAddress(0x9830, 0x9830, bosco_starcontrol_w),
+                new Memory_WriteAddress(0x9840, 0x9840, MWA_RAM, bosco_staronoff),
+                new Memory_WriteAddress(0x9870, 0x9870, bosco_flipscreen_w),
+                new Memory_WriteAddress(0x9804, 0x980f, MWA_RAM, bosco_radarattr),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress writemem_cpu2[]
+    static Memory_WriteAddress writemem_cpu2[]
             = {
-                new MemoryWriteAddress(0x0000, 0x1fff, MWA_ROM),
-                new MemoryWriteAddress(0x6821, 0x6821, bosco_interrupt_enable_2_w),
-                new MemoryWriteAddress(0x8000, 0x83ff, videoram_w),
-                new MemoryWriteAddress(0x8400, 0x87ff, bosco_videoram2_w),
-                new MemoryWriteAddress(0x8800, 0x8bff, colorram_w),
-                new MemoryWriteAddress(0x8c00, 0x8fff, bosco_colorram2_w),
-                new MemoryWriteAddress(0x9000, 0x900f, bosco_customio_data_2_w),
-                new MemoryWriteAddress(0x9100, 0x9100, bosco_customio_2_w),
-                new MemoryWriteAddress(0x7800, 0x97ff, bosco_sharedram_w),
-                new MemoryWriteAddress(0x9810, 0x9810, bosco_scrollx_w),
-                new MemoryWriteAddress(0x9820, 0x9820, bosco_scrolly_w),
-                new MemoryWriteAddress(0x9830, 0x9830, bosco_starcontrol_w),
-                new MemoryWriteAddress(0x9874, 0x9875, MWA_RAM, bosco_starblink),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x1fff, MWA_ROM),
+                new Memory_WriteAddress(0x6821, 0x6821, bosco_interrupt_enable_2_w),
+                new Memory_WriteAddress(0x8000, 0x83ff, videoram_w),
+                new Memory_WriteAddress(0x8400, 0x87ff, bosco_videoram2_w),
+                new Memory_WriteAddress(0x8800, 0x8bff, colorram_w),
+                new Memory_WriteAddress(0x8c00, 0x8fff, bosco_colorram2_w),
+                new Memory_WriteAddress(0x9000, 0x900f, bosco_customio_data_2_w),
+                new Memory_WriteAddress(0x9100, 0x9100, bosco_customio_2_w),
+                new Memory_WriteAddress(0x7800, 0x97ff, bosco_sharedram_w),
+                new Memory_WriteAddress(0x9810, 0x9810, bosco_scrollx_w),
+                new Memory_WriteAddress(0x9820, 0x9820, bosco_scrolly_w),
+                new Memory_WriteAddress(0x9830, 0x9830, bosco_starcontrol_w),
+                new Memory_WriteAddress(0x9874, 0x9875, MWA_RAM, bosco_starblink),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress writemem_cpu3[]
+    static Memory_WriteAddress writemem_cpu3[]
             = {
-                new MemoryWriteAddress(0x0000, 0x1fff, MWA_ROM),
-                new MemoryWriteAddress(0x6800, 0x681f, pengo_sound_w),
-                new MemoryWriteAddress(0x6822, 0x6822, bosco_interrupt_enable_3_w),
-                new MemoryWriteAddress(0x8000, 0x83ff, videoram_w),
-                new MemoryWriteAddress(0x8400, 0x87ff, bosco_videoram2_w),
-                new MemoryWriteAddress(0x8800, 0x8bff, colorram_w),
-                new MemoryWriteAddress(0x8c00, 0x8fff, bosco_colorram2_w),
-                new MemoryWriteAddress(0x7800, 0x97ff, bosco_sharedram_w),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x1fff, MWA_ROM),
+                new Memory_WriteAddress(0x6800, 0x681f, pengo_sound_w),
+                new Memory_WriteAddress(0x6822, 0x6822, bosco_interrupt_enable_3_w),
+                new Memory_WriteAddress(0x8000, 0x83ff, videoram_w),
+                new Memory_WriteAddress(0x8400, 0x87ff, bosco_videoram2_w),
+                new Memory_WriteAddress(0x8800, 0x8bff, colorram_w),
+                new Memory_WriteAddress(0x8c00, 0x8fff, bosco_colorram2_w),
+                new Memory_WriteAddress(0x7800, 0x97ff, bosco_sharedram_w),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
     static InputPortPtr input_ports_bosco = new InputPortPtr() {
         public void handler() {
@@ -373,7 +380,7 @@ public class bosco {
                         bosco_interrupt_3, 2
                 )
             },
-            60, DEFAULT_60HZ_VBLANK_DURATION, /* frames per second, vblank duration */
+            60.606060f, DEFAULT_60HZ_VBLANK_DURATION, /* frames per second, vblank duration */
             100, /* 100 CPU slices per frame - an high value to ensure proper */
             /* synchronization of the CPUs */
             bosco_init_machine,
@@ -414,40 +421,40 @@ public class bosco {
      */
     static RomLoadPtr rom_bosco = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);/* 64k for code for the first CPU  */
+            ROM_REGION(0x10000, REGION_CPU1, 0);/* 64k for code for the first CPU  */
             ROM_LOAD("bos3_1.bin", 0x0000, 0x1000, 0x96021267);
             ROM_LOAD("bos1_2.bin", 0x1000, 0x1000, 0x2d8f3ebe);
             ROM_LOAD("bos1_3.bin", 0x2000, 0x1000, 0xc80ccfa5);
             ROM_LOAD("bos1_4b.bin", 0x3000, 0x1000, 0xa3f7f4ab);
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the second CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the second CPU */
             ROM_LOAD("bos1_5c.bin", 0x0000, 0x1000, 0xa7c8e432);
             ROM_LOAD("bos3_6.bin", 0x1000, 0x1000, 0x4543cf82);
 
-            ROM_REGION(0x10000, REGION_CPU3);/* 64k for the third CPU  */
+            ROM_REGION(0x10000, REGION_CPU3, 0);/* 64k for the third CPU  */
             ROM_LOAD("2900.3e", 0x0000, 0x1000, 0xd45a4911);
 
-            ROM_REGION(0x1000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x1000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("5300.5d", 0x0000, 0x1000, 0xa956d3c5);
 
-            ROM_REGION(0x1000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x1000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("5200.5e", 0x0000, 0x1000, 0xe869219c);
 
-            ROM_REGION(0x0100, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x0100, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("prom.2d", 0x0000, 0x0100, 0x9b69b543);/* dots */
 
-            ROM_REGION(0x0260, REGION_PROMS);
+            ROM_REGION(0x0260, REGION_PROMS, 0);
             ROM_LOAD("bosco.6b", 0x0000, 0x0020, 0xd2b96fb0);/* palette */
             ROM_LOAD("bosco.4m", 0x0020, 0x0100, 0x4e15d59c);/* lookup table */
             ROM_LOAD("prom.1d", 0x0120, 0x0100, 0xde2316c6);/* ?? */
             ROM_LOAD("prom.2r", 0x0220, 0x0020, 0xb88d5ba9);/* ?? */
             ROM_LOAD("prom.7h", 0x0240, 0x0020, 0x87d61353);/* ?? */
 
-            ROM_REGION(0x0200, REGION_SOUND1);/* sound prom */
+            ROM_REGION(0x0200, REGION_SOUND1, 0);/* sound prom */
             ROM_LOAD("bosco.spr", 0x0000, 0x0100, 0xee8ca3a8);
             ROM_LOAD("prom.5c", 0x0100, 0x0100, 0x77245b66);/* timing - not used */
 
-            ROM_REGION(0x3000, REGION_SOUND2);/* ROMs for digitised speech */
+            ROM_REGION(0x3000, REGION_SOUND2, 0);/* ROMs for digitised speech */
             ROM_LOAD("4900.5n", 0x0000, 0x1000, 0x09acc978);
             ROM_LOAD("5000.5m", 0x1000, 0x1000, 0xe571e959);
             ROM_LOAD("5100.5l", 0x2000, 0x1000, 0x17ac9511);
@@ -457,40 +464,40 @@ public class bosco {
 
     static RomLoadPtr rom_boscoo = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);/* 64k for code for the first CPU  */
+            ROM_REGION(0x10000, REGION_CPU1, 0);/* 64k for code for the first CPU  */
             ROM_LOAD("bos1_1.bin", 0x0000, 0x1000, 0x0d9920e7);
             ROM_LOAD("bos1_2.bin", 0x1000, 0x1000, 0x2d8f3ebe);
             ROM_LOAD("bos1_3.bin", 0x2000, 0x1000, 0xc80ccfa5);
             ROM_LOAD("bos1_4b.bin", 0x3000, 0x1000, 0xa3f7f4ab);
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the second CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the second CPU */
             ROM_LOAD("bos1_5c.bin", 0x0000, 0x1000, 0xa7c8e432);
             ROM_LOAD("2800.3h", 0x1000, 0x1000, 0x31b8c648);
 
-            ROM_REGION(0x10000, REGION_CPU3);/* 64k for the third CPU  */
+            ROM_REGION(0x10000, REGION_CPU3, 0);/* 64k for the third CPU  */
             ROM_LOAD("2900.3e", 0x0000, 0x1000, 0xd45a4911);
 
-            ROM_REGION(0x1000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x1000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("5300.5d", 0x0000, 0x1000, 0xa956d3c5);
 
-            ROM_REGION(0x1000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x1000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("5200.5e", 0x0000, 0x1000, 0xe869219c);
 
-            ROM_REGION(0x0100, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x0100, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("prom.2d", 0x0000, 0x0100, 0x9b69b543);/* dots */
 
-            ROM_REGION(0x0260, REGION_PROMS);
+            ROM_REGION(0x0260, REGION_PROMS, 0);
             ROM_LOAD("bosco.6b", 0x0000, 0x0020, 0xd2b96fb0);/* palette */
             ROM_LOAD("bosco.4m", 0x0020, 0x0100, 0x4e15d59c);/* lookup table */
             ROM_LOAD("prom.1d", 0x0120, 0x0100, 0xde2316c6);/* ?? */
             ROM_LOAD("prom.2r", 0x0220, 0x0020, 0xb88d5ba9);/* ?? */
             ROM_LOAD("prom.7h", 0x0240, 0x0020, 0x87d61353);/* ?? */
 
-            ROM_REGION(0x0200, REGION_SOUND1);/* sound prom */
+            ROM_REGION(0x0200, REGION_SOUND1, 0);/* sound prom */
             ROM_LOAD("bosco.spr", 0x0000, 0x0100, 0xee8ca3a8);
             ROM_LOAD("prom.5c", 0x0100, 0x0100, 0x77245b66);/* timing - not used */
 
-            ROM_REGION(0x3000, REGION_SOUND2);/* ROMs for digitised speech */
+            ROM_REGION(0x3000, REGION_SOUND2, 0);/* ROMs for digitised speech */
             ROM_LOAD("4900.5n", 0x0000, 0x1000, 0x09acc978);
             ROM_LOAD("5000.5m", 0x1000, 0x1000, 0xe571e959);
             ROM_LOAD("5100.5l", 0x2000, 0x1000, 0x17ac9511);
@@ -500,40 +507,40 @@ public class bosco {
 
     static RomLoadPtr rom_boscoo2 = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);/* 64k for code for the first CPU  */
+            ROM_REGION(0x10000, REGION_CPU1, 0);/* 64k for code for the first CPU  */
             ROM_LOAD("bos1_1.bin", 0x0000, 0x1000, 0x0d9920e7);
             ROM_LOAD("bos1_2.bin", 0x1000, 0x1000, 0x2d8f3ebe);
             ROM_LOAD("bos1_3.bin", 0x2000, 0x1000, 0xc80ccfa5);
             ROM_LOAD("bos1_4.3k", 0x3000, 0x1000, 0x7ebea2b8);
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the second CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the second CPU */
             ROM_LOAD("bos1_5b.3j", 0x0000, 0x1000, 0x3d6955a8);
             ROM_LOAD("2800.3h", 0x1000, 0x1000, 0x31b8c648);
 
-            ROM_REGION(0x10000, REGION_CPU3);/* 64k for the third CPU  */
+            ROM_REGION(0x10000, REGION_CPU3, 0);/* 64k for the third CPU  */
             ROM_LOAD("2900.3e", 0x0000, 0x1000, 0xd45a4911);
 
-            ROM_REGION(0x1000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x1000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("5300.5d", 0x0000, 0x1000, 0xa956d3c5);
 
-            ROM_REGION(0x1000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x1000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("5200.5e", 0x0000, 0x1000, 0xe869219c);
 
-            ROM_REGION(0x0100, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x0100, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("prom.2d", 0x0000, 0x0100, 0x9b69b543);/* dots */
 
-            ROM_REGION(0x0260, REGION_PROMS);
+            ROM_REGION(0x0260, REGION_PROMS, 0);
             ROM_LOAD("bosco.6b", 0x0000, 0x0020, 0xd2b96fb0);/* palette */
             ROM_LOAD("bosco.4m", 0x0020, 0x0100, 0x4e15d59c);/* lookup table */
             ROM_LOAD("prom.1d", 0x0120, 0x0100, 0xde2316c6);/* ?? */
             ROM_LOAD("prom.2r", 0x0220, 0x0020, 0xb88d5ba9);/* ?? */
             ROM_LOAD("prom.7h", 0x0240, 0x0020, 0x87d61353);/* ?? */
 
-            ROM_REGION(0x0200, REGION_SOUND1);/* sound prom */
+            ROM_REGION(0x0200, REGION_SOUND1, 0);/* sound prom */
             ROM_LOAD("bosco.spr", 0x0000, 0x0100, 0xee8ca3a8);
             ROM_LOAD("prom.5c", 0x0100, 0x0100, 0x77245b66);/* timing - not used */
 
-            ROM_REGION(0x3000, REGION_SOUND2);/* ROMs for digitised speech */
+            ROM_REGION(0x3000, REGION_SOUND2, 0);/* ROMs for digitised speech */
             ROM_LOAD("4900.5n", 0x0000, 0x1000, 0x09acc978);
             ROM_LOAD("5000.5m", 0x1000, 0x1000, 0xe571e959);
             ROM_LOAD("5100.5l", 0x2000, 0x1000, 0x17ac9511);
@@ -543,40 +550,40 @@ public class bosco {
 
     static RomLoadPtr rom_boscomd = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);/* 64k for code for the first CPU  */
+            ROM_REGION(0x10000, REGION_CPU1, 0);/* 64k for code for the first CPU  */
             ROM_LOAD("3n", 0x0000, 0x1000, 0x441b501a);
             ROM_LOAD("3m", 0x1000, 0x1000, 0xa3c5c7ef);
             ROM_LOAD("3l", 0x2000, 0x1000, 0x6ca9a0cf);
             ROM_LOAD("3k", 0x3000, 0x1000, 0xd83bacc5);
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the second CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the second CPU */
             ROM_LOAD("3j", 0x0000, 0x1000, 0x4374e39a);
             ROM_LOAD("3h", 0x1000, 0x1000, 0x04e9fcef);
 
-            ROM_REGION(0x10000, REGION_CPU3);/* 64k for the third CPU  */
+            ROM_REGION(0x10000, REGION_CPU3, 0);/* 64k for the third CPU  */
             ROM_LOAD("2900.3e", 0x0000, 0x1000, 0xd45a4911);
 
-            ROM_REGION(0x1000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x1000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("5300.5d", 0x0000, 0x1000, 0xa956d3c5);
 
-            ROM_REGION(0x1000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x1000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("5200.5e", 0x0000, 0x1000, 0xe869219c);
 
-            ROM_REGION(0x0100, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x0100, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("prom.2d", 0x0000, 0x0100, 0x9b69b543);/* dots */
 
-            ROM_REGION(0x0260, REGION_PROMS);
+            ROM_REGION(0x0260, REGION_PROMS, 0);
             ROM_LOAD("bosco.6b", 0x0000, 0x0020, 0xd2b96fb0);/* palette */
             ROM_LOAD("bosco.4m", 0x0020, 0x0100, 0x4e15d59c);/* lookup table */
             ROM_LOAD("prom.1d", 0x0120, 0x0100, 0xde2316c6);/* ?? */
             ROM_LOAD("prom.2r", 0x0220, 0x0020, 0xb88d5ba9);/* ?? */
             ROM_LOAD("prom.7h", 0x0240, 0x0020, 0x87d61353);/* ?? */
 
-            ROM_REGION(0x0200, REGION_SOUND1);/* sound prom */
+            ROM_REGION(0x0200, REGION_SOUND1, 0);/* sound prom */
             ROM_LOAD("bosco.spr", 0x0000, 0x0100, 0xee8ca3a8);
             ROM_LOAD("prom.5c", 0x0100, 0x0100, 0x77245b66);/* timing - not used */
 
-            ROM_REGION(0x3000, REGION_SOUND2);/* ROMs for digitised speech */
+            ROM_REGION(0x3000, REGION_SOUND2, 0);/* ROMs for digitised speech */
             ROM_LOAD("4900.5n", 0x0000, 0x1000, 0x09acc978);
             ROM_LOAD("5000.5m", 0x1000, 0x1000, 0xe571e959);
             ROM_LOAD("5100.5l", 0x2000, 0x1000, 0x17ac9511);
@@ -586,40 +593,40 @@ public class bosco {
 
     static RomLoadPtr rom_boscomdo = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);/* 64k for code for the first CPU  */
+            ROM_REGION(0x10000, REGION_CPU1, 0);/* 64k for code for the first CPU  */
             ROM_LOAD("2300.3n", 0x0000, 0x1000, 0xdb6128b0);
             ROM_LOAD("2400.3m", 0x1000, 0x1000, 0x86907614);
             ROM_LOAD("2500.3l", 0x2000, 0x1000, 0xa21fae11);
             ROM_LOAD("2600.3k", 0x3000, 0x1000, 0x11d6ae23);
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the second CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the second CPU */
             ROM_LOAD("2700.3j", 0x0000, 0x1000, 0x7254e65e);
             ROM_LOAD("2800.3h", 0x1000, 0x1000, 0x31b8c648);
 
-            ROM_REGION(0x10000, REGION_CPU3);/* 64k for the third CPU  */
+            ROM_REGION(0x10000, REGION_CPU3, 0);/* 64k for the third CPU  */
             ROM_LOAD("2900.3e", 0x0000, 0x1000, 0xd45a4911);
 
-            ROM_REGION(0x1000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x1000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("5300.5d", 0x0000, 0x1000, 0xa956d3c5);
 
-            ROM_REGION(0x1000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x1000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("5200.5e", 0x0000, 0x1000, 0xe869219c);
 
-            ROM_REGION(0x0100, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x0100, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("prom.2d", 0x0000, 0x0100, 0x9b69b543);/* dots */
 
-            ROM_REGION(0x0260, REGION_PROMS);
+            ROM_REGION(0x0260, REGION_PROMS, 0);
             ROM_LOAD("bosco.6b", 0x0000, 0x0020, 0xd2b96fb0);/* palette */
             ROM_LOAD("bosco.4m", 0x0020, 0x0100, 0x4e15d59c);/* lookup table */
             ROM_LOAD("prom.1d", 0x0120, 0x0100, 0xde2316c6);/* ?? */
             ROM_LOAD("prom.2r", 0x0220, 0x0020, 0xb88d5ba9);/* ?? */
             ROM_LOAD("prom.7h", 0x0240, 0x0020, 0x87d61353);/* ?? */
 
-            ROM_REGION(0x0200, REGION_SOUND1);/* sound prom */
+            ROM_REGION(0x0200, REGION_SOUND1, 0);/* sound prom */
             ROM_LOAD("bosco.spr", 0x0000, 0x0100, 0xee8ca3a8);
             ROM_LOAD("prom.5c", 0x0100, 0x0100, 0x77245b66);/* timing - not used */
 
-            ROM_REGION(0x3000, REGION_SOUND2);/* ROMs for digitised speech */
+            ROM_REGION(0x3000, REGION_SOUND2, 0);/* ROMs for digitised speech */
             ROM_LOAD("4900.5n", 0x0000, 0x1000, 0x09acc978);
             ROM_LOAD("5000.5m", 0x1000, 0x1000, 0xe571e959);
             ROM_LOAD("5100.5l", 0x2000, 0x1000, 0x17ac9511);

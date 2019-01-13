@@ -65,7 +65,7 @@ import static drivers.yamato.*;
 import static drivers.tsamurai.*;
 import static drivers.ttmahjng.*;
 import static drivers.xevious.*;
-import static drivers.bosco.*;
+import static mame056.drivers.bosco.*;
 import static drivers.hanaawas.*;
 import static drivers.bagman.*;
 import static drivers.locomotn.*;

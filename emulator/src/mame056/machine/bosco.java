@@ -1,8 +1,8 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- * using automatic conversion tool v0.01
  */
-package machine;
+package mame056.machine;
 
 import static arcadeflex.fucPtr.*;
 import static mame037b11.cpuintrf.*;
@@ -18,7 +18,7 @@ import static old.arcadeflex.osdepend.*;
 import static mame056.common.*;
 import static mame056.sndhrdw.bosco.*;
 import static vidhrdw.bosco.*;
-import static old2.mame.memory.*;
+import static mame056.memory.*;
 
 public class bosco {
 
