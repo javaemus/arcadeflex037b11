@@ -15,7 +15,7 @@ import static mame056.memoryH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.MachineSound;
 import static mame.sndintrfH.*;
-import static sound.dacH.*;
+import static mame056.sound.dacH.*;
 import static vidhrdw.cheekyms.*;
 import static vidhrdw.generic.*;
 

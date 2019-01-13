@@ -17,8 +17,8 @@ import static mame.sndintrfH.*;
 import static vidhrdw.exctsccr.*;
 import static machine.exctsccr.*;
 import static vidhrdw.generic.*;
-import static sound.dac.*;
-import static sound.dacH.*;
+import static mame056.sound.dac.*;
+import static mame056.sound.dacH.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 

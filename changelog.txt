@@ -4,6 +4,7 @@
 -Added bosco driver,machine to 0.56
 -Added cbasebal driver , kabuki machine to 0.56
 -Ported crbaloon driver to 0.56
+-Ported dac sound to 0.56
 
 12/01/2018
 ==========

@@ -16,14 +16,14 @@ import static mame.sndintrf.soundlatch_w;
 import static mame.sndintrfH.MachineSound;
 import static mame.sndintrfH.*;
 import static cpu.z80.z80H.Z80_NMI_INT;
-import static sound.dacH.*;
+import static mame056.sound.dacH.*;
 import static vidhrdw.bking2.*;
 import static vidhrdw.generic.*;
 import static mame037b11.cpuintrf.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static old.arcadeflex.osdepend.*;
-import static sound.dac.DAC_0_signed_data_w;
+import static mame056.sound.dac.DAC_0_signed_data_w;
 
 public class bking2 {
 

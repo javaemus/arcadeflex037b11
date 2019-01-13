@@ -21,8 +21,8 @@ import static old.mame.common.*;
 import static old.mame.inputH.KEYCODE_F2;
 import static sound._3526intf.*;
 import sound._3812intfH.YM3526interface;
-import static sound.dac.*;
-import static sound.dacH.*;
+import static mame056.sound.dac.*;
+import static mame056.sound.dacH.*;
 import static mame056.common.*;
 public class galivan {
 

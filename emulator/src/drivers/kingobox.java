@@ -20,8 +20,8 @@ import static vidhrdw.kingobox.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static mame.sndintrfH.*;
-import static sound.dac.*;
-import static sound.dacH.*;
+import static mame056.sound.dac.*;
+import static mame056.sound.dacH.*;
 import static mame056.common.*;
 public class kingobox {
 

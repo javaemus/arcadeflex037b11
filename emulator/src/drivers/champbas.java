@@ -14,10 +14,10 @@ import static old2.mame.memoryH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static mame.sndintrf.*;
-import static sound.dacH.*;
+import static mame056.sound.dacH.*;
 import static vidhrdw.champbas.*;
 import static vidhrdw.generic.*;
-import static sound.dac.*;
+import static mame056.sound.dac.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 

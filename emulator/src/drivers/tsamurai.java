@@ -18,8 +18,8 @@ import static old.mame.common.*;
 import static old2.mame.common.*;
 import static vidhrdw.generic.*;
 import static vidhrdw.tsamurai.*;
-import static sound.dac.*;
-import static sound.dacH.*;
+import static mame056.sound.dac.*;
+import static mame056.sound.dacH.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 

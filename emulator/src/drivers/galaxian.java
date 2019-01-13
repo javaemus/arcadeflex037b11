@@ -34,8 +34,8 @@ import static mame056.sndhrdw.galaxian.*;
 
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
-import static sound.dac.*;
-import static sound.dacH.*;
+import static mame056.sound.dac.*;
+import static mame056.sound.dacH.*;
 
 import static vidhrdw.generic.*;
 import static vidhrdw.galaxian.*;

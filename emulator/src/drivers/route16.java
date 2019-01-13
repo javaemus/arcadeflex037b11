@@ -17,8 +17,8 @@ import static mame.sndintrfH.*;
 import static sound.sn76477H.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
-import static sound.dac.*;
-import static sound.dacH.*;
+import static mame056.sound.dac.*;
+import static mame056.sound.dacH.*;
 import static vidhrdw.route16.*;
 
 public class route16 {

@@ -1,15 +1,16 @@
-/*
- * ported to 0.37b7
+/**
+ * ported to v0.56
+ * ported to v0.37b7
  * ported to v0.36
  */
-package sound;
+package mame056.sound;
 
 import static arcadeflex.fucPtr.*;
 import static common.libc.cstdio.*;
 import static common.ptr.*;
 import mame.sndintrf.*;
 import static mame.sndintrfH.*;
-import static sound.dacH.*;
+import static mame056.sound.dacH.*;
 import static old2.mame.mame.*;
 import static mame056.sound.streams.*;
 

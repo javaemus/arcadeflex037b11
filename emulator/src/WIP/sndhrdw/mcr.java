@@ -19,8 +19,8 @@ import static old2.mame.timer.*;
 import static old2.mame.timerH.*;
 import static WIP.sndhrdw.mcrH.*;
 import static old.sound.mixer.*;
-import static sound.dac.*;
-import static sound.dacH.*;
+import static mame056.sound.dac.*;
+import static mame056.sound.dacH.*;
 
 public class mcr {
 
