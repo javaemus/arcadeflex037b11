@@ -1,6 +1,7 @@
 14/01/2019
 ==========
 -Ported gunsmoke driver to 0.56
+-Ported hanaawas driver to 0.56
 
 13/01/2019
 ==========
