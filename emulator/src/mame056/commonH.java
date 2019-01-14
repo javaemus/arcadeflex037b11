@@ -146,20 +146,20 @@ public class commonH {
     }
 
     /* ----- per-entry constants ----- */
-    public static final int ROMENTRYTYPE_REGION = 1;/* this entry marks the start of a region */
-    public static final int ROMENTRYTYPE_END = 2;/* this entry marks the end of a region */
-    public static final int ROMENTRYTYPE_RELOAD = 3;/* this entry reloads the previous ROM */
-    public static final int ROMENTRYTYPE_CONTINUE = 4;/* this entry continues loading the previous ROM */
-    public static final int ROMENTRYTYPE_FILL = 5;/* this entry fills an area with a constant value */
-    public static final int ROMENTRYTYPE_COPY = 6;/* this entry copies data from another region/offset */
-    public static final int ROMENTRYTYPE_COUNT = 7;
+    public static final int ROMENTRYTYPE_REGION = -1;/* this entry marks the start of a region */
+    public static final int ROMENTRYTYPE_END = -2;/* this entry marks the end of a region */
+    public static final int ROMENTRYTYPE_RELOAD = -3;/* this entry reloads the previous ROM */
+    public static final int ROMENTRYTYPE_CONTINUE = -4;/* this entry continues loading the previous ROM */
+    public static final int ROMENTRYTYPE_FILL = -5;/* this entry fills an area with a constant value */
+    public static final int ROMENTRYTYPE_COPY = -6;/* this entry copies data from another region/offset */
+    public static final int ROMENTRYTYPE_COUNT = -7;
 
-    public static final String ROMENTRY_REGION = "1";
-    public static final String ROMENTRY_END = "2";
-    public static final String ROMENTRY_RELOAD = "3";
-    public static final String ROMENTRY_CONTINUE = "4";
-    public static final String ROMENTRY_FILL = "5";
-    public static final String ROMENTRY_COPY = "6";
+    public static final String ROMENTRY_REGION = "-1";
+    public static final String ROMENTRY_END = "-2";
+    public static final String ROMENTRY_RELOAD = "-3";
+    public static final String ROMENTRY_CONTINUE = "-4";
+    public static final String ROMENTRY_FILL = "-5";
+    public static final String ROMENTRY_COPY = "-6";
 
     /* ----- per-entry macros ----- */
     public static int ROMENTRY_GETTYPE(RomModule[] romp, int romp_ptr) {
@@ -182,6 +182,7 @@ public class commonH {
     }
 
     public static boolean ROMENTRY_ISREGION(RomModule[] romp, int romp_ptr) {
+        System.out.println(Integer.toHexString(romp[romp_ptr]._crc));
         return romp[romp_ptr]._name.matches(ROMENTRY_REGION);
     }
 
