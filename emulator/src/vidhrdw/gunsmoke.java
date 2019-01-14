@@ -20,7 +20,7 @@ import static old.mame.drawgfx.drawgfx;
 import static old2.mame.common.*;
 import static vidhrdw.generic.*;
 import static old.mame.common.*;
-import static old2.mame.memoryH.*;
+import static mame056.memoryH.*;
 import static mame056.common.*;
 public class gunsmoke {
 

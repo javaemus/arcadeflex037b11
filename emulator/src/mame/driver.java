@@ -70,7 +70,7 @@ import static drivers.hanaawas.*;
 import static drivers.bagman.*;
 import static drivers.locomotn.*;
 import static drivers.champbas.*;
-import static drivers.gunsmoke.*;
+import static mame056.drivers.gunsmoke.*;
 import static drivers.polyplay.*;
 import static drivers.royalmah.*;
 import static drivers.gundealr.*;

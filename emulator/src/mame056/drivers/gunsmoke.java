@@ -1,17 +1,18 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- * using automatic conversion tool v0.01
  */
-package drivers;
+package mame056.drivers;
+
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
-import static mame.commonH.*;
+import static mame056.commonH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
-import static old2.mame.memoryH.*;
+import static mame056.memoryH.*;
 import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
 import static sound._2203intf.*;
@@ -42,52 +43,56 @@ public class gunsmoke {
         }
     };
 
-    static MemoryReadAddress readmem[]
+    static Memory_ReadAddress readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x7fff, MRA_ROM),
-                new MemoryReadAddress(0x8000, 0xbfff, MRA_BANK1),
-                new MemoryReadAddress(0xc000, 0xc000, input_port_0_r),
-                new MemoryReadAddress(0xc001, 0xc001, input_port_1_r),
-                new MemoryReadAddress(0xc002, 0xc002, input_port_2_r),
-                new MemoryReadAddress(0xc003, 0xc003, input_port_3_r),
-                new MemoryReadAddress(0xc004, 0xc004, input_port_4_r),
-                new MemoryReadAddress(0xc4c9, 0xc4cb, gunsmoke_unknown_r),
-                new MemoryReadAddress(0xd000, 0xd3ff, videoram_r),
-                new MemoryReadAddress(0xd400, 0xd7ff, colorram_r),
-                new MemoryReadAddress(0xe000, 0xffff, MRA_RAM), /* Work + sprite RAM */
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x7fff, MRA_ROM),
+                new Memory_ReadAddress(0x8000, 0xbfff, MRA_BANK1),
+                new Memory_ReadAddress(0xc000, 0xc000, input_port_0_r),
+                new Memory_ReadAddress(0xc001, 0xc001, input_port_1_r),
+                new Memory_ReadAddress(0xc002, 0xc002, input_port_2_r),
+                new Memory_ReadAddress(0xc003, 0xc003, input_port_3_r),
+                new Memory_ReadAddress(0xc004, 0xc004, input_port_4_r),
+                new Memory_ReadAddress(0xc4c9, 0xc4cb, gunsmoke_unknown_r),
+                new Memory_ReadAddress(0xd000, 0xd3ff, videoram_r),
+                new Memory_ReadAddress(0xd400, 0xd7ff, colorram_r),
+                new Memory_ReadAddress(0xe000, 0xffff, MRA_RAM), /* Work + sprite RAM */
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress writemem[]
+    static Memory_WriteAddress writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0xbfff, MWA_ROM),
-                new MemoryWriteAddress(0xc800, 0xc800, soundlatch_w),
-                new MemoryWriteAddress(0xc804, 0xc804, gunsmoke_c804_w), /* ROM bank switch, screen flip */
-                new MemoryWriteAddress(0xc806, 0xc806, MWA_NOP), /* Watchdog ?? */
-                new MemoryWriteAddress(0xd000, 0xd3ff, videoram_w, videoram, videoram_size),
-                new MemoryWriteAddress(0xd400, 0xd7ff, colorram_w, colorram),
-                new MemoryWriteAddress(0xd800, 0xd801, MWA_RAM, gunsmoke_bg_scrolly),
-                new MemoryWriteAddress(0xd802, 0xd802, MWA_RAM, gunsmoke_bg_scrollx),
-                new MemoryWriteAddress(0xd806, 0xd806, gunsmoke_d806_w), /* sprites and bg enable */
-                new MemoryWriteAddress(0xe000, 0xefff, MWA_RAM),
-                new MemoryWriteAddress(0xf000, 0xffff, MWA_RAM, spriteram, spriteram_size),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0xbfff, MWA_ROM),
+                new Memory_WriteAddress(0xc800, 0xc800, soundlatch_w),
+                new Memory_WriteAddress(0xc804, 0xc804, gunsmoke_c804_w), /* ROM bank switch, screen flip */
+                new Memory_WriteAddress(0xc806, 0xc806, MWA_NOP), /* Watchdog ?? */
+                new Memory_WriteAddress(0xd000, 0xd3ff, videoram_w, videoram, videoram_size),
+                new Memory_WriteAddress(0xd400, 0xd7ff, colorram_w, colorram),
+                new Memory_WriteAddress(0xd800, 0xd801, MWA_RAM, gunsmoke_bg_scrolly),
+                new Memory_WriteAddress(0xd802, 0xd802, MWA_RAM, gunsmoke_bg_scrollx),
+                new Memory_WriteAddress(0xd806, 0xd806, gunsmoke_d806_w), /* sprites and bg enable */
+                new Memory_WriteAddress(0xe000, 0xefff, MWA_RAM),
+                new Memory_WriteAddress(0xf000, 0xffff, MWA_RAM, spriteram, spriteram_size),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryReadAddress sound_readmem[]
+    static Memory_ReadAddress sound_readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x7fff, MRA_ROM),
-                new MemoryReadAddress(0xc000, 0xc7ff, MRA_RAM),
-                new MemoryReadAddress(0xc800, 0xc800, soundlatch_r),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x7fff, MRA_ROM),
+                new Memory_ReadAddress(0xc000, 0xc7ff, MRA_RAM),
+                new Memory_ReadAddress(0xc800, 0xc800, soundlatch_r),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress sound_writemem[]
+    static Memory_WriteAddress sound_writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x7fff, MWA_ROM),
-                new MemoryWriteAddress(0xc000, 0xdfff, MWA_RAM),
-                new MemoryWriteAddress(0xe000, 0xe000, YM2203_control_port_0_w),
-                new MemoryWriteAddress(0xe001, 0xe001, YM2203_write_port_0_w),
-                new MemoryWriteAddress(0xe002, 0xe002, YM2203_control_port_1_w),
-                new MemoryWriteAddress(0xe003, 0xe003, YM2203_write_port_1_w),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x7fff, MWA_ROM),
+                new Memory_WriteAddress(0xc000, 0xdfff, MWA_RAM),
+                new Memory_WriteAddress(0xe000, 0xe000, YM2203_control_port_0_w),
+                new Memory_WriteAddress(0xe001, 0xe001, YM2203_write_port_0_w),
+                new Memory_WriteAddress(0xe002, 0xe002, YM2203_control_port_1_w),
+                new Memory_WriteAddress(0xe003, 0xe003, YM2203_write_port_1_w),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
     static InputPortPtr input_ports_gunsmoke = new InputPortPtr() {
         public void handler() {
@@ -279,19 +284,19 @@ public class gunsmoke {
      */
     static RomLoadPtr rom_gunsmoke = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x20000, REGION_CPU1);
+            ROM_REGION(0x20000, REGION_CPU1, 0);
             /* 2*64k for code */
             ROM_LOAD("09n_gs03.bin", 0x00000, 0x8000, 0x40a06cef);/* Code 0000-7fff */
             ROM_LOAD("10n_gs04.bin", 0x10000, 0x8000, 0x8d4b423f);/* Paged code */
             ROM_LOAD("12n_gs05.bin", 0x18000, 0x8000, 0x2b5667fb);/* Paged code */
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the audio CPU */
             ROM_LOAD("14h_gs02.bin", 0x00000, 0x8000, 0xcd7a2c38);
 
-            ROM_REGION(0x04000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x04000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("11f_gs01.bin", 0x00000, 0x4000, 0xb61ece9b);/* Characters */
 
-            ROM_REGION(0x40000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("06c_gs13.bin", 0x00000, 0x8000, 0xf6769fc5);/* 32x32 tiles planes 2-3 */
             ROM_LOAD("05c_gs12.bin", 0x08000, 0x8000, 0xd997b78c);
             ROM_LOAD("04c_gs11.bin", 0x10000, 0x8000, 0x125ba58e);
@@ -301,7 +306,7 @@ public class gunsmoke {
             ROM_LOAD("04a_gs07.bin", 0x30000, 0x8000, 0x4382c0d2);
             ROM_LOAD("02a_gs06.bin", 0x38000, 0x8000, 0x4cafe7a6);
 
-            ROM_REGION(0x40000, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("06n_gs22.bin", 0x00000, 0x8000, 0xdc9c508c);/* Sprites planes 2-3 */
             ROM_LOAD("04n_gs21.bin", 0x08000, 0x8000, 0x68883749);/* Sprites planes 2-3 */
             ROM_LOAD("03n_gs20.bin", 0x10000, 0x8000, 0x0be932ed);/* Sprites planes 2-3 */
@@ -311,10 +316,10 @@ public class gunsmoke {
             ROM_LOAD("03l_gs16.bin", 0x30000, 0x8000, 0x0d99c3b3);/* Sprites planes 0-1 */
             ROM_LOAD("01l_gs15.bin", 0x38000, 0x8000, 0x7f14270e);/* Sprites planes 0-1 */
 
-            ROM_REGION(0x8000, REGION_GFX4);/* background tilemaps */
+            ROM_REGION(0x8000, REGION_GFX4, 0);/* background tilemaps */
             ROM_LOAD("11c_gs14.bin", 0x00000, 0x8000, 0x0af4f7eb);
 
-            ROM_REGION(0x0a00, REGION_PROMS);
+            ROM_REGION(0x0a00, REGION_PROMS, 0);
             ROM_LOAD("03b_g-01.bin", 0x0000, 0x0100, 0x02f55589);/* red component */
             ROM_LOAD("04b_g-02.bin", 0x0100, 0x0100, 0xe1e36dd9);/* green component */
             ROM_LOAD("05b_g-03.bin", 0x0200, 0x0100, 0x989399c0);/* blue component */
@@ -323,27 +328,27 @@ public class gunsmoke {
             ROM_LOAD("15a_g-07.bin", 0x0500, 0x0100, 0xcb9394fc);/* tile palette bank */
             ROM_LOAD("09f_g-09.bin", 0x0600, 0x0100, 0x3cee181e);/* sprite lookup table */
             ROM_LOAD("08f_g-08.bin", 0x0700, 0x0100, 0xef91cdd2);/* sprite palette bank */
-            //ROM_LOAD("02j_g-10.bin", 0x0800, 0x0100, 0x0eaf5158);/* video timing (not used) */
-            //ROM_LOAD("01f_g-05.bin", 0x0900, 0x0100, 0x25c90c2a);/* priority? (not used) */
+            ROM_LOAD("02j_g-10.bin", 0x0800, 0x0100, 0x0eaf5158);/* video timing (not used) */
+            ROM_LOAD("01f_g-05.bin", 0x0900, 0x0100, 0x25c90c2a);/* priority? (not used) */
             ROM_END();
         }
     };
 
     static RomLoadPtr rom_gunsmrom = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x20000, REGION_CPU1);
+            ROM_REGION(0x20000, REGION_CPU1, 0);
             /* 2*64k for code */
             ROM_LOAD("9n_gs03.bin", 0x00000, 0x8000, 0x592f211b);/* Code 0000-7fff */
             ROM_LOAD("10n_gs04.bin", 0x10000, 0x8000, 0x8d4b423f);/* Paged code */
             ROM_LOAD("12n_gs05.bin", 0x18000, 0x8000, 0x2b5667fb);/* Paged code */
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the audio CPU */
             ROM_LOAD("14h_gs02.bin", 0x00000, 0x8000, 0xcd7a2c38);
 
-            ROM_REGION(0x04000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x04000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("11f_gs01.bin", 0x00000, 0x4000, 0xb61ece9b);/* Characters */
 
-            ROM_REGION(0x40000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("06c_gs13.bin", 0x00000, 0x8000, 0xf6769fc5);/* 32x32 tiles planes 2-3 */
             ROM_LOAD("05c_gs12.bin", 0x08000, 0x8000, 0xd997b78c);
             ROM_LOAD("04c_gs11.bin", 0x10000, 0x8000, 0x125ba58e);
@@ -353,7 +358,7 @@ public class gunsmoke {
             ROM_LOAD("04a_gs07.bin", 0x30000, 0x8000, 0x4382c0d2);
             ROM_LOAD("02a_gs06.bin", 0x38000, 0x8000, 0x4cafe7a6);
 
-            ROM_REGION(0x40000, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("06n_gs22.bin", 0x00000, 0x8000, 0xdc9c508c);/* Sprites planes 2-3 */
             ROM_LOAD("04n_gs21.bin", 0x08000, 0x8000, 0x68883749);/* Sprites planes 2-3 */
             ROM_LOAD("03n_gs20.bin", 0x10000, 0x8000, 0x0be932ed);/* Sprites planes 2-3 */
@@ -363,10 +368,10 @@ public class gunsmoke {
             ROM_LOAD("03l_gs16.bin", 0x30000, 0x8000, 0x0d99c3b3);/* Sprites planes 0-1 */
             ROM_LOAD("01l_gs15.bin", 0x38000, 0x8000, 0x7f14270e);/* Sprites planes 0-1 */
 
-            ROM_REGION(0x8000, REGION_GFX4);/* background tilemaps */
+            ROM_REGION(0x8000, REGION_GFX4, 0);/* background tilemaps */
             ROM_LOAD("11c_gs14.bin", 0x00000, 0x8000, 0x0af4f7eb);
 
-            ROM_REGION(0x0a00, REGION_PROMS);
+            ROM_REGION(0x0a00, REGION_PROMS, 0);
             ROM_LOAD("03b_g-01.bin", 0x0000, 0x0100, 0x02f55589);/* red component */
             ROM_LOAD("04b_g-02.bin", 0x0100, 0x0100, 0xe1e36dd9);/* green component */
             ROM_LOAD("05b_g-03.bin", 0x0200, 0x0100, 0x989399c0);/* blue component */
@@ -375,27 +380,27 @@ public class gunsmoke {
             ROM_LOAD("15a_g-07.bin", 0x0500, 0x0100, 0xcb9394fc);/* tile palette bank */
             ROM_LOAD("09f_g-09.bin", 0x0600, 0x0100, 0x3cee181e);/* sprite lookup table */
             ROM_LOAD("08f_g-08.bin", 0x0700, 0x0100, 0xef91cdd2);/* sprite palette bank */
-            //ROM_LOAD("02j_g-10.bin", 0x0800, 0x0100, 0x0eaf5158);/* video timing (not used) */
-            //ROM_LOAD("01f_g-05.bin", 0x0900, 0x0100, 0x25c90c2a);/* priority? (not used) */
+            ROM_LOAD("02j_g-10.bin", 0x0800, 0x0100, 0x0eaf5158);/* video timing (not used) */
+            ROM_LOAD("01f_g-05.bin", 0x0900, 0x0100, 0x25c90c2a);/* priority? (not used) */
             ROM_END();
         }
     };
 
     static RomLoadPtr rom_gunsmokj = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x20000, REGION_CPU1);
+            ROM_REGION(0x20000, REGION_CPU1, 0);
             /* 2*64k for code */
             ROM_LOAD("gs03_9n.rom", 0x00000, 0x8000, 0xb56b5df6);/* Code 0000-7fff */
             ROM_LOAD("10n_gs04.bin", 0x10000, 0x8000, 0x8d4b423f);/* Paged code */
             ROM_LOAD("12n_gs05.bin", 0x18000, 0x8000, 0x2b5667fb);/* Paged code */
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the audio CPU */
             ROM_LOAD("14h_gs02.bin", 0x00000, 0x8000, 0xcd7a2c38);
 
-            ROM_REGION(0x04000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x04000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("11f_gs01.bin", 0x00000, 0x4000, 0xb61ece9b);/* Characters */
 
-            ROM_REGION(0x40000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("06c_gs13.bin", 0x00000, 0x8000, 0xf6769fc5);/* 32x32 tiles planes 2-3 */
             ROM_LOAD("05c_gs12.bin", 0x08000, 0x8000, 0xd997b78c);
             ROM_LOAD("04c_gs11.bin", 0x10000, 0x8000, 0x125ba58e);
@@ -405,7 +410,7 @@ public class gunsmoke {
             ROM_LOAD("04a_gs07.bin", 0x30000, 0x8000, 0x4382c0d2);
             ROM_LOAD("02a_gs06.bin", 0x38000, 0x8000, 0x4cafe7a6);
 
-            ROM_REGION(0x40000, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("06n_gs22.bin", 0x00000, 0x8000, 0xdc9c508c);/* Sprites planes 2-3 */
             ROM_LOAD("04n_gs21.bin", 0x08000, 0x8000, 0x68883749);/* Sprites planes 2-3 */
             ROM_LOAD("03n_gs20.bin", 0x10000, 0x8000, 0x0be932ed);/* Sprites planes 2-3 */
@@ -415,10 +420,10 @@ public class gunsmoke {
             ROM_LOAD("03l_gs16.bin", 0x30000, 0x8000, 0x0d99c3b3);/* Sprites planes 0-1 */
             ROM_LOAD("01l_gs15.bin", 0x38000, 0x8000, 0x7f14270e);/* Sprites planes 0-1 */
 
-            ROM_REGION(0x8000, REGION_GFX4);/* background tilemaps */
+            ROM_REGION(0x8000, REGION_GFX4, 0);/* background tilemaps */
             ROM_LOAD("11c_gs14.bin", 0x00000, 0x8000, 0x0af4f7eb);
 
-            ROM_REGION(0x0a00, REGION_PROMS);
+            ROM_REGION(0x0a00, REGION_PROMS, 0);
             ROM_LOAD("03b_g-01.bin", 0x0000, 0x0100, 0x02f55589);/* red component */
             ROM_LOAD("04b_g-02.bin", 0x0100, 0x0100, 0xe1e36dd9);/* green component */
             ROM_LOAD("05b_g-03.bin", 0x0200, 0x0100, 0x989399c0);/* blue component */
@@ -427,27 +432,27 @@ public class gunsmoke {
             ROM_LOAD("15a_g-07.bin", 0x0500, 0x0100, 0xcb9394fc);/* tile palette bank */
             ROM_LOAD("09f_g-09.bin", 0x0600, 0x0100, 0x3cee181e);/* sprite lookup table */
             ROM_LOAD("08f_g-08.bin", 0x0700, 0x0100, 0xef91cdd2);/* sprite palette bank */
-            //ROM_LOAD("02j_g-10.bin", 0x0800, 0x0100, 0x0eaf5158);/* video timing (not used) */
-            //ROM_LOAD("01f_g-05.bin", 0x0900, 0x0100, 0x25c90c2a);/* priority? (not used) */
+            ROM_LOAD("02j_g-10.bin", 0x0800, 0x0100, 0x0eaf5158);/* video timing (not used) */
+            ROM_LOAD("01f_g-05.bin", 0x0900, 0x0100, 0x25c90c2a);/* priority? (not used) */
             ROM_END();
         }
     };
 
     static RomLoadPtr rom_gunsmoka = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x20000, REGION_CPU1);
+            ROM_REGION(0x20000, REGION_CPU1, 0);
             /* 2*64k for code */
             ROM_LOAD("gs03.9n", 0x00000, 0x8000, 0x51dc3f76);/* Code 0000-7fff */
             ROM_LOAD("gs04.10n", 0x10000, 0x8000, 0x5ecf31b8);/* Paged code */
             ROM_LOAD("gs05.12n", 0x18000, 0x8000, 0x1c9aca13);/* Paged code */
 
-            ROM_REGION(0x10000, REGION_CPU2);/* 64k for the audio CPU */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* 64k for the audio CPU */
             ROM_LOAD("14h_gs02.bin", 0x00000, 0x8000, 0xcd7a2c38);
 
-            ROM_REGION(0x04000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x04000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("11f_gs01.bin", 0x00000, 0x4000, 0xb61ece9b);/* Characters */
 
-            ROM_REGION(0x40000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("06c_gs13.bin", 0x00000, 0x8000, 0xf6769fc5);/* 32x32 tiles planes 2-3 */
             ROM_LOAD("05c_gs12.bin", 0x08000, 0x8000, 0xd997b78c);
             ROM_LOAD("04c_gs11.bin", 0x10000, 0x8000, 0x125ba58e);
@@ -457,7 +462,7 @@ public class gunsmoke {
             ROM_LOAD("04a_gs07.bin", 0x30000, 0x8000, 0x4382c0d2);
             ROM_LOAD("02a_gs06.bin", 0x38000, 0x8000, 0x4cafe7a6);
 
-            ROM_REGION(0x40000, REGION_GFX3 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x40000, REGION_GFX3, ROMREGION_DISPOSE);
             ROM_LOAD("06n_gs22.bin", 0x00000, 0x8000, 0xdc9c508c);/* Sprites planes 2-3 */
             ROM_LOAD("04n_gs21.bin", 0x08000, 0x8000, 0x68883749);/* Sprites planes 2-3 */
             ROM_LOAD("03n_gs20.bin", 0x10000, 0x8000, 0x0be932ed);/* Sprites planes 2-3 */
@@ -467,10 +472,10 @@ public class gunsmoke {
             ROM_LOAD("03l_gs16.bin", 0x30000, 0x8000, 0x0d99c3b3);/* Sprites planes 0-1 */
             ROM_LOAD("01l_gs15.bin", 0x38000, 0x8000, 0x7f14270e);/* Sprites planes 0-1 */
 
-            ROM_REGION(0x8000, REGION_GFX4);/* background tilemaps */
+            ROM_REGION(0x8000, REGION_GFX4, 0);/* background tilemaps */
             ROM_LOAD("11c_gs14.bin", 0x00000, 0x8000, 0x0af4f7eb);
 
-            ROM_REGION(0x0a00, REGION_PROMS);
+            ROM_REGION(0x0a00, REGION_PROMS, 0);
             ROM_LOAD("03b_g-01.bin", 0x0000, 0x0100, 0x02f55589);/* red component */
             ROM_LOAD("04b_g-02.bin", 0x0100, 0x0100, 0xe1e36dd9);/* green component */
             ROM_LOAD("05b_g-03.bin", 0x0200, 0x0100, 0x989399c0);/* blue component */
@@ -479,11 +484,12 @@ public class gunsmoke {
             ROM_LOAD("15a_g-07.bin", 0x0500, 0x0100, 0xcb9394fc);/* tile palette bank */
             ROM_LOAD("09f_g-09.bin", 0x0600, 0x0100, 0x3cee181e);/* sprite lookup table */
             ROM_LOAD("08f_g-08.bin", 0x0700, 0x0100, 0xef91cdd2);/* sprite palette bank */
-            //ROM_LOAD("02j_g-10.bin", 0x0800, 0x0100, 0x0eaf5158);/* video timing (not used) */
-            //ROM_LOAD("01f_g-05.bin", 0x0900, 0x0100, 0x25c90c2a);/* priority? (not used) */
+            ROM_LOAD("02j_g-10.bin", 0x0800, 0x0100, 0x0eaf5158);/* video timing (not used) */
+            ROM_LOAD("01f_g-05.bin", 0x0900, 0x0100, 0x25c90c2a);/* priority? (not used) */
             ROM_END();
         }
     };
+
 
     /*
 	  All the sets are almost identical apart from gunsmoka which is quite
