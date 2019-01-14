@@ -7,7 +7,7 @@ package mame;
 import static mame.driverH.*;
 
 import static drivers.retofinv.*;
-import static drivers.jrpacman.*;
+import static mame056.drivers.jrpacman.*;
 import static drivers.amidar.*;
 import static mame056.drivers.pengo.*;
 import static drivers.pacman.*;

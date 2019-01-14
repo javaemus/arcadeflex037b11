@@ -3,6 +3,7 @@
 -Ported gunsmoke driver to 0.56
 -Ported hanaawas driver to 0.56
 -Ported higemaru driver to 0.56
+-Ported jrpacman driver to 0.56
 
 13/01/2019
 ==========
