@@ -15,7 +15,6 @@ import static old2.mame.memoryH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.generic.*;
-import static old.mame.common.*;
 import static old.arcadeflex.fileio.*;
 import static old2.mame.memory.*;
 import static mame.palette.*;

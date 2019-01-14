@@ -13,7 +13,6 @@ import static mame.commonH.flip_screen;
 import static old2.mame.mame.Machine;
 import static mame.osdependH.*;
 import static old2.mame.common.*;
-import static old.mame.common.*;
 import static mame.drawgfxH.*;
 import static mame.paletteH.*;
 import static old.mame.drawgfx.*;

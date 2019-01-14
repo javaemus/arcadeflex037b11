@@ -22,7 +22,6 @@ import static vidhrdw.generic.*;
 import static WIP.vidhrdw.slapfght.*;
 
 import static old2.mame.common.*;
-import static old.mame.common.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old.sound.mixerH.*;

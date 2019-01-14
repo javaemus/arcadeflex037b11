@@ -13,7 +13,6 @@ import static arcadeflex.libc.ptr.*;
 import static arcadeflex.fucPtr.*;
 import static mame.palette.*;
 import static arcadeflex.libc.cstring.*;
-import static old.mame.common.*;
 import static old2.mame.common.*;
 import static mame.commonH.*;
 import static mame037b11.cpuintrf.*;

@@ -11,7 +11,6 @@ import static common.libc.cstring.*;
 import static mame.osdependH.osd_bitmap;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
-import static old.mame.common.*;
 import static mame.commonH.*;
 import static old2.mame.mame.Machine;
 import static old.mame.drawgfx.*;

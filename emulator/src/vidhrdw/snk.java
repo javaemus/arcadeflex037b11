@@ -15,7 +15,6 @@ import static old2.mame.mame.Machine;
 import static old.mame.drawgfx.*;
 import static old2.mame.common.*;
 import static mame.drawgfxH.*;
-import static old.mame.common.*;
 import static mame056.common.*;
 public class snk {
 

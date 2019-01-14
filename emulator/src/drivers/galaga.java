@@ -5,17 +5,11 @@
 package drivers;
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
-import static arcadeflex.libc.ptr.*;
-import static WIP.machine.segacrpt.*;
-import static old.mame.common.*;
 import static mame.commonH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
-import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old.mame.inputH.*;
-import static old2.mame.memory.*;
 import static old2.mame.memoryH.*;
 import static mame.sndintrfH.*;
 import static sound.namco.*;
@@ -24,7 +18,6 @@ import static machine.galaga.*;
 import static old2.mame.common.flip_screen_w;
 import static vidhrdw.galaga.*;
 import static vidhrdw.generic.*;
-import static mame056.sound.samples.*;
 import static mame056.sound.samplesH.*;
 
 public class galaga {

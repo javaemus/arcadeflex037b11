@@ -17,7 +17,6 @@ import static vidhrdw.generic.*;
 import static mame.sndintrf.*;
 import static vidhrdw.tecmo.*;
 import static arcadeflex.libc.ptr.*;
-import static old.mame.common.*;
 import static sound.MSM5205.*;
 import static sound.MSM5205H.*;
 import static cpu.z80.z80H.Z80_NMI_INT;

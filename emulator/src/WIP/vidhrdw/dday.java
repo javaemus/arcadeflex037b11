@@ -19,7 +19,6 @@ import static mame.commonH.REGION_GFX4;
 import static mame.commonH.REGION_GFX5;
 import old.arcadeflex.libc_old.IntPtr;
 import static arcadeflex.video.osd_mark_dirty;
-import static old.mame.common.*;
 import static old.sound.mixer.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;

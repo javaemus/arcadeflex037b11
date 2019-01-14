@@ -17,7 +17,6 @@ import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.galivan.*;
 import static vidhrdw.generic.*;
-import static old.mame.common.*;
 import static old.mame.inputH.KEYCODE_F2;
 import static sound._3526intf.*;
 import sound._3812intfH.YM3526interface;

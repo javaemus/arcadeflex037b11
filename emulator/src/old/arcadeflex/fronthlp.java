@@ -20,8 +20,7 @@ import static mame037b11.cpuintrfH.*;
 import static arcadeflex.util.gamesxml.gamesXmlParser.writeGamesXml;
 import old2.arcadeflex.settings;
 import static old.arcadeflex.libc_old.*;
-import static old.mame.common.printromlist;
-import static old.mame.common.showdisclaimer;
+import static mame056.common.*;
 import static mame056.commonH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.driver.drivers;
@@ -522,7 +521,7 @@ public class fronthlp {
 			gamedrv = drivers[j];
 			if (list == LIST_LISTROMS)
                         {
-/*TODO*/ //	   		   printromlist(gamedrv.rom,gamename);
+	   		   printromlist(gamedrv.rom,gamename);
                         }
 			else
 			{

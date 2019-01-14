@@ -12,7 +12,6 @@ import static old.mame.drawgfx.*;
 import static mame.commonH.REGION_CPU1;
 import static mame037b11.cpuintrfH.*;
 import static mame037b11.cpuintrf.*;
-import static old.mame.common.*;
 import static cpu.z80.z80.*;
 import static old2.mame.memory.*;
 import static cpu.z80.z80H.Z80_AF;

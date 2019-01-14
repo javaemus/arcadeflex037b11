@@ -12,14 +12,10 @@ import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame.sndintrfH.*;
 import static mame037b11.cpuintrf.*;
-import static old.mame.common.*;
 import static old.mame.inptportH.*;
-import static old2.mame.memory.*;
-import static arcadeflex.libc.ptr.*;
 import static arcadeflex.fucPtr.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
-import static mame.sndintrf.*;
 import static vidhrdw.superqix.*;
 import static mame.palette.*;
 

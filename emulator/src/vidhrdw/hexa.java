@@ -12,7 +12,6 @@ import static old2.mame.mame.*;
 import static arcadeflex.libc.ptr.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.cstring.*;
-import static old.mame.common.*;
 import static mame.commonH.*;
 import static old2.mame.memoryH.*;
 import static mame056.common.*;

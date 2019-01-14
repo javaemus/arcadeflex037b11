@@ -12,7 +12,6 @@ import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame.sndintrfH.*;
-import static old.mame.common.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memory.*;
 import static arcadeflex.libc.ptr.*;

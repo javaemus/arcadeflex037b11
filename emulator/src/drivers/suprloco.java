@@ -14,7 +14,6 @@ import static old2.mame.memoryH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.generic.*;
-import static vidhrdw.pkunwar.*;
 import static mame056.sound.sn76496.*;
 import static mame056.sound.sn76496H.*;
 import static vidhrdw.suprloco.*;
@@ -22,9 +21,7 @@ import static WIP.machine.segacrpt.*;
 import static arcadeflex.libc.ptr.*;
 import static cpu.z80.z80H.*;
 import static mame.sndintrf.*;
-import static old2.mame.timer.*;
 import static old2.mame.timerH.*;
-import static old.mame.common.*;
 import static old.mame.inputH.KEYCODE_F2;
 import static mame056.common.*;
 

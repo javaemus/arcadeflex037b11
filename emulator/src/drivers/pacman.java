@@ -28,7 +28,6 @@ import static sound.namcoH.*;
 //vidhrdw imports
 import static vidhrdw.generic.*;
 import static vidhrdw.pengo.*;
-import static mame056.common.*;
 import static mame037b11.cpuintrf.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
@@ -37,7 +36,6 @@ import static old2.mame.memory.*;
 import static old2.mame.memoryH.*;
 import static old2.mame.mame.*;
 import static old.arcadeflex.libc_old.*;
-import static old.mame.common.*;
 
 public class pacman {
 

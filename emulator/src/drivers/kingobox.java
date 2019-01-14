@@ -13,7 +13,6 @@ import static arcadeflex.libc.ptr.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame037b11.cpuintrf.*;
-import static old.mame.common.*;
 import static old.mame.inptportH.*;
 import static mame.sndintrf.*;
 import static vidhrdw.kingobox.*;

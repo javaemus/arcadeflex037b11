@@ -79,25 +79,24 @@ public class common {
 /*TODO*///    public static int[] flip_screen_y = new int[1];
     static int snapno;
 
-    /*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///
-/*TODO*///	Functions
-/*TODO*///
-/*TODO*///***************************************************************************/
-/*TODO*///
-/*TODO*///void showdisclaimer(void)   /* MAURY_BEGIN: dichiarazione */
-/*TODO*///{
-/*TODO*///	printf("MAME is an emulator: it reproduces, more or less faithfully, the behaviour of\n"
-/*TODO*///		 "several arcade machines. But hardware is useless without software, so an image\n"
-/*TODO*///		 "of the ROMs which run on that hardware is required. Such ROMs, like any other\n"
-/*TODO*///		 "commercial software, are copyrighted material and it is therefore illegal to\n"
-/*TODO*///		 "use them if you don't own the original arcade machine. Needless to say, ROMs\n"
-/*TODO*///		 "are not distributed together with MAME. Distribution of MAME together with ROM\n"
-/*TODO*///		 "images is a violation of copyright law and should be promptly reported to the\n"
-/*TODO*///		 "authors so that appropriate legal action can be taken.\n\n");
-/*TODO*///}                           /* MAURY_END: dichiarazione */
-/*TODO*///
+    /**
+     * *************************************************************************
+     *
+     * Functions
+     *
+     **************************************************************************
+     */
+    public static void showdisclaimer() {
+        printf("MAME is an emulator: it reproduces, more or less faithfully, the behaviour of\n"
+                + "several arcade machines. But hardware is useless without software, so an image\n"
+                + "of the ROMs which run on that hardware is required. Such ROMs, like any other\n"
+                + "commercial software, are copyrighted material and it is therefore illegal to\n"
+                + "use them if you don't own the original arcade machine. Needless to say, ROMs\n"
+                + "are not distributed together with MAME. Distribution of MAME together with ROM\n"
+                + "images is a violation of copyright law and should be promptly reported to the\n"
+                + "authors so that appropriate legal action can be taken.\n\n");
+    }
+
     /**
      * *************************************************************************
      *
@@ -908,30 +907,25 @@ public class common {
         }
         return ROMENTRY_ISREGIONEND(romp, romp_ptr) ? -1 : romp_ptr;
     }
-    /*TODO*////*-------------------------------------------------
-/*TODO*///	rom_first_chunk - return pointer to first ROM
-/*TODO*///	chunk
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///const struct RomModule *rom_first_chunk(const struct RomModule *romp)
-/*TODO*///{
-/*TODO*///	return (ROMENTRY_ISFILE(romp)) ? romp : NULL;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	rom_next_chunk - return pointer to next ROM
-/*TODO*///	chunk
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///const struct RomModule *rom_next_chunk(const struct RomModule *romp)
-/*TODO*///{
-/*TODO*///	romp++;
-/*TODO*///	return (ROMENTRY_ISCONTINUE(romp)) ? romp : NULL;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
+
+    /*-------------------------------------------------
+	rom_first_chunk - return pointer to first ROM
+	chunk
+    -------------------------------------------------*/
+    public static int rom_first_chunk(RomModule[] romp, int romp_ptr) {
+        return (ROMENTRY_ISFILE(romp, romp_ptr)) ? romp_ptr : -1;
+    }
+
+
+    /*-------------------------------------------------
+            rom_next_chunk - return pointer to next ROM
+            chunk
+    -------------------------------------------------*/
+    public static int rom_next_chunk(RomModule[] romp, int romp_ptr) {
+        romp_ptr++;
+        return (ROMENTRY_ISCONTINUE(romp, romp_ptr)) ? romp_ptr : -1;
+    }
+
     /*-------------------------------------------------
         debugload - log data to a file
     -------------------------------------------------*/
@@ -1566,42 +1560,40 @@ public class common {
         /* display the results and exit */
         return display_rom_load_results(romdata);
     }
-    /*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	printromlist - print list of ROMs
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///void printromlist(const struct RomModule *romp,const char *basename)
-/*TODO*///{
-/*TODO*///	const struct RomModule *region, *rom, *chunk;
-/*TODO*///
-/*TODO*///	if (!romp) return;
-/*TODO*///
-/*TODO*///#ifdef MESS
-/*TODO*///	if (!strcmp(basename,"nes")) return;
-/*TODO*///#endif
-/*TODO*///
-/*TODO*///	printf("This is the list of the ROMs required for driver \"%s\".\n"
-/*TODO*///			"Name              Size       Checksum\n",basename);
-/*TODO*///
-/*TODO*///	for (region = romp; region; region = rom_next_region(region))
-/*TODO*///	{
-/*TODO*///		for (rom = rom_first_file(region); rom; rom = rom_next_file(rom))
-/*TODO*///		{
-/*TODO*///			const char *name = ROM_GETNAME(rom);
-/*TODO*///			int expchecksum = ROM_GETCRC(rom);
-/*TODO*///			int length = 0;
-/*TODO*///
-/*TODO*///			for (chunk = rom_first_chunk(rom); chunk; chunk = rom_next_chunk(chunk))
-/*TODO*///				length += ROM_GETLENGTH(chunk);
-/*TODO*///
-/*TODO*///			if (expchecksum)
-/*TODO*///				printf("%-12s  %7d bytes  %08x\n",name,length,expchecksum);
-/*TODO*///			else
-/*TODO*///				printf("%-12s  %7d bytes  NO GOOD DUMP KNOWN\n",name,length);
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///}
-/*TODO*///
+
+
+    /*-------------------------------------------------
+	printromlist - print list of ROMs
+-------------------------------------------------*/
+    public static void printromlist(RomModule[] romp, String basename) {
+        int chunk;
+        int rom;
+        int region;
+        int rom_ptr = 0;
+        if (romp == null) {
+            return;
+        }
+
+        printf("This is the list of the ROMs required for driver \"%s\".\n"
+                + "Name              Size       Checksum\n", basename);
+
+        for (region = rom_ptr; region != -1; region = rom_next_region(romp, region)) {
+            for (rom = rom_first_file(romp, region); rom != -1; rom = rom_next_file(romp, rom)) {
+                String name = ROM_GETNAME(romp, rom);
+                int expchecksum = ROM_GETCRC(romp, rom);
+                int length = 0;
+
+                for (chunk = rom_first_chunk(romp, rom); chunk != -1; chunk = rom_next_chunk(romp, chunk)) {
+                    length += ROM_GETLENGTH(romp, chunk);
+                }
+
+                if (expchecksum != 0) {
+                    printf("%-12s  %7d bytes  %08x\n", name, length, expchecksum);
+                } else {
+                    printf("%-12s  %7d bytes  NO GOOD DUMP KNOWN\n", name, length);
+                }
+            }
+        }
+    }
+
 }

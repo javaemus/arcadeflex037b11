@@ -10,7 +10,6 @@ import static common.libc.expressions.*;
 import static mame.commonH.*;
 import static mame.drawgfx.pdrawgfx;
 import static mame.drawgfxH.TRANSPARENCY_PEN;
-import static old.mame.common.*;
 import static old2.mame.common.*;
 import static mame.osdependH.osd_bitmap;
 import static old2.mame.tilemapH.*;

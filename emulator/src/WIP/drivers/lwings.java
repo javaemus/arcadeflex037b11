@@ -23,7 +23,6 @@ import static mame.palette.paletteram_2;
 import static mame.palette.paletteram_RRRRGGGGBBBBxxxx_split1_w;
 import static mame.palette.paletteram_RRRRGGGGBBBBxxxx_split2_w;
 import static old2.mame.common.flip_screen_w;
-import static old.mame.common.*;
 import static sound.MSM5205.*;
 import static sound.MSM5205H.*;
 import static sound._2203intfH.*;
