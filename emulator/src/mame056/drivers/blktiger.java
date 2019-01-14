@@ -292,7 +292,7 @@ public class blktiger {
             gfxdecodeinfo,
             1024, 1024,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE | VIDEO_BUFFERS_SPRITERAM,
+            VIDEO_TYPE_RASTER | VIDEO_BUFFERS_SPRITERAM,
             blktiger_eof_callback,
             blktiger_vh_start,
             blktiger_vh_stop,

@@ -10,6 +10,7 @@
 -Changes defines of memory regions with negative numbers to fix games that has roms names 1 to 6 to work (wiping is one of them )
 -Ported wiping driver to 0.56
 -Removed VIDEO_MODIFIES_PALETTE from cbasebal driver but now it is not playable anymore (needs to fix the new palette system)
+-Removed VIDEO_MODIFIES_PALETTE from blktiger driver but now it is not playable anymore (needs to fix the new palette system)
 
 13/01/2019
 ==========
