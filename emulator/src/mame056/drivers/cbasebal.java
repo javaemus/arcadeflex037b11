@@ -295,7 +295,7 @@ public class cbasebal {
             cbasebal_gfxdecodeinfo,
             1024, 1024,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE | VIDEO_UPDATE_BEFORE_VBLANK,
+            VIDEO_TYPE_RASTER | VIDEO_UPDATE_BEFORE_VBLANK,
             null,
             cbasebal_vh_start,
             cbasebal_vh_stop,
