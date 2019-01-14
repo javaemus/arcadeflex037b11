@@ -6,7 +6,7 @@ package mame;
 import static arcadeflex.fucPtr.ReadHandlerPtr;
 import static arcadeflex.fucPtr.WriteHandlerPtr;
 import static old.arcadeflex.osdepend.logerror;
-import static old.mame.common.freesamples;
+import static mame056.common.*;
 import static mame.driverH.*;
 import static old2.mame.mame.Machine;
 import static mame.sndintrfH.*;

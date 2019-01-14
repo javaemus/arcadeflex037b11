@@ -10,7 +10,7 @@ import static common.libc.cstring.*;
 import static mame056.sound.samples.*;
 import static mame037b11.cpuintrf.*;
 import static cpu.z80.z80H.Z80_BC;
-import mame.commonH.GameSamples;
+import mame056.commonH.GameSamples;
 import mame.sndintrfH.MachineSound;
 import static old.arcadeflex.osdepend.*;
 import static old.mame.inptport.input_port_2_r;

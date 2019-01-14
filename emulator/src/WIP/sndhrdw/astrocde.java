@@ -14,7 +14,7 @@ import static mame037b11.cpuintrf.*;
 import static mame.sndintrf.*;
 import static arcadeflex.libc.cstring.*;
 import static cpu.z80.z80H.Z80_BC;
-import mame.commonH.GameSamples;
+import mame056.commonH.GameSamples;
 import mame.sndintrfH.MachineSound;
 import static old2.mame.timer.*;
 import static old2.mame.timerH.*;

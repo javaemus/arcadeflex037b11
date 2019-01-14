@@ -22,6 +22,8 @@ import static mame056.common.*;
 import static mame056.sound.samples.*;
 import static mame056.sound.samplesH.*;
 import static mame.palette.*;
+import mame056.commonH.GameSample;
+import mame056.commonH.GameSamples;
 import static old2.mame.memory.*;
 import static old2.mame.mame.Machine;
 

@@ -21,7 +21,7 @@ package old2.mame;
 
 import arcadeflex.libc.ptr.UBytePtr;
 import static old.arcadeflex.libc_old.FILE;
-import static mame.commonH.GameSamples;
+import static mame056.commonH.GameSamples;
 import static mame.drawgfxH.GfxElement;
 import static mame.drawgfxH.rectangle;
 import static mame.driverH.GameDriver;

@@ -20,6 +20,8 @@ import static old2.mame.mame.*;
 import static old2.mame.mameH.MAX_MEMORY_REGIONS;
 import static mame037b11.cpuintrf.*;
 import static mame037b11.cpuintrfH.CPU_FLAGS_MASK;
+import static old2.arcadeflex.libc_v2.charArrayToInt;
+import static old2.arcadeflex.libc_v2.charArrayToLong;
 
 public class common {
 
@@ -110,194 +112,201 @@ public class common {
 /*TODO*///		 "authors so that appropriate legal action can be taken.\n\n");
 /*TODO*///}                           /* MAURY_END: dichiarazione */
 /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///
-/*TODO*///	Sample handling code
-/*TODO*///
-/*TODO*///	This function is different from readroms() because it doesn't fail if
-/*TODO*///	it doesn't find a file: it will load as many samples as it can find.
-/*TODO*///
-/*TODO*///***************************************************************************/
-/*TODO*///
-/*TODO*///#ifdef LSB_FIRST
-/*TODO*///#define intelLong(x) (x)
-/*TODO*///#else
-/*TODO*///#define intelLong(x) (((x << 24) | (((unsigned long) x) >> 24) | (( x & 0x0000ff00) << 8) | (( x & 0x00ff0000) >> 8)))
-/*TODO*///#endif
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	read_wav_sample - read a WAV file as a sample
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///static struct GameSample *read_wav_sample(void *f)
-/*TODO*///{
-/*TODO*///	unsigned long offset = 0;
-/*TODO*///	UINT32 length, rate, filesize, temp32;
-/*TODO*///	UINT16 bits, temp16;
-/*TODO*///	char buf[32];
-/*TODO*///	struct GameSample *result;
-/*TODO*///
-/*TODO*///	/* read the core header and make sure it's a WAVE file */
-/*TODO*///	offset += osd_fread(f, buf, 4);
-/*TODO*///	if (offset < 4)
-/*TODO*///		return NULL;
-/*TODO*///	if (memcmp(&buf[0], "RIFF", 4) != 0)
-/*TODO*///		return NULL;
-/*TODO*///
-/*TODO*///	/* get the total size */
-/*TODO*///	offset += osd_fread(f, &filesize, 4);
-/*TODO*///	if (offset < 8)
-/*TODO*///		return NULL;
-/*TODO*///	filesize = intelLong(filesize);
-/*TODO*///
-/*TODO*///	/* read the RIFF file type and make sure it's a WAVE file */
-/*TODO*///	offset += osd_fread(f, buf, 4);
-/*TODO*///	if (offset < 12)
-/*TODO*///		return NULL;
-/*TODO*///	if (memcmp(&buf[0], "WAVE", 4) != 0)
-/*TODO*///		return NULL;
-/*TODO*///
-/*TODO*///	/* seek until we find a format tag */
-/*TODO*///	while (1)
-/*TODO*///	{
-/*TODO*///		offset += osd_fread(f, buf, 4);
-/*TODO*///		offset += osd_fread(f, &length, 4);
-/*TODO*///		length = intelLong(length);
-/*TODO*///		if (memcmp(&buf[0], "fmt ", 4) == 0)
-/*TODO*///			break;
-/*TODO*///
-/*TODO*///		/* seek to the next block */
-/*TODO*///		osd_fseek(f, length, SEEK_CUR);
-/*TODO*///		offset += length;
-/*TODO*///		if (offset >= filesize)
-/*TODO*///			return NULL;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* read the format -- make sure it is PCM */
-/*TODO*///	offset += osd_fread_lsbfirst(f, &temp16, 2);
-/*TODO*///	if (temp16 != 1)
-/*TODO*///		return NULL;
-/*TODO*///
-/*TODO*///	/* number of channels -- only mono is supported */
-/*TODO*///	offset += osd_fread_lsbfirst(f, &temp16, 2);
-/*TODO*///	if (temp16 != 1)
-/*TODO*///		return NULL;
-/*TODO*///
-/*TODO*///	/* sample rate */
-/*TODO*///	offset += osd_fread(f, &rate, 4);
-/*TODO*///	rate = intelLong(rate);
-/*TODO*///
-/*TODO*///	/* bytes/second and block alignment are ignored */
-/*TODO*///	offset += osd_fread(f, buf, 6);
-/*TODO*///
-/*TODO*///	/* bits/sample */
-/*TODO*///	offset += osd_fread_lsbfirst(f, &bits, 2);
-/*TODO*///	if (bits != 8 && bits != 16)
-/*TODO*///		return NULL;
-/*TODO*///
-/*TODO*///	/* seek past any extra data */
-/*TODO*///	osd_fseek(f, length - 16, SEEK_CUR);
-/*TODO*///	offset += length - 16;
-/*TODO*///
-/*TODO*///	/* seek until we find a data tag */
-/*TODO*///	while (1)
-/*TODO*///	{
-/*TODO*///		offset += osd_fread(f, buf, 4);
-/*TODO*///		offset += osd_fread(f, &length, 4);
-/*TODO*///		length = intelLong(length);
-/*TODO*///		if (memcmp(&buf[0], "data", 4) == 0)
-/*TODO*///			break;
-/*TODO*///
-/*TODO*///		/* seek to the next block */
-/*TODO*///		osd_fseek(f, length, SEEK_CUR);
-/*TODO*///		offset += length;
-/*TODO*///		if (offset >= filesize)
-/*TODO*///			return NULL;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* allocate the game sample */
-/*TODO*///	result = malloc(sizeof(struct GameSample) + length);
-/*TODO*///	if (result == NULL)
-/*TODO*///		return NULL;
-/*TODO*///
-/*TODO*///	/* fill in the sample data */
-/*TODO*///	result->length = length;
-/*TODO*///	result->smpfreq = rate;
-/*TODO*///	result->resolution = bits;
-/*TODO*///
-/*TODO*///	/* read the data in */
-/*TODO*///	if (bits == 8)
-/*TODO*///	{
-/*TODO*///		osd_fread(f, result->data, length);
-/*TODO*///
-/*TODO*///		/* convert 8-bit data to signed samples */
-/*TODO*///		for (temp32 = 0; temp32 < length; temp32++)
-/*TODO*///			result->data[temp32] ^= 0x80;
-/*TODO*///	}
-/*TODO*///	else
-/*TODO*///	{
-/*TODO*///		/* 16-bit data is fine as-is */
-/*TODO*///		osd_fread_lsbfirst(f, result->data, length);
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	return result;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	readsamples - load all samples
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///struct GameSamples *readsamples(const char **samplenames,const char *basename)
-/*TODO*////* V.V - avoids samples duplication */
-/*TODO*////* if first samplename is *dir, looks for samples into "basename" first, then "dir" */
-/*TODO*///{
-/*TODO*///	int i;
-/*TODO*///	struct GameSamples *samples;
-/*TODO*///	int skipfirst = 0;
-/*TODO*///
-/*TODO*///	/* if the user doesn't want to use samples, bail */
-/*TODO*///	if (!options.use_samples) return 0;
-/*TODO*///
-/*TODO*///	if (samplenames == 0 || samplenames[0] == 0) return 0;
-/*TODO*///
-/*TODO*///	if (samplenames[0][0] == '*')
-/*TODO*///		skipfirst = 1;
-/*TODO*///
-/*TODO*///	i = 0;
-/*TODO*///	while (samplenames[i+skipfirst] != 0) i++;
-/*TODO*///
-/*TODO*///	if (!i) return 0;
-/*TODO*///
-/*TODO*///	if ((samples = malloc(sizeof(struct GameSamples) + (i-1)*sizeof(struct GameSample))) == 0)
-/*TODO*///		return 0;
-/*TODO*///
-/*TODO*///	samples->total = i;
-/*TODO*///	for (i = 0;i < samples->total;i++)
-/*TODO*///		samples->sample[i] = 0;
-/*TODO*///
-/*TODO*///	for (i = 0;i < samples->total;i++)
-/*TODO*///	{
-/*TODO*///		void *f;
-/*TODO*///
-/*TODO*///		if (samplenames[i+skipfirst][0])
-/*TODO*///		{
-/*TODO*///			if ((f = osd_fopen(basename,samplenames[i+skipfirst],OSD_FILETYPE_SAMPLE,0)) == 0)
-/*TODO*///				if (skipfirst)
-/*TODO*///					f = osd_fopen(samplenames[0]+1,samplenames[i+skipfirst],OSD_FILETYPE_SAMPLE,0);
-/*TODO*///			if (f != 0)
-/*TODO*///			{
-/*TODO*///				samples->sample[i] = read_wav_sample(f);
-/*TODO*///				osd_fclose(f);
-/*TODO*///			}
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	return samples;
-/*TODO*///}
-/*TODO*///
+    /**
+     * *************************************************************************
+     *
+     * Sample handling code
+     *
+     * This function is different from readroms() because it doesn't fail if it
+     * doesn't find a file: it will load as many samples as it can find.
+     *
+     **************************************************************************
+     */
+    /*-------------------------------------------------
+	read_wav_sample - read a WAV file as a sample
+-------------------------------------------------*/
+    static GameSample read_wav_sample(Object f) {
+        long /*unsigned*/ offset = 0;
+        long /*UINT32*/ length, rate, filesize, temp32;
+        int /*UINT16*/ bits, temp16;
+        char[] /*UINT8*/ buf = new char[32];
+        GameSample result = null;
+
+
+        /* read the core header and make sure it's a WAVE file */
+        offset += osd_fread(f, buf, 4);
+        if (offset < 4) {
+            return null;
+        }
+        if (memcmp(buf, 0, "RIFF", 4) != 0) {
+            return null;
+        }
+
+        /* get the total size */
+        offset += osd_fread(f, buf, 4);
+        if (offset < 8) {
+            return null;
+        }
+        filesize = charArrayToLong(buf);
+
+        /* read the RIFF file type and make sure it's a WAVE file */
+        offset += osd_fread(f, buf, 4);
+        if (offset < 12) {
+            return null;
+        }
+        if (memcmp(buf, 0, "WAVE", 4) != 0) {
+            return null;
+        }
+
+
+        /* seek until we find a format tag */
+        while (true) {
+            offset += osd_fread(f, buf, 4);
+            char[] tmp = new char[buf.length];//temp creation
+            System.arraycopy(buf, 0, tmp, 0, buf.length);//temp creation
+            offset += osd_fread(f, buf, 4);//offset += osd_fread(f, &length, 4);
+            length = charArrayToLong(buf);
+            if (memcmp(tmp, 0, "fmt ", 4) == 0) {
+                break;
+            }
+
+            /* seek to the next block */
+            osd_fseek(f, (int) length, SEEK_CUR);
+            offset += length;
+            if (offset >= filesize) {
+                return null;
+            }
+        }
+        /* read the format -- make sure it is PCM */
+        offset += osd_fread_lsbfirst(f, buf, 2);
+        temp16 = charArrayToInt(buf);
+        if (temp16 != 1) {
+            return null;
+        }
+
+        /* number of channels -- only mono is supported */
+        offset += osd_fread_lsbfirst(f, buf, 2);
+        temp16 = charArrayToInt(buf);
+        if (temp16 != 1) {
+            return null;
+        }
+
+        /* sample rate */
+        offset += osd_fread(f, buf, 4);
+        rate = charArrayToLong(buf);
+
+        /* bytes/second and block alignment are ignored */
+        offset += osd_fread(f, buf, 6);
+
+        /* bits/sample */
+        offset += osd_fread_lsbfirst(f, buf, 2);
+        bits = charArrayToInt(buf);
+        if (bits != 8 && bits != 16) {
+            return null;
+        }
+
+
+        /* seek past any extra data */
+        osd_fseek(f, (int) length - 16, SEEK_CUR);
+        offset += length - 16;
+
+        /* seek until we find a data tag */
+        while (true) {
+            offset += osd_fread(f, buf, 4);
+            char[] tmp = new char[buf.length];//temp creation
+            System.arraycopy(buf, 0, tmp, 0, buf.length);//temp creation
+            offset += osd_fread(f, buf, 4);//offset += osd_fread(f, &length, 4);
+            length = charArrayToLong(buf);
+            if (memcmp(tmp, 0, "data", 4) == 0) {
+                break;
+            }
+
+            /* seek to the next block */
+            osd_fseek(f, (int) length, SEEK_CUR);
+            offset += length;
+            if (offset >= filesize) {
+                return null;
+            }
+        }
+        /* allocate the game sample */
+        result = new GameSample((int) length);
+        /* fill in the sample data */
+        result.length = (int) length;
+        result.smpfreq = (int) rate;
+        result.resolution = bits;
+
+        /* read the data in */
+        if (bits == 8) {
+            osd_fread(f, result.data, (int) length);
+
+            /* convert 8-bit data to signed samples */
+            for (temp32 = 0; temp32 < length; temp32++) {
+                result.data[(int) temp32] ^= 0x80;
+            }
+        } else {
+            /* 16-bit data is fine as-is */
+            osd_fread_lsbfirst(f, result.data, (int) length);
+        }
+
+        return result;
+    }
+
+    /*-------------------------------------------------
+            readsamples - load all samples
+    -------------------------------------------------*/
+    public static GameSamples readsamples(String[] samplenames, String basename) /* V.V - avoids samples duplication */ /* if first samplename is *dir, looks for samples into "basename" first, then "dir" */ {
+        int i;
+        GameSamples samples = new GameSamples();
+        int skipfirst = 0;
+
+        /* if the user doesn't want to use samples, bail */
+        if (options.use_samples == 0) {
+            return null;
+        }
+
+        if (samplenames == null || samplenames[0] == null) {
+            return null;
+        }
+
+        if (samplenames[0].charAt(0) == '*') {
+            skipfirst = 1;
+        }
+
+        i = 0;
+        while (samplenames[i + skipfirst] != null) {
+            i++;
+        }
+
+        if (i == 0) {
+            return null;
+        }
+
+        samples = new GameSamples(i);
+
+        samples.total = i;
+        for (i = 0; i < samples.total; i++) {
+            samples.sample[i] = null;
+        }
+
+        for (i = 0; i < samples.total; i++) {
+            Object f;
+
+            if (samplenames[i + skipfirst].length() > 0 && samplenames[i + skipfirst].charAt(0) != '\0') {
+                if ((f = osd_fopen(basename, samplenames[i + skipfirst], OSD_FILETYPE_SAMPLE, 0)) == null) {
+                    if (skipfirst != 0) {
+                        f = osd_fopen(samplenames[0].substring(1, samplenames[0].length())/*samplenames[0] + 1*/, samplenames[i + skipfirst], OSD_FILETYPE_SAMPLE, 0);
+                    }
+                }
+                if (f != null) {
+                    samples.sample[i] = read_wav_sample(f);
+                    osd_fclose(f);
+                }
+            }
+        }
+
+        return samples;
+    }
+
 
     /*-------------------------------------------------
             freesamples - free allocated samples

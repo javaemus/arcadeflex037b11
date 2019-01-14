@@ -205,41 +205,6 @@ public class commonH {
         arload.clear();
     }
 
-    public static class GameSample {
-
-        public GameSample() {
-            data = new byte[1];
-        }
-
-        public GameSample(int len) {
-            data = new byte[len];
-        }
-
-        public int length;
-        public int smpfreq;
-        public int resolution;
-        public byte data[];
-        /* extendable */
-    }
-
-    public static class GameSamples {
-
-        public GameSamples() {
-            sample = new GameSample[1];
-            sample[0] = new GameSample();
-        }
-
-        public GameSamples(int size) {
-            sample = new GameSample[size];
-            for (int i = 0; i < size; i++) {
-                sample[i] = new GameSample(1);
-            }
-        }
-
-        public int total;/* total number of samples */
-        public GameSample sample[];/*1? */ /* extendable */
-    }
-
     /* LBO 042898 - added coin counters */
     public static final int COIN_COUNTERS = 4;/* total # of coin counters */
 

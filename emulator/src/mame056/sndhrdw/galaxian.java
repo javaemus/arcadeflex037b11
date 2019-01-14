@@ -14,7 +14,7 @@ import static mame.sndintrfH.*;
 import static old2.mame.timer.*;
 import static old2.mame.timerH.*;
 import static old2.mame.mame.Machine;
-import static old.mame.common.*;
+import static mame056.common.*;
 
 import static old.sound.mixer.*;
 import static mame056.sound.streams.*;

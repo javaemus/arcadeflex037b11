@@ -8,7 +8,7 @@ import static arcadeflex.libc.ptr.*;
 import static common.libc.cstdio.*;
 import static common.ptr.*;
 import static old.arcadeflex.osdepend.logerror;
-import static old.mame.common.readsamples;
+import static mame056.common.*;
 import static old2.mame.mame.Machine;
 import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
