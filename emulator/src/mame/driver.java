@@ -19,7 +19,7 @@ import static drivers.hexa.*;
 import static drivers._1942.*;
 import static mame056.drivers.bankp.*;
 import static mame056.drivers.blueprnt.*;
-import static drivers.higemaru.*;
+import static mame056.drivers.higemaru.*;
 import static drivers.wiz.*;
 import static drivers.solomon.*;
 import static mame056.drivers.pooyan.*;

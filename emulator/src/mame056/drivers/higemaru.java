@@ -1,12 +1,13 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- * using automatic conversion tool v0.01
  */
-package drivers;
+package mame056.drivers;
+
 import static mame037b11.cpuintrfH.*;
 import static mame.driverH.*;
-import static old2.mame.memoryH.*;
-import static mame.commonH.*;
+import static mame056.memoryH.*;
+import static mame056.commonH.*;
 import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
@@ -23,38 +24,42 @@ public class higemaru {
     public static InterruptPtr higemaru_interrupt = new InterruptPtr() {
         public int handler() {
             if (cpu_getiloops() == 0) {
-                return 0x00cf;	/* RST 08h */
+                return 0x00cf;
+                /* RST 08h */
             } else {
-                return 0x00d7;	/* RST 10h */
+                return 0x00d7;
+                /* RST 10h */
             }
         }
     };
 
-    static MemoryReadAddress readmem[]
+    static Memory_ReadAddress readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x7fff, MRA_ROM),
-                new MemoryReadAddress(0xc000, 0xc000, input_port_0_r),
-                new MemoryReadAddress(0xc001, 0xc001, input_port_1_r),
-                new MemoryReadAddress(0xc002, 0xc002, input_port_2_r),
-                new MemoryReadAddress(0xc003, 0xc003, input_port_3_r),
-                new MemoryReadAddress(0xc004, 0xc004, input_port_4_r),
-                new MemoryReadAddress(0xd000, 0xd7ff, MRA_RAM),
-                new MemoryReadAddress(0xe000, 0xefff, MRA_RAM),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x7fff, MRA_ROM),
+                new Memory_ReadAddress(0xc000, 0xc000, input_port_0_r),
+                new Memory_ReadAddress(0xc001, 0xc001, input_port_1_r),
+                new Memory_ReadAddress(0xc002, 0xc002, input_port_2_r),
+                new Memory_ReadAddress(0xc003, 0xc003, input_port_3_r),
+                new Memory_ReadAddress(0xc004, 0xc004, input_port_4_r),
+                new Memory_ReadAddress(0xd000, 0xd7ff, MRA_RAM),
+                new Memory_ReadAddress(0xe000, 0xefff, MRA_RAM),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress writemem[]
+    static Memory_WriteAddress writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x7fff, MWA_ROM),
-                new MemoryWriteAddress(0xc800, 0xc800, higemaru_c800_w),
-                new MemoryWriteAddress(0xc801, 0xc801, AY8910_control_port_0_w),
-                new MemoryWriteAddress(0xc802, 0xc802, AY8910_write_port_0_w),
-                new MemoryWriteAddress(0xc803, 0xc803, AY8910_control_port_1_w),
-                new MemoryWriteAddress(0xc804, 0xc804, AY8910_write_port_1_w),
-                new MemoryWriteAddress(0xd000, 0xd3ff, videoram_w, videoram, videoram_size),
-                new MemoryWriteAddress(0xd400, 0xd7ff, colorram_w, colorram),
-                new MemoryWriteAddress(0xd880, 0xd9ff, MWA_RAM, spriteram, spriteram_size),
-                new MemoryWriteAddress(0xe000, 0xefff, MWA_RAM),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x7fff, MWA_ROM),
+                new Memory_WriteAddress(0xc800, 0xc800, higemaru_c800_w),
+                new Memory_WriteAddress(0xc801, 0xc801, AY8910_control_port_0_w),
+                new Memory_WriteAddress(0xc802, 0xc802, AY8910_write_port_0_w),
+                new Memory_WriteAddress(0xc803, 0xc803, AY8910_control_port_1_w),
+                new Memory_WriteAddress(0xc804, 0xc804, AY8910_write_port_1_w),
+                new Memory_WriteAddress(0xd000, 0xd3ff, videoram_w, videoram, videoram_size),
+                new Memory_WriteAddress(0xd400, 0xd7ff, colorram_w, colorram),
+                new Memory_WriteAddress(0xd880, 0xd9ff, MWA_RAM, spriteram, spriteram_size),
+                new Memory_WriteAddress(0xe000, 0xefff, MWA_RAM),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
     static InputPortPtr input_ports_higemaru = new InputPortPtr() {
         public void handler() {
@@ -227,25 +232,25 @@ public class higemaru {
      */
     static RomLoadPtr rom_higemaru = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x1c000, REGION_CPU1);/* 64k for code */
+            ROM_REGION(0x1c000, REGION_CPU1, 0);/* 64k for code */
             ROM_LOAD("hg4", 0x0000, 0x2000, 0xdc67a7f9);
             ROM_LOAD("hg5", 0x2000, 0x2000, 0xf65a4b68);
             ROM_LOAD("hg6", 0x4000, 0x2000, 0x5f5296aa);
             ROM_LOAD("hg7", 0x6000, 0x2000, 0xdc5d455d);
 
-            ROM_REGION(0x2000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x2000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("hg3", 0x0000, 0x2000, 0xb37b88c8);/* characters */
 
-            ROM_REGION(0x4000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x4000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("hg1", 0x0000, 0x2000, 0xef4c2f5d);/* tiles */
             ROM_LOAD("hg2", 0x2000, 0x2000, 0x9133f804);
 
-            ROM_REGION(0x0420, REGION_PROMS);
+            ROM_REGION(0x0420, REGION_PROMS, 0);
             ROM_LOAD("hgb3", 0x0000, 0x0020, 0x629cebd8);/* palette */
             ROM_LOAD("hgb5", 0x0020, 0x0100, 0xdbaa4443);/* char lookup table */
             ROM_LOAD("hgb1", 0x0120, 0x0100, 0x07c607ce);/* sprite lookup table */
-            //ROM_LOAD("hgb4", 0x0220, 0x0100, 0x712ac508);/* interrupt timing (not used) */
-            //ROM_LOAD("hgb2", 0x0320, 0x0100, 0x4921635c);/* video timing? (not used) */
+            ROM_LOAD("hgb4", 0x0220, 0x0100, 0x712ac508);/* interrupt timing (not used) */
+            ROM_LOAD("hgb2", 0x0320, 0x0100, 0x4921635c);/* video timing? (not used) */
             ROM_END();
         }
     };
