@@ -441,9 +441,9 @@ public class commonH {
 /*TODO*///#define ROM_LOAD32_WORD(name,offset,length,crc)		ROMX_LOAD(name, offset, length, crc, ROM_GROUPWORD | ROM_SKIP(2))
 /*TODO*///#define ROM_LOAD32_WORD_SWAP(name,offset,length,crc)ROMX_LOAD(name, offset, length, crc, ROM_GROUPWORD | ROM_REVERSE | ROM_SKIP(2))
 /*TODO*///
-/*TODO*///    public static final int COIN_COUNTERS = 4;/* total # of coin counters */
+    public static final int COIN_COUNTERS = 4;/* total # of coin counters */
 
-/*TODO*///    public static int flip_screen() {
+ /*TODO*///    public static int flip_screen() {
 /*TODO*///        return flip_screen_x[0];
 /*TODO*///    }
     /*TODO*////***************************************************************************

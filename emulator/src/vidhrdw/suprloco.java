@@ -11,7 +11,7 @@ import static old2.mame.mame.*;
 import static arcadeflex.libc.ptr.*;
 import static arcadeflex.fucPtr.*;
 import common.subArrays.UShortArray;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old2.mame.common.*;
 import static mame.commonH.*;
 import static old2.mame.tilemapC.*;
@@ -166,8 +166,8 @@ public class suprloco {
                 /*logerror("Bit 4 = %d\n", (data >> 4) & 1); */
             }
 
-            coin_counter_w.handler(0, data & 0x01);
-            coin_counter_w.handler(1, data & 0x02);
+            coin_counter_w(0, data & 0x01);
+            coin_counter_w(1, data & 0x02);
 
             flip_screen_w.handler(0, data & 0x80);
             tilemap_set_scrolly(bg_tilemap, 0, flip_screen() != 0 ? -32 : 0);

@@ -205,9 +205,6 @@ public class commonH {
         arload.clear();
     }
 
-    /* LBO 042898 - added coin counters */
-    public static final int COIN_COUNTERS = 4;/* total # of coin counters */
-
     public static int flip_screen() {
         return flip_screen_x[0];
     }

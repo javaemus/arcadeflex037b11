@@ -13,7 +13,7 @@ import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame.sndintrfH.*;
 import static mame037b11.cpuintrf.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old.mame.inptportH.*;
 import static old.mame.inputH.*;
 import static vidhrdw.zaxxon.*;
@@ -57,6 +57,10 @@ public class congo {
             }
         }
     };
+    public static WriteHandlerPtr congo_coin_counter_w = new WriteHandlerPtr() {public void handler(int offset, int data)
+	{
+		coin_counter_w(offset,data);
+	} };
 
     static MemoryReadAddress readmem[]
             = {
@@ -85,7 +89,7 @@ public class congo {
                 new MemoryWriteAddress(0xc018, 0xc018, MWA_NOP), /* coinAen */
                 new MemoryWriteAddress(0xc019, 0xc019, MWA_NOP), /* coinBen */
                 new MemoryWriteAddress(0xc01a, 0xc01a, MWA_NOP), /* serven */
-                new MemoryWriteAddress(0xc01b, 0xc01c, coin_counter_w), /* counterA, counterB */
+                new MemoryWriteAddress(0xc01b, 0xc01c, congo_coin_counter_w), /* counterA, counterB */
                 new MemoryWriteAddress(0x0000, 0x7fff, MWA_ROM),
                 new MemoryWriteAddress(-1) /* end of table */};
 

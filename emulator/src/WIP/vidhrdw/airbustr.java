@@ -13,7 +13,7 @@ import static mame.drawgfxH.*;
 import static mame.osdependH.*;
 import static mame.palette.*;
 import static mame.paletteH.*;
-import static old.mame.common.coin_counter_w;
+import static mame056.common.coin_counter_w;
 import static old.mame.drawgfx.*;
 import static old2.mame.common.flip_screen_w;
 import static old2.mame.mame.Machine;

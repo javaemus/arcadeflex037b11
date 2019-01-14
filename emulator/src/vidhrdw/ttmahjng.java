@@ -13,7 +13,7 @@ import static mame.drawgfxH.*;
 import static old2.mame.common.*;
 import static old.mame.drawgfx.copybitmap;
 import static mame.palette.*;
-import static old.mame.common.coin_counter_w;
+import static mame056.common.coin_counter_w;
 import static old.mame.drawgfx.*;
 
 public class ttmahjng {
@@ -99,7 +99,7 @@ public class ttmahjng {
             video_color_select_1 = ((data & 0x1f) << 2);
 
             /* Bit 5 is the coin counter. */
-            coin_counter_w.handler(0, data & 0x20);
+            coin_counter_w(0, data & 0x20);
 
             video_remap_1 = 1;
             last_write_1 = data;

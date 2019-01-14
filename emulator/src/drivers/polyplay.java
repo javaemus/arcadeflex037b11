@@ -20,7 +20,7 @@ import static mame056.sndhrdw.polyplay.*;
 import static vidhrdw.polyplay.*;
 import static old2.mame.timer.*;
 import static old2.mame.timerH.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 
 public class polyplay {
 
@@ -77,7 +77,7 @@ public class polyplay {
             if ((inp & 0x80) == 0) {
                 /* Coin inserted */
                 cpu_cause_interrupt(0, 0x50);
-                coin_counter_w.handler(0, 1);
+                coin_counter_w(0, 1);
                 timer_set(TIME_IN_SEC(1), 2, polyplay_timer);
             }
 
@@ -319,7 +319,7 @@ public class polyplay {
                     }
                     break;
                 case 2:
-                    coin_counter_w.handler(0, 0);
+                    coin_counter_w(0, 0);
                     break;
             }
         }

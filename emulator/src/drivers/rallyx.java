@@ -3,6 +3,7 @@
  * using automatic conversion tool v0.01
  */
 package drivers;
+
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
@@ -14,7 +15,7 @@ import static old2.mame.memoryH.*;
 import static mame.sndintrf.*;
 import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static vidhrdw.generic.*;
 import static mame056.sndhrdw.timeplt.*;
 import static vidhrdw.rallyx.*;
@@ -28,7 +29,7 @@ public class rallyx {
 
     public static WriteHandlerPtr rallyx_coin_lockout_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            coin_lockout_w.handler(offset, data ^ 1);
+            coin_lockout_w(offset, data ^ 1);
         }
     };
 
@@ -47,6 +48,11 @@ public class rallyx {
             }
 
             last = data;
+        }
+    };
+    public static WriteHandlerPtr rallyx_coin_counter_w = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            coin_counter_w(offset, data);
         }
     };
 
@@ -79,7 +85,7 @@ public class rallyx {
                 new MemoryWriteAddress(0xa183, 0xa183, rallyx_flipscreen_w),
                 new MemoryWriteAddress(0xa184, 0xa185, rallyx_leds_w),
                 new MemoryWriteAddress(0xa186, 0xa186, rallyx_coin_lockout_w),
-                new MemoryWriteAddress(0xa187, 0xa187, coin_counter_w),
+                new MemoryWriteAddress(0xa187, 0xa187, rallyx_coin_counter_w),
                 new MemoryWriteAddress(0x8014, 0x801f, MWA_RAM, spriteram, spriteram_size), /* these are here just to initialize */
                 new MemoryWriteAddress(0x8814, 0x881f, MWA_RAM, spriteram_2), /* the pointers. */
                 new MemoryWriteAddress(0x8034, 0x803f, MWA_RAM, rallyx_radarx, rallyx_radarram_size), /* ditto */

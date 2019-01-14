@@ -13,7 +13,7 @@ import static mame.osdependH.osd_bitmap;
 import static vidhrdw.generic.*;
 import static arcadeflex.libc.cstring.*;
 import static common.libc.expressions.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old2.mame.common.*;
 import static old.arcadeflex.osdepend.*;
 
@@ -122,8 +122,8 @@ public class cop01 {
     public static WriteHandlerPtr cop01_gfxbank_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
             /* bits 0 and 1 coin counters */
-            coin_counter_w.handler(0, data & 1);
-            coin_counter_w.handler(1, data & 2);
+            coin_counter_w(0, data & 1);
+            coin_counter_w(1, data & 2);
 
             /* bit 2 flip screen */
             if (flipscreen != (data & 0x04)) {

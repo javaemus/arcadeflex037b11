@@ -615,10 +615,10 @@ public class astrocde {
 
             switch (offset) {
                 case 0:
-                    coin_counter_w.handler(0, data);
+                    coin_counter_w(0, data);
                     break;
                 case 1:
-                    coin_counter_w.handler(1, data);
+                    coin_counter_w(1, data);
                     break;
                 case 2:
                     sparkle[CurrentScan][0] = data;
@@ -667,10 +667,10 @@ public class astrocde {
 
             switch (offset) {
                 case 0:
-                    coin_counter_w.handler(0, data);
+                    coin_counter_w(0, data);
                     break;
                 case 1:
-                    coin_counter_w.handler(1, data);
+                    coin_counter_w(1, data);
                     break;
                 case 2:
                     sparkle[CurrentScan][0] = data;
@@ -685,7 +685,7 @@ public class astrocde {
                     sparkle[CurrentScan][3] = data;
                     break;
                 case 7:
-                    coin_counter_w.handler(2, data);
+                    coin_counter_w(2, data);
                     break;
             }
             return 0;

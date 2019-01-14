@@ -11,7 +11,7 @@ import static old2.mame.common.*;
 import static mame.osdependH.osd_bitmap;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static mame.commonH.*;
 import static old2.mame.mame.Machine;
 import static mame037b11.cpuintrfH.*;
@@ -157,8 +157,8 @@ public class commando {
     public static WriteHandlerPtr commando_c804_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
             /* bits 0 and 1 are coin counters */
-            coin_counter_w.handler(0, data & 0x01);
-            coin_counter_w.handler(1, data & 0x02);
+            coin_counter_w(0, data & 0x01);
+            coin_counter_w(1, data & 0x02);
 
             /* bit 4 resets the sound CPU */
             cpu_set_reset_line(1, (data & 0x10) != 0 ? ASSERT_LINE : CLEAR_LINE);

@@ -14,7 +14,7 @@ import static drivers.zodiack.*;
 
 import static mame.drawgfxH.*;
 import static mame.osdependH.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old2.mame.drawgfx.*;
 import static old2.mame.mame.Machine;
 import static old.mame.drawgfx.drawgfx;
@@ -96,8 +96,8 @@ public class zodiack {
     public static WriteHandlerPtr zodiac_control_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
             /* Bit 0-1 - coin counters */
-            coin_counter_w.handler(0, data & 0x02);
-            coin_counter_w.handler(1, data & 0x01);
+            coin_counter_w(0, data & 0x02);
+            coin_counter_w(1, data & 0x01);
 
             /* Bit 2 - ???? */
         }

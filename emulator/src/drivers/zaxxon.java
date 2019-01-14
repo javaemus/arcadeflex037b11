@@ -22,7 +22,7 @@ import static WIP.machine.segacrpt.*;
 import static mame056.sndhrdw.zaxxon.*;
 import static arcadeflex.libc.ptr.*;
 import static common.libc.cstdlib.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static mame056.common.*;
 
 public class zaxxon {
@@ -37,6 +37,10 @@ public class zaxxon {
             zaxxon_vid_type = 2;
         }
     };
+    public static WriteHandlerPtr zaxxon_coin_counter_w = new WriteHandlerPtr() {public void handler(int offset, int data)
+	{
+		coin_counter_w(offset,data);
+	} };
 
     public static ReadHandlerPtr razmataz_unknown1_r = new ReadHandlerPtr() {
         public int handler(int offset) {
@@ -101,7 +105,7 @@ public class zaxxon {
                 new MemoryWriteAddress(0x8000, 0x83ff, videoram_w, videoram, videoram_size),
                 new MemoryWriteAddress(0xa000, 0xa0ff, MWA_RAM, spriteram, spriteram_size),
                 new MemoryWriteAddress(0xc000, 0xc002, MWA_NOP), /* coin enables */
-                new MemoryWriteAddress(0xc003, 0xc004, coin_counter_w),
+                new MemoryWriteAddress(0xc003, 0xc004, zaxxon_coin_counter_w),
                 new MemoryWriteAddress(0xff3c, 0xff3e, zaxxon_sound_w),
                 new MemoryWriteAddress(0xfff0, 0xfff0, interrupt_enable_w),
                 new MemoryWriteAddress(0xfff1, 0xfff1, MWA_RAM, zaxxon_char_color_bank),
@@ -149,7 +153,7 @@ public class zaxxon {
                 new MemoryWriteAddress(0x8000, 0x83ff, videoram_w, videoram, videoram_size),
                 new MemoryWriteAddress(0xa000, 0xa0ff, MWA_RAM, spriteram, spriteram_size),
                 new MemoryWriteAddress(0xc000, 0xc002, MWA_NOP), /* coin enables */
-                new MemoryWriteAddress(0xc003, 0xc004, coin_counter_w),
+                new MemoryWriteAddress(0xc003, 0xc004, zaxxon_coin_counter_w),
                 new MemoryWriteAddress(0xe0f0, 0xe0f0, interrupt_enable_w),
                 new MemoryWriteAddress(0xe0f1, 0xe0f1, MWA_RAM, zaxxon_char_color_bank),
                 new MemoryWriteAddress(0xe0f8, 0xe0f9, MWA_RAM, zaxxon_background_position),

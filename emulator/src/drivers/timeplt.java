@@ -14,7 +14,7 @@ import static old2.mame.memoryH.*;
 import static mame.sndintrf.*;
 import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static vidhrdw.generic.*;
 import static mame056.sndhrdw.timeplt.*;
 import static vidhrdw.timeplt.*;
@@ -24,7 +24,7 @@ public class timeplt {
 
     public static WriteHandlerPtr timeplt_coin_counter_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            coin_counter_w.handler(offset >> 1, data);
+            coin_counter_w(offset >> 1, data);
         }
     };
 

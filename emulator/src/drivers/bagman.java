@@ -16,7 +16,6 @@ import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
 import static mame.sndintrfH.*;
-import static old.mame.common.coin_counter_w;
 import static sound._5110intf.*;
 import static sound._5110intfH.*;
 import static sound.tms5110H.*;
@@ -108,6 +107,10 @@ public class bagman {
             }
         }
     };
+    public static WriteHandlerPtr bagman_coin_counter_w = new WriteHandlerPtr() {public void handler(int offset, int data)
+	{
+		coin_counter_w(offset,data);
+	} };
 
     static MemoryReadAddress readmem[]
             = {
@@ -137,7 +140,7 @@ public class bagman {
                 /* writes are handled by colorram_w */
                 new MemoryWriteAddress(0xa800, 0xa805, bagman_ls259_w), /* TMS5110 driving state machine */
                 new MemoryWriteAddress(0x9c00, 0x9fff, MWA_NOP), /* written to, but unused */
-                new MemoryWriteAddress(0xa004, 0xa004, coin_counter_w),
+                new MemoryWriteAddress(0xa004, 0xa004, bagman_coin_counter_w),
                 /*#if 0
 		new MemoryWriteAddress( 0xa007, 0xa007, MWA_NOP ),	/* ???? */
                 /*	new MemoryWriteAddress( 0xb000, 0xb000, MWA_NOP ),	/* ???? */
@@ -168,7 +171,7 @@ public class bagman {
                 /* here only to initialize the pointer, */
                 /* writes are handled by colorram_w */
                 new MemoryWriteAddress(0x9c00, 0x9fff, MWA_NOP), /* written to, but unused */
-                new MemoryWriteAddress(0xa004, 0xa004, coin_counter_w),
+                new MemoryWriteAddress(0xa004, 0xa004, bagman_coin_counter_w),
                 /*#if 0
 		new MemoryWriteAddress( 0xa007, 0xa007, MWA_NOP ),	/* ???? */
                 /*	new MemoryWriteAddress( 0xb000, 0xb000, MWA_NOP ),	/* ???? */

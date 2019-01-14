@@ -61,39 +61,25 @@ public class common {
  /*TODO*///	UINT8		tempbuf[65536];			/* temporary buffer */
     }
 
-    /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///
-/*TODO*///	Global variables
-/*TODO*///
-/*TODO*///***************************************************************************/
-/*TODO*///
-/*TODO*////* These globals are only kept on a machine basis - LBO 042898 */
-/*TODO*///unsigned int dispensed_tickets;
-/*TODO*///unsigned int coins[COIN_COUNTERS];
-/*TODO*///unsigned int lastcoin[COIN_COUNTERS];
-/*TODO*///unsigned int coinlockedout[COIN_COUNTERS];
-/*TODO*///
-/*TODO*///    public static int[] flip_screen_x = new int[1];
+    /**
+     * *************************************************************************
+     *
+     * Global variables
+     *
+     **************************************************************************
+     */
+
+    /* These globals are only kept on a machine basis - LBO 042898 */
+    public static /*unsigned*/ int dispensed_tickets;
+    public static /*unsigned*/ int[] coins = new int[COIN_COUNTERS];
+    public static /*unsigned*/ int[] lastcoin = new int[COIN_COUNTERS];
+    public static /*unsigned*/ int[] coinlockedout = new int[COIN_COUNTERS];
+
+    /*TODO*///    public static int[] flip_screen_x = new int[1];
 /*TODO*///    public static int[] flip_screen_y = new int[1];
+    static int snapno;
 
     /*TODO*///
-/*TODO*///int snapno;
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///
-/*TODO*///	Prototypes
-/*TODO*///
-/*TODO*///***************************************************************************/
-/*TODO*///
-/*TODO*///static int rom_load_new(const struct RomModule *romp);
-/*TODO*///
-/*TODO*///
-/*TODO*///
 /*TODO*////***************************************************************************
 /*TODO*///
 /*TODO*///	Functions
@@ -435,59 +421,54 @@ public class common {
         }
     }
 
+    /**
+     * *************************************************************************
+     *
+     * Coin counter code
+     *
+     **************************************************************************
+     */
+
+    /*-------------------------------------------------
+	coin_counter_w - sets input for coin counter
+    -------------------------------------------------*/
+    public static void coin_counter_w(int num, int on) {
+        if (num >= COIN_COUNTERS) {
+            return;
+        }
+        /* Count it only if the data has changed from 0 to non-zero */
+        if (on != 0 && (lastcoin[num] == 0)) {
+            coins[num]++;
+        }
+        lastcoin[num] = on;
+    }
+
+
+    /*-------------------------------------------------
+	coin_lockout_w - locks out one coin input
+    -------------------------------------------------*/
+    public static void coin_lockout_w(int num, int on) {
+        if (num >= COIN_COUNTERS) {
+            return;
+        }
+
+        coinlockedout[num] = on;
+    }
+
+
+    /*-------------------------------------------------
+	coin_lockout_global_w - locks out all the coin
+	inputs
+    -------------------------------------------------*/
+    public static void coin_lockout_global_w(int on) {
+        int i;
+
+        for (i = 0; i < COIN_COUNTERS; i++) {
+            coin_lockout_w(i, on);
+        }
+    }
+
     /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///
-/*TODO*///	Coin counter code
-/*TODO*///
-/*TODO*///***************************************************************************/
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	coin_counter_w - sets input for coin counter
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///void coin_counter_w(int num,int on)
-/*TODO*///{
-/*TODO*///	if (num >= COIN_COUNTERS) return;
-/*TODO*///	/* Count it only if the data has changed from 0 to non-zero */
-/*TODO*///	if (on && (lastcoin[num] == 0))
-/*TODO*///	{
-/*TODO*///		coins[num]++;
-/*TODO*///	}
-/*TODO*///	lastcoin[num] = on;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	coin_lockout_w - locks out one coin input
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///void coin_lockout_w(int num,int on)
-/*TODO*///{
-/*TODO*///	if (num >= COIN_COUNTERS) return;
-/*TODO*///
-/*TODO*///	coinlockedout[num] = on;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*-------------------------------------------------
-/*TODO*///	coin_lockout_global_w - locks out all the coin
-/*TODO*///	inputs
-/*TODO*///-------------------------------------------------*/
-/*TODO*///
-/*TODO*///void coin_lockout_global_w(int on)
-/*TODO*///{
-/*TODO*///	int i;
-/*TODO*///
-/*TODO*///	for (i = 0; i < COIN_COUNTERS; i++)
-/*TODO*///	{
-/*TODO*///		coin_lockout_w(i,on);
-/*TODO*///	}
-/*TODO*///}
-/*TODO*///
-/*TODO*///
 /*TODO*///
 /*TODO*////***************************************************************************
 /*TODO*///

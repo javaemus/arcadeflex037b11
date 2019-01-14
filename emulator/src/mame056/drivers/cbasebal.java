@@ -13,7 +13,7 @@ import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static mame.sndintrfH.*;
 import static mame037b11.cpuintrf.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old.mame.inptportH.*;
 import static arcadeflex.libc.ptr.*;
 import static vidhrdw.cbasebal.*;
@@ -82,10 +82,10 @@ public class cbasebal {
 
     public static WriteHandlerPtr cbasebal_coinctrl_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            coin_lockout_w.handler(0, ~data & 0x04);
-            coin_lockout_w.handler(1, ~data & 0x08);
-            coin_counter_w.handler(0, data & 0x01);
-            coin_counter_w.handler(1, data & 0x02);
+            coin_lockout_w(0, ~data & 0x04);
+            coin_lockout_w(1, ~data & 0x08);
+            coin_counter_w(0, data & 0x01);
+            coin_counter_w(1, data & 0x02);
         }
     };
 

@@ -27,7 +27,6 @@ import static mame.sndintrfH.*;
 import static old2.mame.memory.*;
 import static old2.mame.mame.*;
 import static mame.sndintrf.*;
-import static old.mame.common.*;
 import static old2.mame.common.*;
 
 import static mame056.sndhrdw.galaxian.*;
@@ -44,7 +43,7 @@ public class galaxian {
 
     public static WriteHandlerPtr galaxian_coin_lockout_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            coin_lockout_global_w.handler(offset, data ^ 1);
+            coin_lockout_global_w(~data & 1);
         }
     };
 
@@ -169,6 +168,10 @@ public class galaxian {
             cpu_cause_interrupt(1, Z80_NMI_INT);
         }
     };
+    public static WriteHandlerPtr galaxian_coin_counter_w = new WriteHandlerPtr() {public void handler(int offset, int data)
+	{
+		coin_counter_w(offset, data & 0x01);
+	} };
 
     static MemoryReadAddress galaxian_readmem[]
             = {
@@ -270,7 +273,7 @@ public class galaxian {
                 new MemoryWriteAddress(0x6805, 0x6805, galaxian_shoot_enable_w),
                 new MemoryWriteAddress(0x6806, 0x6807, galaxian_vol_w),
                 new MemoryWriteAddress(0x7001, 0x7001, interrupt_enable_w),
-                new MemoryWriteAddress(0x7002, 0x7002, coin_counter_w),
+                new MemoryWriteAddress(0x7002, 0x7002, galaxian_coin_counter_w),
                 new MemoryWriteAddress(0x7003, 0x7003, scramble_background_w),
                 new MemoryWriteAddress(0x7004, 0x7004, galaxian_stars_w),
                 new MemoryWriteAddress(0x7006, 0x7006, flip_screen_x_w),
@@ -306,7 +309,7 @@ public class galaxian {
                 new MemoryWriteAddress(0x5900, 0x5900, AY8910_control_port_0_w),
                 new MemoryWriteAddress(0x6002, 0x6006, jumpbug_gfxbank_w),
                 new MemoryWriteAddress(0x7001, 0x7001, interrupt_enable_w),
-                new MemoryWriteAddress(0x7002, 0x7002, coin_counter_w),
+                new MemoryWriteAddress(0x7002, 0x7002, galaxian_coin_counter_w),
                 new MemoryWriteAddress(0x7004, 0x7004, galaxian_stars_w),
                 new MemoryWriteAddress(0x7006, 0x7006, flip_screen_x_w),
                 new MemoryWriteAddress(0x7007, 0x7007, flip_screen_y_w),

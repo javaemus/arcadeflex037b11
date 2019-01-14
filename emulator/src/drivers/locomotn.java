@@ -14,7 +14,7 @@ import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame.sndintrfH.*;
 import static mame037b11.cpuintrf.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old.mame.inptportH.*;
 import static vidhrdw.rallyx.*;
 import static mame.sndintrf.*;
@@ -24,12 +24,12 @@ public class locomotn {
 
     public static WriteHandlerPtr coin_1_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            coin_counter_w.handler(0, data & 1);
+            coin_counter_w(0, data & 1);
         }
     };
     public static WriteHandlerPtr coin_2_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            coin_counter_w.handler(1, data & 1);
+            coin_counter_w(1, data & 1);
         }
     };
 

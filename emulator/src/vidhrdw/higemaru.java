@@ -14,7 +14,7 @@ import static arcadeflex.fucPtr.*;
 import static common.libc.cstring.*;
 import static common.libc.expressions.*;
 import static old.arcadeflex.osdepend.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 
 public class higemaru {
 
@@ -82,8 +82,8 @@ public class higemaru {
             }
 
             /* bits 0 and 1 are coin counters */
-            coin_counter_w.handler(0, data & 2);
-            coin_counter_w.handler(1, data & 1);
+            coin_counter_w(0, data & 2);
+            coin_counter_w(1, data & 1);
 
             /* bit 7 flips screen */
             if (flipscreen != (data & 0x80)) {

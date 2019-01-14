@@ -13,7 +13,7 @@ import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame.sndintrfH.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static mame037b11.cpuintrf.*;
 import static old.mame.inptportH.*;
 import static vidhrdw.funkybee.*;
@@ -28,7 +28,10 @@ public class funkybee {
             return input_port_0_r.handler(offset);
         }
     };
-
+    public static WriteHandlerPtr funkybee_coin_counter_w = new WriteHandlerPtr() {public void handler(int offset, int data)
+	{
+		coin_counter_w(offset,data);
+	} };
     static MemoryReadAddress readmem[]
             = {
                 new MemoryReadAddress(0x0000, 0x4fff, MRA_ROM),
@@ -47,7 +50,7 @@ public class funkybee {
                 new MemoryWriteAddress(0xa000, 0xbfff, videoram_w, videoram, videoram_size),
                 new MemoryWriteAddress(0xc000, 0xdfff, colorram_w, colorram),
                 new MemoryWriteAddress(0xe000, 0xe000, MWA_RAM, funkyb_row_scroll),
-                new MemoryWriteAddress(0xe802, 0xe803, coin_counter_w),
+                new MemoryWriteAddress(0xe802, 0xe803, funkybee_coin_counter_w),
                 new MemoryWriteAddress(0xe805, 0xe805, funkybee_gfx_bank_w),
                 new MemoryWriteAddress(0xf800, 0xf800, watchdog_reset_w),
                 new MemoryWriteAddress(-1) /* end of table */};

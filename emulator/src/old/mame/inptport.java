@@ -22,8 +22,8 @@ package old.mame;
 import java.util.HashMap;
 
 import static old.arcadeflex.osdepend.logerror;
-import static old.mame.common.*;
-import static mame.commonH.COIN_COUNTERS;
+import static mame056.common.*;
+import static mame056.commonH.COIN_COUNTERS;
 import static mame037b11.cpuintrf.*;
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.ReadHandlerPtr;

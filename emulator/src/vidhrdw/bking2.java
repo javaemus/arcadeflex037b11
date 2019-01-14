@@ -12,13 +12,13 @@ import static old2.mame.mame.Machine;
 import static mame.osdependH.osd_bitmap;
 import static old2.mame.common.*;
 import static mame.commonH.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old.mame.inptport.*;
 import static old.sound.mixer.*;
 import static vidhrdw.generic.*;
 import static common.libc.cstring.*;
 import static common.libc.expressions.*;
-import static mame056.common.*;
+
 public class bking2 {
 
     static int/*UINT8*/ xld1 = 0;
@@ -149,7 +149,7 @@ public class bking2 {
  /* D3 = Not Connected */
  /* D4-D7 = CROW0-CROW3 (selects crow picture) */
 
-            coin_lockout_global_w.handler(0, ~data & 0x01);
+            coin_lockout_global_w(~data & 0x01);
 
             flip_screen_w.handler(0, data & 0x04);
 

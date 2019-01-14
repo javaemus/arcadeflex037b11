@@ -23,7 +23,7 @@ import static cpu.z80.z80H.Z80_NMI_INT;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static vidhrdw.blueprnt.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 
 public class blueprnt {
 
@@ -53,8 +53,8 @@ public class blueprnt {
             if (lastval == data) {
                 return;
             }
-            coin_counter_w.handler(0, data & 0x01);
-            coin_counter_w.handler(1, data & 0x02);
+            coin_counter_w(0, data & 0x01);
+            coin_counter_w(1, data & 0x02);
             lastval = data;
         }
     };

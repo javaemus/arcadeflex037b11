@@ -10,7 +10,7 @@ import static common.libc.expressions.*;
 import static mame.osdependH.*;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old2.mame.common.*;
 import static mame.commonH.*;
 import static old2.mame.mame.Machine;
@@ -196,8 +196,8 @@ public class blktiger {
     public static WriteHandlerPtr blktiger_video_control_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
             /* bits 0 and 1 are coin counters */
-            coin_counter_w.handler(0, data & 1);
-            coin_counter_w.handler(1, data & 2);
+            coin_counter_w(0, data & 1);
+            coin_counter_w(1, data & 2);
 
             /* bit 5 resets the sound CPU */
             cpu_set_reset_line(1, (data & 0x20) != 0 ? ASSERT_LINE : CLEAR_LINE);

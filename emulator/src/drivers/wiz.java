@@ -4,6 +4,7 @@
  * 
  */
 package drivers;
+
 import static mame037b11.cpuintrfH.*;
 import static mame.driverH.*;
 import static old2.mame.memoryH.*;
@@ -37,6 +38,11 @@ public class wiz {
             }
         }
     };
+    public static WriteHandlerPtr wiz_coin_counter_w = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            coin_counter_w(offset, data);
+        }
+    };
 
     static MemoryReadAddress readmem[]
             = {
@@ -54,7 +60,7 @@ public class wiz {
     static MemoryWriteAddress writemem[]
             = {
                 new MemoryWriteAddress(0xc000, 0xc7ff, MWA_RAM),
-                new MemoryWriteAddress(0xc800, 0xc801, coin_counter_w),
+                new MemoryWriteAddress(0xc800, 0xc801, wiz_coin_counter_w),
                 new MemoryWriteAddress(0xd000, 0xd3ff, MWA_RAM, wiz_videoram2),
                 new MemoryWriteAddress(0xd400, 0xd7ff, MWA_RAM, wiz_colorram2),
                 new MemoryWriteAddress(0xd800, 0xd83f, MWA_RAM, wiz_attributesram2),

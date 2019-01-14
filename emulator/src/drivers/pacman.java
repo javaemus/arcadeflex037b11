@@ -3,6 +3,7 @@
  * using automatic conversion tool v0.01
  */
 package drivers;
+
 import static mame037b11.cpuintrfH.*;
 //arcadeflex imports
 import static arcadeflex.fucPtr.*;
@@ -16,6 +17,7 @@ import static mame.commonH.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static mame.sndintrfH.*;
+import static mame056.common.*;
 //sound imports
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
@@ -36,7 +38,6 @@ import static old2.mame.memoryH.*;
 import static old2.mame.mame.*;
 import static old.arcadeflex.libc_old.*;
 import static old.mame.common.*;
-
 
 public class pacman {
 
@@ -85,6 +86,11 @@ public class pacman {
             set_led_status(offset, data & 1);
         }
     };
+    public static WriteHandlerPtr pacman_coin_counter_w = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            coin_counter_w(offset, data & 1);
+        }
+    };
 
     public static WriteHandlerPtr alibaba_sound_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
@@ -121,7 +127,7 @@ public class pacman {
 
     public static WriteHandlerPtr pacman_coin_lockout_global_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            coin_lockout_global_w.handler(offset, ~data & 0x01);
+            coin_lockout_global_w(~data & 0x01);
         }
     };
 
@@ -150,7 +156,7 @@ public class pacman {
                 new MemoryWriteAddress(0x5003, 0x5003, pengo_flipscreen_w),
                 new MemoryWriteAddress(0x5004, 0x5005, pacman_leds_w),
                 // 	new MemoryWriteAddress( 0x5006, 0x5006, pacman_coin_lockout_global_w ),	this breaks many games
-                new MemoryWriteAddress(0x5007, 0x5007, coin_counter_w),
+                new MemoryWriteAddress(0x5007, 0x5007, pacman_coin_counter_w),
                 new MemoryWriteAddress(0x5040, 0x505f, pengo_sound_w, namco_soundregs),
                 new MemoryWriteAddress(0x5060, 0x506f, MWA_RAM, spriteram_2),
                 new MemoryWriteAddress(0x50c0, 0x50c0, watchdog_reset_w),
@@ -185,7 +191,7 @@ public class pacman {
                 new MemoryWriteAddress(0x5000, 0x5000, watchdog_reset_w),
                 new MemoryWriteAddress(0x5004, 0x5005, pacman_leds_w),
                 new MemoryWriteAddress(0x5006, 0x5006, pacman_coin_lockout_global_w),
-                new MemoryWriteAddress(0x5007, 0x5007, coin_counter_w),
+                new MemoryWriteAddress(0x5007, 0x5007, pacman_coin_counter_w),
                 new MemoryWriteAddress(0x5040, 0x506f, alibaba_sound_w, namco_soundregs), /* the sound region is not contiguous */
                 new MemoryWriteAddress(0x5060, 0x506f, MWA_RAM, spriteram_2), /* actually at 5050-505f, here to point to free RAM */
                 new MemoryWriteAddress(0x50c0, 0x50c0, pengo_sound_enable_w),

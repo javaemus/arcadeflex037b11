@@ -3,6 +3,7 @@
  *
  */
 package old.mame;
+
 import static arcadeflex.libc.cstdio.*;
 import static arcadeflex.libc.cstring.*;
 import static old.arcadeflex.fileio.*;
@@ -21,15 +22,8 @@ import static old2.mame.mameH.MAX_MEMORY_REGIONS;
 import static mame.osdependH.*;
 
 public class common {
-    
-    /* These globals are only kept on a machine_old basis - LBO 042898 */
 
-    public static int dispensed_tickets;
-    public static int coins[] = new int[COIN_COUNTERS];
-    public static int lastcoin[] = new int[COIN_COUNTERS];
-    public static int coinlockedout[] = new int[COIN_COUNTERS];
-    
-    public static void showdisclaimer()   /* MAURY_BEGIN: dichiarazione */ {
+    public static void showdisclaimer() /* MAURY_BEGIN: dichiarazione */ {
         printf("MAME is an emulator: it reproduces, more or less faithfully, the behaviour of\n"
                 + "several arcade machines. But hardware is useless without software, so an image\n"
                 + "of the ROMs which run on that hardware is required. Such ROMs, like any other\n"
@@ -40,74 +34,44 @@ public class common {
                 + "authors so that appropriate legal action can be taken.\n\n");
     }
 
-    public static void printromlist(RomModule[] romp, String basename)
-    {
-        if (romp==null) return;
+    public static void printromlist(RomModule[] romp, String basename) {
+        if (romp == null) {
+            return;
+        }
 
         printf("This is the list of the ROMs required for driver \"%s\".\n"
-                +"Name              Size       Checksum\n",basename);
-        int rom_ptr=0;
-        while (romp[rom_ptr].name!=null || romp[rom_ptr].offset!=0 || romp[rom_ptr].length!=0)
-        {
-            rom_ptr++;	/* skip memory region definition */
+                + "Name              Size       Checksum\n", basename);
+        int rom_ptr = 0;
+        while (romp[rom_ptr].name != null || romp[rom_ptr].offset != 0 || romp[rom_ptr].length != 0) {
+            rom_ptr++;
+            /* skip memory region definition */
 
-            while (romp[rom_ptr].length!=0)
-            {
+            while (romp[rom_ptr].length != 0) {
                 String name;
-                int length=0,expchecksum=0;
-
+                int length = 0, expchecksum = 0;
 
                 name = romp[rom_ptr].name;
                 expchecksum = romp[rom_ptr].crc;
 
                 length = 0;
 
-                do
-                {
-                                    /* ROM_RELOAD */
-                    if ((romp[rom_ptr].name != null) && (romp[rom_ptr].name.compareTo("-1") == 0))
+                do {
+                    /* ROM_RELOAD */
+                    if ((romp[rom_ptr].name != null) && (romp[rom_ptr].name.compareTo("-1") == 0)) {
                         length = 0;	/* restart */
+                    }
 
                     length += romp[rom_ptr].length & ~ROMFLAG_MASK;
 
                     rom_ptr++;
-                } while (romp[rom_ptr].length!=0 && (romp[rom_ptr].name == null || romp[rom_ptr].name.compareTo("-1") == 0));
+                } while (romp[rom_ptr].length != 0 && (romp[rom_ptr].name == null || romp[rom_ptr].name.compareTo("-1") == 0));
 
-                if (expchecksum!=0)
-                    printf("%-12s  %7d bytes  %08x\n",name,length,expchecksum);
-                else
-                    printf("%-12s  %7d bytes  NO GOOD DUMP KNOWN\n",name,length);
+                if (expchecksum != 0) {
+                    printf("%-12s  %7d bytes  %08x\n", name, length, expchecksum);
+                } else {
+                    printf("%-12s  %7d bytes  NO GOOD DUMP KNOWN\n", name, length);
+                }
             }
         }
     }
-
-    /* LBO 042898 - added coin counters */
-    public static WriteHandlerPtr coin_counter_w = new WriteHandlerPtr() {
-        public void handler(int offset, int data) {
-            if (offset >= COIN_COUNTERS) return;
-            /* Count it only if the data has changed from 0 to non-zero */
-            if (data != 0 && (lastcoin[offset] == 0)) {
-                coins[offset]++;
-            }
-            lastcoin[offset] = data;
-        }
-    };
-    public static WriteHandlerPtr coin_lockout_w = new WriteHandlerPtr() {
-        public void handler(int offset, int data) {
-            if (offset >= COIN_COUNTERS) return;
-
-            coinlockedout[offset] = data;
-        }
-    };
-
-    /* Locks out all the coin inputs */
-    public static WriteHandlerPtr coin_lockout_global_w = new WriteHandlerPtr() {
-        public void handler(int offset, int data) {
-            int i;
-
-            for (i = 0; i < COIN_COUNTERS; i++) {
-                coin_lockout_w.handler(i, data);
-            }
-        }
-    };
 }

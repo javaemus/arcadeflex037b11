@@ -11,7 +11,7 @@ import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
 import static mame.osdependH.osd_bitmap;
 import static mame.commonH.REGION_CPU1;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static mame056.sound.sn76477.*;
 import static old2.mame.common.*;
 import static mame037b11.cpuintrf.*;
@@ -142,7 +142,7 @@ public class route16 {
             video_color_select_1 = ((data & 0x1f) << 2);
 
             /* Bit 5 is the coin counter. */
-            coin_counter_w.handler(0, data & 0x20);
+            coin_counter_w(0, data & 0x20);
 
             video_remap_1 = 1;
             last_write_1 = data;

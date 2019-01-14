@@ -21,7 +21,7 @@ import static sound.ay8910H.*;
 import static vidhrdw.generic.*;
 import static vidhrdw.galaxian.*;
 import static mame.sndintrf.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old.sound.mixerH.*;
 import static old2.mame.common.*;
 import static sndhrdw.frogger.*;
@@ -53,10 +53,15 @@ public class scobra {
         }
     };
 
-    public static WriteHandlerPtr stratgyx_coin_counter_w = new WriteHandlerPtr() {
+    public static WriteHandlerPtr type1_coin_counter_w = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            coin_counter_w(offset, data);
+        }
+    };
+    public static WriteHandlerPtr type2_coin_counter_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
             /* Bit 1 selects coin counter */
-            coin_counter_w.handler(offset >> 1, data);
+            coin_counter_w(offset >> 1, data);
         }
     };
 
@@ -84,7 +89,7 @@ public class scobra {
                 new MemoryWriteAddress(0xa000, 0xa000, soundlatch_w),
                 new MemoryWriteAddress(0xa001, 0xa001, scramble_sh_irqtrigger_w),
                 new MemoryWriteAddress(0xa801, 0xa801, interrupt_enable_w),
-                new MemoryWriteAddress(0xa802, 0xa802, coin_counter_w),
+                new MemoryWriteAddress(0xa802, 0xa802, type1_coin_counter_w),
                 new MemoryWriteAddress(0xa803, 0xa803, scramble_background_w),
                 new MemoryWriteAddress(0xa804, 0xa804, galaxian_stars_w),
                 new MemoryWriteAddress(0xa806, 0xa806, flip_screen_x_w),
@@ -116,7 +121,7 @@ public class scobra {
                 new MemoryWriteAddress(0xb000, 0xb000, galaxian_stars_w),
                 new MemoryWriteAddress(0xb002, 0xb002, scramble_background_w),
                 new MemoryWriteAddress(0xb004, 0xb004, interrupt_enable_w),
-                new MemoryWriteAddress(0xb006, 0xb008, stratgyx_coin_counter_w),
+                new MemoryWriteAddress(0xb006, 0xb008, type2_coin_counter_w),
                 new MemoryWriteAddress(0xb00c, 0xb00c, flip_screen_y_w),
                 new MemoryWriteAddress(0xb00e, 0xb00e, flip_screen_x_w),
                 new MemoryWriteAddress(-1) /* end of table */};

@@ -3,6 +3,7 @@
  * using automatic conversion tool v0.01
  */
 package WIP.drivers;
+
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 
@@ -29,7 +30,7 @@ import static sound.ay8910H.*;
 import static vidhrdw.generic.*;
 import static vidhrdw.galaxian.*;
 import static mame.sndintrf.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old.sound.mixerH.*;
 import static old2.mame.common.*;
 import static sndhrdw.frogger.*;
@@ -50,16 +51,20 @@ public class scramble {
             return (readinputport(2) & 0xf9) | ((readinputport(1) & 0x03) << 1);
         }
     };
-
+    public static WriteHandlerPtr scramble_coin_counter_1_w = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            coin_counter_w(0, data);
+        }
+    };
     public static WriteHandlerPtr scramble_coin_counter_2_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            coin_counter_w.handler(1, data);
+            coin_counter_w(1, data);
         }
     };
 
     public static WriteHandlerPtr scramble_coin_counter_3_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            coin_counter_w.handler(2, data);
+            coin_counter_w(2, data);
         }
     };
 
@@ -172,7 +177,7 @@ public class scramble {
                 new MemoryWriteAddress(0x5040, 0x505f, MWA_RAM, spriteram, spriteram_size),
                 new MemoryWriteAddress(0x5060, 0x507f, MWA_RAM, galaxian_bulletsram, galaxian_bulletsram_size),
                 new MemoryWriteAddress(0x6801, 0x6801, interrupt_enable_w),
-                new MemoryWriteAddress(0x6802, 0x6802, coin_counter_w),
+                new MemoryWriteAddress(0x6802, 0x6802, scramble_coin_counter_1_w),
                 new MemoryWriteAddress(0x6803, 0x6803, scramble_background_w),
                 new MemoryWriteAddress(0x6804, 0x6804, galaxian_stars_w),
                 new MemoryWriteAddress(0x6806, 0x6806, flip_screen_x_w),
@@ -191,7 +196,7 @@ public class scramble {
                 new MemoryWriteAddress(0x5040, 0x505f, MWA_RAM, spriteram, spriteram_size),
                 new MemoryWriteAddress(0x5060, 0x507f, MWA_RAM, galaxian_bulletsram, galaxian_bulletsram_size),
                 new MemoryWriteAddress(0x6801, 0x6801, interrupt_enable_w),
-                new MemoryWriteAddress(0x6802, 0x6802, coin_counter_w),
+                new MemoryWriteAddress(0x6802, 0x6802, scramble_coin_counter_1_w),
                 new MemoryWriteAddress(0x6803, 0x6803, MWA_NOP), /* ??? (it's NOT a background enable) */
                 new MemoryWriteAddress(0x6804, 0x6804, galaxian_stars_w),
                 new MemoryWriteAddress(0x6806, 0x6806, flip_screen_x_w),
@@ -209,7 +214,7 @@ public class scramble {
                 new MemoryWriteAddress(0x9840, 0x985f, MWA_RAM, spriteram, spriteram_size),
                 new MemoryWriteAddress(0x9860, 0x987f, MWA_RAM, galaxian_bulletsram, galaxian_bulletsram_size),
                 new MemoryWriteAddress(0xa801, 0xa801, interrupt_enable_w),
-                new MemoryWriteAddress(0xa802, 0xa802, coin_counter_w),
+                new MemoryWriteAddress(0xa802, 0xa802, scramble_coin_counter_1_w),
                 new MemoryWriteAddress(0xa804, 0xa804, galaxian_stars_w),
                 new MemoryWriteAddress(0xa806, 0xa806, flip_screen_x_w),
                 new MemoryWriteAddress(0xa807, 0xa807, flip_screen_y_w),
@@ -227,7 +232,7 @@ public class scramble {
                 new MemoryWriteAddress(0x6800, 0x6800, scramble_coin_counter_2_w),
                 new MemoryWriteAddress(0x6801, 0x6801, galaxian_stars_w),
                 new MemoryWriteAddress(0x6802, 0x6802, interrupt_enable_w),
-                new MemoryWriteAddress(0x6808, 0x6808, coin_counter_w),
+                new MemoryWriteAddress(0x6808, 0x6808, scramble_coin_counter_1_w),
                 new MemoryWriteAddress(0x6809, 0x6809, flip_screen_x_w),
                 new MemoryWriteAddress(0x680b, 0x680b, flip_screen_y_w),
                 new MemoryWriteAddress(0x810a, 0x810a, MWA_NOP), /* ??? */
@@ -250,7 +255,7 @@ public class scramble {
                 new MemoryWriteAddress(0x6000, 0x6000, scramble_coin_counter_3_w),
                 new MemoryWriteAddress(0x6002, 0x6002, scramble_coin_counter_2_w),
                 new MemoryWriteAddress(0x6004, 0x6004, flip_screen_w),
-                new MemoryWriteAddress(0x6005, 0x6005, coin_counter_w),
+                new MemoryWriteAddress(0x6005, 0x6005, scramble_coin_counter_1_w),
                 new MemoryWriteAddress(0x6006, 0x6006, pisces_gfxbank_w),
                 new MemoryWriteAddress(0x6801, 0x6801, interrupt_enable_w),
                 new MemoryWriteAddress(0x7000, 0x7000, watchdog_reset_w),

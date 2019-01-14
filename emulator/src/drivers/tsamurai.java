@@ -14,7 +14,7 @@ import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old2.mame.common.*;
 import static vidhrdw.generic.*;
 import static vidhrdw.tsamurai.*;
@@ -22,6 +22,7 @@ import static mame056.sound.dac.*;
 import static mame056.sound.dacH.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
+import static mame056.common.*;
 
 public class tsamurai {
 
@@ -92,7 +93,10 @@ public class tsamurai {
             cpu_cause_interrupt(2, Z80_IRQ_INT);
         }
     };
-
+	public static WriteHandlerPtr tsamurai_coin_counter_w = new WriteHandlerPtr() {public void handler(int offset, int data)
+	{
+		coin_counter_w(offset,data);
+	} };
     static MemoryReadAddress readmem[]
             = {
                 new MemoryReadAddress(0x0000, 0xbfff, MRA_ROM),
@@ -132,7 +136,7 @@ public class tsamurai {
                 new MemoryWriteAddress(0xfc00, 0xfc00, flip_screen_w),
                 new MemoryWriteAddress(0xfc01, 0xfc01, nmi_enable_w),
                 new MemoryWriteAddress(0xfc02, 0xfc02, tsamurai_textbank_w),
-                new MemoryWriteAddress(0xfc03, 0xfc04, coin_counter_w),
+                new MemoryWriteAddress(0xfc03, 0xfc04, tsamurai_coin_counter_w),
                 new MemoryWriteAddress(-1)
             };
 

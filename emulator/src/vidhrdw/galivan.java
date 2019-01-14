@@ -9,7 +9,6 @@ import static arcadeflex.libc.ptr.*;
 import static common.libc.expressions.NOT;
 import static mame.commonH.*;
 import static mame.drawgfxH.TRANSPARENCY_PEN;
-import static old.mame.common.*;
 import static mame.osdependH.osd_bitmap;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
@@ -236,8 +235,8 @@ public class galivan {
     public static WriteHandlerPtr galivan_gfxbank_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
             /* bits 0 and 1 coin counters */
-            coin_counter_w.handler(0, data & 1);
-            coin_counter_w.handler(1, data & 2);
+            coin_counter_w(0, data & 1);
+            coin_counter_w(1, data & 2);
 
             /* bit 2 flip screen */
             flipscreen = data & 0x04;
@@ -259,8 +258,8 @@ public class galivan {
     public static WriteHandlerPtr ninjemak_gfxbank_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
             /* bits 0 and 1 coin counters */
-            coin_counter_w.handler(0, data & 1);
-            coin_counter_w.handler(1, data & 2);
+            coin_counter_w(0, data & 1);
+            coin_counter_w(1, data & 2);
 
             /* bit 2 flip screen */
             flipscreen = data & 0x04;

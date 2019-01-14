@@ -22,7 +22,7 @@ import static vidhrdw.generic.*;
 import static vidhrdw.amidar.*;
 
 import static old2.mame.common.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old.sound.mixerH.*;
@@ -33,15 +33,15 @@ public class amidar {
 
     public static WriteHandlerPtr amidar_coina_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            coin_counter_w.handler(0, data);
-            coin_counter_w.handler(0, 0);
+            coin_counter_w(0, data);
+            coin_counter_w(0, 0);
         }
     };
 
     public static WriteHandlerPtr amidar_coinb_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            coin_counter_w.handler(1, data);
-            coin_counter_w.handler(1, 0);
+            coin_counter_w(1, data);
+            coin_counter_w(1, 0);
         }
     };
 

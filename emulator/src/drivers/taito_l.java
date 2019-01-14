@@ -20,7 +20,7 @@ import static mame.sndintrfH.*;
 import static sound._2203intfH.*;
 import static sound._2203intf.*;
 import static vidhrdw.taito_l.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old2.mame.mame.*;
 import static mame.palette.*;
 import static old.arcadeflex.osdepend.*;
@@ -384,10 +384,10 @@ public class taito_l {
 
     public static WriteHandlerPtr control2_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            coin_lockout_w.handler(0, ~data & 0x01);
-            coin_lockout_w.handler(1, ~data & 0x02);
-            coin_counter_w.handler(0, data & 0x04);
-            coin_counter_w.handler(1, data & 0x08);
+            coin_lockout_w(0, ~data & 0x01);
+            coin_lockout_w(1, ~data & 0x02);
+            coin_counter_w(0, data & 0x04);
+            coin_counter_w(1, data & 0x08);
         }
     };
     static int extport;

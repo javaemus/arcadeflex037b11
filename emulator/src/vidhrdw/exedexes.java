@@ -11,7 +11,6 @@ import static mame.drawgfxH.*;
 import static old.mame.drawgfx.*;
 import static vidhrdw.generic.*;
 import static mame.osdependH.*;
-import static old.mame.common.coin_counter_w;
 import static old2.mame.mame.*;
 import static mame056.common.*;
 
@@ -102,8 +101,8 @@ public class exedexes {
     public static WriteHandlerPtr exedexes_c804_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
             /* bits 0 and 1 are coin counters */
-            coin_counter_w.handler(0, data & 0x01);
-            coin_counter_w.handler(1, data & 0x02);
+            coin_counter_w(0, data & 0x01);
+            coin_counter_w(1, data & 0x02);
 
             /* bit 7 is text enable */
             chon = data & 0x80;

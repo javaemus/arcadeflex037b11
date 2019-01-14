@@ -9,7 +9,7 @@ import static arcadeflex.libc.ptr.*;
 import static mame.osdependH.osd_bitmap;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old2.mame.common.*;
 import static mame.commonH.flip_screen;
 import static old2.mame.mame.Machine;
@@ -199,7 +199,7 @@ public class _1942 {
 	       bit 4: cpu B reset
 		   bit 0: coin counter */
 
-            coin_counter_w.handler(offset, data & 0x01);
+            coin_counter_w(offset, data & 0x01);
 
             cpu_set_reset_line(1, (data & 0x10) != 0 ? ASSERT_LINE : CLEAR_LINE);
 

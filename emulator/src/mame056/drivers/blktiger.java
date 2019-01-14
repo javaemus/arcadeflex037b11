@@ -1,7 +1,7 @@
 /**
  * ported to v0.56
  * ported to v0.37b7
- * 
+ *
  */
 package mame056.drivers;
 
@@ -25,7 +25,6 @@ import static vidhrdw.blktiger.*;
 import static vidhrdw.generic.*;
 import static mame.palette.*;
 import static mame056.common.*;
-import static old.mame.common.coin_lockout_w;
 
 public class blktiger {
 
@@ -51,8 +50,8 @@ public class blktiger {
 
     public static WriteHandlerPtr blktiger_coinlockout_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            coin_lockout_w.handler(0, ~data & 0x01);
-            coin_lockout_w.handler(1, ~data & 0x02);
+            coin_lockout_w(0, ~data & 0x01);
+            coin_lockout_w(1, ~data & 0x02);
         }
     };
 

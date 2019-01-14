@@ -20,7 +20,7 @@ import static vidhrdw.generic.*;
 import static vidhrdw.ambush.*;
 
 import static old2.mame.common.*;
-import static old.mame.common.*;
+import static mame056.common.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
@@ -30,8 +30,8 @@ public class ambush {
 
     public static WriteHandlerPtr ambush_coin_counter_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            coin_counter_w.handler(0, data & 0x01);
-            coin_counter_w.handler(1, data & 0x02);
+            coin_counter_w(0, data & 0x01);
+            coin_counter_w(1, data & 0x02);
         }
     };
 

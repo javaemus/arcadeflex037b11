@@ -19,9 +19,9 @@ import static old.mame.drawgfx.fillbitmap;
 import static old.mame.drawgfx.drawgfx;
 import static old2.mame.common.*;
 import static vidhrdw.generic.*;
-import static old.mame.common.*;
-import static mame056.memoryH.*;
 import static mame056.common.*;
+import static mame056.memoryH.*;
+
 public class gunsmoke {
 
     public static UBytePtr gunsmoke_bg_scrolly = new UBytePtr();
@@ -140,8 +140,8 @@ public class gunsmoke {
             UBytePtr RAM = memory_region(REGION_CPU1);
 
             /* bits 0 and 1 are for coin counters */
-            coin_counter_w.handler(1, data & 1);
-            coin_counter_w.handler(0, data & 2);
+            coin_counter_w(1, data & 1);
+            coin_counter_w(0, data & 2);
             /* bits 2 and 3 select the ROM bank */
             bankaddress = 0x10000 + (data & 0x0c) * 0x1000;
             cpu_setbank(1, new UBytePtr(RAM, bankaddress));
