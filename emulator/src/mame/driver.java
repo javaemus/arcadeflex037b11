@@ -13,7 +13,7 @@ import static mame056.drivers.pengo.*;
 import static drivers.pacman.*;
 import static drivers.docastle.*;
 import static drivers.frogger.*;
-import static drivers.wiping.*;
+import static mame056.drivers.wiping.*;
 import static drivers.ladybug.*;
 import static drivers.hexa.*;
 import static drivers._1942.*;

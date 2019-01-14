@@ -146,6 +146,7 @@ public class commonH {
     }
 
     /* ----- per-entry constants ----- */
+    //arcadeflex note : use negative numbers in case game has rom named "1" to "6" this has been found in wiping driver
     public static final int ROMENTRYTYPE_REGION = -1;/* this entry marks the start of a region */
     public static final int ROMENTRYTYPE_END = -2;/* this entry marks the end of a region */
     public static final int ROMENTRYTYPE_RELOAD = -3;/* this entry reloads the previous ROM */

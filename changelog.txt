@@ -8,6 +8,7 @@
 -Ported coin counter to 0.56 core and updated drivers
 -Implemented printromlist in common.java and fixed imports in drivers
 -Changes defines of memory regions with negative numbers to fix games that has roms names 1 to 6 to work (wiping is one of them )
+-Ported wiping driver to 0.56
 
 13/01/2019
 ==========

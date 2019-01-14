@@ -1,16 +1,18 @@
 /**
- *  ported to 0.37b7
+ *  ported to v0.56
+ *  ported to v0.37b7
  */
-package drivers;
+package mame056.drivers;
+
 import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
-import static mame.commonH.*;
+import static mame056.commonH.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
-import static old2.mame.memoryH.*;
+import static mame056.memoryH.*;
 import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.generic.*;
@@ -70,48 +72,51 @@ public class wiping {
         }
     };
 
-    static MemoryReadAddress readmem[]
+    static Memory_ReadAddress readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x5fff, MRA_ROM),
-                new MemoryReadAddress(0x8000, 0x8bff, MRA_RAM),
-                new MemoryReadAddress(0x9000, 0x93ff, shared1_r),
-                new MemoryReadAddress(0x9800, 0x9bff, shared2_r),
-                new MemoryReadAddress(0xa800, 0xa807, ports_r),
-                new MemoryReadAddress(0xb000, 0xb7ff, MRA_RAM),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x5fff, MRA_ROM),
+                new Memory_ReadAddress(0x8000, 0x8bff, MRA_RAM),
+                new Memory_ReadAddress(0x9000, 0x93ff, shared1_r),
+                new Memory_ReadAddress(0x9800, 0x9bff, shared2_r),
+                new Memory_ReadAddress(0xa800, 0xa807, ports_r),
+                new Memory_ReadAddress(0xb000, 0xb7ff, MRA_RAM),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress writemem[]
+    static Memory_WriteAddress writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x5fff, MWA_ROM),
-                new MemoryWriteAddress(0x8000, 0x83ff, videoram_w, videoram, videoram_size),
-                new MemoryWriteAddress(0x8400, 0x87ff, colorram_w, colorram),
-                new MemoryWriteAddress(0x8800, 0x88ff, MWA_RAM, spriteram, spriteram_size),
-                new MemoryWriteAddress(0x8900, 0x8bff, MWA_RAM),
-                new MemoryWriteAddress(0x9000, 0x93ff, shared1_w, sharedram1),
-                new MemoryWriteAddress(0x9800, 0x9bff, shared2_w, sharedram2),
-                new MemoryWriteAddress(0xa000, 0xa000, interrupt_enable_w),
-                new MemoryWriteAddress(0xa002, 0xa002, wiping_flipscreen_w),
-                new MemoryWriteAddress(0xa003, 0xa003, subcpu_reset_w),
-                new MemoryWriteAddress(0xb000, 0xb7ff, MWA_RAM),
-                new MemoryWriteAddress(0xb800, 0xb800, watchdog_reset_w),
-                new MemoryWriteAddress(-1) /* end of table */};
+                new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_WriteAddress(0x0000, 0x5fff, MWA_ROM),
+                new Memory_WriteAddress(0x8000, 0x83ff, videoram_w, videoram, videoram_size),
+                new Memory_WriteAddress(0x8400, 0x87ff, colorram_w, colorram),
+                new Memory_WriteAddress(0x8800, 0x88ff, MWA_RAM, spriteram, spriteram_size),
+                new Memory_WriteAddress(0x8900, 0x8bff, MWA_RAM),
+                new Memory_WriteAddress(0x9000, 0x93ff, shared1_w, sharedram1),
+                new Memory_WriteAddress(0x9800, 0x9bff, shared2_w, sharedram2),
+                new Memory_WriteAddress(0xa000, 0xa000, interrupt_enable_w),
+                new Memory_WriteAddress(0xa002, 0xa002, wiping_flipscreen_w),
+                new Memory_WriteAddress(0xa003, 0xa003, subcpu_reset_w),
+                new Memory_WriteAddress(0xb000, 0xb7ff, MWA_RAM),
+                new Memory_WriteAddress(0xb800, 0xb800, watchdog_reset_w),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)};
 
     /* Sound cpu data */
-    static MemoryReadAddress sound_readmem[]
+    static Memory_ReadAddress sound_readmem[]
             = {
-                new MemoryReadAddress(0x0000, 0x1fff, MRA_ROM),
-                new MemoryReadAddress(0x9000, 0x93ff, shared1_r),
-                new MemoryReadAddress(0x9800, 0x9bff, shared2_r),
-                new MemoryReadAddress(-1) /* end of table */};
+                new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+                new Memory_ReadAddress(0x0000, 0x1fff, MRA_ROM),
+                new Memory_ReadAddress(0x9000, 0x93ff, shared1_r),
+                new Memory_ReadAddress(0x9800, 0x9bff, shared2_r),
+                new Memory_ReadAddress(MEMPORT_MARKER, 0)};
 
-    static MemoryWriteAddress sound_writemem[]
+    static Memory_WriteAddress sound_writemem[]
             = {
-                new MemoryWriteAddress(0x0000, 0x1fff, MWA_ROM),
-                new MemoryWriteAddress(0x4000, 0x7fff, wiping_sound_w, wiping_soundregs),
-                new MemoryWriteAddress(0x9000, 0x93ff, shared1_w),
-                new MemoryWriteAddress(0x9800, 0x9bff, shared2_w),
-                new MemoryWriteAddress(0xa001, 0xa001, interrupt_enable_w),
-                new MemoryWriteAddress(-1)
+                new Memory_WriteAddress(0x0000, 0x1fff, MWA_ROM),
+                new Memory_WriteAddress(0x4000, 0x7fff, wiping_sound_w, wiping_soundregs),
+                new Memory_WriteAddress(0x9000, 0x93ff, shared1_w),
+                new Memory_WriteAddress(0x9800, 0x9bff, shared2_w),
+                new Memory_WriteAddress(0xa001, 0xa001, interrupt_enable_w),
+                new Memory_WriteAddress(MEMPORT_MARKER, 0)
             };
 
     static InputPortPtr input_ports_wiping = new InputPortPtr() {
@@ -313,7 +318,7 @@ public class wiping {
                         18432000 / 6, /* 3.072 MHz */
                         sound_readmem, sound_writemem, null, null,
                         null, 0,
-                        interrupt, 140 /* periodic interrupt, don't know about the frequency */
+                        interrupt, 120 /* periodic interrupt, don't know about the frequency */
                 ),},
             60, DEFAULT_60HZ_VBLANK_DURATION,
             1,
@@ -347,30 +352,30 @@ public class wiping {
      */
     static RomLoadPtr rom_wiping = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);/* main cpu code */
+            ROM_REGION(0x10000, REGION_CPU1, 0);/* main cpu code */
             ROM_LOAD("1", 0x0000, 0x2000, 0xb55d0d19);
             ROM_LOAD("2", 0x2000, 0x2000, 0xb1f96e47);
             ROM_LOAD("3", 0x4000, 0x2000, 0xc67bab5a);
 
-            ROM_REGION(0x10000, REGION_CPU2);/* sound cpu */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* sound cpu */
             ROM_LOAD("4", 0x0000, 0x1000, 0xa1547e18);
 
-            ROM_REGION(0x1000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x1000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("8", 0x0000, 0x1000, 0x601160f6);/* chars */
 
-            ROM_REGION(0x2000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x2000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("7", 0x0000, 0x2000, 0x2c2cc054);/* sprites */
 
-            ROM_REGION(0x0220, REGION_PROMS);
+            ROM_REGION(0x0220, REGION_PROMS, 0);
             ROM_LOAD("wip-g13.bin", 0x0000, 0x0020, 0xb858b897);/* palette */
             ROM_LOAD("wip-f4.bin", 0x0020, 0x0100, 0x3f56c8d5);/* char lookup table */
             ROM_LOAD("wip-e11.bin", 0x0120, 0x0100, 0xe7400715);/* sprite lookup table */
 
-            ROM_REGION(0x4000, REGION_SOUND1);/* samples */
+            ROM_REGION(0x4000, REGION_SOUND1, 0);/* samples */
             ROM_LOAD("rugr5c8", 0x0000, 0x2000, 0x67bafbbf);
             ROM_LOAD("rugr6c9", 0x2000, 0x2000, 0xcac84a87);
 
-            ROM_REGION(0x0200, REGION_SOUND2);/* 4bit.8bit sample expansion PROMs */
+            ROM_REGION(0x0200, REGION_SOUND2, 0);/* 4bit.8bit sample expansion PROMs */
             ROM_LOAD("wip-e8.bin", 0x0000, 0x0100, 0xbd2c080b);/* low 4 bits */
             ROM_LOAD("wip-e9.bin", 0x0100, 0x0100, 0x4017a2a6);/* high 4 bits */
             ROM_END();
@@ -379,30 +384,30 @@ public class wiping {
 
     static RomLoadPtr rom_rugrats = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);/* main cpu code */
+            ROM_REGION(0x10000, REGION_CPU1, 0);/* main cpu code */
             ROM_LOAD("rugr1d1", 0x0000, 0x2000, 0xe7e1bd6d);
             ROM_LOAD("rugr2d2", 0x2000, 0x2000, 0x5f47b9ad);
             ROM_LOAD("rugr3d3", 0x4000, 0x2000, 0x3d748d1a);
 
-            ROM_REGION(0x10000, REGION_CPU2);/* sound cpu */
+            ROM_REGION(0x10000, REGION_CPU2, 0);/* sound cpu */
             ROM_LOAD("rugr4c4", 0x0000, 0x2000, 0xd4a92c38);
 
-            ROM_REGION(0x1000, REGION_GFX1 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x1000, REGION_GFX1, ROMREGION_DISPOSE);
             ROM_LOAD("rugr8d2", 0x0000, 0x1000, 0xa3dcaca5);/* chars */
 
-            ROM_REGION(0x2000, REGION_GFX2 | REGIONFLAG_DISPOSE);
+            ROM_REGION(0x2000, REGION_GFX2, ROMREGION_DISPOSE);
             ROM_LOAD("rugr7c13", 0x0000, 0x2000, 0xfe1191dd);/* sprites */
 
-            ROM_REGION(0x0220, REGION_PROMS);
+            ROM_REGION(0x0220, REGION_PROMS, 0);
             ROM_LOAD("prom.13g", 0x0000, 0x0020, 0xf21238f0);/* palette */
             ROM_LOAD("prom.4f", 0x0020, 0x0100, 0xcfc90f3d);/* char lookup table */
             ROM_LOAD("prom.11e", 0x0120, 0x0100, 0xcfc90f3d);/* sprite lookup table */
 
-            ROM_REGION(0x4000, REGION_SOUND1);/* samples */
+            ROM_REGION(0x4000, REGION_SOUND1, 0);/* samples */
             ROM_LOAD("rugr5c8", 0x0000, 0x2000, 0x67bafbbf);
             ROM_LOAD("rugr6c9", 0x2000, 0x2000, 0xcac84a87);
 
-            ROM_REGION(0x0200, REGION_SOUND2);/* 4bit.8bit sample expansion PROMs */
+            ROM_REGION(0x0200, REGION_SOUND2, 0);/* 4bit.8bit sample expansion PROMs */
             ROM_LOAD("wip-e8.bin", 0x0000, 0x0100, 0xbd2c080b);/* low 4 bits */
             ROM_LOAD("wip-e9.bin", 0x0100, 0x0100, 0x4017a2a6);/* high 4 bits */
             ROM_END();
