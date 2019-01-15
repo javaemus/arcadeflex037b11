@@ -1,3 +1,7 @@
+15/01/2019
+==========
+-Some intial work on cpuinterface for 0.56 (not yet complete,functional or activate)
+
 14/01/2019
 ==========
 -Ported gunsmoke driver to 0.56
