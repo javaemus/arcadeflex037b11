@@ -12,7 +12,7 @@ import static old.mame.inptportH.InputPortTiny;
 import static old.mame.inptportH.input_macro;
 import static old2.mame.memoryH.*;
 import static mame.sndintrfH.MachineSound;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 public class driverH {
 
 /*    public static class MachineCPU {

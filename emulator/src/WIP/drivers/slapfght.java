@@ -4,7 +4,8 @@
  */
 package WIP.drivers;
 //arcadeflex imports
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 //machine imports
 import static WIP.machine.slapfght.*;

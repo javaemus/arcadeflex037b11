@@ -143,23 +143,18 @@ public class cpuintrfH {
     public static final int CPU_IS_LE = 0;/* emulated CPU is little endian */
     public static final int CPU_IS_BE = 1;/* emulated CPU is big endian */
 
- /*TODO*////* Values passed to the cpu_info function of a core to retrieve information */
-/*TODO*///enum
-/*TODO*///{
-/*TODO*///	CPU_INFO_REG,
-/*TODO*///	CPU_INFO_FLAGS = MAX_REGS,
-/*TODO*///	CPU_INFO_NAME,
-/*TODO*///	CPU_INFO_FAMILY,
-/*TODO*///	CPU_INFO_VERSION,
-/*TODO*///	CPU_INFO_FILE,
-/*TODO*///	CPU_INFO_CREDITS,
-/*TODO*///	CPU_INFO_REG_LAYOUT,
-/*TODO*///	CPU_INFO_WIN_LAYOUT
-/*TODO*///};
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
+ /* Values passed to the cpu_info function of a core to retrieve information */
+    public static final int CPU_INFO_REG = 0;
+    public static final int CPU_INFO_FLAGS = MAX_REGS;
+    public static final int CPU_INFO_NAME = MAX_REGS + 1;
+    public static final int CPU_INFO_FAMILY = MAX_REGS + 2;
+    public static final int CPU_INFO_VERSION = MAX_REGS + 3;
+    public static final int CPU_INFO_FILE = MAX_REGS + 4;
+    public static final int CPU_INFO_CREDITS = MAX_REGS + 5;
+    public static final int CPU_INFO_REG_LAYOUT = MAX_REGS + 6;
+    public static final int CPU_INFO_WIN_LAYOUT = MAX_REGS + 7;
+
+    /*TODO*////*************************************
 /*TODO*/// *
 /*TODO*/// *	Core CPU interface structure
 /*TODO*/// *
@@ -169,6 +164,7 @@ public class cpuintrfH {
 
         /* index (used to make sure we mach the enum above */
         public int cpu_num;
+
         /*TODO*///
 /*TODO*///	/* table of core functions */
 /*TODO*///	void		(*init)(void);
@@ -176,16 +172,20 @@ public class cpuintrfH {
 /*TODO*///	void		(*exit)(void);
 /*TODO*///	int			(*execute)(int cycles);
 /*TODO*///	void		(*burn)(int cycles);
-/*TODO*///	unsigned	(*get_context)(void *reg);
-/*TODO*///	void		(*set_context)(void *reg);
-/*TODO*///	void *		(*get_cycle_table)(int which);
+        public abstract Object init_context();//not in mame , used specific for arcadeflex
+
+        public abstract Object get_context();//different from mame returns reg object and not size since java doesn't support references
+
+        public abstract void set_context(Object reg);
+
+        /*TODO*///	void *		(*get_cycle_table)(int which);
 /*TODO*///	void		(*set_cycle_table)(int which, void *new_table);
 /*TODO*///	unsigned	(*get_reg)(int regnum);
 /*TODO*///	void		(*set_reg)(int regnum, unsigned val);
 /*TODO*///	void		(*set_irq_line)(int irqline, int linestate);
 /*TODO*///	void		(*set_irq_callback)(int(*callback)(int irqline));
-/*TODO*///	const char *(*cpu_info)(void *context,int regnum);
-/*TODO*///	unsigned	(*cpu_dasm)(char *buffer,unsigned pc);
+        public abstract String cpu_info(Object context, int regnum);
+        /*TODO*///	unsigned	(*cpu_dasm)(char *buffer,unsigned pc);
 /*TODO*///
 /*TODO*///	/* IRQ and clock information */
         public int/*unsigned*/ num_irqs;
@@ -529,13 +529,25 @@ public class cpuintrfH {
 /*TODO*////* this is kind of gross - is it necessary */
 /*TODO*///#define 	cpu_geturnpc() 				activecpu_get_reg(REG_SP_CONTENTS)
 /*TODO*///
-/*TODO*////* map older cpu_* functions to activecpu_* */
-/*TODO*///#define		cpu_get_pc					activecpu_get_pc
-/*TODO*///#define		cpu_get_sp					activecpu_get_sp
-/*TODO*///#define		cpu_get_reg					activecpu_get_reg
-/*TODO*///#define		cpu_set_reg					activecpu_set_reg
-/*TODO*///#define		cpu_getpreviouspc			activecpu_get_previouspc
-/*TODO*///#define		cpu_set_op_base				activecpu_set_op_base
+    /* map older cpu_* functions to activecpu_* */
+    public static int cpu_get_pc() {
+        throw new UnsupportedOperationException("Unsupported");
+        /*TODO*/// activecpu_get_pc
+    }
+
+    /*TODO*///#define		cpu_get_sp					activecpu_get_sp
+    public static int cpu_get_reg(int regnum) {
+        throw new UnsupportedOperationException("Unsupported");
+        //activecpu_get_reg
+    }
+
+    /*TODO*///#define		cpu_set_reg					activecpu_set_reg
+    public static int cpu_getpreviouspc() {
+        throw new UnsupportedOperationException("Unsupported");
+        /*TODO*///    activecpu_get_previouspc
+    }
+
+    /*TODO*///#define		cpu_set_op_base				activecpu_set_op_base
 /*TODO*///#define		cpu_get_pc_byte				activecpu_get_pc_byte
 /*TODO*///
 /*TODO*///

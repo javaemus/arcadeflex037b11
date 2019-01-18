@@ -5,7 +5,8 @@
 package drivers;
 
 import static mame.commonH.*;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 import static sound._2610intfH.*;
 import static sound._2610intf.*;
 import static sound._2151intfH.*;
@@ -15,7 +16,7 @@ import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.pipedrm.*;
 import static mame056.common.*;

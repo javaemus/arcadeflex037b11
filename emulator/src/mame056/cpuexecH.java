@@ -40,6 +40,20 @@ public class cpuexecH {
             this.reset_param = reset_param;
         }
 
+        public MachineCPU(int cpu_type, int cpu_clock, Object memory_read, Object memory_write, Object port_read, Object port_write, InterruptPtr vblank_interrupt, int vblank_interrupts_per_frame, InterruptPtr timed_interrupt, int timed_interrupts_per_second) {
+            this.cpu_type = cpu_type;
+            this.cpu_clock = cpu_clock;
+            this.memory_read = memory_read;
+            this.memory_write = memory_write;
+            this.port_read = port_read;
+            this.port_write = port_write;
+            this.vblank_interrupt = vblank_interrupt;
+            this.vblank_interrupts_per_frame = vblank_interrupts_per_frame;
+            this.timed_interrupt = timed_interrupt;
+            this.timed_interrupts_per_second = timed_interrupts_per_second;
+            this.reset_param = null;
+        }
+
         public MachineCPU(int cpu_type, int cpu_clock, Object memory_read, Object memory_write, Object port_read, Object port_write, InterruptPtr vblank_interrupt, int vblank_interrupts_per_frame) {
             this.cpu_type = cpu_type;
             this.cpu_clock = cpu_clock;
@@ -76,6 +90,7 @@ public class cpuexecH {
         public InterruptPtr timed_interrupt;/* for interrupts not tied to VBLANK */
         public int timed_interrupts_per_second;
         public Object reset_param;/* parameter for cpu_reset */
+
     }
 
     /**
@@ -122,16 +137,20 @@ public class cpuexecH {
     public static final int LOADSAVE_SAVE = 1;
     public static final int LOADSAVE_LOAD = 2;
 
-
-
-    /*************************************
+    /**
+     * ***********************************
      *
-     *	Interrupt handling
+     * Interrupt handling
      *
-     *************************************/
-/*TODO*////* macro for handling NMI lines */
-/*TODO*///#define cpu_set_nmi_line(cpunum, state) cpu_set_irq_line(cpunum, IRQ_LINE_NMI, state)
-/*TODO*///
+     ************************************
+     */
+    /* macro for handling NMI lines */
+    public static void cpu_set_nmi_line(int cpunum, int state) {
+        throw new UnsupportedOperationException("Unsupported");
+        /*TODO*///        cpu_set_irq_line(cpunum, IRQ_LINE_NMI, state)
+    }
+
+    /*TODO*///
 /*TODO*///
 /*TODO*///
 /*TODO*////*************************************
@@ -189,36 +208,54 @@ public class cpuexecH {
 /*TODO*////* OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE */
 /*TODO*////* OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE */
 /*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Z80 daisy chain
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*////* fix me - where should this stuff go? */
-/*TODO*///
-/*TODO*////* daisy-chain link */
-/*TODO*///typedef struct
-/*TODO*///{
-/*TODO*///	void (*reset)(int); 			/* reset callback	  */
-/*TODO*///	int  (*interrupt_entry)(int);	/* entry callback	  */
-/*TODO*///	void (*interrupt_reti)(int);	/* reti callback	  */
-/*TODO*///	int irq_param;					/* callback paramater */
-/*TODO*///} Z80_DaisyChain;
-/*TODO*///
-/*TODO*///#define Z80_MAXDAISY	4		/* maximum of daisy chan device */
-/*TODO*///
-/*TODO*///#define Z80_INT_REQ 	0x01	/* interrupt request mask		*/
-/*TODO*///#define Z80_INT_IEO 	0x02	/* interrupt disable mask(IEO)	*/
-/*TODO*///
-/*TODO*///#define Z80_VECTOR(device,state) (((device)<<8)|(state))
-/*TODO*///
-/*TODO*///
-/*TODO*///#ifdef __cplusplus
-/*TODO*///}
-/*TODO*///#endif
-/*TODO*///
-/*TODO*///#endif	/* CPUEXEC_H */
-/*TODO*///    
+
+    /**
+     * ***********************************
+     *
+     * Z80 daisy chain
+     *
+     ************************************
+     */
+
+    /* daisy-chain link */
+    public static abstract interface Interrupt_entryPtr {
+
+        public abstract int handler(int i);
+    }
+
+    public static abstract interface ResetPtr {
+
+        public abstract void handler(int i);
+    }
+
+    public static abstract interface Interrupt_retiPtr {
+
+        public abstract void handler(int i);
+    }
+
+    /* daisy-chain link */
+    public static class Z80_DaisyChain {
+
+        public ResetPtr reset;/* reset callback     */
+        public Interrupt_entryPtr interrupt_entry;/* entry callback     */
+        public Interrupt_retiPtr interrupt_reti;/* reti callback      */
+        public int irq_param;
+
+        /* callback paramater */
+        public Z80_DaisyChain(ResetPtr reset, Interrupt_entryPtr interrupt_entry, Interrupt_retiPtr interrupt_reti, int irq_param) {
+            this.reset = reset;
+            this.interrupt_entry = interrupt_entry;
+            this.interrupt_reti = interrupt_reti;
+            this.irq_param = irq_param;
+        }
+    }
+
+    public static final int Z80_MAXDAISY = 4;/* maximum of daisy chan device */
+
+    public static final int Z80_INT_REQ = 0x01;/* interrupt request mask       */
+    public static final int Z80_INT_IEO = 0x02;/* interrupt disable mask(IEO)  */
+
+    public static int Z80_VECTOR(int device, int state) {
+        return (((device) << 8) & 0xFF | (state) & 0xFF);
+    }
 }

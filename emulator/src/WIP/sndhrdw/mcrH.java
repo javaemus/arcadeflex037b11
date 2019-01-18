@@ -3,11 +3,11 @@
  * using automatic conversion tool v0.01
  */
 package WIP.sndhrdw;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 import static mame.sndintrfH.*;
-import static mame037b11.cpuintrf.*;
-import static mame.driverH.*;
 import static WIP.sndhrdw.mcr.*;
+import static mame056.cpuexec.*;
 
 public class mcrH {
 

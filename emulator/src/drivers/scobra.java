@@ -5,7 +5,8 @@
 package drivers;
 
 import static arcadeflex.fucPtr.*;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 import static arcadeflex.libc.ptr.*;
 import static common.libc.expressions.*;
 import static mame.commonH.*;

@@ -10,6 +10,9 @@ import static mame056.cpuintrf.*;
 import static mame056.cpuintrfH.*;
 import static mame.driverH.*;
 import static old2.mame.mame.*;
+import static old2.mame.timer.*;
+import static old2.mame.timerH.*;
+import static old.arcadeflex.osdepend.*;
 
 public class cpuexec {
 
@@ -97,16 +100,15 @@ public class cpuexec {
 /*TODO*/// *************************************/
 /*TODO*///
 /*TODO*///static struct cpuinfo cpu[MAX_CPU];
-/*TODO*///
-/*TODO*///static int time_to_reset;
-/*TODO*///static int time_to_quit;
-/*TODO*///
-/*TODO*///static int vblank;
-/*TODO*///static int current_frame;
-/*TODO*///static INT32 watchdog_counter;
-/*TODO*///
-/*TODO*///static int cycles_running;
-/*TODO*///
+    static int time_to_reset;
+    static int time_to_quit;
+
+    static int vblank;
+    static int current_frame;
+    static int watchdog_counter;
+
+    static int cycles_running;
+    /*TODO*///
 /*TODO*///
 /*TODO*///
 /*TODO*////*************************************
@@ -118,35 +120,32 @@ public class cpuexec {
 /*TODO*///static UINT8 interrupt_enable[MAX_CPU];
 /*TODO*///static INT32 interrupt_vector[MAX_CPU];
 /*TODO*///
-/*TODO*///static UINT8 irq_line_state[MAX_CPU][MAX_IRQ_LINES];
-/*TODO*///static INT32 irq_line_vector[MAX_CPU][MAX_IRQ_LINES];
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Timer variables
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static void *vblank_timer;
-/*TODO*///static int vblank_countdown;
-/*TODO*///static int vblank_multiplier;
-/*TODO*///static double vblank_period;
-/*TODO*///
-/*TODO*///static void *refresh_timer;
-/*TODO*///static double refresh_period;
-/*TODO*///static double refresh_period_inv;
-/*TODO*///
-/*TODO*///static void *timeslice_timer;
-/*TODO*///static double timeslice_period;
-/*TODO*///
-/*TODO*///static double scanline_period;
-/*TODO*///static double scanline_period_inv;
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
+    static int[][]/*UINT8*/ irq_line_state = new int[MAX_CPU][MAX_IRQ_LINES];
+    static int[][] irq_line_vector = new int[MAX_CPU][MAX_IRQ_LINES];
+
+    /**
+     * ***********************************
+     *
+     * Timer variables
+     *
+     ************************************
+     */
+    static Object vblank_timer;
+    static int vblank_countdown;
+    static int vblank_multiplier;
+    static double vblank_period;
+
+    static Object refresh_timer;
+    static double refresh_period;
+    static double refresh_period_inv;
+
+    static Object timeslice_timer;
+    static double timeslice_period;
+
+    static double scanline_period;
+    static double scanline_period_inv;
+
+    /*TODO*////*************************************
 /*TODO*/// *
 /*TODO*/// *	Save/load variables
 /*TODO*/// *
@@ -156,36 +155,6 @@ public class cpuexec {
 /*TODO*///static char loadsave_schedule_id;
 /*TODO*///
 /*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Static prototypes
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static void cpu_inittimers(void);
-/*TODO*///static void cpu_vblankreset(void);
-/*TODO*///static void cpu_vblankcallback(int param);
-/*TODO*///static void cpu_updatecallback(int param);
-/*TODO*///
-/*TODO*///static void handle_loadsave(void);
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	IRQ acknowledge callbacks
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static int cpu_0_irq_callback(int irqline);
-/*TODO*///static int cpu_1_irq_callback(int irqline);
-/*TODO*///static int cpu_2_irq_callback(int irqline);
-/*TODO*///static int cpu_3_irq_callback(int irqline);
-/*TODO*///static int cpu_4_irq_callback(int irqline);
-/*TODO*///static int cpu_5_irq_callback(int irqline);
-/*TODO*///static int cpu_6_irq_callback(int irqline);
-/*TODO*///static int cpu_7_irq_callback(int irqline);
 /*TODO*///
 /*TODO*///static int (*cpu_irq_callbacks[MAX_CPU])(int) =
 /*TODO*///{
@@ -201,18 +170,13 @@ public class cpuexec {
 /*TODO*///
 /*TODO*///static int (*drv_irq_callbacks[MAX_CPU])(int);
 /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*///#if 0
-/*TODO*///#pragma mark CORE CPU
-/*TODO*///#endif
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Initialize all the CPUs
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
+    /**
+     * ***********************************
+     *
+     * Initialize all the CPUs
+     *
+     ************************************
+     */
     public static int cpu_init() {
         int cpunum;
 
@@ -238,13 +202,12 @@ public class cpuexec {
             if (cpuintrf_init_cpu(cpunum, cputype) != 0) {
                 return 1;
             }
-            /*TODO*///
-/*TODO*///		/* reset the IRQ lines */
-/*TODO*///		for (irqline = 0; irqline < MAX_IRQ_LINES; irqline++)
-/*TODO*///		{
-/*TODO*///			irq_line_state[cpunum][irqline] = CLEAR_LINE;
-/*TODO*///			irq_line_vector[cpunum][irqline] = cpunum_default_irq_vector(cpunum);
-/*TODO*///		}
+
+            /* reset the IRQ lines */
+            for (irqline = 0; irqline < MAX_IRQ_LINES; irqline++) {
+                irq_line_state[cpunum][irqline] = CLEAR_LINE;
+                irq_line_vector[cpunum][irqline] = cpunum_default_irq_vector(cpunum);
+            }
         }
         /*TODO*///
 /*TODO*///	/* save some stuff in tag 0 */
@@ -254,13 +217,14 @@ public class cpuexec {
 /*TODO*///	state_save_register_UINT8("cpu", 0, "irqline state",  &irq_line_state[0][0],  cpunum * MAX_IRQ_LINES);
 /*TODO*///	state_save_register_INT32("cpu", 0, "irqline vector", &irq_line_vector[0][0], cpunum * MAX_IRQ_LINES);
 /*TODO*///	state_save_register_INT32("cpu", 0, "watchdog count", &watchdog_counter, 1);
-/*TODO*///
-/*TODO*///	/* init the timer system */
-/*TODO*///	timer_init();
-/*TODO*///	timeslice_timer = refresh_timer = vblank_timer = NULL;
+
+        /* init the timer system */
+        timer_init();
+        timeslice_timer = refresh_timer = vblank_timer = null;
 
         return 0;
     }
+
     /*TODO*///
 /*TODO*///
 /*TODO*///
@@ -625,27 +589,27 @@ public class cpuexec {
 /*TODO*///	would reset at the start of a game.
 /*TODO*///
 /*TODO*///--------------------------------------------------------------*/
-/*TODO*///
-/*TODO*///static void watchdog_reset(void)
-/*TODO*///{
-/*TODO*///	if (watchdog_counter == -1)
-/*TODO*///		logerror("watchdog armed\n");
-/*TODO*///	watchdog_counter = 3 * Machine->drv->frames_per_second;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///WRITE_HANDLER( watchdog_reset_w )
-/*TODO*///{
-/*TODO*///	watchdog_reset();
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///READ_HANDLER( watchdog_reset_r )
-/*TODO*///{
-/*TODO*///	watchdog_reset();
-/*TODO*///	return 0xff;
-/*TODO*///}
-/*TODO*///
+    static void watchdog_reset() {
+        if (watchdog_counter == -1) {
+            logerror("watchdog armed\n");
+        }
+        watchdog_counter = (int) (3 * Machine.drv.frames_per_second);
+    }
+
+    public static WriteHandlerPtr watchdog_reset_w = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            watchdog_reset();
+        }
+    };
+
+    public static ReadHandlerPtr watchdog_reset_r = new ReadHandlerPtr() {
+        public int handler(int offset) {
+            watchdog_reset();
+            return 0xff;
+        }
+    };
+
+    /*TODO*///
 /*TODO*///
 /*TODO*///WRITE16_HANDLER( watchdog_reset16_w )
 /*TODO*///{
@@ -707,11 +671,12 @@ public class cpuexec {
 /*TODO*///}
 /*TODO*///
 /*TODO*///
-/*TODO*///void cpu_set_reset_line(int cpunum, int state)
-/*TODO*///{
-/*TODO*///	timer_set(TIME_NOW, (cpunum & 0xff) | (state << 8), reset_callback);
-/*TODO*///}
-/*TODO*///
+    public static void cpu_set_reset_line(int cpunum, int state) {
+        throw new UnsupportedOperationException("Unsupported");
+        /*TODO*///	timer_set(TIME_NOW, (cpunum & 0xff) | (state << 8), reset_callback);
+    }
+
+    /*TODO*///
 /*TODO*///
 /*TODO*///
 /*TODO*////*************************************
@@ -1097,9 +1062,9 @@ public class cpuexec {
 /*TODO*///}
 /*TODO*///
 /*TODO*///
-/*TODO*///void cpu_set_irq_line(int cpunum, int irqline, int state)
-/*TODO*///{
-/*TODO*///	int vector = 0xff;
+    public static void cpu_set_irq_line(int cpunum, int irqline, int state) {
+        throw new UnsupportedOperationException("Unsupported");
+        /*TODO*///	int vector = 0xff;
 /*TODO*///
 /*TODO*///	/* don't trigger interrupts on suspended CPUs */
 /*TODO*///	if (cpu_getstatus(cpunum) == 0)
@@ -1113,9 +1078,9 @@ public class cpuexec {
 /*TODO*///
 /*TODO*///	/* set a timer to go off */
 /*TODO*///	timer_set(TIME_NOW, (cpunum & 0x0f) | ((state & 0x0f) << 4) | ((irqline & 0x7f) << 8), cpu_manualirqcallback);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
+    }
+
+    /*TODO*///
 /*TODO*///void cpu_set_irq_line_and_vector(int cpunum, int irqline, int state, int vector)
 /*TODO*///{
 /*TODO*///	/* don't trigger interrupts on suspended CPUs */
@@ -1141,9 +1106,9 @@ public class cpuexec {
 /*TODO*/// *
 /*TODO*/// *************************************/
 /*TODO*///
-/*TODO*///void cpu_cause_interrupt(int cpunum, int type)
-/*TODO*///{
-/*TODO*///	/* special case for none */
+    public static void cpu_cause_interrupt(int cpunum, int type) {
+        throw new UnsupportedOperationException("Unsupported");
+        /*TODO*///	/* special case for none */
 /*TODO*///	if (type == INTERRUPT_NONE)
 /*TODO*///		return;
 /*TODO*///
@@ -1158,8 +1123,8 @@ public class cpuexec {
 /*TODO*///		irqline = convert_type_to_irq_line(cpunum, type, &vector);
 /*TODO*///		cpu_set_irq_line_and_vector(cpunum, irqline, HOLD_LINE, vector);
 /*TODO*///	}
-/*TODO*///}
-/*TODO*///
+    }
+    /*TODO*///
 /*TODO*///
 /*TODO*///
 /*TODO*////*************************************
@@ -1196,12 +1161,14 @@ public class cpuexec {
 /*TODO*///}
 /*TODO*///
 /*TODO*///
-/*TODO*///WRITE_HANDLER( interrupt_enable_w )
-/*TODO*///{
-/*TODO*///	VERIFY_ACTIVECPU_VOID(interrupt_enable_w);
+    public static WriteHandlerPtr interrupt_enable_w = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            throw new UnsupportedOperationException("Unsupported");
+            /*TODO*///	VERIFY_ACTIVECPU_VOID(interrupt_enable_w);
 /*TODO*///	cpu_interrupt_enable(activecpu, data);
-/*TODO*///}
-/*TODO*///
+        }
+    };
+    /*TODO*///
 /*TODO*///
 /*TODO*///
 /*TODO*///WRITE_HANDLER( interrupt_vector_w )
@@ -1225,9 +1192,10 @@ public class cpuexec {
 /*TODO*/// *
 /*TODO*/// *************************************/
 /*TODO*///
-/*TODO*///int interrupt(void)
-/*TODO*///{
-/*TODO*///	int val = 0;
+    public static InterruptPtr interrupt = new InterruptPtr() {
+        public int handler() {
+            throw new UnsupportedOperationException("Unsupported");
+            /*TODO*///	int val = 0;
 /*TODO*///
 /*TODO*///	VERIFY_ACTIVECPU(INTERRUPT_NONE, interrupt);
 /*TODO*///
@@ -1236,9 +1204,8 @@ public class cpuexec {
 /*TODO*///
 /*TODO*///	val = activecpu_default_irq_line();
 /*TODO*///	return (val == -1000) ? interrupt_vector[activecpu] : val;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
+        }
+    };
     public static InterruptPtr nmi_interrupt = new InterruptPtr() {
         public int handler() {
             throw new UnsupportedOperationException("Unsupported");
@@ -1250,14 +1217,15 @@ public class cpuexec {
 /*TODO*///	return INTERRUPT_NONE;
         }
     };
-    /*TODO*///
-/*TODO*///
-/*TODO*///int ignore_interrupt(void)
-/*TODO*///{
-/*TODO*///	VERIFY_ACTIVECPU(INTERRUPT_NONE, ignore_interrupt);
+    public static InterruptPtr ignore_interrupt = new InterruptPtr() {
+        public int handler() {
+            throw new UnsupportedOperationException("Unsupported");
+            /*TODO*///	VERIFY_ACTIVECPU(INTERRUPT_NONE, ignore_interrupt);
 /*TODO*///	return INTERRUPT_NONE;
-/*TODO*///}
-/*TODO*///
+        }
+    };
+
+    /*TODO*///
 /*TODO*///
 /*TODO*///#if (HAS_M68000 || HAS_M68010 || HAS_M68020 || HAS_M68EC020)
 /*TODO*///
@@ -1442,12 +1410,12 @@ public class cpuexec {
 /*TODO*///
 /*TODO*///--------------------------------------------------------------*/
 /*TODO*///
-/*TODO*///int cpu_getiloops(void)
-/*TODO*///{
-/*TODO*///	VERIFY_ACTIVECPU(0, cpu_getiloops);
+    public static int cpu_getiloops() {
+        throw new UnsupportedOperationException("Unsupported");
+        /*TODO*///	VERIFY_ACTIVECPU(0, cpu_getiloops);
 /*TODO*///	return cpu[activecpu].iloops;
-/*TODO*///}
-/*TODO*///
+    }
+    /*TODO*///
 /*TODO*///
 /*TODO*///
 /*TODO*////*************************************

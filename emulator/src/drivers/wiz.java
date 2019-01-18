@@ -5,7 +5,8 @@
  */
 package drivers;
 
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 import static mame.driverH.*;
 import static old2.mame.memoryH.*;
 import static mame.commonH.*;

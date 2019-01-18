@@ -16,7 +16,8 @@ along with Arcadeflex.  If not, see <http://www.gnu.org/licenses/>.
  */
 package old.arcadeflex;
 
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 import static arcadeflex.util.gamesxml.gamesXmlParser.writeGamesXml;
 import old2.arcadeflex.settings;
 import static old.arcadeflex.libc_old.*;

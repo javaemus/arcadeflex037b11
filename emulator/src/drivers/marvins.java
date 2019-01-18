@@ -4,7 +4,8 @@
  */
 package drivers;
 //arcadeflex imports
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 //cpu imports
 import static cpu.z80.z80H.*;

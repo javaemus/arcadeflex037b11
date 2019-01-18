@@ -3,7 +3,8 @@
  * using automatic conversion tool v0.01
  */
 package drivers;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 import static vidhrdw.magix.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
@@ -11,7 +12,7 @@ import static mame.commonH.*;
 import static old2.mame.memoryH.*;
 import static mame.sndintrfH.*;
 import static mame.sndintrf.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;

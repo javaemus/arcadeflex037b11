@@ -9,7 +9,8 @@ import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 //mame imports
 import static mame056.commonH.*;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 import static mame.sndintrfH.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;

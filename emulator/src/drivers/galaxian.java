@@ -6,7 +6,8 @@ package drivers;
 
 import static arcadeflex.fucPtr.*;
 import static old.arcadeflex.osdepend.*;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 import static arcadeflex.libc.ptr.*;
 
 import static cpu.z80.z80H.*;
@@ -22,7 +23,7 @@ import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.*;
 import static mame.sndintrfH.*;
 import static old2.mame.memory.*;
 import static old2.mame.mame.*;

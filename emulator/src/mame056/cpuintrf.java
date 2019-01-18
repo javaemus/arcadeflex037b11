@@ -8,6 +8,7 @@ import static old.arcadeflex.osdepend.*;
 import static mame056.cpuintrfH.*;
 import static mame.driverH.*;
 import static mame056.cpuexecH.*;
+import static mame056.memory.memory_set_context;
 //cpu imports
 
 public class cpuintrf {
@@ -59,7 +60,7 @@ public class cpuintrf {
      */
     public static int VERIFY_CPUNUM(int cpunum, int retval, String name) {
         if (cpunum < 0 || cpunum >= totalcpu) {
-            logerror(name + "() called for invalid cpu num!\n");	
+            logerror(name + "() called for invalid cpu num!\n");
             return retval;
         }
         return -1;//??
@@ -85,8 +86,8 @@ public class cpuintrf {
 
         public cpu_interface intf;/* copy of the interface data */
         public int cputype;/* type index of this CPU */
- /*TODO*///	int family; 					/* family index of this CPU */
-/*TODO*///	void *context;					/* dynamically allocated context buffer */
+        public int family;/* family index of this CPU */
+        public Object context;/* dynamically allocated context buffer */
     }
     /*TODO*///
 /*TODO*///
@@ -194,8 +195,7 @@ public class cpuintrf {
      ************************************
      */
     public static cpu_interface cpuintrf[]
-            = {
-            /*TODO*///    new dummy_cpu(),/*TODO*///	CPU0(DUMMY,    dummy,	 1,  0,1.00,-1,			    8, 16,	  0,16,LE,1, 1	),
+            = { /*TODO*///    new dummy_cpu(),/*TODO*///	CPU0(DUMMY,    dummy,	 1,  0,1.00,-1,			    8, 16,	  0,16,LE,1, 1	),
             /*TODO*///    new z80()/*TODO*///	CPU1(Z80,	   z80, 	 1,255,1.00,-1000,          8, 16,	  0,16,LE,1, 4	),
             /*TODO*///#endif
             /*TODO*///#if (HAS_8080)
@@ -428,72 +428,66 @@ public class cpuintrf {
     static int[] cpu_context_stack = new int[4];
     static int cpu_context_stack_ptr;
 
-    /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Set a new CPU context
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///INLINE void set_cpu_context(int cpunum)
-/*TODO*///{
-/*TODO*///	int newfamily = cpu[cpunum].family;
-/*TODO*///	int oldcontext = cpu_active_context[newfamily];
-/*TODO*///
-/*TODO*///	/* if we need to change contexts, save the one that was there */
-/*TODO*///	if (oldcontext != cpunum && oldcontext != -1)
-/*TODO*///		(*cpu[oldcontext].intf.get_context)(cpu[oldcontext].context);
-/*TODO*///
-/*TODO*///	/* swap memory spaces */
-/*TODO*///	activecpu = cpunum;
-/*TODO*///	memory_set_context(cpunum);
-/*TODO*///
-/*TODO*///	/* if the new CPU's context is not swapped in, do it now */
-/*TODO*///	if (oldcontext != cpunum)
-/*TODO*///	{
-/*TODO*///		(*cpu[cpunum].intf.set_context)(cpu[cpunum].context);
-/*TODO*///		cpu_active_context[newfamily] = cpunum;
-/*TODO*///	}
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Push/pop to a new CPU context
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///void cpuintrf_push_context(int cpunum)
-/*TODO*///{
-/*TODO*///	/* push the old context onto the stack */
-/*TODO*///	cpu_context_stack[cpu_context_stack_ptr++] = activecpu;
-/*TODO*///
-/*TODO*///	/* do the rest only if this isn't the activecpu */
-/*TODO*///	if (cpunum != activecpu && cpunum != -1)
-/*TODO*///		set_cpu_context(cpunum);
-/*TODO*///
-/*TODO*///	/* this is now the active CPU */
-/*TODO*///	activecpu = cpunum;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///void cpuintrf_pop_context(void)
-/*TODO*///{
-/*TODO*///	/* push the old context onto the stack */
-/*TODO*///	int cpunum = cpu_context_stack[--cpu_context_stack_ptr];
-/*TODO*///
-/*TODO*///	/* do the rest only if this isn't the activecpu */
-/*TODO*///	if (cpunum != activecpu && cpunum != -1)
-/*TODO*///		set_cpu_context(cpunum);
-/*TODO*///
-/*TODO*///	/* this is now the active CPU */
-/*TODO*///	activecpu = cpunum;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
+    /**
+     * ***********************************
+     *
+     * Set a new CPU context
+     *
+     ************************************
+     */
+    public static void set_cpu_context(int cpunum) {
+        int newfamily = cpu[cpunum].family;
+        int oldcontext = cpu_active_context[newfamily];
+
+        /* if we need to change contexts, save the one that was there */
+        if (oldcontext != cpunum && oldcontext != -1) {
+            cpu[oldcontext].context = cpu[oldcontext].intf.get_context();
+        }
+
+        /* swap memory spaces */
+        activecpu = cpunum;
+        memory_set_context(cpunum);
+
+        /* if the new CPU's context is not swapped in, do it now */
+        if (oldcontext != cpunum) {
+            cpu[cpunum].intf.set_context(cpu[cpunum].context);
+            cpu_active_context[newfamily] = cpunum;
+        }
+    }
+
+    /**
+     * ***********************************
+     *
+     * Push/pop to a new CPU context
+     *
+     ************************************
+     */
+    public static void cpuintrf_push_context(int cpunum) {
+        /* push the old context onto the stack */
+        cpu_context_stack[cpu_context_stack_ptr++] = activecpu;
+
+        /* do the rest only if this isn't the activecpu */
+        if (cpunum != activecpu && cpunum != -1) {
+            set_cpu_context(cpunum);
+        }
+
+        /* this is now the active CPU */
+        activecpu = cpunum;
+    }
+
+    public static void cpuintrf_pop_context() {
+        /* push the old context onto the stack */
+        int cpunum = cpu_context_stack[--cpu_context_stack_ptr];
+
+        /* do the rest only if this isn't the activecpu */
+        if (cpunum != activecpu && cpunum != -1) {
+            set_cpu_context(cpunum);
+        }
+
+        /* this is now the active CPU */
+        activecpu = cpunum;
+    }
+
     /**
      * ***********************************
      *
@@ -540,16 +534,16 @@ public class cpuintrf {
      ************************************
      */
     public static int cpuintrf_init_cpu(int cpunum, int cputype) {
-        /*TODO*///	char familyname[256];
-/*TODO*///	int j, size;
+        String familyname;
+        /*TODO*///	int j, size;
 
         /* fill in the type and interface */
         cpu[cpunum].intf = cpuintrf[cputype];
         cpu[cpunum].cputype = cputype;
-        /*TODO*///
-/*TODO*///	/* determine the family index */
-/*TODO*///	strcpy(familyname, cputype_core_file(cputype));
-/*TODO*///	for (j = 0; j < CPU_COUNT; j++)
+
+        /* determine the family index */
+        familyname = cputype_core_file(cputype);
+        /*TODO*///	for (j = 0; j < CPU_COUNT; j++)
 /*TODO*///		if (!strcmp(familyname, cputype_core_file(j)))
 /*TODO*///		{
 /*TODO*///			cpu[cpunum].family = j;
@@ -1005,16 +999,17 @@ public class cpuintrf {
 /*TODO*/// 	Get/set registers
 /*TODO*///--------------------------*/
 /*TODO*///
-/*TODO*///unsigned cpunum_get_reg(int cpunum, int regnum)
-/*TODO*///{
-/*TODO*///	unsigned result;
+    public static int cpunum_get_reg(int cpunum, int regnum) {
+        throw new UnsupportedOperationException("Unsupported");
+        /*TODO*///	unsigned result;
 /*TODO*///	VERIFY_CPUNUM(0, cpunum_get_reg);
 /*TODO*///	cpuintrf_push_context(cpunum);
 /*TODO*///	result = (*cpu[cpunum].intf.get_reg)(regnum);
 /*TODO*///	cpuintrf_pop_context();
 /*TODO*///	return result;
-/*TODO*///}
-/*TODO*///
+    }
+
+    /*TODO*///
 /*TODO*///
 /*TODO*///void cpunum_set_reg(int cpunum, int regnum, unsigned val)
 /*TODO*///{
@@ -1121,8 +1116,12 @@ public class cpuintrf {
 /*TODO*///}
 /*TODO*///
 /*TODO*///CPUNUM_FUNC(int,          cpunum_default_irq_line,   0,  cpu[cpunum].intf.irq_int)
-/*TODO*///CPUNUM_FUNC(int,          cpunum_default_irq_vector, 0,  cpu[cpunum].intf.default_vector)
-/*TODO*///CPUNUM_FUNC(unsigned,     cpunum_address_bits,       0,  cpu[cpunum].intf.address_bits)
+    public static int cpunum_default_irq_vector(int cpunum) {
+        VERIFY_CPUNUM(cpunum, 0, "cpunum_default_irq_vector");
+        return cpu[cpunum].intf.default_vector;
+    }
+
+    /*TODO*///CPUNUM_FUNC(unsigned,     cpunum_address_bits,       0,  cpu[cpunum].intf.address_bits)
 /*TODO*///CPUNUM_FUNC(unsigned,     cpunum_address_mask,       0,  0xffffffffUL >> (32 - cpu[cpunum].intf.address_bits))
 /*TODO*///CPUNUM_FUNC(int,          cpunum_address_shift,      0,  cpu[cpunum].intf.address_shift)
     /*TODO*///CPUNUM_FUNC(unsigned,     cpunum_endianess,          0,  cpu[cpunum].intf.endianess)
@@ -1184,13 +1183,22 @@ public class cpuintrf {
         }
         return 0;
     }
+
     /*TODO*///CPUTYPE_FUNC(unsigned,     cputype_align_unit,         0,  cpuintrf[cputype].align_unit)
 /*TODO*///CPUTYPE_FUNC(unsigned,     cputype_max_inst_len,       0,  cpuintrf[cputype].max_inst_len)
 /*TODO*///CPUTYPE_FUNC(const char *, cputype_name,               "", (*cpuintrf[cputype].cpu_info)(NULL, CPU_INFO_NAME))
 /*TODO*///CPUTYPE_FUNC(const char *, cputype_core_family,        "", (*cpuintrf[cputype].cpu_info)(NULL, CPU_INFO_FAMILY))
 /*TODO*///CPUTYPE_FUNC(const char *, cputype_core_version,       "", (*cpuintrf[cputype].cpu_info)(NULL, CPU_INFO_VERSION))
-/*TODO*///CPUTYPE_FUNC(const char *, cputype_core_file,          "", (*cpuintrf[cputype].cpu_info)(NULL, CPU_INFO_FILE))
-/*TODO*///CPUTYPE_FUNC(const char *, cputype_core_credits,       "", (*cpuintrf[cputype].cpu_info)(NULL, CPU_INFO_CREDITS))
+    public static String cputype_core_file(int cputype) {
+        cputype &= ~CPU_FLAGS_MASK;
+        if (cputype >= 0 && cputype < CPU_COUNT) {
+            return cpuintrf[cputype].cpu_info(null, CPU_INFO_FILE);
+        } else {
+            logerror("cputype_core_file() called with invalid cpu type!\n");
+        }
+        return "";
+    }
+    /*TODO*///CPUTYPE_FUNC(const char *, cputype_core_credits,       "", (*cpuintrf[cputype].cpu_info)(NULL, CPU_INFO_CREDITS))
 /*TODO*///CPUTYPE_FUNC(const char *, cputype_reg_layout,         "", (*cpuintrf[cputype].cpu_info)(NULL, CPU_INFO_REG_LAYOUT))
 /*TODO*///CPUTYPE_FUNC(const char *, cputype_win_layout,         "", (*cpuintrf[cputype].cpu_info)(NULL, CPU_INFO_WIN_LAYOUT))
 /*TODO*///

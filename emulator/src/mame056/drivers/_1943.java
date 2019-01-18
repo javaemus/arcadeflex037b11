@@ -5,12 +5,14 @@
  */
 package mame056.drivers;
 
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static old.arcadeflex.osdepend.logerror;
 import static cpu.z80.z80H.*;
 import static mame056.commonH.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuintrf.*;
+import static mame056.cpuexec.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;

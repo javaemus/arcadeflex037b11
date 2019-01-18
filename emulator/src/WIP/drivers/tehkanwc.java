@@ -4,8 +4,10 @@
  */
 package WIP.drivers;
 
-import static mame037b11.cpuintrf.*;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
+import static mame056.cpuexec.*;
+import static mame056.cpuintrf.*;
 import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;

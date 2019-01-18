@@ -3,7 +3,8 @@
  * ported to v0.37b7
  */
 package mame056.drivers;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 import static mame056.memoryH.*;
 import static arcadeflex.fucPtr.*;
 import static mame056.commonH.*;

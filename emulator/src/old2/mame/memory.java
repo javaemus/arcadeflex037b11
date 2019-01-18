@@ -19,14 +19,15 @@ import static old.arcadeflex.osdepend.logerror;
 import static mame056.common.memory_region;
 import static mame056.common.memory_region_length;
 import static mame.commonH.REGION_CPU1;
-import static mame037b11.cpuintrf.*;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 
 public class memory {
 
     /* Convenience macros - not in cpuintrf.h because they shouldn't be used by everyone */
     public static int ADDRESS_BITS(int index) {
-        return (cpuintf[Machine.drv.cpu[index].cpu_type & ~CPU_FLAGS_MASK].address_bits);
+        throw new UnsupportedOperationException("Unsupported");
+/*TODO*/// return (cpuintf[Machine.drv.cpu[index].cpu_type & ~CPU_FLAGS_MASK].address_bits);
     }
 
     public static int ABITS1(int index) {
@@ -49,7 +50,8 @@ public class memory {
     }
 
     public static int ALIGNUNIT(int index) {
-        return (cpuintf[Machine.drv.cpu[index].cpu_type & ~CPU_FLAGS_MASK].align_unit);
+       throw new UnsupportedOperationException("Unsupported");
+/*TODO*///  return (cpuintf[Machine.drv.cpu[index].cpu_type & ~CPU_FLAGS_MASK].align_unit);
     }
 
     static int BYTE_XOR_BE(int a) {
@@ -278,21 +280,21 @@ public class memory {
 
     public static ReadHandlerPtr mrh_error = new ReadHandlerPtr() {
         public int handler(int offset) {
-            logerror("CPU #%d PC %04x: warning - read %02x from unmapped memory address %04x\n", cpu_getactivecpu(), cpu_get_pc(), (int) cpu_bankbase[0].read(offset), offset);
+//            logerror("CPU #%d PC %04x: warning - read %02x from unmapped memory address %04x\n", cpu_getactivecpu(), cpu_get_pc(), (int) cpu_bankbase[0].read(offset), offset);
             return cpu_bankbase[0].read(offset);
         }
     };
 
     public static ReadHandlerPtr mrh_error_sparse = new ReadHandlerPtr() {
         public int handler(int offset) {
-            logerror("CPU #%d PC %08x: warning - read unmapped memory address %08x\n", cpu_getactivecpu(), cpu_get_pc(), offset);
+//            logerror("CPU #%d PC %08x: warning - read unmapped memory address %08x\n", cpu_getactivecpu(), cpu_get_pc(), offset);
             return 0;
         }
     };
 
     public static ReadHandlerPtr mrh_error_sparse_bit = new ReadHandlerPtr() {
         public int handler(int offset) {
-            logerror("CPU #%d PC %08x: warning - read unmapped memory bit addr %08x (byte addr %08x)\n", cpu_getactivecpu(), cpu_get_pc(), offset << 3, offset);
+ //           logerror("CPU #%d PC %08x: warning - read unmapped memory bit addr %08x (byte addr %08x)\n", cpu_getactivecpu(), cpu_get_pc(), offset << 3, offset);
             return 0;
         }
     };
@@ -405,26 +407,26 @@ public class memory {
 
     public static WriteHandlerPtr mwh_error = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            logerror("CPU #%d PC %04x: warning - write %02x to unmapped memory address %04x\n", cpu_getactivecpu(), cpu_get_pc(), data, offset);
+//            logerror("CPU #%d PC %04x: warning - write %02x to unmapped memory address %04x\n", cpu_getactivecpu(), cpu_get_pc(), data, offset);
             cpu_bankbase[0].write(offset, data);
         }
     };
 
     public static WriteHandlerPtr mwh_error_sparse = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            logerror("CPU #%d PC %08x: warning - write %02x to unmapped memory address %08x\n", cpu_getactivecpu(), cpu_get_pc(), data, offset);
+ //           logerror("CPU #%d PC %08x: warning - write %02x to unmapped memory address %08x\n", cpu_getactivecpu(), cpu_get_pc(), data, offset);
         }
     };
 
     public static WriteHandlerPtr mwh_error_sparse_bit = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            logerror("CPU #%d PC %08x: warning - write %02x to unmapped memory bit addr %08x\n", cpu_getactivecpu(), cpu_get_pc(), data, offset << 3);
+//            logerror("CPU #%d PC %08x: warning - write %02x to unmapped memory bit addr %08x\n", cpu_getactivecpu(), cpu_get_pc(), data, offset << 3);
         }
     };
 
     public static WriteHandlerPtr mwh_rom = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            logerror("CPU #%d PC %04x: warning - write %02x to ROM address %04x\n", cpu_getactivecpu(), cpu_get_pc(), data, offset);
+//            logerror("CPU #%d PC %04x: warning - write %02x to ROM address %04x\n", cpu_getactivecpu(), cpu_get_pc(), data, offset);
         }
     };
 
@@ -705,15 +707,15 @@ public class memory {
 
             /* initialize the memory base pointers for memory hooks */
             int _mra = 0;//_mra = Machine->drv->cpu[cpu].memory_read;
-            if (Machine.drv.cpu[cpu].memory_read != null && Machine.drv.cpu[cpu].memory_read[_mra] != null) {
+//            if (Machine.drv.cpu[cpu].memory_read != null && Machine.drv.cpu[cpu].memory_read[_mra] != null) {
 /*TODO*///                 while (Machine.drv.cpu[cpu].memory_read[_mra].start != -1) {
                     /*				if (_mra->base) *_mra->base = memory_find_base (cpu, _mra->start); */
  /*				if (_mra->size) *_mra->size = _mra->end - _mra->start + 1; */
             /*TODO*///         _mra++;
             /*TODO*///     }
-            }
-            int _mwa = 0;//_mwa = Machine->drv->cpu[cpu].memory_write;
-            if (Machine.drv.cpu[cpu].memory_write != null && Machine.drv.cpu[cpu].memory_write[_mwa] != null) {
+//            }
+  //          int _mwa = 0;//_mwa = Machine->drv->cpu[cpu].memory_write;
+    //        if (Machine.drv.cpu[cpu].memory_write != null && Machine.drv.cpu[cpu].memory_write[_mwa] != null) {
  /*TODO*///                while (Machine.drv.cpu[cpu].memory_write[_mwa].start != -1) {
 
             /*TODO*///         if (Machine.drv.cpu[cpu].memory_write[_mwa].base != null) {
@@ -726,7 +728,7 @@ public class memory {
             /*TODO*///         }
             /*TODO*///         _mwa++;
             /*TODO*///     }
-            }
+//            }
 
             /* initialize port structures */
             readport_size[cpu] = 0;
@@ -1569,8 +1571,8 @@ public class memory {
             }
 
             /* do not support on callback memory region */
-            logerror("CPU #%d PC %04x: warning - op-code execute on mapped i/o\n",
-                    cpu_getactivecpu(), cpu_get_pc());
+ //           logerror("CPU #%d PC %04x: warning - op-code execute on mapped i/o\n",
+//                  cpu_getactivecpu(), cpu_get_pc());
         }
     };
     public static setopbase cpu_setOPbase21 = new setopbase() {
@@ -1601,8 +1603,8 @@ public class memory {
             }
 
             /* do not support on callback memory region */
-            logerror("CPU #%d PC %04x: warning - op-code execute on mapped i/o\n",
-                    cpu_getactivecpu(), cpu_get_pc());
+//            logerror("CPU #%d PC %04x: warning - op-code execute on mapped i/o\n",
+  //                  cpu_getactivecpu(), cpu_get_pc());
 
         }
     };
@@ -1645,7 +1647,7 @@ public class memory {
 
             iorp++;
         }
-        logerror("CPU #%d PC %04x: warning - read unmapped I/O port %02x\n", cpu_getactivecpu(), cpu_get_pc(), port);
+//        logerror("CPU #%d PC %04x: warning - read unmapped I/O port %02x\n", cpu_getactivecpu(), cpu_get_pc(), port);
         return 0;
     }
 
@@ -1679,7 +1681,7 @@ public class memory {
 
             iowp++;
         }
-        logerror("CPU #%d PC %04x: warning - write %02x to unmapped I/O port %02x\n", cpu_getactivecpu(), cpu_get_pc(), value, port);
+//        logerror("CPU #%d PC %04x: warning - write %02x to unmapped I/O port %02x\n", cpu_getactivecpu(), cpu_get_pc(), value, port);
     }
 
     /*TODO*///
@@ -1779,10 +1781,10 @@ public class memory {
     public static void cpu_setOPbaseoverride (int cpu,opbase_handlerPtr function)
     {
         setOPbasefunc[cpu] = function;
-        if (cpu == cpu_getactivecpu())
-        {
-            OPbasefunc = function;
-        }
+//        if (cpu == cpu_getactivecpu())
+  //      {
+    //        OPbasefunc = function;
+      //  }
     }
     public static UBytePtr install_mem_read_handler(int cpu, int start, int end, ReadHandlerPtr _handler) {
         return install_mem_read_handler(cpu, start, end, _handler, -15000);

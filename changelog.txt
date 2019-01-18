@@ -1,3 +1,7 @@
+18/01/2019
+==========
+-More work on cpuinterface . Clean drivers from old cpuinterface . Now we work on new but still not functional
+
 15/01/2019
 ==========
 -Some intial work on cpuinterface for 0.56 (not yet complete,functional or activate)

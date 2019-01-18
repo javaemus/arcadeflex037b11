@@ -4,10 +4,10 @@
  */
 package mame056.drivers;
 
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static mame056.commonH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
@@ -15,6 +15,7 @@ import static old.mame.inptportH.*;
 import static mame056.memoryH.*;
 import static mame.sndintrfH.MachineSound;
 import static mame.sndintrfH.*;
+import static mame056.cpuexec.*;
 import static vidhrdw.generic.*;
 import static vidhrdw.crbaloon.*;
 import static mame056.sound.sn76477.*;

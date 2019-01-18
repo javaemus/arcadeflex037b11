@@ -3,7 +3,8 @@
  * using automatic conversion tool v0.01
  */
 package drivers;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
+import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.driverH.*;
 import static old2.mame.memoryH.*;
@@ -11,7 +12,7 @@ import static mame.commonH.*;
 import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static mame.sndintrfH.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.*;
 import static old.mame.inptportH.*;
 import static vidhrdw.gsword.*;
 import static sound.ay8910.*;
@@ -172,12 +173,9 @@ public class gsword {
 
     public static WriteHandlerPtr gsword_adpcm_data_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            MSM5205_data_w.handler(0, data & 0x0f);
-            /* bit 0..3 */
-            MSM5205_reset_w.handler(0, (data >> 5) & 1);
-            /* bit 5    */
-            MSM5205_vclk_w.handler(0, (data >> 4) & 1);
-            /* bit 4    */
+            MSM5205_data_w.handler(0, data & 0x0f);/* bit 0..3 */
+            MSM5205_reset_w.handler(0, (data >> 5) & 1);/* bit 5    */
+            MSM5205_vclk_w.handler(0, (data >> 4) & 1);/* bit 4    */
         }
     };
 

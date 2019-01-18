@@ -3,9 +3,9 @@
  * using automatic conversion tool v0.01
  */
 package WIP.machine;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuexec.*;
 import static arcadeflex.fucPtr.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexecH.*;
 import static mame.drawgfxH.*;
 import static WIP.sndhrdw.mcr.*;
 import static WIP.machine.z80fmlyH.*;
