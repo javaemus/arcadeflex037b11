@@ -28,7 +28,10 @@ import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old.sound.mixerH.*;
 import static old2.mame.memoryH.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.ignore_interrupt;
+import static mame056.cpuexec.interrupt_enable_w;
+import static mame056.cpuexec.nmi_interrupt;
+import static mame056.cpuexec.watchdog_reset_r;
 
 public class amidar {
 

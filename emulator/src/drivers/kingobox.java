@@ -13,7 +13,6 @@ import static old.mame.inptport.*;
 import static arcadeflex.libc.ptr.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
-import static mame037b11.cpuintrf.*;
 import static old.mame.inptportH.*;
 import static mame.sndintrf.*;
 import static vidhrdw.kingobox.*;
@@ -23,6 +22,9 @@ import static mame.sndintrfH.*;
 import static mame056.sound.dac.*;
 import static mame056.sound.dacH.*;
 import static mame056.common.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.ignore_interrupt;
+import static mame056.cpuexec.nmi_interrupt;
 public class kingobox {
 
     public static UBytePtr video_shared = new UBytePtr();

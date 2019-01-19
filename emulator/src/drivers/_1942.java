@@ -8,7 +8,6 @@ import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static mame056.commonH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
@@ -20,6 +19,8 @@ import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static vidhrdw._1942.*;
 import static mame056.common.*;
+import static mame056.cpuexec.cpu_getiloops;
+import static mame056.cpuexec.interrupt;
 
 public class _1942 {
 

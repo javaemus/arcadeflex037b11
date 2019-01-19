@@ -5,18 +5,24 @@
 package machine;
 
 import static arcadeflex.fucPtr.*;
-import static mame037b11.cpuintrf.*;
 import static old.mame.inptport.*;
 import static arcadeflex.libc.ptr.*;
-import static mame037b11.cpuintrfH.*;
-import static cpu.z80.z80H.*;
 import static mame.commonH.REGION_GFX4;
-import static old2.mame.timer.*;
-import static old2.mame.timerH.*;
+import static mame056.timer.*;
+import static mame056.timerH.*;
 import static mame056.sound.samples.*;
 import static old.arcadeflex.osdepend.*;
 import static mame056.common.*;
 import static common.libc.cstring.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.cpu_set_reset_line;
+import static mame056.cpuexec.ignore_interrupt;
+import static mame056.cpuexec.interrupt;
+import static mame056.cpuexec.nmi_interrupt;
+import static mame056.cpuexecH.Z80_NMI_INT;
+import static mame056.cpuintrfH.ASSERT_LINE;
+import static mame056.cpuintrfH.CLEAR_LINE;
+import static mame056.cpuintrfH.cpu_get_pc;
 
 public class xevious {
 

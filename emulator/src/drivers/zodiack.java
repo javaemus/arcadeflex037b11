@@ -7,7 +7,6 @@ import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
@@ -18,6 +17,9 @@ import static mame.sndintrfH.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static drivers.espial.*;
+import static mame056.cpuexec.interrupt_enable_w;
+import static mame056.cpuexec.nmi_interrupt;
+import static mame056.cpuexec.watchdog_reset_w;
 
 import static vidhrdw.generic.*;
 import static vidhrdw.galaxian.*;

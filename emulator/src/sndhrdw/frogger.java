@@ -5,7 +5,8 @@
 package sndhrdw;
 
 import static arcadeflex.fucPtr.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.cpu_gettotalcycles;
 
 public class frogger {
 

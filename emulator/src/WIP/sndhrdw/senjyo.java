@@ -3,14 +3,13 @@
  * using automatic conversion tool v0.01
  */
 package WIP.sndhrdw;
-import static mame037b11.cpuintrfH.*;
 import static arcadeflex.fucPtr.*;
-import static mame037b11.cpuintrf.*;
-import static mame037b11.cpuintrfH.*;
 import arcadeflex.libc.ptr.BytePtr;
 import static WIP.machine.z80fmlyH.*;
 import static WIP.machine.z80fmly.*;
 import mame.sndintrfH.MachineSound;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexecH.Z80_VECTOR;
 import static old2.mame.mame.*;
 import static old.sound.mixer.*;
 

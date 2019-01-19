@@ -11,8 +11,8 @@ import static common.ptr.*;
 import static common.libc.expressions.*;
 
 import static mame.sndintrfH.*;
-import static old2.mame.timer.*;
-import static old2.mame.timerH.*;
+import static mame056.timer.*;
+import static mame056.timerH.*;
 import static old2.mame.mame.Machine;
 import static mame056.common.*;
 

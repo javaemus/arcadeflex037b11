@@ -12,7 +12,6 @@ import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.generic.*;
 import static mame.sndintrf.*;
@@ -20,11 +19,15 @@ import static vidhrdw.tecmo.*;
 import static arcadeflex.libc.ptr.*;
 import static sound.MSM5205.*;
 import static sound.MSM5205H.*;
-import static cpu.z80.z80H.Z80_NMI_INT;
 import static mame.palette.*;
 import static sound._3812intfH.*;
 import static sound._3812intf.*;
 import static mame056.common.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.cpu_set_irq_line;
+import static mame056.cpuexec.ignore_interrupt;
+import static mame056.cpuexec.interrupt;
+import static mame056.cpuexec.watchdog_reset_w;
 
 public class tecmo {
 

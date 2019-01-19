@@ -29,7 +29,11 @@ import static sound.namcoH.*;
 //vidhrdw imports
 import static vidhrdw.generic.*;
 import static vidhrdw.pengo.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.interrupt;
+import static mame056.cpuexec.interrupt_enable_w;
+import static mame056.cpuexec.interrupt_vector_w;
+import static mame056.cpuexec.nmi_interrupt;
+import static mame056.cpuexec.watchdog_reset_w;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old.mame.inputH.*;

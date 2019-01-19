@@ -8,8 +8,8 @@ package machine;
 import static machine.tait8741H.*;
 import static arcadeflex.fucPtr.*;
 import static common.libc.cstring.*;
-import static old2.mame.timer.*;
-import static old2.mame.timerH.*;
+import static mame056.timer.*;
+import static mame056.timerH.*;
 
 public class tait8741 {
 

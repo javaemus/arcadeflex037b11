@@ -8,16 +8,13 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import static mame.driver.drivers;
-import mame.driverH;
 import static mame.driverH.*;
-import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import mame.driverH.MachineDriver;
 import static mame.sndintrf.sound_name;
 import static mame.sndintrf.sound_num;
-import mame.sndintrfH;
 import mame.sndintrfH.MachineSound;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuintrf.cputype_name;
 
 /**
  *

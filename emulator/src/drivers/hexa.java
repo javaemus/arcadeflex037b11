@@ -11,7 +11,6 @@ import static mame.commonH.*;
 import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
-import static mame037b11.cpuintrf.*;
 import static old.mame.inptportH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
@@ -20,6 +19,8 @@ import static vidhrdw.hexa.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static mame056.common.*;
+import static mame056.cpuexec.interrupt;
+import static mame056.cpuexec.watchdog_reset_w;
 
 public class hexa {
 

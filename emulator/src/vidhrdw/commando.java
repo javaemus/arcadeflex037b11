@@ -14,10 +14,11 @@ import static old2.mame.tilemapC.*;
 import static mame056.common.*;
 import static mame.commonH.*;
 import static old2.mame.mame.Machine;
-import static mame037b11.cpuintrfH.*;
-import static mame037b11.cpuintrf.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
+import static mame056.cpuexec.cpu_set_reset_line;
+import static mame056.cpuintrfH.ASSERT_LINE;
+import static mame056.cpuintrfH.CLEAR_LINE;
 import static vidhrdw.generic.*;
 
 public class commando {

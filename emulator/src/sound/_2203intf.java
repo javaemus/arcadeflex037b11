@@ -10,7 +10,7 @@ import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.cstdio.*;
 import static old2.mame.mame.Machine;
 import static mame.sndintrf.sndintf;
-import static old2.mame.timer.*;
+import static mame056.timer.*;
 import static sound._2203intfH.*;
 import static sound.fm.*;
 import static sound.fmH.*;

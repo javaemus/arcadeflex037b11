@@ -11,13 +11,13 @@ import static common.libc.expressions.*;
 import static mame056.commonH.*;
 import static mame.osdependH.*;
 import static mame.drawgfxH.*;
-import static mame037b11.cpuintrf.*;
 import static vidhrdw.generic.*;
 import static old.mame.drawgfx.*;
 import static old2.mame.mame.*;
 import static old2.mame.common.*;
 import static mame056.memoryH.*;
 import static mame056.common.*;
+import static mame056.cpuexec.interrupt_enable_w;
 
 public class appoooh {
 

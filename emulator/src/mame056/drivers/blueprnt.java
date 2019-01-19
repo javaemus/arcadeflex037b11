@@ -15,16 +15,17 @@ import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame.sndintrfH.*;
-import static mame037b11.cpuintrf.*;
 import static old.mame.inptportH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.sndintrf.soundlatch_r;
 import static mame.sndintrf.soundlatch_w;
-import static cpu.z80.z80H.Z80_NMI_INT;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static vidhrdw.blueprnt.*;
 import static mame056.common.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.interrupt;
+import static mame056.cpuexec.watchdog_reset_r;
 
 public class blueprnt {
 

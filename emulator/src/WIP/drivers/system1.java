@@ -7,9 +7,7 @@ import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
-import static cpu.z80.z80H.Z80_NMI_INT;
 import static mame.commonH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
@@ -23,11 +21,14 @@ import static mame.sndintrf.*;
 import static WIP.machine.segacrpt.*;
 import static mame056.sound.sn76496.*;
 import static mame056.sound.sn76496H.*;
-import static old2.mame.timerH.*;
+import static mame056.timerH.*;
 import static old.mame.inputH.*;
 import static mame.palette.*;
 import static old2.mame.memory.*;
 import static mame056.common.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.cpu_spinuntil_time;
+import static mame056.cpuexec.interrupt;
 
 public class system1 {
 

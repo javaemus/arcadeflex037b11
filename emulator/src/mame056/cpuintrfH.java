@@ -154,54 +154,83 @@ public class cpuintrfH {
     public static final int CPU_INFO_REG_LAYOUT = MAX_REGS + 6;
     public static final int CPU_INFO_WIN_LAYOUT = MAX_REGS + 7;
 
-    /*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Core CPU interface structure
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
+    /**
+     * ***********************************
+     *
+     * Core CPU interface structure
+     *
+     ************************************
+     */
+    public static abstract interface burnPtr {
+
+        public abstract void handler(int cycles);
+    }
+
+    public static abstract interface irqcallbacksPtr {
+
+        public abstract int handler(int irqline);
+    }
+
     public static abstract class cpu_interface {
 
         /* index (used to make sure we mach the enum above */
         public int cpu_num;
 
-        /*TODO*///
-/*TODO*///	/* table of core functions */
-/*TODO*///	void		(*init)(void);
-/*TODO*///	void		(*reset)(void *param);
-/*TODO*///	void		(*exit)(void);
-/*TODO*///	int			(*execute)(int cycles);
-/*TODO*///	void		(*burn)(int cycles);
+        /* table of core functions */
+        public abstract void init();
+
+        public abstract void reset(Object param);
+
+        public abstract void exit();
+
+        public abstract int execute(int cycles);
+
+        public burnPtr burn;
+
         public abstract Object init_context();//not in mame , used specific for arcadeflex
 
         public abstract Object get_context();//different from mame returns reg object and not size since java doesn't support references
 
         public abstract void set_context(Object reg);
 
-        /*TODO*///	void *		(*get_cycle_table)(int which);
-/*TODO*///	void		(*set_cycle_table)(int which, void *new_table);
-/*TODO*///	unsigned	(*get_reg)(int regnum);
-/*TODO*///	void		(*set_reg)(int regnum, unsigned val);
-/*TODO*///	void		(*set_irq_line)(int irqline, int linestate);
-/*TODO*///	void		(*set_irq_callback)(int(*callback)(int irqline));
+        public abstract int[] get_cycle_table(int which);
+
+        public abstract void set_cycle_table(int which, int[] new_table);
+
+        public abstract int get_reg(int regnum);
+
+        public abstract void set_reg(int regnum, int val);
+
+        public abstract void set_irq_line(int irqline, int linestate);
+
+        public abstract void set_irq_callback(irqcallbacksPtr callback);
+
         public abstract String cpu_info(Object context, int regnum);
-        /*TODO*///	unsigned	(*cpu_dasm)(char *buffer,unsigned pc);
-/*TODO*///
-/*TODO*///	/* IRQ and clock information */
+
+        public abstract String cpu_dasm(String buffer, int pc);
+
+        /* IRQ and clock information */
         public int/*unsigned*/ num_irqs;
         public int default_vector;
-        /*TODO*///	int *		icount;
+        public int[] icount;
         public double overclock;
         public int irq_int;
-        /*TODO*///
-/*TODO*///	/* memory information */
+
+        /* memory information */
         public int databus_width;
-        /*TODO*///	mem_read_handler memory_read;
-/*TODO*///	mem_write_handler memory_write;
-/*TODO*///	mem_read_handler internal_read;
-/*TODO*///	mem_write_handler internal_write;
-/*TODO*///	offs_t		pgm_memory_base;
-/*TODO*///	void		(*set_op_base)(offs_t pc);
+
+        public abstract int memory_read(int offset);
+
+        public abstract void memory_write(int offset, int data);
+
+        public abstract int internal_read(int offset);
+
+        public abstract void internal_write(int offset, int data);
+
+        public int pgm_memory_base;
+
+        public abstract void set_op_base(int pc);
+
         public int address_shift;
         public int/*unsigned*/ address_bits;
         public int/*unsigned*/ endianess;
@@ -515,8 +544,11 @@ public class cpuintrfH {
 /*TODO*/// *************************************/
 /*TODO*///
 /*TODO*///#define		activecpu_get_previouspc()	activecpu_get_reg(REG_PREVIOUSPC)
-/*TODO*///#define		activecpu_get_pc()			activecpu_get_reg(REG_PC)
-/*TODO*///#define		activecpu_get_sp()			activecpu_get_reg(REG_SP)
+    public static int activecpu_get_pc() {
+        return activecpu_get_reg(REG_PC);
+    }
+
+    /*TODO*///#define		activecpu_get_sp()			activecpu_get_reg(REG_SP)
 /*TODO*///#define		activecpu_set_pc(val)		activecpu_set_reg(REG_PC, val)
 /*TODO*///#define		activecpu_set_sp(val)		activecpu_set_reg(REG_SP, val)
 /*TODO*///
@@ -547,33 +579,32 @@ public class cpuintrfH {
         /*TODO*///    activecpu_get_previouspc
     }
 
-    /*TODO*///#define		cpu_set_op_base				activecpu_set_op_base
-/*TODO*///#define		cpu_get_pc_byte				activecpu_get_pc_byte
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	 CPU interface accessors
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*////* return a pointer to the interface struct for a given CPU type */
-/*TODO*///INLINE const struct cpu_interface *cputype_get_interface(int cputype)
-/*TODO*///{
-/*TODO*///	extern const struct cpu_interface cpuintrf[];
-/*TODO*///	return &cpuintrf[cputype];
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////* return a the index of the active CPU */
-/*TODO*///INLINE int cpu_getactivecpu(void)
-/*TODO*///{
-/*TODO*///	extern int activecpu;
-/*TODO*///	return activecpu;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
+    public static void cpu_set_op_base(int val) {
+        activecpu_set_op_base(val);
+    }
+
+    public static int cpu_get_pc_byte() {
+        return activecpu_get_pc_byte();
+    }
+
+    /**
+     * ***********************************
+     *
+     * CPU interface accessors
+     *
+     ************************************
+     */
+
+    /* return a pointer to the interface struct for a given CPU type */
+    public static cpu_interface cputype_get_interface(int cputype) {
+        return cpuintrf[cputype];
+    }
+
+    /* return a the index of the active CPU */
+    public static int cpu_getactivecpu() {
+        return activecpu;
+    }
+
     /* return a the total number of registered CPUs */
     public static int cpu_gettotalcpu() {
         return totalcpu;

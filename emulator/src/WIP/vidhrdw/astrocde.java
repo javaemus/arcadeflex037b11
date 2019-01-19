@@ -9,19 +9,23 @@ import arcadeflex.libc.ptr.*;
 import static old2.mame.mame.Machine;
 import static mame.osdependH.*;
 import static old.mame.drawgfx.*;
+import static mame056.cpu.z80.z80H.*;
 import static mame.commonH.REGION_CPU1;
-import static mame037b11.cpuintrfH.*;
-import static mame037b11.cpuintrf.*;
-import static cpu.z80.z80.*;
 import static old2.mame.memory.*;
-import static cpu.z80.z80H.Z80_AF;
-import static cpu.z80.z80H.Z80_BC;
 import static old.mame.inptport.input_port_0_r;
 import static arcadeflex.video.*;
 import static old.mame.inptport.input_port_1_r;
 import static old.mame.usrintrf.*;
 import static old2.arcadeflex.osd_cpuH.*;
 import static mame056.common.*;
+import static mame056.cpu.z80.z80.z80_ICount;
+import static mame056.cpuexec.cpu_getcurrentframe;
+import static mame056.cpuexec.cpu_set_irq_line;
+import static mame056.cpuexec.ignore_interrupt;
+import static mame056.cpuexec.interrupt;
+import static mame056.cpuexec.interrupt_enable_w;
+import static mame056.cpuintrfH.CLEAR_LINE;
+import static mame056.cpuintrfH.cpu_get_reg;
 
 public class astrocde {
 

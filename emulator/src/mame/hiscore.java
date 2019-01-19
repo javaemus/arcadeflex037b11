@@ -11,9 +11,9 @@ import static mame.osdependH.*;
 import arcadeflex.util.hiscoreFileParser;
 import static old.arcadeflex.fileio.*;
 import static old.arcadeflex.osdepend.logerror;
-import static mame037b11.cpuintrfH.*;
-import static mame.driverH.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexecH.CPU_FLAGS_MASK;
+import static mame056.cpuintrfH.cpu_getactivecpu;
+import static mame056.cpuintrfH.cputype_get_interface;
 
 public class hiscore {
 
@@ -37,7 +37,7 @@ public class hiscore {
         int oldcpu = cpu_getactivecpu();
         memorycontextswap(cpu);
         //MEMORY_WRITE(cpu, addr, value);
-        cpuintf[Machine.drv.cpu[cpu].cpu_type & ~CPU_FLAGS_MASK].memory_write(addr, value);
+        cputype_get_interface(Machine.drv.cpu[cpu].cpu_type & ~CPU_FLAGS_MASK).memory_write(addr, value);
         if (oldcpu != cpu) {
             memorycontextswap(oldcpu);
         }
@@ -47,7 +47,7 @@ public class hiscore {
         int oldcpu = cpu_getactivecpu(), result;
         memorycontextswap(cpu);
         //result = MEMORY_READ(cpu, addr);
-        result = cpuintf[Machine.drv.cpu[cpu].cpu_type & ~CPU_FLAGS_MASK].memory_read(addr);
+        result = cputype_get_interface(Machine.drv.cpu[cpu].cpu_type & ~CPU_FLAGS_MASK).memory_read(addr);
         if (oldcpu != cpu) {
             memorycontextswap(oldcpu);
         }

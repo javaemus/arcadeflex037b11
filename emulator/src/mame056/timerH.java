@@ -1,9 +1,10 @@
 /**
+ * ported to 0.56
  * ported to 0.37b7
  */
-package old2.mame;
+package mame056;
 
-import static old2.mame.timer.*;
+import static mame056.timer.*;
 
 public class timerH {
 

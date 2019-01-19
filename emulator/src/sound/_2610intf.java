@@ -11,7 +11,7 @@ import static old2.mame.mame.*;
 import static sound.fmH.*;
 import static sound.fm.*;
 import static mame056.sound.streams.*;
-import static old2.mame.timer.*;
+import static mame056.timer.*;
 import static arcadeflex.fucPtr.*;
 import static mame056.common.*;
 import static arcadeflex.libc.ptr.*;

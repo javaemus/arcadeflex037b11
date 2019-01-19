@@ -14,9 +14,8 @@ import static mame.commonH.REGION_CPU1;
 import static mame056.common.*;
 import static mame056.sound.sn76477.*;
 import static old2.mame.common.*;
-import static mame037b11.cpuintrf.*;
 import static mame.palette.*;
-import static mame056.common.*;
+import static mame056.cpuexec.cpu_yield;
 
 public class route16 {
 

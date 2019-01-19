@@ -15,9 +15,9 @@ import static mame.palette.*;
 import static arcadeflex.libc.cstring.*;
 import static old2.mame.common.*;
 import static mame.commonH.*;
-import static mame037b11.cpuintrf.*;
 import static old2.mame.memoryH.*;
 import static mame056.common.*;
+import static mame056.cpuexec.interrupt_enable_w;
 public class superqix {
 
     public static int gfxbank;

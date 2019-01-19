@@ -13,10 +13,10 @@ import static mame056.common.*;
 import static old2.mame.common.*;
 import static mame.commonH.flip_screen;
 import static old2.mame.mame.Machine;
-import static mame037b11.cpuintrf.*;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
+import static mame056.cpuexec.cpu_set_reset_line;
 
 public class _1942 {
 

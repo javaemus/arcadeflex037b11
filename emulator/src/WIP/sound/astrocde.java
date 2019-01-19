@@ -5,19 +5,15 @@
 package WIP.sound;
 
 import static arcadeflex.fucPtr.*;
-import static arcadeflex.libc.ptr.*;
 import static common.libc.cstdlib.rand;
 import common.ptr.ShortPtr;
 import static old2.mame.mame.Machine;
 import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
-import static sound.ay8910H.*;
-import static old.arcadeflex.osdepend.*;
-import static mame037b11.cpuintrf.*;
 import static old.sound.mixer.*;
-import static mame056.sound.streams.*;
 import static WIP.sound.astrocdeH.*;
-import static cpu.z80.z80H.*;
+import static mame056.cpuintrfH.cpu_get_reg;
+import static mame056.cpu.z80.z80H.*;
 
 public class astrocde extends snd_interface {
 

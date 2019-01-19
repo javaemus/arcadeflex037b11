@@ -22,7 +22,7 @@ import static sound.MSM5205.*;
 import static arcadeflex.libc.ptr.*;
 import static mame056.common.*;
 import static mame056.commonH.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.nmi_interrupt;
 
 public class appoooh {
 

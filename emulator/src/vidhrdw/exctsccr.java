@@ -13,9 +13,9 @@ import static mame.osdependH.*;
 import static vidhrdw.generic.*;
 import static mame.commonH.*;
 import static mame056.common.*;
-import static old2.mame.timer.*;
-import static old2.mame.timerH.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.timer.*;
+import static mame056.timerH.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
 
 public class exctsccr {
 

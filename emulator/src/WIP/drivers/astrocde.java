@@ -7,7 +7,6 @@ import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
@@ -23,6 +22,7 @@ import static WIP.sndhrdw.astrocde.*;
 import static WIP.sndhrdw.gorf.*;
 import static WIP.sound.astrocdeH.*;
 import static WIP.sound.astrocde.*;
+import static mame056.cpuexec.interrupt_vector_w;
 
 public class astrocde {
 

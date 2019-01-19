@@ -15,7 +15,6 @@ import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
@@ -28,7 +27,9 @@ import static old2.mame.common.*;
 import static sndhrdw.frogger.*;
 import static sndhrdw.scramble.*;
 import static old2.mame.memory.*;
-import static mame056.common.*;
+import static mame056.cpuexec.ignore_interrupt;
+import static mame056.cpuexec.interrupt_enable_w;
+import static mame056.cpuexec.watchdog_reset_r;
 
 public class scobra {
 

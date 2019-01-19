@@ -25,7 +25,8 @@ import static mame056.common.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.interrupt;
+import static mame056.cpuexec.watchdog_reset_r;
 
 public class ambush {
 

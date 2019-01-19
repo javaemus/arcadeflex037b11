@@ -1,13 +1,16 @@
 /**
+ * ported to 0.56
  * ported to 0.37b7
  */
-package old2.mame;
+package mame056;
 
-import static mame037b11.cpuintrf.*;
-import static mame037b11.cpuintrfH.*;
 import static mame.driverH.*;
+import static mame056.cpuexecH.CPU_FLAGS_MASK;
+import mame056.cpuintrfH.burnPtr;
+import static mame056.cpuintrfH.cpu_gettotalcpu;
+import static mame056.cpuintrfH.cputype_get_interface;
 import static old2.mame.mame.*;
-import static old2.mame.timerH.*;
+import static mame056.timerH.*;
 
 /**
  *
@@ -61,8 +64,8 @@ public class timer {
     /* list of per-CPU timer data */
     static cpu_entry[] cpudata = new cpu_entry[MAX_CPU + 1];
     static int /*cpu_entry*/ lastcpu_ptr;
-    static int /*cpu_entry*/ activecpu_ptr;
-    static int /*cpu_entry*/ last_activecpu_ptr;
+    static int /*cpu_entry*/ active_cpu_ptr;
+    static int /*cpu_entry*/ last_active_cpu_ptr;
 
     /* list of active timers */
     static timer_entry[] timers = new timer_entry[MAX_TIMERS];
@@ -79,8 +82,8 @@ public class timer {
      * return the current absolute time
      */
     public static double getabsolutetime() {
-        if (activecpu_ptr != -1 && (cpudata[activecpu_ptr].icount[0] + cpudata[activecpu_ptr].lost) > 0) {
-            return base_time - ((double) (cpudata[activecpu_ptr].icount[0] + cpudata[activecpu_ptr].lost) * cpudata[activecpu_ptr].cycles_to_sec);
+        if (active_cpu_ptr != -1 && (cpudata[active_cpu_ptr].icount[0] + cpudata[active_cpu_ptr].lost) > 0) {
+            return base_time - ((double) (cpudata[active_cpu_ptr].icount[0] + cpudata[active_cpu_ptr].lost) * cpudata[active_cpu_ptr].cycles_to_sec);
         } else {
             return base_time;
         }
@@ -97,20 +100,20 @@ public class timer {
         if (period == TIME_NOW) {
             newicount = 0;
         } else {
-            newicount = (int) ((timer.expire - time) * cpudata[activecpu_ptr].sec_to_cycles) + 1;
+            newicount = (int) ((timer.expire - time) * cpudata[active_cpu_ptr].sec_to_cycles) + 1;
         }
 
         /* determine if we're scheduled to run more cycles */
-        diff = cpudata[activecpu_ptr].icount[0] - newicount;
+        diff = cpudata[active_cpu_ptr].icount[0] - newicount;
 
         /* if so, set the new icount and compute the amount of "lost" time */
         if (diff > 0) {
-            cpudata[activecpu_ptr].lost += diff;
-            if (cpudata[activecpu_ptr].burn != null) {
-                (cpudata[activecpu_ptr].burn).handler(diff);
+            cpudata[active_cpu_ptr].lost += diff;
+            if (cpudata[active_cpu_ptr].burn != null) {
+                (cpudata[active_cpu_ptr].burn).handler(diff);
                 /* let the CPU burn the cycles */
             } else {
-                cpudata[activecpu_ptr].icount[0] = newicount;
+                cpudata[active_cpu_ptr].icount[0] = newicount;
                 /* CPU doesn't care */
             }
         }
@@ -215,18 +218,20 @@ public class timer {
         for (int i = 0; i < cpudata.length; i++) {
             cpudata[i] = new cpu_entry();
         }
-        activecpu_ptr = -1;
-        last_activecpu_ptr = lastcpu_ptr;
+        active_cpu_ptr = -1;
+        last_active_cpu_ptr = lastcpu_ptr;
 
         /* compute the cycle times */
         for (int i = 0; i <= lastcpu_ptr; i++)//for (cpu = cpudata, i = 0; cpu <= lastcpu; cpu++, i++)
         {
+            int cputype = Machine.drv.cpu[i].cpu_type & ~CPU_FLAGS_MASK;
+            
             /* make a pointer to this CPU's interface functions */
-            cpudata[i].icount = cpuintf[Machine.drv.cpu[i].cpu_type & ~CPU_FLAGS_MASK].icount;
-            cpudata[i].burn = cpuintf[Machine.drv.cpu[i].cpu_type & ~CPU_FLAGS_MASK].burn;
+            cpudata[i].icount = cputype_get_interface(cputype).icount;
+            cpudata[i].burn = cputype_get_interface(cputype).burn;
 
             /* get the CPU's overclocking factor */
-            cpudata[i].overclock = cpuintf[Machine.drv.cpu[i].cpu_type & ~CPU_FLAGS_MASK].overclock;
+            cpudata[i].overclock = cputype_get_interface(cputype).overclock;
 
             /* everyone is active but suspended by the reset line until further notice */
             cpudata[i].suspended = SUSPEND_REASON_RESET;
@@ -284,7 +289,7 @@ public class timer {
         timer_list_insert(timer);
 
         /* if we're supposed to fire before the end of this cycle, adjust the counter */
-        if (activecpu_ptr != -1 && timer.expire < base_time) {
+        if (active_cpu_ptr != -1 && timer.expire < base_time) {
             timer_adjust(timer, time, period);
         }
         /*TODO*///
@@ -322,7 +327,7 @@ public class timer {
         timer_list_insert(timer);
 
         /* if we're supposed to fire before the end of this cycle, adjust the counter */
-        if (activecpu_ptr != -1 && timer.expire < base_time) {
+        if (active_cpu_ptr != -1 && timer.expire < base_time) {
             timer_adjust(timer, time, duration);
         }
 
@@ -350,7 +355,7 @@ public class timer {
         timer_list_insert(timer);
 
         /* if we're supposed to fire before the end of this cycle, adjust the counter */
-        if (activecpu_ptr != -1 && timer.expire < base_time) {
+        if (active_cpu_ptr != -1 && timer.expire < base_time) {
             timer_adjust(timer, time, duration);
         }
 
@@ -498,7 +503,7 @@ public class timer {
         }
 
         /* reset scheduling so it starts with CPU 0 */
-        last_activecpu_ptr = lastcpu_ptr;
+        last_active_cpu_ptr = lastcpu_ptr;
 
         /* go back to scheduling */
         return pick_cpu(cpu, cycles, timer_head.expire);
@@ -548,7 +553,7 @@ public class timer {
 
         /* now stop counting cycles */
         base_time = cpu.time;
-        activecpu_ptr = -1;
+        active_cpu_ptr = -1;
     }
 
     /**
@@ -573,7 +578,7 @@ public class timer {
         cpu.nocount = 0;
 
         /* if this is the active CPU and we're halting, stop immediately */
-        if (activecpu != -1 && cpunum == activecpu && old == 0 && cpu.suspended != 0)//if (activecpu && cpu == activecpu && !old && cpu->suspended)
+        if (active_cpu_ptr != -1 && cpunum == active_cpu_ptr && old == 0 && cpu.suspended != 0)//if (active_cpu && cpu == active_cpu && !old && cpu->suspended)
         {
             /*TODO*///		#if VERBOSE
 /*TODO*///			verbose_print("T=%.6g: Reset ICount\n", getabsolutetime() + global_offset);
@@ -679,15 +684,15 @@ public class timer {
         int cpu;//cpu_entry *cpu;
 
         /* cause an immediate resynchronization */
-        if (activecpu_ptr != -1) {
-            int left = cpudata[activecpu_ptr].icount[0];
+        if (active_cpu_ptr != -1) {
+            int left = cpudata[active_cpu_ptr].icount[0];
             if (left > 0) {
-                cpudata[activecpu_ptr].lost += left;
-                if (cpudata[activecpu_ptr].burn != null) {
-                    (cpudata[activecpu_ptr].burn).handler(left);
+                cpudata[active_cpu_ptr].lost += left;
+                if (cpudata[active_cpu_ptr].burn != null) {
+                    (cpudata[active_cpu_ptr].burn).handler(left);
                     /* let the CPU burn the cycles */
                 } else {
-                    cpudata[activecpu_ptr].icount[0] = 0;
+                    cpudata[active_cpu_ptr].icount[0] = 0;
                     /* CPU doesn't care */
                 }
             }
@@ -711,7 +716,7 @@ public class timer {
      * pick the next CPU to run
      */
     public static int pick_cpu(int[] cpunum, int[] cycles, double end) {
-        int cpu = last_activecpu_ptr;//cpu_entry *cpu = last_activecpu;
+        int cpu = last_active_cpu_ptr;//cpu_entry *cpu = last_active_cpu;
 
         /* look for a CPU that isn't suspended and hasn't run its full timeslice yet */
         do {
@@ -731,7 +736,7 @@ public class timer {
 			}*/
             } /* if this CPU isn't suspended and has time left.... */ else if (cpudata[cpu].time < end) {
                 /* mark the CPU active, and remember the CPU number locally */
-                activecpu_ptr = last_activecpu_ptr = cpu;
+                active_cpu_ptr = last_active_cpu_ptr = cpu;
 
                 /* return the number of cycles to execute and the CPU number */
                 cpunum[0] = cpudata[cpu].index;
@@ -749,7 +754,7 @@ public class timer {
                     return 1;
                 }
             }
-        } while (cpu != last_activecpu_ptr);
+        } while (cpu != last_active_cpu_ptr);
 
         /* ASG 990225 - bump all suspended CPU times after the slice has finished */
         for (cpu = 0; cpu <= lastcpu_ptr; cpu++)//for (cpu = cpudata; cpu <= lastcpu; cpu++)

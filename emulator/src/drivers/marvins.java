@@ -8,7 +8,7 @@ import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 //cpu imports
-import static cpu.z80.z80H.*;
+
 //mame imports
 import static mame.commonH.*;
 import static mame.sndintrfH.*;
@@ -26,7 +26,9 @@ import static vidhrdw.marvins.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.interrupt;
+import static mame056.cpuexec.nmi_interrupt;
 import static old.arcadeflex.osdepend.*;
 
 public class marvins {

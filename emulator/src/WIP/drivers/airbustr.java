@@ -14,12 +14,10 @@ import static mame.commonH.*;
 import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static mame.sndintrfH.*;
-import static mame037b11.cpuintrf.*;
 import static mame056.common.*;
 import static old.mame.inptportH.*;
 import static arcadeflex.libc.ptr.*;
 import static WIP.vidhrdw.airbustr.*;
-import static cpu.z80.z80H.Z80_NMI_INT;
 import static sound.okim6295.*;
 import static sound.okim6295H.*;
 import static sound._2203intfH.*;
@@ -29,6 +27,8 @@ import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
 import static mame.palette.*;
 import static mame.sndintrf.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.interrupt;
 
 public class airbustr {
 

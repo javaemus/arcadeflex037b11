@@ -5,13 +5,14 @@
 package mame056.sndhrdw;
 
 import static mame056.memoryH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.sndintrf.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static old.sound.mixerH.*;
 import static mame056.sound.streams.*;
 import static arcadeflex.fucPtr.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.cpu_gettotalcycles;
 
 public class timeplt {
 

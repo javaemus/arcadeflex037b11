@@ -13,7 +13,6 @@ import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame.sndintrfH.*;
-import static mame037b11.cpuintrf.*;
 import static old.mame.inptportH.*;
 import static old.mame.inputH.*;
 import static vidhrdw.zaxxon.*;
@@ -24,7 +23,9 @@ import static mame056.sndhrdw.zaxxon.*;
 import static arcadeflex.libc.ptr.*;
 import static common.libc.cstdlib.*;
 import static mame056.common.*;
-import static mame056.common.*;
+import static mame056.cpuexec.interrupt;
+import static mame056.cpuexec.interrupt_enable_w;
+import static mame056.cpuexec.nmi_interrupt;
 
 public class zaxxon {
 

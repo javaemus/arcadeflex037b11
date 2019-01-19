@@ -182,10 +182,11 @@ public class cpuexecH {
 /*TODO*///int m68_level7_irq(void);
 /*TODO*///#endif
 /*TODO*///
-/*TODO*////* defines for backward compatibility */
-/*TODO*///#define Z80_NMI_INT 		INTERRUPT_NMI
-/*TODO*///#define Z80_IRQ_INT 		-1000
-/*TODO*///#define M6502_INT_IRQ		M6502_IRQ_LINE
+/* defines for backward compatibility */
+    public static final int Z80_NMI_INT = INTERRUPT_NMI;
+    public static final int Z80_IRQ_INT = -1000;
+
+    /*TODO*///#define M6502_INT_IRQ		M6502_IRQ_LINE
 /*TODO*///#define M6502_INT_NMI		INTERRUPT_NMI
 /*TODO*///#define M6809_INT_IRQ		M6809_IRQ_LINE
 /*TODO*///#define M6809_INT_FIRQ		M6809_FIRQ_LINE
@@ -208,7 +209,6 @@ public class cpuexecH {
 /*TODO*////* OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE */
 /*TODO*////* OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE OBSOLETE */
 /*TODO*///
-
     /**
      * ***********************************
      *

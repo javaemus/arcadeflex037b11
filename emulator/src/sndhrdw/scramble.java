@@ -5,8 +5,9 @@
 package sndhrdw;
 
 import static arcadeflex.fucPtr.*;
-import static cpu.z80.z80H.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.cpu_gettotalcycles;
+import static mame056.cpuexecH.Z80_IRQ_INT;
 import static mame056.sound.streams.*;
 
 public class scramble {

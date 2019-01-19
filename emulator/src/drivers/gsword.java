@@ -3,6 +3,7 @@
  * using automatic conversion tool v0.01
  */
 package drivers;
+import static mame056.cpu.z80.z80H.*;
 import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
@@ -19,7 +20,6 @@ import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static old.arcadeflex.osdepend.*;
 import static arcadeflex.libc.ptr.*;
-import static cpu.z80.z80H.*;
 import static mame.sndintrf.*;
 import static sound.MSM5205.*;
 import static sound.MSM5205H.*;
@@ -121,7 +121,7 @@ public class gsword {
                 gsword_nmi_count = 0;
                 return Z80_NMI_INT;
             }
-            return Z80_IGNORE_INT;
+            return ignore_interrupt.handler();
         }
     };
 

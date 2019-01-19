@@ -6,14 +6,12 @@ package drivers;
 import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
-import static cpu.z80.z80H.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static mame056.common.*;
 import static old2.mame.common.*;
@@ -23,7 +21,9 @@ import static mame056.sound.dac.*;
 import static mame056.sound.dacH.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
-import static mame056.common.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.ignore_interrupt;
+import static mame056.cpuexec.nmi_interrupt;
 
 public class tsamurai {
 

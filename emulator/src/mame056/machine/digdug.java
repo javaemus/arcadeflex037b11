@@ -8,12 +8,20 @@ package mame056.machine;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static old.arcadeflex.osdepend.logerror;
-import static cpu.z80.z80H.Z80_NMI_INT;
-import static mame037b11.cpuintrf.*;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.cpu_set_reset_line;
+import static mame056.cpuexec.cpu_spinuntil_int;
+import static mame056.cpuexec.ignore_interrupt;
+import static mame056.cpuexec.interrupt;
+import static mame056.cpuexec.nmi_interrupt;
+import static mame056.cpuexecH.Z80_NMI_INT;
+import static mame056.cpuintrfH.ASSERT_LINE;
+import static mame056.cpuintrfH.CLEAR_LINE;
+import static mame056.cpuintrfH.cpu_get_pc;
+import static mame056.cpuintrfH.cpu_getactivecpu;
 import static old.mame.inptport.*;
-import static old2.mame.timer.*;
-import static old2.mame.timerH.*;
+import static mame056.timer.*;
+import static mame056.timerH.*;
 import static vidhrdw.generic.*;
 
 public class digdug {

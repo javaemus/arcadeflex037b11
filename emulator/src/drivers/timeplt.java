@@ -13,13 +13,15 @@ import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
 import static mame.sndintrf.*;
-import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static mame056.common.*;
+import static mame056.cpuexec.ignore_interrupt;
+import static mame056.cpuexec.interrupt_enable_w;
+import static mame056.cpuexec.nmi_interrupt;
+import static mame056.cpuexec.watchdog_reset_w;
 import static vidhrdw.generic.*;
 import static mame056.sndhrdw.timeplt.*;
 import static vidhrdw.timeplt.*;
-import static mame056.sndhrdw.timeplt.*;
 
 public class timeplt {
 

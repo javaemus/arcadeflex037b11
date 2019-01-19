@@ -5,7 +5,7 @@
 package machine;
 
 import static arcadeflex.fucPtr.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuintrfH.cpu_get_pc;
 import static old.mame.inptport.*;
 import static old.arcadeflex.osdepend.*;
 

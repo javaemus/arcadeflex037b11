@@ -9,7 +9,6 @@ import static arcadeflex.fucPtr.*;
 import arcadeflex.libc.ptr.UBytePtr;
 import static old.arcadeflex.osdepend.logerror;
 import static mame.commonH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
@@ -22,6 +21,8 @@ import static vidhrdw.gundealr.*;
 import static old2.mame.memory.*;
 import static mame056.common.*;
 import static mame.palette.*;
+import static mame056.cpuexec.cpu_getiloops;
+import static mame056.cpuexec.ignore_interrupt;
 
 public class gundealr
 {

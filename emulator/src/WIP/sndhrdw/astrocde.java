@@ -6,22 +6,13 @@ package WIP.sndhrdw;
 
 import static arcadeflex.fucPtr.*;
 import static common.libc.expressions.*;
-import static arcadeflex.libc.ptr.*;
-import static old2.mame.mame.Machine;
 import static mame056.sound.samples.*;
-import static mame056.sound.samplesH.*;
-import static mame037b11.cpuintrf.*;
-import static mame.sndintrf.*;
-import static arcadeflex.libc.cstring.*;
-import static cpu.z80.z80H.Z80_BC;
+import static mame056.cpu.z80.z80H.*;
 import mame056.commonH.GameSamples;
 import mame.sndintrfH.MachineSound;
-import static old2.mame.timer.*;
-import static old2.mame.timerH.*;
-import static sound.ay8910.*;
-import static old.arcadeflex.osdepend.*;
 import static old.mame.inptport.input_port_2_r;
 import static WIP.sndhrdw.gorf.*;
+import static mame056.cpuintrfH.cpu_get_reg;
 
 public class astrocde {
 

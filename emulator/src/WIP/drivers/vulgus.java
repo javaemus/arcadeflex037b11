@@ -13,13 +13,13 @@ import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
 import static mame.sndintrf.*;
-import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
-import static mame.palette.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static vidhrdw.generic.*;
 import static WIP.vidhrdw.vulgus.*;
+import static mame056.cpuexec.cpu_getiloops;
+import static mame056.cpuexec.interrupt;
 
 public class vulgus {
 

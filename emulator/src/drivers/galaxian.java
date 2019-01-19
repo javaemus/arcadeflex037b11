@@ -10,8 +10,6 @@ import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static arcadeflex.libc.ptr.*;
 
-import static cpu.z80.z80H.*;
-
 import static WIP.drivers.scramble.*;
 import static drivers.pacman.driver_pacman;
 

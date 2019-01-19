@@ -12,11 +12,11 @@ import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static WIP.vidhrdw.dday.*;
+import static mame056.cpuexec.ignore_interrupt;
 import static vidhrdw.generic.*;
 
 public class dday {

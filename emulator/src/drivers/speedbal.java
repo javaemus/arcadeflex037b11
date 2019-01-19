@@ -18,7 +18,7 @@ import static arcadeflex.libc.ptr.*;
 import static sound._3812intfH.*;
 import static sound._3812intf.*;
 import static mame.palette.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.interrupt;
 import static vidhrdw.speedbal.*;
 
 public class speedbal {

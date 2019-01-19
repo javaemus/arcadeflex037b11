@@ -3,6 +3,7 @@
  * ported to v0.36
  */
 package drivers;
+import static mame056.cpu.z80.z80H.*;
 import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
@@ -22,11 +23,12 @@ import static mame.sndintrf.*;
 import static vidhrdw.kchamp.*;
 import static mame056.sound.dacH.*;
 import static mame056.sound.dac.*;
-import static cpu.z80.z80H.*;
-import static mame037b11.cpuintrf.*;
 import static sound.MSM5205H.*;
 import static sound.MSM5205.*;
 import static mame056.common.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.cpu_set_reset_line;
+import static mame056.cpuexec.ignore_interrupt;
 public class kchamp {
 
     static int nmi_enable = 0;
@@ -403,7 +405,7 @@ public class kchamp {
                 return Z80_NMI_INT;
             }
 
-            return Z80_IGNORE_INT;
+            return ignore_interrupt.handler();
         }
     };
     static int counter = 0;
@@ -454,7 +456,7 @@ public class kchamp {
                 return Z80_NMI_INT;
             }
 
-            return Z80_IGNORE_INT;
+            return ignore_interrupt.handler();
         }
     };
 

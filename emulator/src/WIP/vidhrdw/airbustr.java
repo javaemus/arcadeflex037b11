@@ -8,21 +8,18 @@ import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static common.libc.expressions.*;
 import static common.libc.cstring.*;
-import static mame.commonH.*;
 import static mame.drawgfxH.*;
 import static mame.osdependH.*;
 import static mame.palette.*;
 import static mame.paletteH.*;
-import static mame056.common.coin_counter_w;
 import static old.mame.drawgfx.*;
-import static old2.mame.common.flip_screen_w;
 import static old2.mame.mame.Machine;
 import static old2.mame.tilemapC.*;
 import static old2.mame.tilemapH.*;
 import static vidhrdw.generic.*;
 import static old.arcadeflex.osdepend.*;
-import static mame037b11.cpuintrf.*;
 import static WIP.drivers.airbustr.*;
+import static mame056.cpuintrfH.cpu_get_pc;
 
 public class airbustr {
 

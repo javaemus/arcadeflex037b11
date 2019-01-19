@@ -2,7 +2,6 @@
  * ported to 0.37b5
  */
 package old.mame;
-import static mame037b11.cpuintrfH.*;
 import static arcadeflex.libc.cstdio.*;
 import static old.arcadeflex.libc_old.strlen;
 import static common.subArrays.*;
@@ -14,7 +13,6 @@ import static arcadeflex.video.*;
 import static old2.mame.mame.update_video_and_audio;
 import static mame056.common.*;
 import static mame056.commonH.COIN_COUNTERS;
-import static mame037b11.cpuintrf.*;
 import static old.mame.drawgfx.*;
 import static old.mame.drawgfx.drawgfx;
 import static mame.drawgfxH.*;
@@ -32,6 +30,9 @@ import static mame.ui_text.ui_getstring;
 import static mame.ui_textH.*;
 import static mame.usrintrfH.*;
 import static mame.version.build_version;
+import static mame056.cpuexec.machine_reset;
+import static mame056.cpuexecH.CPU_AUDIO_CPU;
+import static mame056.cpuintrf.cputype_name;
 
 
 public class usrintrf {

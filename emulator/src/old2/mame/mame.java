@@ -39,8 +39,6 @@ import static old.arcadeflex.osdepend.osd_init;
 import static arcadeflex.libc.ptr.*;
 import static common.subArrays.*;
 import static arcadeflex.video.*;
-import static mame.commonH.REGIONFLAG_DISPOSE;
-import static mame037b11.cpuintrf.*;
 import static old.mame.drawgfx.*;
 import static old.mame.drawgfx.set_pixel_functions;
 import static mame.drawgfxH.*;
@@ -54,6 +52,8 @@ import static mame.palette.*;
 import static mame.sndintrf.*;
 import static mame056.common.*;
 import static mame056.commonH.*;
+import static mame056.cpuexec.cpu_init;
+import static mame056.cpuexec.cpu_run;
 import static old.mame.usrintrf.*;
 import static vidhrdw.generic.*;
 

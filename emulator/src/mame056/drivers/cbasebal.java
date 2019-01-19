@@ -13,7 +13,6 @@ import static mame056.commonH.*;
 import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static mame.sndintrfH.*;
-import static mame037b11.cpuintrf.*;
 import static mame056.common.*;
 import static old.mame.inptportH.*;
 import static arcadeflex.libc.ptr.*;
@@ -27,7 +26,7 @@ import static sound.ym2413.*;
 import static mame056.machine.kabuki.*;
 import static mame.palette.*;
 import static vidhrdw.generic.*;
-import static mame056.common.*;
+import static mame056.cpuexec.interrupt;
 
 public class cbasebal {
 

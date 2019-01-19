@@ -1,3 +1,8 @@
+19/01/2019
+==========
+-Ported timer class to 0.56
+-Ported all classes to use 0.56 cpuinterface (it is still uncomplete and without cpu implementation yet)
+
 18/01/2019
 ==========
 -More work on cpuinterface . Clean drivers from old cpuinterface . Now we work on new but still not functional

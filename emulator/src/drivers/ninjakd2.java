@@ -8,7 +8,6 @@ import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static mame.commonH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
@@ -25,6 +24,8 @@ import static mame056.sound.samplesH.*;
 import static mame.palette.*;
 import mame056.commonH.GameSample;
 import mame056.commonH.GameSamples;
+import static mame056.cpuexec.cpu_set_irq_line;
+import static mame056.cpuexec.ignore_interrupt;
 import static old2.mame.memory.*;
 import static old2.mame.mame.Machine;
 

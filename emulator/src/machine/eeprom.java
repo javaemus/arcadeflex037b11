@@ -6,7 +6,9 @@ package machine;
 
 import static arcadeflex.libc.ptr.*;
 import static machine.eepromH.*;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuintrfH.ASSERT_LINE;
+import static mame056.cpuintrfH.CLEAR_LINE;
+import static mame056.cpuintrfH.PULSE_LINE;
 import static old.arcadeflex.fileio.*;
 import static old.arcadeflex.libc_old.*;
 import static old.mame.usrintrf.*;

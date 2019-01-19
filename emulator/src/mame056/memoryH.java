@@ -5,7 +5,7 @@ package mame056;
 
 import static arcadeflex.fucPtr.*;
 import arcadeflex.libc.ptr.UBytePtr;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuintrfH.*;
 import static mame056.memory.*;
 
 public class memoryH {
@@ -392,8 +392,9 @@ public class memoryH {
 /*TODO*///#define IORP_NOP				((port_read_handler)STATIC_NOP)
 /*TODO*///
 /*TODO*////* 8-bit port writes */
-public static final int IOWP_NOP=STATIC_NOP;
-/*TODO*///
+    public static final int IOWP_NOP = STATIC_NOP;
+
+    /*TODO*///
 /*TODO*////* 16-bit port reads */
 /*TODO*///#define IORP16_NOP				((port_read16_handler)STATIC_NOP)
 /*TODO*///
@@ -1043,6 +1044,7 @@ public static final int IOWP_NOP=STATIC_NOP;
             setop.handler(pc);
         }
     }
+
     /*TODO*///
 /*TODO*///
 /*TODO*////* ----- forces the next branch to generate a call to the opbase handler ----- */
@@ -1051,16 +1053,13 @@ public static final int IOWP_NOP=STATIC_NOP;
 /*TODO*////* ----- bank switching macro ----- */
 /*TODO*///#define cpu_setbank(bank, base) 														
 /*TODO*///do {	
-    public static void cpu_setbank(int bank,UBytePtr base)
-    {
-	if (bank >= STATIC_BANK1 && bank <= STATIC_BANKMAX)									
-	{																					
-		cpu_bankbase[bank] = base;											
-		if (opcode_entry == bank && cpu_getactivecpu() >= 0)							
-		{				
-			opcode_entry = 0xff;														
-			cpu_set_op_base(cpu_get_pc_byte());											
-		}																				
-	}																					
-    }   
+    public static void cpu_setbank(int bank, UBytePtr base) {
+        if (bank >= STATIC_BANK1 && bank <= STATIC_BANKMAX) {
+            cpu_bankbase[bank] = base;
+            if (opcode_entry == bank && cpu_getactivecpu() >= 0) {
+                opcode_entry = 0xff;
+                cpu_set_op_base(cpu_get_pc_byte());
+            }
+        }
+    }
 }

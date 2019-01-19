@@ -28,29 +28,28 @@ public class cpuintrf {
 /*TODO*///#endif
 /*TODO*///
 /*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Macros to help verify active CPU
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///#define VERIFY_ACTIVECPU(retval, name)						\
-/*TODO*///	if (activecpu < 0)										\
-/*TODO*///	{														\
-/*TODO*///		logerror(#name "() called with no active cpu!\n");	\
-/*TODO*///		return retval;										\
-/*TODO*///	}
-/*TODO*///
-/*TODO*///#define VERIFY_ACTIVECPU_VOID(name)							\
-/*TODO*///	if (activecpu < 0)										\
-/*TODO*///	{														\
-/*TODO*///		logerror(#name "() called with no active cpu!\n");	\
-/*TODO*///		return;												\
-/*TODO*///	}
-/*TODO*///
-/*TODO*///
-/*TODO*///
+    /**
+     * ***********************************
+     *
+     * Macros to help verify active CPU
+     *
+     ************************************
+     */
+    public static int VERIFY_ACTIVECPU(int retval, String name) {
+        if (activecpu < 0) {
+            logerror(name + "() called with no active cpu!\n");
+            return retval;
+        }
+        return -1;//??
+    }
+
+    public static void VERIFY_ACTIVECPU_VOID(String name) {
+        if (activecpu < 0) {
+            logerror(name + "() called with no active cpu!\n");
+
+        }
+    }
+
     /**
      * ***********************************
      *
@@ -743,49 +742,53 @@ public class cpuintrf {
 /*TODO*///	VERIFY_ACTIVECPU_VOID(activecpu_set_cycle_tbl);
 /*TODO*///	(*cpu[activecpu].intf.set_cycle_table)(which, new_table);
 /*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*--------------------------
-/*TODO*/// 	Get/set registers
-/*TODO*///--------------------------*/
-/*TODO*///
-/*TODO*///unsigned activecpu_get_reg(int regnum)
-/*TODO*///{
-/*TODO*///	VERIFY_ACTIVECPU(0, activecpu_get_reg);
-/*TODO*///	return (*cpu[activecpu].intf.get_reg)(regnum);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
+    /*--------------------------
+ 	Get/set registers
+    --------------------------*/
+    public static int activecpu_get_reg(int regnum) {
+        if (activecpu < 0) {
+            logerror("activecpu_get_reg() called with no active cpu!\n");
+            return 0;
+        }
+        return cpu[activecpu].intf.get_reg(regnum);
+    }
+
+    /*TODO*///
 /*TODO*///void activecpu_set_reg(int regnum, unsigned val)
 /*TODO*///{
 /*TODO*///	VERIFY_ACTIVECPU_VOID(activecpu_set_reg);
 /*TODO*///	(*cpu[activecpu].intf.set_reg)(regnum, val);
 /*TODO*///}
 /*TODO*///
-/*TODO*///
-/*TODO*////*--------------------------
-/*TODO*/// 	Get/set PC
-/*TODO*///--------------------------*/
-/*TODO*///
-/*TODO*///offs_t activecpu_get_pc_byte(void)
-/*TODO*///{
-/*TODO*///	offs_t base, pc;
-/*TODO*///	int shift;
-/*TODO*///
-/*TODO*///	VERIFY_ACTIVECPU(0, activecpu_get_pc_byte);
-/*TODO*///	shift = cpu[activecpu].intf.address_shift;
-/*TODO*///	base = cpu[activecpu].intf.pgm_memory_base;
-/*TODO*///	pc = (*cpu[activecpu].intf.get_reg)(REG_PC);
-/*TODO*///	return base + ((shift < 0) ? (pc << -shift) : (pc >> shift));
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///void activecpu_set_op_base(unsigned val)
-/*TODO*///{
-/*TODO*///	VERIFY_ACTIVECPU_VOID(activecpu_set_op_base);
-/*TODO*///	(*cpu[activecpu].intf.set_op_base)(val);
-/*TODO*///}
-/*TODO*///
+
+    /*--------------------------
+ 	Get/set PC
+    --------------------------*/
+    public static int activecpu_get_pc_byte() {
+        int base, pc;
+        int shift;
+        if (activecpu < 0) {
+            logerror("activecpu_get_pc_byte() called with no active cpu!\n");
+            return 0;
+        }
+        shift = cpu[activecpu].intf.address_shift;
+        base = cpu[activecpu].intf.pgm_memory_base;
+        pc = cpu[activecpu].intf.get_reg(REG_PC);
+        if (shift != 0) {
+            throw new UnsupportedOperationException("to be checked!");//z80 doesn't have shift so we can't check , leave that for future to not be forgotten
+        }
+        return base + ((shift < 0) ? (pc << -shift) : (pc >>> shift));
+    }
+
+    public static void activecpu_set_op_base(int val) {
+        if (activecpu < 0) {
+            logerror("activecpu_set_op_base() called with no active cpu!\n");
+
+        }
+        cpu[activecpu].intf.set_op_base(val);
+    }
+
+    /*TODO*///
 /*TODO*///
 /*TODO*////*--------------------------
 /*TODO*/// 	Disassembly
@@ -878,8 +881,15 @@ public class cpuintrf {
 /*TODO*///
 /*TODO*///CPU_FUNC(int,          activecpu_default_irq_line,   0,  cpu[activecpu].intf.irq_int)
 /*TODO*///CPU_FUNC(int,          activecpu_default_irq_vector, 0,  cpu[activecpu].intf.default_vector)
-/*TODO*///CPU_FUNC(unsigned,     activecpu_address_bits,       0,  cpu[activecpu].intf.address_bits)
-/*TODO*///CPU_FUNC(unsigned,     activecpu_address_mask,       0,  0xffffffffUL >> (32 - cpu[activecpu].intf.address_bits))
+    public static int activecpu_address_bits() {
+        if (activecpu < 0) {
+            logerror("activecpu_address_bits() called with no active cpu!\n");
+            return 0;
+        }
+        return cpu[activecpu].intf.address_bits;
+    }
+
+    /*TODO*///CPU_FUNC(unsigned,     activecpu_address_mask,       0,  0xffffffffUL >> (32 - cpu[activecpu].intf.address_bits))
 /*TODO*///CPU_FUNC(int,          activecpu_address_shift,      0,  cpu[activecpu].intf.address_shift)
 /*TODO*///CPU_FUNC(unsigned,     activecpu_endianess,          0,  cpu[activecpu].intf.endianess)
 /*TODO*///CPU_FUNC(unsigned,     activecpu_databus_width,      0,  cpu[activecpu].intf.databus_width)
@@ -1122,8 +1132,12 @@ public class cpuintrf {
     }
 
     /*TODO*///CPUNUM_FUNC(unsigned,     cpunum_address_bits,       0,  cpu[cpunum].intf.address_bits)
-/*TODO*///CPUNUM_FUNC(unsigned,     cpunum_address_mask,       0,  0xffffffffUL >> (32 - cpu[cpunum].intf.address_bits))
-/*TODO*///CPUNUM_FUNC(int,          cpunum_address_shift,      0,  cpu[cpunum].intf.address_shift)
+    public static int cpunum_address_mask(int cpunum) {
+        VERIFY_CPUNUM(cpunum, 0, "cpunum_address_mask");
+        return (0xffffffff >>> (32 - cpu[cpunum].intf.address_bits));
+    }
+
+    /*TODO*///CPUNUM_FUNC(int,          cpunum_address_shift,      0,  cpu[cpunum].intf.address_shift)
     /*TODO*///CPUNUM_FUNC(unsigned,     cpunum_endianess,          0,  cpu[cpunum].intf.endianess)
     public static int cpunum_databus_width(int cpunum) {
         VERIFY_CPUNUM(cpunum, 0, "cpunum_databus_width");
@@ -1186,8 +1200,17 @@ public class cpuintrf {
 
     /*TODO*///CPUTYPE_FUNC(unsigned,     cputype_align_unit,         0,  cpuintrf[cputype].align_unit)
 /*TODO*///CPUTYPE_FUNC(unsigned,     cputype_max_inst_len,       0,  cpuintrf[cputype].max_inst_len)
-/*TODO*///CPUTYPE_FUNC(const char *, cputype_name,               "", (*cpuintrf[cputype].cpu_info)(NULL, CPU_INFO_NAME))
-/*TODO*///CPUTYPE_FUNC(const char *, cputype_core_family,        "", (*cpuintrf[cputype].cpu_info)(NULL, CPU_INFO_FAMILY))
+    public static String cputype_name(int cputype) {
+        cputype &= ~CPU_FLAGS_MASK;
+        if (cputype >= 0 && cputype < CPU_COUNT) {
+            return cpuintrf[cputype].cpu_info(null, CPU_INFO_NAME);
+        } else {
+            logerror("cputype_name() called with invalid cpu type!\n");
+        }
+        return "";
+    }
+
+    /*TODO*///CPUTYPE_FUNC(const char *, cputype_core_family,        "", (*cpuintrf[cputype].cpu_info)(NULL, CPU_INFO_FAMILY))
 /*TODO*///CPUTYPE_FUNC(const char *, cputype_core_version,       "", (*cpuintrf[cputype].cpu_info)(NULL, CPU_INFO_VERSION))
     public static String cputype_core_file(int cputype) {
         cputype &= ~CPU_FLAGS_MASK;

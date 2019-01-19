@@ -8,7 +8,6 @@ import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import arcadeflex.libc.ptr.UBytePtr;
 import static mame.commonH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
@@ -24,6 +23,8 @@ import sound._3812intfH.YM3526interface;
 import static mame056.sound.dac.*;
 import static mame056.sound.dacH.*;
 import static mame056.common.*;
+import static mame056.cpuexec.ignore_interrupt;
+import static mame056.cpuexec.interrupt;
 public class galivan {
 
     public static InitMachinePtr galivan_init_machine = new InitMachinePtr() {

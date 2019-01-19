@@ -10,8 +10,13 @@ import static old.arcadeflex.osdepend.*;
 import static old2.mame.memoryH.*;
 import static mame.commonH.*;
 import static mame056.common.*;
-import static mame037b11.cpuintrfH.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.cpu_set_reset_line;
+import static mame056.cpuexec.ignore_interrupt;
+import static mame056.cpuexec.interrupt_enable_w;
+import static mame056.cpuexec.nmi_interrupt;
+import static mame056.cpuintrfH.ASSERT_LINE;
+import static mame056.cpuintrfH.CLEAR_LINE;
+import static mame056.cpuintrfH.cpu_get_pc;
 
 public class slapfght {
 

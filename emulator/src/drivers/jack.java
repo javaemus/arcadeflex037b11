@@ -11,11 +11,9 @@ import static mame.commonH.*;
 import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
-import static mame037b11.cpuintrf.*;
 import static old.mame.inptportH.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
-import static cpu.z80.z80H.Z80_IRQ_INT;
 import static mame.sndintrf.soundlatch_r;
 import static mame.sndintrf.soundlatch_w;
 import static mame.sndintrfH.*;
@@ -24,6 +22,10 @@ import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static mame056.common.*;
 import static mame.palette.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.cpu_gettotalcycles;
+import static mame056.cpuexec.ignore_interrupt;
+import static mame056.cpuexec.interrupt;
 import static old2.mame.memory.*;
 
 public class jack {

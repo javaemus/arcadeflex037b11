@@ -14,7 +14,6 @@ import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame.sndintrfH.*;
-import static mame037b11.cpuintrf.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memory.*;
 import static arcadeflex.libc.ptr.*;
@@ -24,6 +23,9 @@ import static sound.ay8910H.*;
 import static mame.sndintrf.*;
 import static vidhrdw.wiz.*;
 import static mame056.common.*;
+import static mame056.cpuexec.interrupt_enable_w;
+import static mame056.cpuexec.nmi_interrupt;
+import static mame056.cpuexec.watchdog_reset_r;
 
 public class wiz {
 

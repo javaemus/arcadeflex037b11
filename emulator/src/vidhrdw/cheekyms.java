@@ -14,9 +14,9 @@ import static arcadeflex.libc.cstring.*;
 import static common.libc.expressions.*;
 import static arcadeflex.libc.ptr.*;
 import static old2.mame.common.*;
-import static mame037b11.cpuintrf.*;
 import static mame056.sound.dac.*;
 import static mame.commonH.*;
+import static mame056.cpuexec.interrupt_enable_w;
 
 public class cheekyms {
 

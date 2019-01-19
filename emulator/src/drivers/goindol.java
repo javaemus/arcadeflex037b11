@@ -13,7 +13,6 @@ import static mame.commonH.*;
 import static old.mame.inptport.*;
 import static arcadeflex.libc.ptr.*;
 import static mame.drawgfxH.*;
-import static mame037b11.cpuintrf.*;
 import static old.mame.inptportH.*;
 import static mame.sndintrf.*;
 import static vidhrdw.goindol.*;
@@ -21,6 +20,7 @@ import static sound._2203intf.*;
 import static sound._2203intfH.*;
 import static mame.sndintrfH.*;
 import static mame056.common.*;
+import static mame056.cpuexec.interrupt;
 public class goindol {
 
     public static WriteHandlerPtr goindol_bankswitch_w = new WriteHandlerPtr() {

@@ -8,7 +8,7 @@ import static WIP.machine.z80fmlyH.*;
 import static arcadeflex.fucPtr.*;
 import static old.arcadeflex.osdepend.*;
 import static mame056.cpuintrfH.*;
-import static old2.mame.timer.*;
+import static mame056.timer.*;
 
 public class z80fmly {
 

@@ -12,7 +12,6 @@ import static WIP.machine.slapfght.*;
 //mame imports
 import static mame.commonH.*;
 import static mame.sndintrfH.*;
-import static mame.sndintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 //sound imports
@@ -22,12 +21,11 @@ import static sound.ay8910H.*;
 import static vidhrdw.generic.*;
 import static WIP.vidhrdw.slapfght.*;
 
-import static old2.mame.common.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
-import static old.sound.mixerH.*;
 import static old2.mame.memoryH.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.interrupt;
+import static mame056.cpuexec.nmi_interrupt;
 import static old.mame.inputH.KEYCODE_F1;
 import static old.mame.inputH.KEYCODE_F2;
 

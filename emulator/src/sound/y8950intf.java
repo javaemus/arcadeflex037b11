@@ -16,9 +16,10 @@ import static arcadeflex.fucPtr.*;
 import common.ptr.ShortPtr;
 import static sound.fmoplH.*;
 import static sound.fmopl.*;
-import static mame037b11.cpuintrfH.*;
-import static old2.mame.timer.*;
+import static mame056.timer.*;
 import static mame056.common.*;
+import static mame056.cpuintrfH.ASSERT_LINE;
+import static mame056.cpuintrfH.CLEAR_LINE;
 
 public class y8950intf extends snd_interface {
 

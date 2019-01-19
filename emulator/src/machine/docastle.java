@@ -7,8 +7,11 @@ package machine;
 import static arcadeflex.fucPtr.ReadHandlerPtr;
 import static arcadeflex.fucPtr.WriteHandlerPtr;
 import static old.arcadeflex.osdepend.logerror;
-import static cpu.z80.z80H.Z80_NMI_INT;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.cpu_gettotalcycles;
+import static mame056.cpuexec.cpu_spinuntil_trigger;
+import static mame056.cpuexec.cpu_trigger;
+import static mame056.cpuexecH.Z80_NMI_INT;
 
 public class docastle {
 

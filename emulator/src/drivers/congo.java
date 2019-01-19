@@ -13,7 +13,6 @@ import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame.sndintrfH.*;
-import static mame037b11.cpuintrf.*;
 import static mame056.common.*;
 import static old.mame.inptportH.*;
 import static old.mame.inputH.*;
@@ -23,6 +22,9 @@ import static mame056.sound.sn76496H.*;
 import static mame056.sound.sn76496.*;
 import static drivers.zaxxon.*;
 import static mame.sndintrf.*;
+import static mame056.cpuexec.interrupt;
+import static mame056.cpuexec.interrupt_enable_w;
+import static mame056.cpuexec.nmi_interrupt;
 import static mame056.sound.samples.*;
 
 public class congo {

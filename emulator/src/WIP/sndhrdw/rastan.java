@@ -7,9 +7,13 @@ package WIP.sndhrdw;
 import static arcadeflex.fucPtr.*;
 import static old2.mame.mame.Machine;
 import static old.arcadeflex.osdepend.*;
-import static cpu.z80.z80H.Z80_NMI_INT;
-import static mame037b11.cpuintrf.*;
-import static mame037b11.cpuintrfH.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.cpu_set_reset_line;
+import static mame056.cpuexec.cpu_spin;
+import static mame056.cpuexecH.Z80_NMI_INT;
+import static mame056.cpuintrfH.ASSERT_LINE;
+import static mame056.cpuintrfH.CLEAR_LINE;
+import static mame056.cpuintrfH.cpu_get_pc;
 
 public class rastan {
 

@@ -1,28 +1,27 @@
 /**
  * ported to 037b11
  */
-package mame037b11;
+package oldmame037b11;
 
 import java.util.ArrayList;
 
 import static arcadeflex.fucPtr.InterruptPtr;
 import arcadeflex.fucPtr.ReadHandlerPtr;
 import arcadeflex.fucPtr.WriteHandlerPtr;
-import cpu.Dummy_cpu;
-import cpu.z80.z80;
 import static mame.driverH.MAX_CPU;
 import static mame.driverH.VIDEO_UPDATE_AFTER_VBLANK;
 import static old.arcadeflex.osdepend.logerror;
-import static mame037b11.cpuintrfH.*;
+import static oldmame037b11.cpuintrfH.*;
 import static mame.sndintrf.sound_reset;
 import static old.mame.inptport.*;
 import static old2.mame.mame.Machine;
 import static old2.mame.mame.updatescreen;
-import old2.mame.timer.timer_callback;
-import old2.mame.timer.timer_entry;
-import static old2.mame.timer.*;
-import static old2.mame.timerH.*;
+import mame056.timer.timer_callback;
+import mame056.timer.timer_entry;
+import static mame056.timer.*;
+import static mame056.timerH.*;
 import static mame056.memory.*;
+import static oldmame037b11.cpuintrf.cpu;
 
 public class cpuintrf {
 
@@ -317,8 +316,8 @@ public class cpuintrf {
     /* warning the ordering must match the one of the enum in driver.h! */
     public static cpu_interface cpuintf[]
             = {
-                new Dummy_cpu(),
-                new z80(), /*TODO*///	CPU0(DUMMY,    Dummy,	 1,  0,1.00,0,				   -1,			   -1,			   8, 16,	  0,16,LE,1, 1	),
+            /*TODO*///    new Dummy_cpu(),
+            /*TODO*///    new z80(), /*TODO*///	CPU0(DUMMY,    Dummy,	 1,  0,1.00,0,				   -1,			   -1,			   8, 16,	  0,16,LE,1, 1	),
             /*TODO*///#if (HAS_Z80)
             /*TODO*///	CPU1(Z80,	   z80, 	 1,255,1.00,Z80_IGNORE_INT,    Z80_IRQ_INT,    Z80_NMI_INT,    8, 16,	  0,16,LE,1, 4	),
             /*TODO*///#endif

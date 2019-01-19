@@ -14,11 +14,14 @@ import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame.sndintrfH.*;
-import static mame037b11.cpuintrf.*;
 import static mame056.common.*;
 import static old.mame.inptportH.*;
 import static vidhrdw.rallyx.*;
 import static mame.sndintrf.*;
+import static mame056.cpuexec.ignore_interrupt;
+import static mame056.cpuexec.interrupt_enable_w;
+import static mame056.cpuexec.nmi_interrupt;
+import static mame056.cpuexec.watchdog_reset_w;
 import static mame056.sndhrdw.timeplt.*;
 
 public class locomotn {

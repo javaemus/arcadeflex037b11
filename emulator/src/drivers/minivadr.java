@@ -12,7 +12,7 @@ import static mame.commonH.*;
 import static old.mame.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
-import static mame037b11.cpuintrf.*;
+import static mame056.cpuexec.interrupt;
 import static old.mame.inptportH.*;
 import static vidhrdw.minivadr.*;
 

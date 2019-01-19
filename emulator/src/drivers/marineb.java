@@ -7,7 +7,6 @@ import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old.mame.inptport.*;
@@ -20,6 +19,9 @@ import static vidhrdw.marineb.*;
 import static vidhrdw.generic.*;
 import static vidhrdw.espial.*;
 import static drivers.espial.*;
+import static mame056.cpuexec.interrupt;
+import static mame056.cpuexec.interrupt_enable_w;
+import static mame056.cpuexec.nmi_interrupt;
 
 public class marineb {
 

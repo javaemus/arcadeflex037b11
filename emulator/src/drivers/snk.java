@@ -15,16 +15,16 @@ import static mame.driverH.*;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static mame056.common.*;
 import static old.arcadeflex.osdepend.*;
-import static cpu.z80.z80H.*;
 import static mame.sndintrf.*;
 import static old.mame.inputH.*;
 import static sound._3526intf.*;
 import static sound._3812intfH.*;
 import static WIP.drivers.hal21.*;
+import static mame056.cpuexec.cpu_cause_interrupt;
+import static mame056.cpuexec.interrupt;
 
 public class snk {
 

@@ -5,6 +5,7 @@
 package drivers;
 
 import static mame.commonH.*;
+import static mame056.cpu.z80.z80H.*;
 import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static sound._2610intfH.*;
@@ -26,13 +27,11 @@ import static mame056.common.*;
 import static old2.mame.mame.*;
 import static mame.palette.*;
 import static old.arcadeflex.osdepend.*;
-import static cpu.z80.z80H.*;
 import static old2.mame.drawgfx.decodechar;
 import static WIP.sndhrdw.rastan.*;
 import arcadeflex.libc.ptr.UBytePtr;
 import static old.sound.mixerH.*;
 import static common.libc.expressions.*;
-import static mame056.common.*;
 
 public class taito_l {
 
@@ -223,7 +222,7 @@ public class taito_l {
         public int handler() {
             /* kludge to make plgirls boot */
             if (cpunum_get_reg(0, Z80_IM) != 2) {
-                return Z80_IGNORE_INT;
+                return ignore_interrupt.handler();
             }
 
             // What is really generating interrupts 0 and 1 is still to be found
@@ -237,7 +236,7 @@ public class taito_l {
                 return irq_adr_table[2];
             }
 
-            return Z80_IGNORE_INT;
+            return ignore_interrupt.handler();
         }
     };
     public static WriteHandlerPtr irq_adr_w = new WriteHandlerPtr() {

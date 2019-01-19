@@ -9,14 +9,12 @@ import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import arcadeflex.libc.ptr.UBytePtr;
 import static mame.commonH.*;
-import static mame037b11.cpuintrf.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static mame.sndintrf.soundlatch_r;
 import static mame.sndintrf.soundlatch_w;
 import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
-import static old.mame.inputH.*;
 import static old2.mame.memoryH.*;
 import static mame.sndintrfH.*;
 import static mame056.common.*;
@@ -28,7 +26,10 @@ import static sound.ay8910H.*;
 import static vidhrdw.frogger.*;
 import static sndhrdw.frogger.*;
 import static vidhrdw.generic.*;
-import static mame056.common.*;
+import static mame056.cpuexec.ignore_interrupt;
+import static mame056.cpuexec.interrupt_enable_w;
+import static mame056.cpuexec.nmi_interrupt;
+import static mame056.cpuexec.watchdog_reset_r;
 
 public class frogger {
 

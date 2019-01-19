@@ -13,13 +13,13 @@ import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
 import static old2.mame.memory.*;
-import static mame037b11.cpuintrf.*;
 import static mame.sndintrfH.*;
 import static vidhrdw.generic.*;
 import static mame.sndintrf.*;
 import static vidhrdw.commando.*;
 import static arcadeflex.libc.ptr.*;
 import static mame056.common.*;
+import static mame056.cpuexec.interrupt;
 import static sound._2203intfH.*;
 import static sound._2203intf.*;
 

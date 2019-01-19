@@ -1,11 +1,11 @@
 /**
  * ported to 037b11
  */
-package mame037b11;
+package oldmame037b11;
 
 
 import static arcadeflex.fucPtr.InterruptPtr;
-import static mame037b11.cpuintrf.*;
+import static oldmame037b11.cpuintrf.*;
 
 
 public class cpuintrfH {
