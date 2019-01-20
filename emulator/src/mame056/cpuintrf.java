@@ -7,6 +7,7 @@ import static old.arcadeflex.osdepend.*;
 
 import static mame056.cpuintrfH.*;
 import static mame.driverH.*;
+import mame056.cpu.dummy_cpu;
 import static mame056.cpuexecH.*;
 import static mame056.memory.memory_set_context;
 //cpu imports
@@ -194,7 +195,7 @@ public class cpuintrf {
      ************************************
      */
     public static cpu_interface cpuintrf[]
-            = { /*TODO*///    new dummy_cpu(),/*TODO*///	CPU0(DUMMY,    dummy,	 1,  0,1.00,-1,			    8, 16,	  0,16,LE,1, 1	),
+            = { new dummy_cpu(),/*TODO*///	CPU0(DUMMY,    dummy,	 1,  0,1.00,-1,			    8, 16,	  0,16,LE,1, 1	),
             /*TODO*///    new z80()/*TODO*///	CPU1(Z80,	   z80, 	 1,255,1.00,-1000,          8, 16,	  0,16,LE,1, 4	),
             /*TODO*///#endif
             /*TODO*///#if (HAS_8080)
@@ -1241,46 +1242,6 @@ public class cpuintrf {
 /*TODO*///		puts(cpunum_dump_state(cpunum));
 /*TODO*///	fflush(stdout);
 /*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Dummy CPU definition
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static void dummy_init(void) { }
-/*TODO*///static void dummy_reset(void *param) { }
-/*TODO*///static void dummy_exit(void) { }
-/*TODO*///static int dummy_execute(int cycles) { return cycles; }
-/*TODO*///static void dummy_burn(int cycles) { }
-/*TODO*///static unsigned dummy_get_context(void *regs) { return 0; }
-/*TODO*///static void dummy_set_context(void *regs) { }
-/*TODO*///static unsigned dummy_get_reg(int regnum) { return 0; }
-/*TODO*///static void dummy_set_reg(int regnum, unsigned val) { }
-/*TODO*///static void dummy_set_irq_line(int irqline, int state) { }
-/*TODO*///static void dummy_set_irq_callback(int (*callback)(int irqline)) { }
-/*TODO*///
-/*TODO*///static const char *dummy_info(void *context, int regnum)
-/*TODO*///{
-/*TODO*///	switch (regnum)
-/*TODO*///	{
-/*TODO*///		case CPU_INFO_NAME: return "";
-/*TODO*///		case CPU_INFO_FAMILY: return "no CPU";
-/*TODO*///		case CPU_INFO_VERSION: return "0.0";
-/*TODO*///		case CPU_INFO_FILE: return __FILE__;
-/*TODO*///		case CPU_INFO_CREDITS: return "The MAME team.";
-/*TODO*///	}
-/*TODO*///	return "";
-/*TODO*///}
-/*TODO*///
-/*TODO*///static unsigned dummy_dasm(char *buffer, unsigned pc)
-/*TODO*///{
-/*TODO*///	strcpy(buffer, "???");
-/*TODO*///	return 1;
-/*TODO*///}
-/*TODO*///
 /*TODO*///
 /*TODO*///
 /*TODO*////*************************************
