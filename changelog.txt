@@ -4,6 +4,7 @@
 -Updates to cpuinterface . 1942 also works now
 -More cpuinterface fixes . 1943 works 
 -More cpuinterface fixes . bosco (3-z80 cpus works!)
+-More updates to cpuinterface
 
 20/01/2019
 ==========

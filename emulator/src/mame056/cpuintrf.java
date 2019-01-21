@@ -648,14 +648,15 @@ public class cpuintrf {
 /*TODO*///	*cpu[activecpu].intf.icount += delta;
 /*TODO*///}
 /*TODO*///
-/*TODO*///
-/*TODO*///int activecpu_get_icount(void)
-/*TODO*///{
-/*TODO*///	VERIFY_ACTIVECPU(0, activecpu_get_icount);
-/*TODO*///	return *cpu[activecpu].intf.icount;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
+    public static int activecpu_get_icount() {
+        if (activecpu < 0) {
+            logerror("activecpu_get_icount() called with no active cpu!\n");
+            return 0;
+        }
+        return cpu[activecpu].intf.icount[0];
+    }
+
+    /*TODO*///
 /*TODO*////*--------------------------
 /*TODO*/// 	Reset banking pointers
 /*TODO*///--------------------------*/

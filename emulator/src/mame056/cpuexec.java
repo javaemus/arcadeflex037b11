@@ -705,19 +705,23 @@ public class cpuexec {
         return 0;
     }
 
-    /*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Return cycles ran this iteration
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///int cycles_currently_ran(void)
-/*TODO*///{
-/*TODO*///	VERIFY_ACTIVECPU(0, cycles_currently_ran);
-/*TODO*///	return cycles_running - activecpu_get_icount();
-/*TODO*///}
-/*TODO*///
-/*TODO*///
+    /**
+     * ***********************************
+     *
+     * Return cycles ran this iteration
+     *
+     ************************************
+     */
+    static int cycles_currently_ran() {
+        int activecpu = cpu_getactivecpu();
+        if (activecpu < 0) {
+            logerror("cycles_currently_ran() called with no active cpu!\n");
+            return 0;
+        }
+        return cycles_running[0] - activecpu_get_icount();
+    }
+
+    /*TODO*///
 /*TODO*///
 /*TODO*////*************************************
 /*TODO*/// *
@@ -753,9 +757,12 @@ public class cpuexec {
 /*TODO*///--------------------------------------------------------------*/
 /*TODO*///
     public static int cpu_gettotalcycles() {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	VERIFY_ACTIVECPU(0, cpu_gettotalcycles);
-/*TODO*///	return cpu[activecpu].totalcycles + cycles_currently_ran();
+        int activecpu = cpu_getactivecpu();
+        if (activecpu < 0) {
+            logerror("cpu_gettotalcycles() called with no active cpu!\n");
+            return 0;
+        }
+        return cpu_exec[activecpu].totalcycles + cycles_currently_ran();
     }
 
     /*TODO*///
@@ -944,14 +951,12 @@ public class cpuexec {
      ************************************
      */
     public static void cpu_irq_line_vector_w(int cpunum, int irqline, int vector) {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	if (cpunum < cpu_gettotalcpu() && irqline >= 0 && irqline < MAX_IRQ_LINES)
-/*TODO*///	{
-/*TODO*///		LOG(("cpu_irq_line_vector_w(%d,%d,$%04x)\n",cpunum,irqline,vector));
-/*TODO*///		irq_line_vector[cpunum][irqline] = vector;
-/*TODO*///		return;
-/*TODO*///	}
-/*TODO*///	LOG(("cpu_irq_line_vector_w CPU#%d irqline %d > max irq lines\n", cpunum, irqline));
+        if (cpunum < cpu_gettotalcpu() && irqline >= 0 && irqline < MAX_IRQ_LINES) {
+            //LOG(("cpu_irq_line_vector_w(%d,%d,$%04x)\n",cpunum,irqline,vector));
+            irq_line_vector[cpunum][irqline] = vector;
+            return;
+        }
+        //LOG(("cpu_irq_line_vector_w CPU#%d irqline %d > max irq lines\n", cpunum, irqline));
     }
 
     /**
@@ -1110,27 +1115,28 @@ public class cpuexec {
 
     public static WriteHandlerPtr interrupt_vector_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            throw new UnsupportedOperationException("Unsupported");
-            /*TODO*///	VERIFY_ACTIVECPU_VOID(interrupt_vector_w);
-/*TODO*///	if (interrupt_vector[activecpu] != data)
-/*TODO*///	{
-/*TODO*///		LOG(("CPU#%d interrupt_vector_w $%02x\n", activecpu, data));
-/*TODO*///		interrupt_vector[activecpu] = data;
-/*TODO*///
-/*TODO*///		/* make sure there are no queued interrupts */
-/*TODO*///		timer_set(TIME_NOW, activecpu, cpu_clearintcallback);
-/*TODO*///	}
+            int activecpu = cpu_getactivecpu();
+            if (activecpu < 0) {
+                logerror("interrupt_vector_w() called with no active cpu!\n");
+                return;
+            }
+            if (interrupt_vector[activecpu] != data) {
+                //LOG(("CPU#%d interrupt_vector_w $%02x\n", activecpu, data));
+                interrupt_vector[activecpu] = data;
+
+                /* make sure there are no queued interrupts */
+                timer_set(TIME_NOW, activecpu, cpu_clearintcallback);
+            }
         }
     };
-    /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Interrupt generation callbacks
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
+
+    /**
+     * ***********************************
+     *
+     * Interrupt generation callbacks
+     *
+     ************************************
+     */
     public static InterruptPtr interrupt = new InterruptPtr() {
         public int handler() {
             int val = 0;
@@ -1241,32 +1247,32 @@ public class cpuexec {
      ************************************
      */
     public static void cpu_spinuntil_trigger(int trigger) {
-        throw new UnsupportedOperationException("unsupported");
-        /*TODO*///	VERIFY_ACTIVECPU_VOID(cpu_spinuntil_trigger);
-/*TODO*///	timer_suspendcpu_trigger(activecpu, trigger);
+        timer_suspendcpu_trigger(activecpu, trigger);
     }
 
-    /*TODO*///
-/*TODO*///
-/*TODO*///void cpu_yielduntil_trigger(int trigger)
-/*TODO*///{
-/*TODO*///	VERIFY_ACTIVECPU_VOID(cpu_yielduntil_trigger);
-/*TODO*///	timer_holdcpu_trigger(activecpu, trigger);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Burn/yield CPU cycles until an
-/*TODO*/// *	interrupt
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
+    public static void cpu_yielduntil_trigger(int trigger) {
+        int activecpu = cpu_getactivecpu();
+        if (activecpu < 0) {
+            logerror("cpu_yielduntil_trigger() called with no active cpu!\n");
+            return;
+        }
+        timer_holdcpu_trigger(activecpu, trigger);
+    }
+
+    /**
+     * ***********************************
+     *
+     * Burn/yield CPU cycles until an interrupt
+     *
+     ************************************
+     */
     public static void cpu_spinuntil_int() {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	VERIFY_ACTIVECPU_VOID(cpu_spinuntil_int);
-/*TODO*///	cpu_spinuntil_trigger(TRIGGER_INT + activecpu);
+        int activecpu = cpu_getactivecpu();
+        if (activecpu < 0) {
+            logerror("cpu_spinuntil_int() called with no active cpu!\n");
+            return;
+        }
+        cpu_spinuntil_trigger(TRIGGER_INT + activecpu);
     }
 
     /*TODO*///
@@ -1276,45 +1282,34 @@ public class cpuexec {
 /*TODO*///	VERIFY_ACTIVECPU_VOID(cpu_yielduntil_int);
 /*TODO*///	cpu_yielduntil_trigger(TRIGGER_INT + activecpu);
 /*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Burn/yield CPU cycles until the
-/*TODO*/// *	end of the current timeslice
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
+    /**
+     * ***********************************
+     *
+     * Burn/yield CPU cycles until the end of the current timeslice
+     *
+     ************************************
+     */
     public static void cpu_spin() {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	cpu_spinuntil_trigger(TRIGGER_TIMESLICE);
+        cpu_spinuntil_trigger(TRIGGER_TIMESLICE);
     }
 
-    /*TODO*///
-/*TODO*///
     public static void cpu_yield() {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	cpu_yielduntil_trigger(TRIGGER_TIMESLICE);
+        cpu_yielduntil_trigger(TRIGGER_TIMESLICE);
     }
 
-    /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Burn/yield CPU cycles for a
-/*TODO*/// *	specific period of time
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
+    /**
+     * ***********************************
+     *
+     * Burn/yield CPU cycles for a specific period of time
+     *
+     ************************************
+     */
+    static int timetrig_spinuntil_time = 0;
+
     public static void cpu_spinuntil_time(double duration) {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	static int timetrig = 0;
-/*TODO*///
-/*TODO*///	cpu_spinuntil_trigger(TRIGGER_SUSPENDTIME + timetrig);
-/*TODO*///	cpu_triggertime(duration, TRIGGER_SUSPENDTIME + timetrig);
-/*TODO*///	timetrig = (timetrig + 1) & 255;
+        cpu_spinuntil_trigger(TRIGGER_SUSPENDTIME + timetrig_spinuntil_time);
+        cpu_triggertime(duration, TRIGGER_SUSPENDTIME + timetrig_spinuntil_time);
+        timetrig_spinuntil_time = (timetrig_spinuntil_time + 1) & 255;
     }
 
     /*TODO*///
