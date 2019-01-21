@@ -1163,9 +1163,12 @@ public class cpuexec {
     };
     public static InterruptPtr ignore_interrupt = new InterruptPtr() {
         public int handler() {
-            throw new UnsupportedOperationException("Unsupported");
-            /*TODO*///	VERIFY_ACTIVECPU(INTERRUPT_NONE, ignore_interrupt);
-/*TODO*///	return INTERRUPT_NONE;
+            int activecpu = cpu_getactivecpu();
+            if (activecpu < 0) {
+                logerror("ignore_interrupt() called with no active cpu!\n");
+                return INTERRUPT_NONE;
+            }
+            return INTERRUPT_NONE;
         }
     };
 
@@ -1324,27 +1327,29 @@ public class cpuexec {
 /*TODO*///	cpu_triggertime(duration, TRIGGER_YIELDTIME + timetrig);
 /*TODO*///	timetrig = (timetrig + 1) & 255;
 /*TODO*///}
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Returns the number of times the
-/*TODO*/// *	interrupt handler will be called
-/*TODO*/// *	before the end of the current
-/*TODO*/// *	video frame.
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*////*--------------------------------------------------------------
-/*TODO*///
-/*TODO*///	This can be useful to interrupt handlers to synchronize
-/*TODO*///	their operation. If you call this from outside an interrupt
-/*TODO*///	handler, add 1 to the result, i.e. if it returns 0, it means
-/*TODO*///	that the interrupt handler will be called once.
-/*TODO*///
-/*TODO*///--------------------------------------------------------------*/
-/*TODO*///
+    /**
+     * ***********************************
+     *
+     * Returns the number of times the interrupt handler will be called before
+     * the end of the current video frame.
+     *
+     ************************************
+     */
+
+    /*--------------------------------------------------------------
+
+            This can be useful to interrupt handlers to synchronize
+            their operation. If you call this from outside an interrupt
+            handler, add 1 to the result, i.e. if it returns 0, it means
+            that the interrupt handler will be called once.
+
+    --------------------------------------------------------------*/
     public static int cpu_getiloops() {
-        /*TODO*///	VERIFY_ACTIVECPU(0, cpu_getiloops);
+        int activecpu = cpu_getactivecpu();
+        if (activecpu < 0) {
+            logerror("cpu_getiloops() called with no active cpu!\n");
+            return 0;
+        }
         return cpu_exec[activecpu].iloops;
     }
 
