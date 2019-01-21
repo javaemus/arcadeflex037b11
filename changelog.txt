@@ -1,3 +1,7 @@
+21/01/2019
+==========
+-More work on cpuinterface . Bankp works with new cpuinterface!
+
 20/01/2019
 ==========
 -Ported z80 cpu to 0.56

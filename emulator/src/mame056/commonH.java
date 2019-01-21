@@ -183,7 +183,6 @@ public class commonH {
     }
 
     public static boolean ROMENTRY_ISREGION(RomModule[] romp, int romp_ptr) {
-        System.out.println(Integer.toHexString(romp[romp_ptr]._crc));
         return romp[romp_ptr]._name.matches(ROMENTRY_REGION);
     }
 

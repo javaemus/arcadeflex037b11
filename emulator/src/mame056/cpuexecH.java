@@ -4,6 +4,7 @@
 package mame056;
 
 import arcadeflex.fucPtr.*;
+import static mame056.cpuexec.cpu_set_irq_line;
 import static mame056.cpuintrfH.*;
 
 public class cpuexecH {
@@ -146,8 +147,7 @@ public class cpuexecH {
      */
     /* macro for handling NMI lines */
     public static void cpu_set_nmi_line(int cpunum, int state) {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///        cpu_set_irq_line(cpunum, IRQ_LINE_NMI, state)
+        cpu_set_irq_line(cpunum, IRQ_LINE_NMI, state);
     }
 
     /*TODO*///

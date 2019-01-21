@@ -6,13 +6,15 @@ package mame056;
 import static arcadeflex.fucPtr.*;
 
 import static mame056.cpuexecH.*;
+import static mame.driverH.*;
+import static mame.sndintrf.*;
 import static mame056.cpuintrf.*;
 import static mame056.cpuintrfH.*;
-import static mame.driverH.*;
 import static old2.mame.mame.*;
 import static mame056.timer.*;
 import static mame056.timerH.*;
 import static old.arcadeflex.osdepend.*;
+import static old.mame.inptport.*;
 
 public class cpuexec {
 
@@ -39,20 +41,20 @@ public class cpuexec {
 /*TODO*/// *
 /*TODO*/// *************************************/
 /*TODO*///
-/*TODO*///#define VERIFY_ACTIVECPU(retval, name)						\
-/*TODO*///	int activecpu = cpu_getactivecpu();						\
-/*TODO*///	if (activecpu < 0)										\
-/*TODO*///	{														\
-/*TODO*///		logerror(#name "() called with no active cpu!\n");	\
-/*TODO*///		return retval;										\
+/*TODO*///#define VERIFY_ACTIVECPU(retval, name)						
+/*TODO*///	int activecpu = cpu_getactivecpu();						
+/*TODO*///	if (activecpu < 0)										
+/*TODO*///	{														
+/*TODO*///		logerror(#name "() called with no active cpu!\n");	
+/*TODO*///		return retval;										
 /*TODO*///	}
 /*TODO*///
-/*TODO*///#define VERIFY_ACTIVECPU_VOID(name)							\
-/*TODO*///	int activecpu = cpu_getactivecpu();						\
-/*TODO*///	if (activecpu < 0)										\
-/*TODO*///	{														\
-/*TODO*///		logerror(#name "() called with no active cpu!\n");	\
-/*TODO*///		return;												\
+/*TODO*///#define VERIFY_ACTIVECPU_VOID(name)							
+/*TODO*///	int activecpu = cpu_getactivecpu();						
+/*TODO*///	if (activecpu < 0)										
+/*TODO*///	{														
+/*TODO*///		logerror(#name "() called with no active cpu!\n");	
+/*TODO*///		return;												
 /*TODO*///	}
     /**
      * ***********************************
@@ -66,34 +68,41 @@ public class cpuexec {
     public static final int TRIGGER_YIELDTIME = -3000;
     public static final int TRIGGER_SUSPENDTIME = -4000;
 
-    /*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Internal CPU info structure
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///struct cpuinfo
-/*TODO*///{
-/*TODO*///	int 	iloops; 				/* number of interrupts remaining this frame */
-/*TODO*///	int 	totalcycles;			/* total CPU cycles executed */
-/*TODO*///	int 	vblankint_countdown;	/* number of vblank callbacks left until we interrupt */
-/*TODO*///	int 	vblankint_multiplier;	/* number of vblank callbacks per interrupt */
-/*TODO*///	void *	vblankint_timer;		/* reference to elapsed time counter */
-/*TODO*///	double	vblankint_period;		/* timing period of the VBLANK interrupt */
-/*TODO*///	void *	timedint_timer;			/* reference to this CPU's timer */
-/*TODO*///	double	timedint_period; 		/* timing period of the timed interrupt */
-/*TODO*///};
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	General CPU variables
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static struct cpuinfo cpu[MAX_CPU];
+    /**
+     * ***********************************
+     *
+     * Internal CPU info structure
+     *
+     ************************************
+     */
+    public static class cpuinfo {
+
+        int iloops;/* number of interrupts remaining this frame */
+        int totalcycles;/* total CPU cycles executed */
+        int vblankint_countdown;/* number of vblank callbacks left until we interrupt */
+        int vblankint_multiplier;/* number of vblank callbacks per interrupt */
+        Object vblankint_timer;/* reference to elapsed time counter */
+        double vblankint_period;/* timing period of the VBLANK interrupt */
+        Object timedint_timer;/* reference to this CPU's timer */
+        double timedint_period;/* timing period of the timed interrupt */
+
+        public static cpuinfo[] create(int n) {
+            cpuinfo[] a = new cpuinfo[n];
+            for (int k = 0; k < n; k++) {
+                a[k] = new cpuinfo();
+            }
+            return a;
+        }
+    }
+
+    /**
+     * ***********************************
+     *
+     * General CPU variables
+     *
+     ************************************
+     */
+    static cpuinfo[] cpu_exec = cpuinfo.create(MAX_CPU);
     static int time_to_reset;
     static int time_to_quit;
 
@@ -101,19 +110,18 @@ public class cpuexec {
     static int current_frame;
     static int watchdog_counter;
 
-    static int cycles_running;
-    /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	CPU interrupt variables
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static UINT8 interrupt_enable[MAX_CPU];
-/*TODO*///static INT32 interrupt_vector[MAX_CPU];
-/*TODO*///
+    static int[] cycles_running = new int[1];
+
+    /**
+     * ***********************************
+     *
+     * CPU interrupt variables
+     *
+     ************************************
+     */
+    static int[]/*UINT8*/ interrupt_enable = new int[MAX_CPU];
+    static int[] interrupt_vector = new int[MAX_CPU];
+
     static int[][]/*UINT8*/ irq_line_state = new int[MAX_CPU][MAX_IRQ_LINES];
     static int[][] irq_line_vector = new int[MAX_CPU][MAX_IRQ_LINES];
 
@@ -148,22 +156,54 @@ public class cpuexec {
 /*TODO*///static int loadsave_schedule;
 /*TODO*///static char loadsave_schedule_id;
 /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*///static int (*cpu_irq_callbacks[MAX_CPU])(int) =
-/*TODO*///{
-/*TODO*///	cpu_0_irq_callback,
-/*TODO*///	cpu_1_irq_callback,
-/*TODO*///	cpu_2_irq_callback,
-/*TODO*///	cpu_3_irq_callback,
-/*TODO*///	cpu_4_irq_callback,
-/*TODO*///	cpu_5_irq_callback,
-/*TODO*///	cpu_6_irq_callback,
-/*TODO*///	cpu_7_irq_callback
-/*TODO*///};
-/*TODO*///
-/*TODO*///static int (*drv_irq_callbacks[MAX_CPU])(int);
-/*TODO*///
+    public static irqcallbacksPtr cpu_0_irq_callback = new irqcallbacksPtr() {
+        public int handler(int irqline) {
+            return cpu_irq_callback(0, irqline);
+        }
+    };
+    public static irqcallbacksPtr cpu_1_irq_callback = new irqcallbacksPtr() {
+        public int handler(int irqline) {
+            return cpu_irq_callback(1, irqline);
+        }
+    };
+    public static irqcallbacksPtr cpu_2_irq_callback = new irqcallbacksPtr() {
+        public int handler(int irqline) {
+            return cpu_irq_callback(2, irqline);
+        }
+    };
+    public static irqcallbacksPtr cpu_3_irq_callback = new irqcallbacksPtr() {
+        public int handler(int irqline) {
+            return cpu_irq_callback(3, irqline);
+        }
+    };
+    public static irqcallbacksPtr cpu_4_irq_callback = new irqcallbacksPtr() {
+        public int handler(int irqline) {
+            return cpu_irq_callback(4, irqline);
+        }
+    };
+    public static irqcallbacksPtr cpu_5_irq_callback = new irqcallbacksPtr() {
+        public int handler(int irqline) {
+            return cpu_irq_callback(5, irqline);
+        }
+    };
+    public static irqcallbacksPtr cpu_6_irq_callback = new irqcallbacksPtr() {
+        public int handler(int irqline) {
+            return cpu_irq_callback(6, irqline);
+        }
+    };
+    public static irqcallbacksPtr cpu_7_irq_callback = new irqcallbacksPtr() {
+        public int handler(int irqline) {
+            return cpu_irq_callback(7, irqline);
+        }
+    };
+
+    public static irqcallbacksPtr[] cpu_irq_callbacks = {
+        cpu_0_irq_callback, cpu_1_irq_callback, cpu_2_irq_callback, cpu_3_irq_callback,
+        cpu_4_irq_callback, cpu_5_irq_callback, cpu_6_irq_callback, cpu_7_irq_callback
+    };
+
+    public static irqcallbacksPtr[] drv_irq_callbacks = new irqcallbacksPtr[MAX_CPU];
+
     /**
      * ***********************************
      *
@@ -219,158 +259,124 @@ public class cpuexec {
         return 0;
     }
 
-    /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Prepare the system for execution
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static void cpu_pre_run(void)
-/*TODO*///{
-/*TODO*///	int cpunum;
-/*TODO*///
-/*TODO*///	logerror("Machine reset\n");
-/*TODO*///
-/*TODO*///	auto_malloc_start();
-/*TODO*///
-/*TODO*///	/* read hi scores information from hiscore.dat */
+    /**
+     * ***********************************
+     *
+     * Prepare the system for execution
+     *
+     ************************************
+     */
+    static void cpu_pre_run() {
+        int cpunum;
+
+        logerror("Machine reset\n");
+
+        /*TODO*///	/* read hi scores information from hiscore.dat */
 /*TODO*///	hs_open(Machine->gamedrv->name);
 /*TODO*///	hs_init();
 /*TODO*///
-/*TODO*///	/* initialize the various timers (suspends all CPUs at startup) */
-/*TODO*///	cpu_inittimers();
-/*TODO*///	watchdog_counter = -1;
-/*TODO*///
-/*TODO*///	/* reset sound chips */
-/*TODO*///	sound_reset();
-/*TODO*///
-/*TODO*///	/* first pass over CPUs */
-/*TODO*///	for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++)
-/*TODO*///	{
-/*TODO*///		/* enable all CPUs (except for audio CPUs if the sound is off) */
-/*TODO*///		if (!(Machine->drv->cpu[cpunum].cpu_type & CPU_AUDIO_CPU) || Machine->sample_rate != 0)
-/*TODO*///			timer_suspendcpu(cpunum, 0, SUSPEND_ANY_REASON);
-/*TODO*///		else
-/*TODO*///			timer_suspendcpu(cpunum, 1, SUSPEND_REASON_DISABLE);
-/*TODO*///
-/*TODO*///		/* start with interrupts enabled, so the generic routine will work even if */
-/*TODO*///		/* the machine doesn't have an interrupt enable port */
-/*TODO*///		interrupt_enable[cpunum] = 1;
-/*TODO*///		interrupt_vector[cpunum] = 0xff;
-/*TODO*///
-/*TODO*///		/* reset any driver hooks into the IRQ acknowledge callbacks */
-/*TODO*///		drv_irq_callbacks[cpunum] = NULL;
-/*TODO*///
-/*TODO*///		/* reset the total number of cycles */
-/*TODO*///		cpu[cpunum].totalcycles = 0;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	vblank = 0;
-/*TODO*///
-/*TODO*///	/* do this AFTER the above so init_machine() can use cpu_halt() to hold the */
-/*TODO*///	/* execution of some CPUs, or disable interrupts */
-/*TODO*///	if (Machine->drv->init_machine)
-/*TODO*///		(*Machine->drv->init_machine)();
-/*TODO*///
-/*TODO*///	/* now reset each CPU */
-/*TODO*///	for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++)
-/*TODO*///		cpunum_reset(cpunum, Machine->drv->cpu[cpunum].reset_param, cpu_irq_callbacks[cpunum]);
-/*TODO*///
-/*TODO*///	/* reset the globals */
-/*TODO*///	cpu_vblankreset();
-/*TODO*///	current_frame = 0;
-/*TODO*///	state_save_dump_registry();
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Finish up execution
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static void cpu_post_run(void)
-/*TODO*///{
-/*TODO*///	/* write hi scores to disk - No scores saving if cheat */
-/*TODO*///	hs_close();
-/*TODO*///
-/*TODO*///#ifdef MESS
-/*TODO*///	/* stop the machine */
-/*TODO*///	if (Machine->drv->stop_machine)
-/*TODO*///		(*Machine->drv->stop_machine)();
-/*TODO*///#endif
-/*TODO*///
-/*TODO*///	auto_malloc_stop();
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Execute until done
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
+        /* initialize the various timers (suspends all CPUs at startup) */
+        cpu_inittimers();
+        watchdog_counter = -1;
+
+        /* reset sound chips */
+        sound_reset();
+
+        /* first pass over CPUs */
+        for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
+            /* enable all CPUs (except for audio CPUs if the sound is off) */
+            if ((Machine.drv.cpu[cpunum].cpu_type & CPU_AUDIO_CPU) == 0 || Machine.sample_rate != 0) {
+                timer_suspendcpu(cpunum, 0, SUSPEND_ANY_REASON);
+            } else {
+                timer_suspendcpu(cpunum, 1, SUSPEND_REASON_DISABLE);
+            }
+
+            /* start with interrupts enabled, so the generic routine will work even if */
+ /* the machine doesn't have an interrupt enable port */
+            interrupt_enable[cpunum] = 1;
+            interrupt_vector[cpunum] = 0xff;
+
+            /* reset any driver hooks into the IRQ acknowledge callbacks */
+            drv_irq_callbacks[cpunum] = null;
+
+            /* reset the total number of cycles */
+            cpu_exec[cpunum].totalcycles = 0;
+        }
+
+        vblank = 0;
+
+        /* do this AFTER the above so init_machine() can use cpu_halt() to hold the */
+ /* execution of some CPUs, or disable interrupts */
+        if (Machine.drv.init_machine != null) {
+            (Machine.drv.init_machine).handler();
+        }
+
+        /* now reset each CPU */
+        for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
+            cpunum_reset(cpunum, Machine.drv.cpu[cpunum].reset_param, cpu_irq_callbacks[cpunum]);
+        }
+
+        /* reset the globals */
+        cpu_vblankreset();
+        current_frame = 0;
+        /*TODO*///	state_save_dump_registry();
+    }
+
+    /**
+     * ***********************************
+     *
+     * Finish up execution
+     *
+     ************************************
+     */
+    static void cpu_post_run() {
+        /* write hi scores to disk - No scores saving if cheat */
+ /*TODO*///	hs_close();
+
+    }
+
+    /**
+     * ***********************************
+     *
+     * Execute until done
+     *
+     ************************************
+     */
     public static void cpu_run() {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	int cpunum;
-/*TODO*///
-/*TODO*///#ifdef MAME_DEBUG
-/*TODO*///	/* initialize the debugger */
-/*TODO*///	if (mame_debug)
-/*TODO*///		mame_debug_init();
-/*TODO*///#endif
-/*TODO*///
-/*TODO*///	/* loop over multiple resets, until the user quits */
-/*TODO*///	time_to_quit = 0;
-/*TODO*///	while (!time_to_quit)
-/*TODO*///	{
-/*TODO*///		/* prepare everything to run */
-/*TODO*///		cpu_pre_run();
-/*TODO*///
-/*TODO*///		/* loop until the user quits or resets */
-/*TODO*///		time_to_reset = 0;
-/*TODO*///		while (!time_to_quit && !time_to_reset)
-/*TODO*///		{
-/*TODO*///			profiler_mark(PROFILER_EXTRA);
-/*TODO*///
-/*TODO*///			/* if we have a load/save scheduled, handle it */
-/*TODO*///			if (loadsave_schedule != LOADSAVE_NONE)
+        /* loop over multiple resets, until the user quits */
+        time_to_quit = 0;
+        int[] cpunum = new int[1];
+        while (time_to_quit == 0) {
+            /* prepare everything to run */
+            cpu_pre_run();
+
+            /* loop until the user quits or resets */
+            time_to_reset = 0;
+            while (time_to_quit == 0 && time_to_reset == 0) {
+
+                /* if we have a load/save scheduled, handle it */
+ /*TODO*///			if (loadsave_schedule != LOADSAVE_NONE)
 /*TODO*///				handle_loadsave();
-/*TODO*///
-/*TODO*///			/* ask the timer system to schedule */
-/*TODO*///			if (timer_schedule_cpu(&cpunum, &cycles_running))
-/*TODO*///			{
-/*TODO*///				int ran;
-/*TODO*///
-/*TODO*///				/* run for the requested number of cycles */
-/*TODO*///				profiler_mark(PROFILER_CPU1 + cpunum);
-/*TODO*///				ran = cpunum_execute(cpunum, cycles_running);
-/*TODO*///				profiler_mark(PROFILER_END);
-/*TODO*///
-/*TODO*///				/* update based on how many cycles we really ran */
-/*TODO*///				cpu[cpunum].totalcycles += ran;
-/*TODO*///
-/*TODO*///				/* update the timer with how long we actually ran */
-/*TODO*///				timer_update_cpu(cpunum, ran);
-/*TODO*///			}
-/*TODO*///
-/*TODO*///			profiler_mark(PROFILER_END);
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		/* finish up this iteration */
-/*TODO*///		cpu_post_run();
-/*TODO*///	}
-/*TODO*///
-/*TODO*///#ifdef MAME_DEBUG
-/*TODO*///	/* shut down the debugger */
-/*TODO*///	if (mame_debug)
-/*TODO*///		mame_debug_exit();
-/*TODO*///#endif
+
+                /* ask the timer system to schedule */
+                if (timer_schedule_cpu(cpunum, cycles_running) != 0) {
+                    int ran;
+
+                    /* run for the requested number of cycles */
+                    ran = cpunum_execute(cpunum[0], cycles_running[0]);
+
+                    /* update based on how many cycles we really ran */
+                    cpu_exec[cpunum[0]].totalcycles += ran;
+
+                    /* update the timer with how long we actually ran */
+                    timer_update_cpu(cpunum[0], ran);
+                }
+
+            }
+
+            /* finish up this iteration */
+            cpu_post_run();
+        }
     }
 
     /*TODO*///
@@ -789,23 +795,15 @@ public class cpuexec {
 /*TODO*/// *************************************/
 /*TODO*///
     public static int cpu_scalebyfcount(int value) {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	int result = (int)((double)value * timer_timeelapsed(refresh_timer) * refresh_period_inv);
-/*TODO*///	if (value >= 0)
-/*TODO*///		return (result < value) ? result : value;
-/*TODO*///	else
-/*TODO*///		return (result > value) ? result : value;
+        int result = (int) ((double) value * timer_timeelapsed(refresh_timer) * refresh_period_inv);
+        if (value >= 0) {
+            return (result < value) ? result : value;
+        } else {
+            return (result > value) ? result : value;
+        }
     }
 
-    /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*///#if 0
-/*TODO*///#pragma mark -
-/*TODO*///#pragma mark VIDEO TIMING
-/*TODO*///#endif
-/*TODO*///
-/*TODO*////*************************************
+    /*TODO*////*************************************
 /*TODO*/// *
 /*TODO*/// *	Returns the current scanline
 /*TODO*/// *
@@ -918,53 +916,40 @@ public class cpuexec {
 /*TODO*///}
 /*TODO*///
 /*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Internal IRQ callbacks
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///INLINE int cpu_irq_callback(int cpunum, int irqline)
-/*TODO*///{
-/*TODO*///	int vector = irq_line_vector[cpunum][irqline];
-/*TODO*///
-/*TODO*///	LOG(("cpu_%d_irq_callback(%d) $%04xn", cpunum, irqline, vector));
-/*TODO*///
-/*TODO*///	/* if the IRQ state is HOLD_LINE, clear it */
-/*TODO*///	if (irq_line_state[cpunum][irqline] == HOLD_LINE)
-/*TODO*///	{
-/*TODO*///		LOG(("->set_irq_line(%d,%d,%d)\n", cpunum, irqline, CLEAR_LINE));
-/*TODO*///		activecpu_set_irq_line(irqline, INTERNAL_CLEAR_LINE);
-/*TODO*///		irq_line_state[cpunum][irqline] = CLEAR_LINE;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* if there's a driver callback, run it */
-/*TODO*///	if (drv_irq_callbacks[cpunum])
-/*TODO*///		vector = (*drv_irq_callbacks[cpunum])(irqline);
-/*TODO*///
-/*TODO*///	/* otherwise, just return the current vector */
-/*TODO*///	return vector;
-/*TODO*///}
-/*TODO*///
-/*TODO*///static int cpu_0_irq_callback(int irqline) { return cpu_irq_callback(0, irqline); }
-/*TODO*///static int cpu_1_irq_callback(int irqline) { return cpu_irq_callback(1, irqline); }
-/*TODO*///static int cpu_2_irq_callback(int irqline) { return cpu_irq_callback(2, irqline); }
-/*TODO*///static int cpu_3_irq_callback(int irqline) { return cpu_irq_callback(3, irqline); }
-/*TODO*///static int cpu_4_irq_callback(int irqline) { return cpu_irq_callback(4, irqline); }
-/*TODO*///static int cpu_5_irq_callback(int irqline) { return cpu_irq_callback(5, irqline); }
-/*TODO*///static int cpu_6_irq_callback(int irqline) { return cpu_irq_callback(6, irqline); }
-/*TODO*///static int cpu_7_irq_callback(int irqline) { return cpu_irq_callback(7, irqline); }
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Set the IRQ vector for a given
-/*TODO*/// *	IRQ line on a CPU
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
+    /**
+     * ***********************************
+     *
+     * Internal IRQ callbacks
+     *
+     ************************************
+     */
+    public static int cpu_irq_callback(int cpunum, int irqline) {
+        int vector = irq_line_vector[cpunum][irqline];
+        //LOG(("cpu_%d_irq_callback(%d) $%04xn", cpunum, irqline, vector));
+
+        /* if the IRQ state is HOLD_LINE, clear it */
+        if (irq_line_state[cpunum][irqline] == HOLD_LINE) {
+            //LOG(("->set_irq_line(%d,%d,%d)\n", cpunum, irqline, CLEAR_LINE));
+            activecpu_set_irq_line(irqline, INTERNAL_CLEAR_LINE);
+            irq_line_state[cpunum][irqline] = CLEAR_LINE;
+        }
+
+        /* if there's a driver callback, run it */
+        if (drv_irq_callbacks[cpunum] != null) {
+            vector = (drv_irq_callbacks[cpunum]).handler(irqline);
+        }
+
+        /* otherwise, just return the current vector */
+        return vector;
+    }
+
+    /**
+     * ***********************************
+     *
+     * Set the IRQ vector for a given IRQ line on a CPU
+     *
+     ************************************
+     */
     public static void cpu_irq_line_vector_w(int cpunum, int irqline, int vector) {
         throw new UnsupportedOperationException("Unsupported");
         /*TODO*///	if (cpunum < cpu_gettotalcpu() && irqline >= 0 && irqline < MAX_IRQ_LINES)
@@ -976,168 +961,157 @@ public class cpuexec {
 /*TODO*///	LOG(("cpu_irq_line_vector_w CPU#%d irqline %d > max irq lines\n", cpunum, irqline));
     }
 
-    /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Generate a IRQ interrupt
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static void cpu_manualirqcallback(int param)
-/*TODO*///{
-/*TODO*///	int cpunum = param & 0x0f;
-/*TODO*///	int state = (param >> 4) & 0x0f;
-/*TODO*///	int irqline = (param >> 8) & 0x7f;
-/*TODO*///	int set_vector = (param >> 15) & 0x01;
-/*TODO*///	int vector = param >> 16;
-/*TODO*///
-/*TODO*///	LOG(("cpu_manualirqcallback %d,%d,%d\n",cpunum,irqline,state));
-/*TODO*///
-/*TODO*///	/* swap to the CPU's context */
-/*TODO*///	cpuintrf_push_context(cpunum);
-/*TODO*///
-/*TODO*///	/* set the IRQ line state and vector */
-/*TODO*///	if (irqline >= 0 && irqline < MAX_IRQ_LINES)
-/*TODO*///	{
-/*TODO*///		irq_line_state[cpunum][irqline] = state;
-/*TODO*///		if (set_vector)
-/*TODO*///			irq_line_vector[cpunum][irqline] = vector;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* switch off the requested state */
-/*TODO*///	switch (state)
-/*TODO*///	{
-/*TODO*///		case PULSE_LINE:
-/*TODO*///			activecpu_set_irq_line(irqline, INTERNAL_ASSERT_LINE);
-/*TODO*///			activecpu_set_irq_line(irqline, INTERNAL_CLEAR_LINE);
-/*TODO*///			break;
-/*TODO*///
-/*TODO*///		case HOLD_LINE:
-/*TODO*///		case ASSERT_LINE:
-/*TODO*///			activecpu_set_irq_line(irqline, INTERNAL_ASSERT_LINE);
-/*TODO*///			break;
-/*TODO*///
-/*TODO*///		case CLEAR_LINE:
-/*TODO*///			activecpu_set_irq_line(irqline, INTERNAL_CLEAR_LINE);
-/*TODO*///			break;
-/*TODO*///
-/*TODO*///		default:
-/*TODO*///			logerror("cpu_manualirqcallback cpu #%d, line %d, unknown state %d\n", cpunum, irqline, state);
-/*TODO*///	}
-/*TODO*///	cpuintrf_pop_context();
-/*TODO*///
-/*TODO*///	/* generate a trigger to unsuspend any CPUs waiting on the interrupt */
-/*TODO*///	if (state != CLEAR_LINE)
-/*TODO*///		cpu_triggerint(cpunum);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
+    /**
+     * ***********************************
+     *
+     * Generate a IRQ interrupt
+     *
+     ************************************
+     */
+    public static timer_callback cpu_manualirqcallback = new timer_callback() {
+        public void handler(int param) {
+            int cpunum = param & 0x0f;
+            int state = (param >> 4) & 0x0f;
+            int irqline = (param >> 8) & 0x7f;
+            int set_vector = (param >> 15) & 0x01;
+            int vector = param >> 16;
+
+            //LOG(("cpu_manualirqcallback %d,%d,%d\n",cpunum,irqline,state));
+
+            /* swap to the CPU's context */
+            cpuintrf_push_context(cpunum);
+
+            /* set the IRQ line state and vector */
+            if (irqline >= 0 && irqline < MAX_IRQ_LINES) {
+                irq_line_state[cpunum][irqline] = state;
+                if (set_vector != 0) {
+                    irq_line_vector[cpunum][irqline] = vector;
+                }
+            }
+
+            /* switch off the requested state */
+            switch (state) {
+                case PULSE_LINE:
+                    activecpu_set_irq_line(irqline, INTERNAL_ASSERT_LINE);
+                    activecpu_set_irq_line(irqline, INTERNAL_CLEAR_LINE);
+                    break;
+
+                case HOLD_LINE:
+                case ASSERT_LINE:
+                    activecpu_set_irq_line(irqline, INTERNAL_ASSERT_LINE);
+                    break;
+
+                case CLEAR_LINE:
+                    activecpu_set_irq_line(irqline, INTERNAL_CLEAR_LINE);
+                    break;
+
+                default:
+                    logerror("cpu_manualirqcallback cpu #%d, line %d, unknown state %d\n", cpunum, irqline, state);
+            }
+            cpuintrf_pop_context();
+
+            /* generate a trigger to unsuspend any CPUs waiting on the interrupt */
+            if (state != CLEAR_LINE) {
+                cpu_triggerint(cpunum);
+            }
+        }
+    };
+
     public static void cpu_set_irq_line(int cpunum, int irqline, int state) {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	int vector = 0xff;
-/*TODO*///
-/*TODO*///	/* don't trigger interrupts on suspended CPUs */
-/*TODO*///	if (cpu_getstatus(cpunum) == 0)
-/*TODO*///		return;
-/*TODO*///
-/*TODO*///	/* determine the current vector */
-/*TODO*///	if (irqline >= 0 && irqline < MAX_IRQ_LINES)
-/*TODO*///		vector = irq_line_vector[cpunum][irqline];
-/*TODO*///
-/*TODO*///	LOG(("cpu_set_irq_line(%d,%d,%d,%02x)\n", cpunum, irqline, state, vector));
-/*TODO*///
-/*TODO*///	/* set a timer to go off */
-/*TODO*///	timer_set(TIME_NOW, (cpunum & 0x0f) | ((state & 0x0f) << 4) | ((irqline & 0x7f) << 8), cpu_manualirqcallback);
+        int vector = 0xff;
+
+        /* don't trigger interrupts on suspended CPUs */
+        if (cpu_getstatus(cpunum) == 0) {
+            return;
+        }
+
+        /* determine the current vector */
+        if (irqline >= 0 && irqline < MAX_IRQ_LINES) {
+            vector = irq_line_vector[cpunum][irqline];
+        }
+
+        //LOG(("cpu_set_irq_line(%d,%d,%d,%02x)\n", cpunum, irqline, state, vector));
+
+        /* set a timer to go off */
+        timer_set(TIME_NOW, (cpunum & 0x0f) | ((state & 0x0f) << 4) | ((irqline & 0x7f) << 8), cpu_manualirqcallback);
     }
 
-    /*TODO*///
-/*TODO*///void cpu_set_irq_line_and_vector(int cpunum, int irqline, int state, int vector)
-/*TODO*///{
-/*TODO*///	/* don't trigger interrupts on suspended CPUs */
-/*TODO*///	if (cpu_getstatus(cpunum) == 0)
-/*TODO*///		return;
-/*TODO*///
-/*TODO*///	LOG(("cpu_set_irq_line(%d,%d,%d,%02x)\n", cpunum, irqline, state, vector));
-/*TODO*///
-/*TODO*///	/* set a timer to go off */
-/*TODO*///	timer_set(TIME_NOW, (cpunum & 0x0f) | ((state & 0x0f) << 4) | ((irqline & 0x7f) << 8) | (1 << 15) | (vector << 16), cpu_manualirqcallback);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*///#if 0
-/*TODO*///#pragma mark -
-/*TODO*///#pragma mark OBSOLETE INTERRUPT HANDLING
-/*TODO*///#endif
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Old-style interrupt generation
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-    public static void cpu_cause_interrupt(int cpunum, int type) {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	/* special case for none */
-/*TODO*///	if (type == INTERRUPT_NONE)
-/*TODO*///		return;
-/*TODO*///
-/*TODO*///	/* special case for NMI type */
-/*TODO*///	else if (type == INTERRUPT_NMI)
-/*TODO*///		cpu_set_irq_line(cpunum, IRQ_LINE_NMI, PULSE_LINE);
-/*TODO*///
-/*TODO*///	/* otherwise, convert to an IRQ */
-/*TODO*///	else
-/*TODO*///	{
-/*TODO*///		int vector, irqline;
-/*TODO*///		irqline = convert_type_to_irq_line(cpunum, type, &vector);
-/*TODO*///		cpu_set_irq_line_and_vector(cpunum, irqline, HOLD_LINE, vector);
-/*TODO*///	}
+    public static void cpu_set_irq_line_and_vector(int cpunum, int irqline, int state, int vector) {
+        /* don't trigger interrupts on suspended CPUs */
+        if (cpu_getstatus(cpunum) == 0) {
+            return;
+        }
+
+        //LOG(("cpu_set_irq_line(%d,%d,%d,%02x)\n", cpunum, irqline, state, vector));
+
+        /* set a timer to go off */
+        timer_set(TIME_NOW, (cpunum & 0x0f) | ((state & 0x0f) << 4) | ((irqline & 0x7f) << 8) | (1 << 15) | (vector << 16), cpu_manualirqcallback);
     }
-    /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Interrupt enabling
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static void cpu_clearintcallback(int cpunum)
-/*TODO*///{
-/*TODO*///	int irqcount = cputype_get_interface(Machine->drv->cpu[cpunum].cpu_type & ~CPU_FLAGS_MASK)->num_irqs;
-/*TODO*///	int irqline;
-/*TODO*///
-/*TODO*///	cpuintrf_push_context(cpunum);
-/*TODO*///
-/*TODO*///	/* clear NMI and all IRQs */
-/*TODO*///	activecpu_set_irq_line(IRQ_LINE_NMI, INTERNAL_CLEAR_LINE);
-/*TODO*///	for (irqline = 0; irqline < irqcount; irqline++)
-/*TODO*///		activecpu_set_irq_line(irqline, INTERNAL_CLEAR_LINE);
-/*TODO*///
-/*TODO*///	cpuintrf_pop_context();
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///void cpu_interrupt_enable(int cpunum,int enabled)
-/*TODO*///{
-/*TODO*///	interrupt_enable[cpunum] = enabled;
-/*TODO*///
-/*TODO*///LOG(("CPU#%d interrupt_enable=%d\n", cpunum, enabled));
-/*TODO*///
-/*TODO*///	/* make sure there are no queued interrupts */
-/*TODO*///	if (enabled == 0)
-/*TODO*///		timer_set(TIME_NOW, cpunum, cpu_clearintcallback);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
+
+    /**
+     * ***********************************
+     *
+     * Old-style interrupt generation
+     *
+     ************************************
+     */
+    public static void cpu_cause_interrupt(int cpunum, int type) {
+        /* special case for none */
+        if (type == INTERRUPT_NONE) {
+            return;
+        } /* special case for NMI type */ else if (type == INTERRUPT_NMI) {
+            cpu_set_irq_line(cpunum, IRQ_LINE_NMI, PULSE_LINE);
+        } /* otherwise, convert to an IRQ */ else {
+            int[] vector = new int[1];
+            int irqline;
+            irqline = convert_type_to_irq_line(cpunum, type, vector);
+            cpu_set_irq_line_and_vector(cpunum, irqline, HOLD_LINE, vector[0]);
+        }
+    }
+
+    /**
+     * ***********************************
+     *
+     * Interrupt enabling
+     *
+     ************************************
+     */
+    public static timer_callback cpu_clearintcallback = new timer_callback() {
+        public void handler(int cpunum) {
+            int irqcount = cputype_get_interface(Machine.drv.cpu[cpunum].cpu_type & ~CPU_FLAGS_MASK).num_irqs;
+            int irqline;
+
+            cpuintrf_push_context(cpunum);
+
+            /* clear NMI and all IRQs */
+            activecpu_set_irq_line(IRQ_LINE_NMI, INTERNAL_CLEAR_LINE);
+            for (irqline = 0; irqline < irqcount; irqline++) {
+                activecpu_set_irq_line(irqline, INTERNAL_CLEAR_LINE);
+            }
+
+            cpuintrf_pop_context();
+        }
+    };
+
+    public static void cpu_interrupt_enable(int cpunum, int enabled) {
+        interrupt_enable[cpunum] = enabled;
+
+        //LOG(("CPU#%d interrupt_enable=%d\n", cpunum, enabled));
+
+        /* make sure there are no queued interrupts */
+        if (enabled == 0) {
+            timer_set(TIME_NOW, cpunum, cpu_clearintcallback);
+        }
+    }
+
     public static WriteHandlerPtr interrupt_enable_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            throw new UnsupportedOperationException("Unsupported");
-            /*TODO*///	VERIFY_ACTIVECPU_VOID(interrupt_enable_w);
-/*TODO*///	cpu_interrupt_enable(activecpu, data);
+            int activecpu = cpu_getactivecpu();
+            if (activecpu < 0) {
+                logerror("interrupt_enable_w() called with no active cpu!\n");
+                return;
+            }
+            cpu_interrupt_enable(activecpu, data);
         }
     };
 
@@ -1166,27 +1140,32 @@ public class cpuexec {
 /*TODO*///
     public static InterruptPtr interrupt = new InterruptPtr() {
         public int handler() {
-            throw new UnsupportedOperationException("Unsupported");
-            /*TODO*///	int val = 0;
-/*TODO*///
-/*TODO*///	VERIFY_ACTIVECPU(INTERRUPT_NONE, interrupt);
-/*TODO*///
-/*TODO*///	if (interrupt_enable[activecpu] == 0)
-/*TODO*///		return INTERRUPT_NONE;
-/*TODO*///
-/*TODO*///	val = activecpu_default_irq_line();
-/*TODO*///	return (val == -1000) ? interrupt_vector[activecpu] : val;
+            int val = 0;
+            int activecpu = cpu_getactivecpu();
+            if (activecpu < 0) {
+                logerror("interrupt() called with no active cpu!\n");
+                return INTERRUPT_NONE;
+            }
+            if (interrupt_enable[activecpu] == 0) {
+                return INTERRUPT_NONE;
+            }
+
+            val = activecpu_default_irq_line();
+            return (val == -1000) ? interrupt_vector[activecpu] : val;
         }
     };
     public static InterruptPtr nmi_interrupt = new InterruptPtr() {
         public int handler() {
-            throw new UnsupportedOperationException("Unsupported");
-            /*TODO*///	VERIFY_ACTIVECPU(INTERRUPT_NONE, nmi_interrupt);
-/*TODO*///
-/*TODO*///LOG(("nmi_interrupt: interrupt_enable[%d]=%d\n", activecpu, interrupt_enable[activecpu]));
-/*TODO*///	if (interrupt_enable[activecpu])
-/*TODO*///		cpu_set_nmi_line(activecpu, PULSE_LINE);
-/*TODO*///	return INTERRUPT_NONE;
+            int activecpu = cpu_getactivecpu();
+            if (activecpu < 0) {
+                logerror("nmi_interrupt() called with no active cpu!\n");
+                return INTERRUPT_NONE;
+            }
+            //LOG(("nmi_interrupt: interrupt_enable[%d]=%d\n", activecpu, interrupt_enable[activecpu]));
+            if (interrupt_enable[activecpu] != 0) {
+                cpu_set_nmi_line(activecpu, PULSE_LINE);
+            }
+            return INTERRUPT_NONE;
         }
     };
     public static InterruptPtr ignore_interrupt = new InterruptPtr() {
@@ -1372,352 +1351,338 @@ public class cpuexec {
 /*TODO*///--------------------------------------------------------------*/
 /*TODO*///
     public static int cpu_getiloops() {
-        throw new UnsupportedOperationException("Unsupported");
         /*TODO*///	VERIFY_ACTIVECPU(0, cpu_getiloops);
-/*TODO*///	return cpu[activecpu].iloops;
+        return cpu_exec[activecpu].iloops;
     }
-    /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Hook for updating things on the
-/*TODO*/// *	real VBLANK (once per frame)
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static void cpu_vblankreset(void)
-/*TODO*///{
-/*TODO*///	int cpunum;
-/*TODO*///
-/*TODO*///	/* read hi scores from disk */
-/*TODO*///	hs_update();
-/*TODO*///
-/*TODO*///	/* read keyboard & update the status of the input ports */
-/*TODO*///	update_input_ports();
-/*TODO*///
-/*TODO*///	/* reset the cycle counters */
-/*TODO*///	for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++)
-/*TODO*///	{
-/*TODO*///		if (!timer_iscpususpended(cpunum, SUSPEND_REASON_DISABLE))
-/*TODO*///			cpu[cpunum].iloops = Machine->drv->cpu[cpunum].vblank_interrupts_per_frame - 1;
-/*TODO*///		else
-/*TODO*///			cpu[cpunum].iloops = -1;
-/*TODO*///	}
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	First-run callback for VBLANKs
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static void cpu_firstvblankcallback(int param)
-/*TODO*///{
-/*TODO*///	/* now that we're synced up, pulse from here on out */
-/*TODO*///	vblank_timer = timer_pulse(vblank_period, param, cpu_vblankcallback);
-/*TODO*///
-/*TODO*///	/* but we need to call the standard routine as well */
-/*TODO*///	cpu_vblankcallback(param);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	VBLANK core handler
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static void cpu_vblankcallback(int param)
-/*TODO*///{
-/*TODO*///	int cpunum;
-/*TODO*///
-/*TODO*///	/* loop over CPUs */
-/*TODO*///	for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++)
-/*TODO*///	{
-/*TODO*///		/* if the interrupt multiplier is valid */
-/*TODO*///		if (cpu[cpunum].vblankint_multiplier != -1)
-/*TODO*///		{
-/*TODO*///			/* decrement; if we hit zero, generate the interrupt and reset the countdown */
-/*TODO*///			if (!--cpu[cpunum].vblankint_countdown)
-/*TODO*///			{
-/*TODO*///				/* a param of -1 means don't call any callbacks */
-/*TODO*///				if (param != -1)
-/*TODO*///				{
-/*TODO*///					/* if the CPU has a VBLANK handler, call it */
-/*TODO*///					if (Machine->drv->cpu[cpunum].vblank_interrupt && cpu_getstatus(cpunum))
-/*TODO*///					{
-/*TODO*///						cpuintrf_push_context(cpunum);
-/*TODO*///						cpu_cause_interrupt(cpunum, (*Machine->drv->cpu[cpunum].vblank_interrupt)());
-/*TODO*///						cpuintrf_pop_context();
-/*TODO*///					}
-/*TODO*///
-/*TODO*///					/* update the counters */
-/*TODO*///					cpu[cpunum].iloops--;
-/*TODO*///				}
-/*TODO*///
-/*TODO*///				/* reset the countdown and timer */
-/*TODO*///				cpu[cpunum].vblankint_countdown = cpu[cpunum].vblankint_multiplier;
-/*TODO*///				timer_reset(cpu[cpunum].vblankint_timer, TIME_NEVER);
-/*TODO*///			}
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		/* else reset the VBLANK timer if this is going to be a real VBLANK */
-/*TODO*///		else if (vblank_countdown == 1)
-/*TODO*///			timer_reset(cpu[cpunum].vblankint_timer, TIME_NEVER);
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* is it a real VBLANK? */
-/*TODO*///	if (!--vblank_countdown)
-/*TODO*///	{
-/*TODO*///		/* do we update the screen now? */
-/*TODO*///		if (!(Machine->drv->video_attributes & VIDEO_UPDATE_AFTER_VBLANK))
-/*TODO*///			time_to_quit = updatescreen();
-/*TODO*///
-/*TODO*///		/* Set the timer to update the screen */
-/*TODO*///		timer_set(TIME_IN_USEC(Machine->drv->vblank_duration), 0, cpu_updatecallback);
-/*TODO*///		vblank = 1;
-/*TODO*///
-/*TODO*///		/* reset the globals */
-/*TODO*///		cpu_vblankreset();
-/*TODO*///
-/*TODO*///		/* reset the counter */
-/*TODO*///		vblank_countdown = vblank_multiplier;
-/*TODO*///	}
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	End-of-VBLANK callback
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static void cpu_updatecallback(int param)
-/*TODO*///{
-/*TODO*///	/* update the screen if we didn't before */
-/*TODO*///	if (Machine->drv->video_attributes & VIDEO_UPDATE_AFTER_VBLANK)
-/*TODO*///		time_to_quit = updatescreen();
-/*TODO*///	vblank = 0;
-/*TODO*///
-/*TODO*///	/* update IPT_VBLANK input ports */
-/*TODO*///	inputport_vblank_end();
-/*TODO*///
-/*TODO*///	/* check the watchdog */
-/*TODO*///	if (watchdog_counter > 0)
-/*TODO*///		if (--watchdog_counter == 0)
-/*TODO*///		{
-/*TODO*///			logerror("reset caused by the watchdog\n");
-/*TODO*///			machine_reset();
-/*TODO*///		}
-/*TODO*///
-/*TODO*///	/* track total frames */
-/*TODO*///	current_frame++;
-/*TODO*///
-/*TODO*///	/* reset the refresh timer */
-/*TODO*///	timer_reset(refresh_timer, TIME_NEVER);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Callback for timed interrupts
-/*TODO*/// *	(not tied to a VBLANK)
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static void cpu_timedintcallback(int param)
-/*TODO*///{
-/*TODO*///	/* bail if there is no routine */
-/*TODO*///	if (Machine->drv->cpu[param].timed_interrupt && cpu_getstatus(param))
-/*TODO*///	{
-/*TODO*///		cpuintrf_push_context(param);
-/*TODO*///		cpu_cause_interrupt(param, (*Machine->drv->cpu[param].timed_interrupt)());
-/*TODO*///		cpuintrf_pop_context();
-/*TODO*///	}
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Converts an integral timing rate
-/*TODO*/// *	into a period
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*////*--------------------------------------------------------------
-/*TODO*///
-/*TODO*///	Rates can be specified as follows:
-/*TODO*///
-/*TODO*///		rate <= 0		-> 0
-/*TODO*///		rate < 50000	-> 'rate' cycles per frame
-/*TODO*///		rate >= 50000	-> 'rate' nanoseconds
-/*TODO*///
-/*TODO*///--------------------------------------------------------------*/
-/*TODO*///
-/*TODO*///static double cpu_computerate(int value)
-/*TODO*///{
-/*TODO*///	/* values equal to zero are zero */
-/*TODO*///	if (value <= 0)
-/*TODO*///		return 0.0;
-/*TODO*///
-/*TODO*///	/* values above between 0 and 50000 are in Hz */
-/*TODO*///	if (value < 50000)
-/*TODO*///		return TIME_IN_HZ(value);
-/*TODO*///
-/*TODO*///	/* values greater than 50000 are in nanoseconds */
-/*TODO*///	else
-/*TODO*///		return TIME_IN_NSEC(value);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Callback to force a timeslice
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static void cpu_timeslicecallback(int param)
-/*TODO*///{
-/*TODO*///	timer_trigger(TRIGGER_TIMESLICE);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Setup all the core timers
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static void cpu_inittimers(void)
-/*TODO*///{
-/*TODO*///	double first_time;
-/*TODO*///	int cpunum, max, ipf;
-/*TODO*///
-/*TODO*///	/* remove old timers */
-/*TODO*///	if (timeslice_timer)
-/*TODO*///		timer_remove(timeslice_timer);
-/*TODO*///	if (refresh_timer)
-/*TODO*///		timer_remove(refresh_timer);
-/*TODO*///	if (vblank_timer)
-/*TODO*///		timer_remove(vblank_timer);
-/*TODO*///
-/*TODO*///	/* allocate a dummy timer at the minimum frequency to break things up */
-/*TODO*///	ipf = Machine->drv->cpu_slices_per_frame;
-/*TODO*///	if (ipf <= 0)
-/*TODO*///		ipf = 1;
-/*TODO*///	timeslice_period = TIME_IN_HZ(Machine->drv->frames_per_second * ipf);
-/*TODO*///	timeslice_timer = timer_pulse(timeslice_period, 0, cpu_timeslicecallback);
-/*TODO*///
-/*TODO*///	/* allocate an infinite timer to track elapsed time since the last refresh */
-/*TODO*///	refresh_period = TIME_IN_HZ(Machine->drv->frames_per_second);
-/*TODO*///	refresh_period_inv = 1.0 / refresh_period;
-/*TODO*///	refresh_timer = timer_set(TIME_NEVER, 0, NULL);
-/*TODO*///
-/*TODO*///	/* while we're at it, compute the scanline times */
-/*TODO*///	if (Machine->drv->vblank_duration)
-/*TODO*///		scanline_period = (refresh_period - TIME_IN_USEC(Machine->drv->vblank_duration)) /
-/*TODO*///				(double)(Machine->visible_area.max_y - Machine->visible_area.min_y + 1);
-/*TODO*///	else
-/*TODO*///		scanline_period = refresh_period / (double)Machine->drv->screen_height;
-/*TODO*///	scanline_period_inv = 1.0 / scanline_period;
-/*TODO*///
-/*TODO*///	/*
-/*TODO*///	 *	The following code finds all the CPUs that are interrupting in sync with the VBLANK
-/*TODO*///	 *	and sets up the VBLANK timer to run at the minimum number of cycles per frame in
-/*TODO*///	 *	order to service all the synced interrupts
-/*TODO*///	 */
-/*TODO*///
-/*TODO*///	/* find the CPU with the maximum interrupts per frame */
-/*TODO*///	max = 1;
-/*TODO*///	for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++)
-/*TODO*///	{
-/*TODO*///		ipf = Machine->drv->cpu[cpunum].vblank_interrupts_per_frame;
-/*TODO*///		if (ipf > max)
-/*TODO*///			max = ipf;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* now find the LCD with the rest of the CPUs (brute force - these numbers aren't huge) */
-/*TODO*///	vblank_multiplier = max;
-/*TODO*///	while (1)
-/*TODO*///	{
-/*TODO*///		for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++)
-/*TODO*///		{
-/*TODO*///			ipf = Machine->drv->cpu[cpunum].vblank_interrupts_per_frame;
-/*TODO*///			if (ipf > 0 && (vblank_multiplier % ipf) != 0)
-/*TODO*///				break;
-/*TODO*///		}
-/*TODO*///		if (cpunum == cpu_gettotalcpu())
-/*TODO*///			break;
-/*TODO*///		vblank_multiplier += max;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* initialize the countdown timers and intervals */
-/*TODO*///	for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++)
-/*TODO*///	{
-/*TODO*///		ipf = Machine->drv->cpu[cpunum].vblank_interrupts_per_frame;
-/*TODO*///		if (ipf > 0)
-/*TODO*///			cpu[cpunum].vblankint_countdown = cpu[cpunum].vblankint_multiplier = vblank_multiplier / ipf;
-/*TODO*///		else
-/*TODO*///			cpu[cpunum].vblankint_countdown = cpu[cpunum].vblankint_multiplier = -1;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* allocate a vblank timer at the frame rate * the LCD number of interrupts per frame */
-/*TODO*///	vblank_period = TIME_IN_HZ(Machine->drv->frames_per_second * vblank_multiplier);
-/*TODO*///	vblank_timer = timer_pulse(vblank_period, 0, cpu_vblankcallback);
-/*TODO*///	vblank_countdown = vblank_multiplier;
-/*TODO*///
-/*TODO*///	/*
-/*TODO*///	 *		The following code creates individual timers for each CPU whose interrupts are not
-/*TODO*///	 *		synced to the VBLANK, and computes the typical number of cycles per interrupt
-/*TODO*///	 */
-/*TODO*///
-/*TODO*///	/* start the CPU interrupt timers */
-/*TODO*///	for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++)
-/*TODO*///	{
-/*TODO*///		ipf = Machine->drv->cpu[cpunum].vblank_interrupts_per_frame;
-/*TODO*///
-/*TODO*///		/* remove old timers */
-/*TODO*///		if (cpu[cpunum].vblankint_timer)
-/*TODO*///			timer_remove(cpu[cpunum].vblankint_timer);
-/*TODO*///		if (cpu[cpunum].timedint_timer)
-/*TODO*///			timer_remove(cpu[cpunum].timedint_timer);
-/*TODO*///
-/*TODO*///		/* compute the average number of cycles per interrupt */
-/*TODO*///		if (ipf <= 0)
-/*TODO*///			ipf = 1;
-/*TODO*///		cpu[cpunum].vblankint_period = TIME_IN_HZ(Machine->drv->frames_per_second * ipf);
-/*TODO*///		cpu[cpunum].vblankint_timer = timer_set(TIME_NEVER, 0, NULL);
-/*TODO*///
-/*TODO*///		/* see if we need to allocate a CPU timer */
-/*TODO*///		ipf = Machine->drv->cpu[cpunum].timed_interrupts_per_second;
-/*TODO*///		if (ipf)
-/*TODO*///		{
-/*TODO*///			cpu[cpunum].timedint_period = cpu_computerate(ipf);
-/*TODO*///			cpu[cpunum].timedint_timer = timer_pulse(cpu[cpunum].timedint_period, cpunum, cpu_timedintcallback);
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* note that since we start the first frame on the refresh, we can't pulse starting
-/*TODO*///	   immediately; instead, we back up one VBLANK period, and inch forward until we hit
-/*TODO*///	   positive time. That time will be the time of the first VBLANK timer callback */
-/*TODO*///	timer_remove(vblank_timer);
-/*TODO*///
-/*TODO*///	first_time = -TIME_IN_USEC(Machine->drv->vblank_duration) + vblank_period;
-/*TODO*///	while (first_time < 0)
-/*TODO*///	{
-/*TODO*///		cpu_vblankcallback(-1);
-/*TODO*///		first_time += vblank_period;
-/*TODO*///	}
-/*TODO*///	vblank_timer = timer_set(first_time, 0, cpu_firstvblankcallback);
-/*TODO*///}
-/*TODO*///    
+
+    /**
+     * ***********************************
+     *
+     * Hook for updating things on the real VBLANK (once per frame)
+     *
+     ************************************
+     */
+    static void cpu_vblankreset() {
+        int cpunum;
+
+        /*TODO*///	/* read hi scores from disk */
+        /*TODO*///	hs_update();
+
+        /* read keyboard & update the status of the input ports */
+        update_input_ports();
+
+        /* reset the cycle counters */
+        for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
+            if (timer_iscpususpended(cpunum, SUSPEND_REASON_DISABLE) == 0) {
+                cpu_exec[cpunum].iloops = Machine.drv.cpu[cpunum].vblank_interrupts_per_frame - 1;
+            } else {
+                cpu_exec[cpunum].iloops = -1;
+            }
+        }
+    }
+
+    /**
+     * ***********************************
+     *
+     * First-run callback for VBLANKs
+     *
+     ************************************
+     */
+    public static timer_callback cpu_firstvblankcallback = new timer_callback() {
+        public void handler(int param) {
+            /* now that we're synced up, pulse from here on out */
+            vblank_timer = timer_pulse(vblank_period, param, cpu_vblankcallback);
+
+            /* but we need to call the standard routine as well */
+            cpu_vblankcallback.handler(param);
+        }
+    };
+    /**
+     * ***********************************
+     *
+     * VBLANK core handler
+     *
+     ************************************
+     */
+
+    public static timer_callback cpu_vblankcallback = new timer_callback() {
+        public void handler(int param) {
+            int cpunum;
+
+            /* loop over CPUs */
+            for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
+                /* if the interrupt multiplier is valid */
+                if (cpu_exec[cpunum].vblankint_multiplier != -1) {
+                    /* decrement; if we hit zero, generate the interrupt and reset the countdown */
+                    if (--cpu_exec[cpunum].vblankint_countdown == 0) {
+                        /* a param of -1 means don't call any callbacks */
+                        if (param != -1) {
+                            /* if the CPU has a VBLANK handler, call it */
+                            if (Machine.drv.cpu[cpunum].vblank_interrupt != null && cpu_getstatus(cpunum) != 0) {
+                                cpuintrf_push_context(cpunum);
+                                cpu_cause_interrupt(cpunum, Machine.drv.cpu[cpunum].vblank_interrupt.handler());
+                                cpuintrf_pop_context();
+                            }
+
+                            /* update the counters */
+                            cpu_exec[cpunum].iloops--;
+                        }
+
+                        /* reset the countdown and timer */
+                        cpu_exec[cpunum].vblankint_countdown = cpu_exec[cpunum].vblankint_multiplier;
+                        timer_reset(cpu_exec[cpunum].vblankint_timer, TIME_NEVER);
+                    }
+                } /* else reset the VBLANK timer if this is going to be a real VBLANK */ else if (vblank_countdown == 1) {
+                    timer_reset(cpu_exec[cpunum].vblankint_timer, TIME_NEVER);
+                }
+            }
+
+            /* is it a real VBLANK? */
+            if (--vblank_countdown == 0) {
+                /* do we update the screen now? */
+                if ((Machine.drv.video_attributes & VIDEO_UPDATE_AFTER_VBLANK) == 0) {
+                    time_to_quit = updatescreen();
+                }
+
+                /* Set the timer to update the screen */
+                timer_set(TIME_IN_USEC(Machine.drv.vblank_duration), 0, cpu_updatecallback);
+                vblank = 1;
+
+                /* reset the globals */
+                cpu_vblankreset();
+
+                /* reset the counter */
+                vblank_countdown = vblank_multiplier;
+            }
+        }
+    };
+
+    /**
+     * ***********************************
+     *
+     * End-of-VBLANK callback
+     *
+     ************************************
+     */
+    public static timer_callback cpu_updatecallback = new timer_callback() {
+        public void handler(int param) {
+            /* update the screen if we didn't before */
+            if ((Machine.drv.video_attributes & VIDEO_UPDATE_AFTER_VBLANK) != 0) {
+                time_to_quit = updatescreen();
+            }
+            vblank = 0;
+
+            /* update IPT_VBLANK input ports */
+            inputport_vblank_end();
+
+            /* check the watchdog */
+            if (watchdog_counter > 0) {
+                if (--watchdog_counter == 0) {
+                    logerror("reset caused by the watchdog\n");
+                    machine_reset();
+                }
+            }
+
+            /* track total frames */
+            current_frame++;
+
+            /* reset the refresh timer */
+            timer_reset(refresh_timer, TIME_NEVER);
+        }
+    };
+    /**
+     * ***********************************
+     *
+     * Callback for timed interrupts (not tied to a VBLANK)
+     *
+     ************************************
+     */
+    public static timer_callback cpu_timedintcallback = new timer_callback() {
+        public void handler(int param) {
+            /* bail if there is no routine */
+            if (Machine.drv.cpu[param].timed_interrupt != null && cpu_getstatus(param) != 0) {
+                cpuintrf_push_context(param);
+                cpu_cause_interrupt(param, Machine.drv.cpu[param].timed_interrupt.handler());
+                cpuintrf_pop_context();
+            }
+        }
+    };
+
+    /**
+     * ***********************************
+     *
+     * Converts an integral timing rate into a period
+     *
+     ************************************
+     */
+
+    /*--------------------------------------------------------------
+
+            Rates can be specified as follows:
+
+                    rate <= 0		-> 0
+                    rate < 50000	-> 'rate' cycles per frame
+                    rate >= 50000	-> 'rate' nanoseconds
+
+    --------------------------------------------------------------*/
+    static double cpu_computerate(int value) {
+        /* values equal to zero are zero */
+        if (value <= 0) {
+            return 0.0;
+        }
+
+        /* values above between 0 and 50000 are in Hz */
+        if (value < 50000) {
+            return TIME_IN_HZ(value);
+        } /* values greater than 50000 are in nanoseconds */ else {
+            return TIME_IN_NSEC(value);
+        }
+    }
+    /**
+     * ***********************************
+     *
+     * Callback to force a timeslice
+     *
+     ************************************
+     */
+    public static timer_callback cpu_timeslicecallback = new timer_callback() {
+        public void handler(int i) {
+            timer_trigger(TRIGGER_TIMESLICE);
+        }
+    };
+
+    /**
+     * ***********************************
+     *
+     * Setup all the core timers
+     *
+     ************************************
+     */
+    static void cpu_inittimers() {
+        double first_time;
+        int cpunum, max, ipf;
+
+        /* remove old timers */
+        if (timeslice_timer != null) {
+            timer_remove(timeslice_timer);
+        }
+        if (refresh_timer != null) {
+            timer_remove(refresh_timer);
+        }
+        if (vblank_timer != null) {
+            timer_remove(vblank_timer);
+        }
+
+        /* allocate a dummy timer at the minimum frequency to break things up */
+        ipf = Machine.drv.cpu_slices_per_frame;
+        if (ipf <= 0) {
+            ipf = 1;
+        }
+        timeslice_period = TIME_IN_HZ(Machine.drv.frames_per_second * ipf);
+        timeslice_timer = timer_pulse(timeslice_period, 0, cpu_timeslicecallback);
+
+        /* allocate an infinite timer to track elapsed time since the last refresh */
+        refresh_period = TIME_IN_HZ(Machine.drv.frames_per_second);
+        refresh_period_inv = 1.0 / refresh_period;
+        refresh_timer = timer_set(TIME_NEVER, 0, null);
+
+        /* while we're at it, compute the scanline times */
+        if (Machine.drv.vblank_duration != 0) {
+            scanline_period = (refresh_period - TIME_IN_USEC(Machine.drv.vblank_duration))
+                    / (double) (Machine.visible_area.max_y - Machine.visible_area.min_y + 1);
+        } else {
+            scanline_period = refresh_period / (double) Machine.drv.screen_height;
+        }
+        scanline_period_inv = 1.0 / scanline_period;
+
+        /*
+	 *	The following code finds all the CPUs that are interrupting in sync with the VBLANK
+	 *	and sets up the VBLANK timer to run at the minimum number of cycles per frame in
+	 *	order to service all the synced interrupts
+         */
+
+ /* find the CPU with the maximum interrupts per frame */
+        max = 1;
+        for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
+            ipf = Machine.drv.cpu[cpunum].vblank_interrupts_per_frame;
+            if (ipf > max) {
+                max = ipf;
+            }
+        }
+
+        /* now find the LCD with the rest of the CPUs (brute force - these numbers aren't huge) */
+        vblank_multiplier = max;
+        while (true) {
+            for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
+                ipf = Machine.drv.cpu[cpunum].vblank_interrupts_per_frame;
+                if (ipf > 0 && (vblank_multiplier % ipf) != 0) {
+                    break;
+                }
+            }
+            if (cpunum == cpu_gettotalcpu()) {
+                break;
+            }
+            vblank_multiplier += max;
+        }
+
+        /* initialize the countdown timers and intervals */
+        for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
+            ipf = Machine.drv.cpu[cpunum].vblank_interrupts_per_frame;
+            if (ipf > 0) {
+                cpu_exec[cpunum].vblankint_countdown = cpu_exec[cpunum].vblankint_multiplier = vblank_multiplier / ipf;
+            } else {
+                cpu_exec[cpunum].vblankint_countdown = cpu_exec[cpunum].vblankint_multiplier = -1;
+            }
+        }
+
+        /* allocate a vblank timer at the frame rate * the LCD number of interrupts per frame */
+        vblank_period = TIME_IN_HZ(Machine.drv.frames_per_second * vblank_multiplier);
+        vblank_timer = timer_pulse(vblank_period, 0, cpu_vblankcallback);
+        vblank_countdown = vblank_multiplier;
+
+        /*
+	 *		The following code creates individual timers for each CPU whose interrupts are not
+	 *		synced to the VBLANK, and computes the typical number of cycles per interrupt
+         */
+
+ /* start the CPU interrupt timers */
+        for (cpunum = 0; cpunum < cpu_gettotalcpu(); cpunum++) {
+            ipf = Machine.drv.cpu[cpunum].vblank_interrupts_per_frame;
+
+            /* remove old timers */
+            if (cpu_exec[cpunum].vblankint_timer != null) {
+                timer_remove(cpu_exec[cpunum].vblankint_timer);
+            }
+            if (cpu_exec[cpunum].timedint_timer != null) {
+                timer_remove(cpu_exec[cpunum].timedint_timer);
+            }
+
+            /* compute the average number of cycles per interrupt */
+            if (ipf <= 0) {
+                ipf = 1;
+            }
+            cpu_exec[cpunum].vblankint_period = TIME_IN_HZ(Machine.drv.frames_per_second * ipf);
+            cpu_exec[cpunum].vblankint_timer = timer_set(TIME_NEVER, 0, null);
+
+            /* see if we need to allocate a CPU timer */
+            ipf = Machine.drv.cpu[cpunum].timed_interrupts_per_second;
+            if (ipf != 0) {
+                cpu_exec[cpunum].timedint_period = cpu_computerate(ipf);
+                cpu_exec[cpunum].timedint_timer = timer_pulse(cpu_exec[cpunum].timedint_period, cpunum, cpu_timedintcallback);
+            }
+        }
+
+        /* note that since we start the first frame on the refresh, we can't pulse starting
+	   immediately; instead, we back up one VBLANK period, and inch forward until we hit
+	   positive time. That time will be the time of the first VBLANK timer callback */
+        timer_remove(vblank_timer);
+
+        first_time = -TIME_IN_USEC(Machine.drv.vblank_duration) + vblank_period;
+        while (first_time < 0) {
+            cpu_vblankcallback.handler(-1);
+            first_time += vblank_period;
+        }
+        vblank_timer = timer_set(first_time, 0, cpu_firstvblankcallback);
+    }
+
 }
