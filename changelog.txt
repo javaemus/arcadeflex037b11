@@ -1,6 +1,7 @@
 21/01/2019
 ==========
 -More work on cpuinterface . Bankp works with new cpuinterface!
+-Updates to cpuinterface . 1942 also works now
 
 20/01/2019
 ==========

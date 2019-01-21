@@ -633,44 +633,37 @@ public class cpuexec {
 /*TODO*///	return 0xffffffff;
 /*TODO*///}
 /*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*///#if 0
-/*TODO*///#pragma mark -
-/*TODO*///#pragma mark HALT/RESET
-/*TODO*///#endif
-/*TODO*///
-/*TODO*////*************************************
-/*TODO*/// *
-/*TODO*/// *	Handle reset line changes
-/*TODO*/// *
-/*TODO*/// *************************************/
-/*TODO*///
-/*TODO*///static void reset_callback(int param)
-/*TODO*///{
-/*TODO*///	int cpunum = param & 0xff;
-/*TODO*///	int state = param >> 8;
-/*TODO*///
-/*TODO*///	/* if we're asserting the line, just halt the CPU */
-/*TODO*///	if (state == ASSERT_LINE)
-/*TODO*///	{
-/*TODO*///		timer_suspendcpu(cpunum, 1, SUSPEND_REASON_RESET);
-/*TODO*///		return;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* if we're clearing the line that was previously asserted, or if we're just */
-/*TODO*///	/* pulsing the line, reset the CPU */
-/*TODO*///	if ((state == CLEAR_LINE && timer_iscpususpended(cpunum, SUSPEND_REASON_RESET)) || state == PULSE_LINE)
-/*TODO*///		cpunum_reset(cpunum, Machine->drv->cpu[cpunum].reset_param, cpu_irq_callbacks[cpunum]);
-/*TODO*///
-/*TODO*///	/* if we're clearing the line, make sure the CPU is not halted */
-/*TODO*///	timer_suspendcpu(cpunum, 0, SUSPEND_REASON_RESET);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
+    /**
+     * ***********************************
+     *
+     * Handle reset line changes
+     *
+     ************************************
+     */
+    public static timer_callback reset_callback = new timer_callback() {
+        public void handler(int param) {
+            int cpunum = param & 0xff;
+            int state = param >> 8;
+
+            /* if we're asserting the line, just halt the CPU */
+            if (state == ASSERT_LINE) {
+                timer_suspendcpu(cpunum, 1, SUSPEND_REASON_RESET);
+                return;
+            }
+
+            /* if we're clearing the line that was previously asserted, or if we're just */
+ /* pulsing the line, reset the CPU */
+            if ((state == CLEAR_LINE && timer_iscpususpended(cpunum, SUSPEND_REASON_RESET) != 0) || state == PULSE_LINE) {
+                cpunum_reset(cpunum, Machine.drv.cpu[cpunum].reset_param, cpu_irq_callbacks[cpunum]);
+            }
+
+            /* if we're clearing the line, make sure the CPU is not halted */
+            timer_suspendcpu(cpunum, 0, SUSPEND_REASON_RESET);
+        }
+    };
+
     public static void cpu_set_reset_line(int cpunum, int state) {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	timer_set(TIME_NOW, (cpunum & 0xff) | (state << 8), reset_callback);
+        timer_set(TIME_NOW, (cpunum & 0xff) | (state << 8), reset_callback);
     }
 
     /**
