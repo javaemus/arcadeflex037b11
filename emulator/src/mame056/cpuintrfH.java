@@ -563,14 +563,12 @@ public class cpuintrfH {
 /*TODO*///
     /* map older cpu_* functions to activecpu_* */
     public static int cpu_get_pc() {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*/// activecpu_get_pc
+        return activecpu_get_pc();
     }
 
     /*TODO*///#define		cpu_get_sp					activecpu_get_sp
     public static int cpu_get_reg(int regnum) {
-        throw new UnsupportedOperationException("Unsupported");
-        //activecpu_get_reg
+        return activecpu_get_reg(regnum);
     }
 
     /*TODO*///#define		cpu_set_reg					activecpu_set_reg
