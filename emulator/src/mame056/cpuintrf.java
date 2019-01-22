@@ -909,35 +909,36 @@ public class cpuintrf {
         cpuintrf_pop_context();
     }
 
+    /*--------------------------
+            Read a byte
+    --------------------------*/
+    public static int /*data8_t*/ cpunum_read_byte(int cpunum, int address) {
+        int result;
+        if (cpunum < 0 || cpunum >= totalcpu) {
+            logerror("cpunum_read_byte() called for invalid cpu num!\n");
+            return 0;
+        }
+        cpuintrf_push_context(cpunum);
+        result = cpu[cpunum].intf.memory_read(address);
+        cpuintrf_pop_context();
+        return result & 0xFF;
+    }
+
+
+    /*--------------------------
+ 	Write a byte
+    --------------------------*/
+    public static void cpunum_write_byte(int cpunum, int address, int/*data8_t*/ data) {
+        if (cpunum < 0 || cpunum >= totalcpu) {
+            logerror("cpunum_write_byte() called for invalid cpu num!\n");
+            return;
+        }
+        cpuintrf_push_context(cpunum);
+        cpu[cpunum].intf.memory_write(address, data & 0xFF);
+        cpuintrf_pop_context();
+    }
+
     /*TODO*///
-/*TODO*////*--------------------------
-/*TODO*/// 	Read a byte
-/*TODO*///--------------------------*/
-/*TODO*///
-/*TODO*///data8_t cpunum_read_byte(int cpunum, offs_t address)
-/*TODO*///{
-/*TODO*///	int result;
-/*TODO*///	VERIFY_CPUNUM(0, cpunum_read_byte);
-/*TODO*///	cpuintrf_push_context(cpunum);
-/*TODO*///	result = (*cpu[cpunum].intf.memory_read)(address);
-/*TODO*///	cpuintrf_pop_context();
-/*TODO*///	return result;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*--------------------------
-/*TODO*/// 	Write a byte
-/*TODO*///--------------------------*/
-/*TODO*///
-/*TODO*///void cpunum_write_byte(int cpunum, offs_t address, data8_t data)
-/*TODO*///{
-/*TODO*///	VERIFY_CPUNUM_VOID(cpunum_write_byte);
-/*TODO*///	cpuintrf_push_context(cpunum);
-/*TODO*///	(*cpu[cpunum].intf.memory_write)(address, data);
-/*TODO*///	cpuintrf_pop_context();
-/*TODO*///}
-/*TODO*///
-/*TODO*///
 /*TODO*////*--------------------------
 /*TODO*/// 	Get context pointer
 /*TODO*///--------------------------*/
@@ -971,20 +972,19 @@ public class cpuintrf {
 /*TODO*///	(*cpu[cpunum].intf.set_cycle_table)(which, new_table);
 /*TODO*///	cpuintrf_pop_context();
 /*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////*--------------------------
-/*TODO*/// 	Get/set registers
-/*TODO*///--------------------------*/
-/*TODO*///
+    /*--------------------------
+            Get/set registers
+    --------------------------*/
     public static int cpunum_get_reg(int cpunum, int regnum) {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	unsigned result;
-/*TODO*///	VERIFY_CPUNUM(0, cpunum_get_reg);
-/*TODO*///	cpuintrf_push_context(cpunum);
-/*TODO*///	result = (*cpu[cpunum].intf.get_reg)(regnum);
-/*TODO*///	cpuintrf_pop_context();
-/*TODO*///	return result;
+        if (cpunum < 0 || cpunum >= totalcpu) {
+            logerror("cpunum_get_reg() called for invalid cpu num!\n");
+            return 0;
+        }
+        int/*unsigned*/ result;
+        cpuintrf_push_context(cpunum);
+        result = cpu[cpunum].intf.get_reg(regnum);
+        cpuintrf_pop_context();
+        return result;
     }
 
     /*TODO*///

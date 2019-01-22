@@ -1,3 +1,7 @@
+22/01/2019
+==========
+-Updated hi-score class to work with 0.56 (tested with 1943)
+
 21/01/2019
 ==========
 -More work on cpuinterface . Bankp works with new cpuinterface!

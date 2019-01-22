@@ -1,15 +1,15 @@
 /**
  * java specific code for reading hiscore.dat for arcadeflex
  */
-package arcadeflex.util;
+package arcadeflex056.util;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import mame.hiscore.mem_range;
-import static mame.hiscore.state;
+import mame056.hiscore.mem_range;
+import static mame056.hiscore.state;
 import static old.arcadeflex.osdepend.logerror;
 
 public class hiscoreFileParser {

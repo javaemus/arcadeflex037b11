@@ -6,7 +6,7 @@ package mame;
 
 import static arcadeflex.libc.cstdio.sprintf;
 import arcadeflex.util.cheatFileParser;
-import static mame.hiscore.*;
+import static mame056.hiscore.*;
 import java.util.ArrayList;
 
 import mame.osdependH.osd_bitmap;
@@ -17,6 +17,8 @@ import static old.mame.input.*;
 import static old.mame.usrintrf.*;
 import static old2.mame.mame.*;
 import static mame056.cpuintrf.cpunum_address_mask;
+import static mame056.cpuintrf.cpunum_read_byte;
+import static mame056.cpuintrf.cpunum_write_byte;
 import static mame056.cpuintrfH.cpu_gettotalcpu;
 import static old.mame.inputH.*;
 
@@ -209,18 +211,18 @@ public class cheat {
     /* we can toggle the visibility for all on or off */
 
  /*TODO*////* in hiscore.c */
-/*TODO*///int computer_readmem_byte(int cpu, int addr);
-/*TODO*///void computer_writemem_byte(int cpu, int addr, int value);
+/*TODO*///int cpunum_read_byte(int cpu, int addr);
+/*TODO*///void cpunum_write_byte(int cpu, int addr, int value);
 /*TODO*///
 /*TODO*////* Some macros to simplify the code */
-/*TODO*///#define READ_CHEAT		computer_readmem_byte (subcheat.cpu, subcheat.address)
-/*TODO*///#define WRITE_CHEAT		computer_writemem_byte (subcheat.cpu, subcheat.address, subcheat.data)
-/*TODO*///#define COMPARE_CHEAT		(computer_readmem_byte (subcheat->cpu, subcheat->address) != subcheat->data)
+/*TODO*///#define READ_CHEAT		cpunum_read_byte (subcheat.cpu, subcheat.address)
+/*TODO*///#define WRITE_CHEAT		cpunum_write_byte (subcheat.cpu, subcheat.address, subcheat.data)
+/*TODO*///#define COMPARE_CHEAT		(cpunum_read_byte (subcheat->cpu, subcheat->address) != subcheat->data)
 /*TODO*///#define CPU_AUDIO_OFF(index)	((Machine->drv->cpu[index].cpu_type & CPU_AUDIO_CPU) && (Machine->sample_rate == 0))
 /*TODO*///
 /*TODO*////* Steph */
 /*TODO*///#ifdef MESS
-/*TODO*///#define WRITE_OLD_CHEAT		computer_writemem_byte (subcheat->cpu, subcheat->address, subcheat->olddata)
+/*TODO*///#define WRITE_OLD_CHEAT		cpunum_write_byte (subcheat->cpu, subcheat->address, subcheat->olddata)
 /*TODO*///#endif
 /*TODO*///
 /*TODO*////* Local prototypes */
@@ -1288,7 +1290,7 @@ public class cheat {
 /*TODO*///		gameram = memory_find_base (cpu, ext->start);
 /*TODO*///		memcpy (ext->data, gameram, ext->end - ext->start + 1);
 /*TODO*///		for (i=0; i <= ext->end - ext->start; i++)
-/*TODO*///			ext->data[i] = computer_readmem_byte(cpu, i+ext->start);
+/*TODO*///			ext->data[i] = cpunum_read_byte(cpu, i+ext->start);
 /*TODO*///	}
 /*TODO*///}
 /*TODO*///
@@ -1749,8 +1751,8 @@ public class cheat {
 /*TODO*///					for (j=0; j <= ext->end - ext->start; j++)
 /*TODO*///					if (ext->data[j] != 0)
 /*TODO*///					{
-/*TODO*///						if ((computer_readmem_byte(searchCPU, j+ext->start) != searchValue) &&
-/*TODO*///							((computer_readmem_byte(searchCPU, j+ext->start) != searchValue-1) /*||
+/*TODO*///						if ((cpunum_read_byte(searchCPU, j+ext->start) != searchValue) &&
+/*TODO*///							((cpunum_read_byte(searchCPU, j+ext->start) != searchValue-1) /*||
 /*TODO*///							(searchType != kSearch_Value)*/))
 /*TODO*///
 /*TODO*///							ext->data[j] = 0;
@@ -1924,7 +1926,7 @@ public class cheat {
 /*TODO*///			char buf2[80];
 /*TODO*///
 /*TODO*///			/* Display the first byte */
-/*TODO*///			sprintf (buf, "%02x", computer_readmem_byte (watches[i].cpu, watches[i].address));
+/*TODO*///			sprintf (buf, "%02x", cpunum_read_byte (watches[i].cpu, watches[i].address));
 /*TODO*///
 /*TODO*///			/* If this is for more than one byte, display the rest */
 /*TODO*///			if (watches[i].num_bytes > 1)
@@ -1933,7 +1935,7 @@ public class cheat {
 /*TODO*///
 /*TODO*///				for (j = 1; j < watches[i].num_bytes; j ++)
 /*TODO*///				{
-/*TODO*///					sprintf (buf2, " %02x", computer_readmem_byte (watches[i].cpu, watches[i].address + j));
+/*TODO*///					sprintf (buf2, " %02x", cpunum_read_byte (watches[i].cpu, watches[i].address + j));
 /*TODO*///					strcat (buf, buf2);
 /*TODO*///				}
 /*TODO*///			}
@@ -2543,17 +2545,17 @@ public class cheat {
 
                     /* most common case: 0 */
                     if (subcheat.code == kCheatSpecial_Poke) {
-                        computer_writemem_byte(subcheat.cpu, subcheat.address, subcheat.data);
+                        cpunum_write_byte(subcheat.cpu, subcheat.address, subcheat.data);
                     } /* Check special function if cheat counter is ready */ else if (subcheat.frame_count == 0) {
                         switch (subcheat.code) {
                             case 1:
-                                computer_writemem_byte(subcheat.cpu, subcheat.address, subcheat.data);
+                                cpunum_write_byte(subcheat.cpu, subcheat.address, subcheat.data);
                                 subcheat.flags |= SUBCHEAT_FLAG_DONE;
                                 break;
                             case 2:
                             case 3:
                             case 4:
-                                computer_writemem_byte(subcheat.cpu, subcheat.address, subcheat.data);
+                                cpunum_write_byte(subcheat.cpu, subcheat.address, subcheat.data);
                                 subcheat.frame_count = subcheat.frames_til_trigger;
                                 break;
 
@@ -2563,9 +2565,9 @@ public class cheat {
                             case 6:
                             case 7:
                                 if ((subcheat.flags & SUBCHEAT_FLAG_TIMED) != 0) {
-                                    computer_writemem_byte(subcheat.cpu, subcheat.address, subcheat.data);
+                                    cpunum_write_byte(subcheat.cpu, subcheat.address, subcheat.data);
                                     subcheat.flags &= ~SUBCHEAT_FLAG_TIMED;
-                                } else if (computer_readmem_byte(subcheat.cpu, subcheat.address) != subcheat.data) {
+                                } else if (cpunum_read_byte(subcheat.cpu, subcheat.address) != subcheat.data) {
                                     subcheat.frame_count = subcheat.frames_til_trigger;
                                     subcheat.flags |= SUBCHEAT_FLAG_TIMED;
                                 }
@@ -2581,12 +2583,12 @@ public class cheat {
                             case 11:
                                 if ((subcheat.flags & SUBCHEAT_FLAG_TIMED) != 0) {
                                     /* Check the value to see if it has increased over the original value by 1 or more */
-                                    if (computer_readmem_byte(subcheat.cpu, subcheat.address) != subcheat.backup - (kCheatSpecial_Backup1 - subcheat.code + 1)) {
-                                        computer_writemem_byte(subcheat.cpu, subcheat.address, subcheat.data);
+                                    if (cpunum_read_byte(subcheat.cpu, subcheat.address) != subcheat.backup - (kCheatSpecial_Backup1 - subcheat.code + 1)) {
+                                        cpunum_write_byte(subcheat.cpu, subcheat.address, subcheat.data);
                                     }
                                     subcheat.flags &= ~SUBCHEAT_FLAG_TIMED;
                                 } else {
-                                    subcheat.backup = computer_readmem_byte(subcheat.cpu, subcheat.address);
+                                    subcheat.backup = cpunum_read_byte(subcheat.cpu, subcheat.address);
                                     subcheat.frame_count = 1;
                                     subcheat.flags |= SUBCHEAT_FLAG_TIMED;
                                 }
@@ -2594,31 +2596,31 @@ public class cheat {
 
                             /* 20-24: set bits */
                             case 20:
-                                computer_writemem_byte(subcheat.cpu, subcheat.address, computer_readmem_byte(subcheat.cpu, subcheat.address) | subcheat.data);
+                                cpunum_write_byte(subcheat.cpu, subcheat.address, cpunum_read_byte(subcheat.cpu, subcheat.address) | subcheat.data);
                                 break;
                             case 21:
-                                computer_writemem_byte(subcheat.cpu, subcheat.address, computer_readmem_byte(subcheat.cpu, subcheat.address) | subcheat.data);
+                                cpunum_write_byte(subcheat.cpu, subcheat.address, cpunum_read_byte(subcheat.cpu, subcheat.address) | subcheat.data);
                                 subcheat.flags |= SUBCHEAT_FLAG_DONE;
                                 break;
                             case 22:
                             case 23:
                             case 24:
-                                computer_writemem_byte(subcheat.cpu, subcheat.address, computer_readmem_byte(subcheat.cpu, subcheat.address) | subcheat.data);
+                                cpunum_write_byte(subcheat.cpu, subcheat.address, cpunum_read_byte(subcheat.cpu, subcheat.address) | subcheat.data);
                                 subcheat.frame_count = subcheat.frames_til_trigger;
                                 break;
 
                             /* 40-44: reset bits */
                             case 40:
-                                computer_writemem_byte(subcheat.cpu, subcheat.address, computer_readmem_byte(subcheat.cpu, subcheat.address) & ~subcheat.data);
+                                cpunum_write_byte(subcheat.cpu, subcheat.address, cpunum_read_byte(subcheat.cpu, subcheat.address) & ~subcheat.data);
                                 break;
                             case 41:
-                                computer_writemem_byte(subcheat.cpu, subcheat.address, computer_readmem_byte(subcheat.cpu, subcheat.address) & ~subcheat.data);
+                                cpunum_write_byte(subcheat.cpu, subcheat.address, cpunum_read_byte(subcheat.cpu, subcheat.address) & ~subcheat.data);
                                 subcheat.flags |= SUBCHEAT_FLAG_DONE;
                                 break;
                             case 42:
                             case 43:
                             case 44:
-                                computer_writemem_byte(subcheat.cpu, subcheat.address, computer_readmem_byte(subcheat.cpu, subcheat.address) & ~subcheat.data);
+                                cpunum_write_byte(subcheat.cpu, subcheat.address, cpunum_read_byte(subcheat.cpu, subcheat.address) & ~subcheat.data);
                                 subcheat.frame_count = subcheat.frames_til_trigger;
                                 break;
 
@@ -2630,12 +2632,12 @@ public class cheat {
                             case 64:
                             case 65:
                                 if ((subcheat.flags & SUBCHEAT_FLAG_TIMED) != 0) {
-                                    if (computer_readmem_byte(subcheat.cpu, subcheat.address) != subcheat.backup) {
-                                        computer_writemem_byte(subcheat.cpu, subcheat.address, subcheat.data);
+                                    if (cpunum_read_byte(subcheat.cpu, subcheat.address) != subcheat.backup) {
+                                        cpunum_write_byte(subcheat.cpu, subcheat.address, subcheat.data);
                                         subcheat.flags |= SUBCHEAT_FLAG_DONE;
                                     }
                                 } else {
-                                    subcheat.backup = computer_readmem_byte(subcheat.cpu, subcheat.address);
+                                    subcheat.backup = cpunum_read_byte(subcheat.cpu, subcheat.address);
                                     subcheat.frame_count = 1;
                                     subcheat.flags |= SUBCHEAT_FLAG_TIMED;
                                 }
@@ -2648,7 +2650,7 @@ public class cheat {
                             case 73:
                             case 74:
                             case 75:
-                                computer_writemem_byte(subcheat.cpu, subcheat.address, subcheat.data);
+                                cpunum_write_byte(subcheat.cpu, subcheat.address, subcheat.data);
                                 subcheat.flags |= SUBCHEAT_FLAG_DONE;
                                 break;
                         }

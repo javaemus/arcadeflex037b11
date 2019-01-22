@@ -1,19 +1,17 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- * 
+ *
  */
-package mame;
+package mame056;
 
 import static arcadeflex.libc.ptr.*;
 import static old2.mame.mame.Machine;
-import static old2.mame.memory.memorycontextswap;
 import static mame.osdependH.*;
-import arcadeflex.util.hiscoreFileParser;
+import arcadeflex056.util.hiscoreFileParser;
 import static old.arcadeflex.fileio.*;
 import static old.arcadeflex.osdepend.logerror;
-import static mame056.cpuexecH.CPU_FLAGS_MASK;
-import static mame056.cpuintrfH.cpu_getactivecpu;
-import static mame056.cpuintrfH.cputype_get_interface;
+import static mame056.cpuintrf.*;
 
 public class hiscore {
 
@@ -33,41 +31,17 @@ public class hiscore {
     /**
      * **************************************************************************
      */
-    public static void computer_writemem_byte(int cpu, int addr, int value) {
-        int oldcpu = cpu_getactivecpu();
-        memorycontextswap(cpu);
-        //MEMORY_WRITE(cpu, addr, value);
-        cputype_get_interface(Machine.drv.cpu[cpu].cpu_type & ~CPU_FLAGS_MASK).memory_write(addr, value);
-        if (oldcpu != cpu) {
-            memorycontextswap(oldcpu);
-        }
-    }
-
-    public static int computer_readmem_byte(int cpu, int addr) {
-        int oldcpu = cpu_getactivecpu(), result;
-        memorycontextswap(cpu);
-        //result = MEMORY_READ(cpu, addr);
-        result = cputype_get_interface(Machine.drv.cpu[cpu].cpu_type & ~CPU_FLAGS_MASK).memory_read(addr);
-        if (oldcpu != cpu) {
-            memorycontextswap(oldcpu);
-        }
-        return result;
-    }
-
-    /**
-     * **************************************************************************
-     */
     static void copy_to_memory(int cpu, int addr, UBytePtr source, int num_bytes) {
         int i;
         for (i = 0; i < num_bytes; i++) {
-            computer_writemem_byte(cpu, addr + i, source.read(i));
+            cpunum_write_byte(cpu, addr + i, source.read(i));
         }
     }
 
     static void copy_from_memory(int cpu, int addr, UBytePtr dest, int num_bytes) {
         int i;
         for (i = 0; i < num_bytes; i++) {
-            dest.write(i, computer_readmem_byte(cpu, addr + i));
+            dest.write(i, cpunum_read_byte(cpu, addr + i));
         }
     }
 
@@ -79,11 +53,11 @@ public class hiscore {
     public static int safe_to_load() {
         mem_range mem_range = state.mem_range;
         while (mem_range != null) {
-            if (computer_readmem_byte(mem_range.cpu, mem_range.addr)
+            if (cpunum_read_byte(mem_range.cpu, mem_range.addr)
                     != mem_range.start_value) {
                 return 0;
             }
-            if (computer_readmem_byte(mem_range.cpu, (mem_range.addr + mem_range.num_bytes - 1))
+            if (cpunum_read_byte(mem_range.cpu, (mem_range.addr + mem_range.num_bytes - 1))
                     != mem_range.end_value) {
                 return 0;
             }
@@ -168,13 +142,13 @@ public class hiscore {
         state.hiscores_have_been_loaded = 0;
 
         while (mem_range != null) {
-            computer_writemem_byte(
+            cpunum_write_byte(
                     mem_range.cpu,
                     mem_range.addr,
                     ~mem_range.start_value
             );
 
-            computer_writemem_byte(
+            cpunum_write_byte(
                     mem_range.cpu,
                     mem_range.addr + mem_range.num_bytes - 1,
                     ~mem_range.end_value

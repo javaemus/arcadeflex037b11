@@ -7,6 +7,7 @@ import static arcadeflex.fucPtr.*;
 
 import static mame056.cpuexecH.*;
 import static mame.driverH.*;
+import static mame056.hiscore.*;
 import static mame.sndintrf.*;
 import static mame056.cpuintrf.*;
 import static mame056.cpuintrfH.*;
@@ -271,10 +272,10 @@ public class cpuexec {
 
         logerror("Machine reset\n");
 
-        /*TODO*///	/* read hi scores information from hiscore.dat */
-/*TODO*///	hs_open(Machine->gamedrv->name);
-/*TODO*///	hs_init();
-/*TODO*///
+        /* read hi scores information from hiscore.dat */
+        hs_open(Machine.gamedrv.name);
+        hs_init();
+
         /* initialize the various timers (suspends all CPUs at startup) */
         cpu_inittimers();
         watchdog_counter = -1;
@@ -331,7 +332,7 @@ public class cpuexec {
      */
     static void cpu_post_run() {
         /* write hi scores to disk - No scores saving if cheat */
- /*TODO*///	hs_close();
+        hs_close();
 
     }
 
@@ -1358,8 +1359,8 @@ public class cpuexec {
     static void cpu_vblankreset() {
         int cpunum;
 
-        /*TODO*///	/* read hi scores from disk */
-        /*TODO*///	hs_update();
+        /* read hi scores from disk */
+        hs_update();
 
         /* read keyboard & update the status of the input ports */
         update_input_ports();
