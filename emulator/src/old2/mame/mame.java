@@ -25,7 +25,7 @@ import static mame.cheat.*;
 import static old2.mame.tilemapC.*;
 import static mame.gfxobjC.*;
 import static mame.spriteC.*;
-import static mame.ui_text.*;
+import static mame056.ui_text.*;
 import static mame.osdependH.*;
 import static mame056.memory.*;
 import static old2.mame.common.*;

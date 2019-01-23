@@ -1,9 +1,10 @@
 /**
+ * ported to 0.56
  * ported to 0.37b7
  */
-package mame;
+package mame056;
 
-import static mame.ui_textH.*;
+import static mame056.ui_textH.*;
 
 public class ui_text {
 
@@ -26,6 +27,7 @@ public class ui_text {
                 "On",
                 "Off",
                 "NA",
+                "OK",
                 "INVALID",
                 "(none)",
                 "CPU",
@@ -42,6 +44,7 @@ public class ui_text {
                 "ALL CHANNELS",
                 "Brightness",
                 "Gamma",
+                "Vector Flicker",
                 "Vector Intensity",
                 "Overclock",
                 "ALL CPUS",
@@ -57,6 +60,7 @@ public class ui_text {
                 "There are known problems with this game:",
                 "The colors aren't 100% accurate.",
                 "The colors are completely wrong.",
+                "The video emulation isn't 100% accurate.",
                 "The sound emulation isn't 100% accurate.",
                 "The game lacks sound.",
                 "Screen flipping in cocktail mode is not supported.",
@@ -106,6 +110,8 @@ public class ui_text {
                 "Restore Previous Results",
                 "Configure Watchpoints",
                 "General Help",
+                "Options",
+                "Reload Database",
                 "Watchpoint",
                 "Disabled",
                 "Cheats",
@@ -114,26 +120,44 @@ public class ui_text {
                 "More Info for",
                 "Name",
                 "Description",
+                "Activation Key",
                 "Code",
+                "Max",
+                "Set",
+                "Cheat conflict found: disabling",
+                "Help not available yet",
                 /* watchpoints */
                 "Number of bytes",
-                "Label type",
+                "Display Type",
+                "Label Type",
                 "Label",
-                "X position",
-                "Y position",
+                "X Position",
+                "Y Position",
                 "Watch",
+                "Hex",
+                "Decimal",
+                "Binary",
                 /* searching */
-                "Lives (or some other value)",
+                "Lives (or another value)",
                 "Timers (+/- some value)",
                 "Energy (greater or less)",
                 "Status (bits or flags)",
-                "Slow but sure (changed or not)",
-                "Change Search Speed",
+                "Slow But Sure (changed or not)",
+                "Default Search Speed",
+                "Fast",
+                "Medium",
+                "Slow",
+                "Very Slow",
+                "All Memory",
+                "Select Memory Areas",
                 "Matches found",
                 "Search not initialized",
                 "No previous values saved",
                 "Previous values already restored",
                 "Restoration successful",
+                "Select a value",
+                "All values saved",
+                "One match found - added to list",
                 null
             };
 

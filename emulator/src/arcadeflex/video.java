@@ -23,7 +23,7 @@ import static mame.driverH.VIDEO_PIXEL_ASPECT_RATIO_1_2;
 import static mame.driverH.VIDEO_PIXEL_ASPECT_RATIO_2_1;
 import static mame.driverH.VIDEO_PIXEL_ASPECT_RATIO_MASK;
 import static mame.driverH.VIDEO_TYPE_VECTOR;
-import static mame.version.build_version;
+import static mame056.version.build_version;
 import old.arcadeflex.MainApplet;
 import static old.arcadeflex.libc_old.UCLOCKS_PER_SEC;
 import static old.arcadeflex.libc_old.printf;

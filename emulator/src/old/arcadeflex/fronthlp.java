@@ -27,7 +27,7 @@ import static mame.driverH.*;
 import static mame.sndintrf.sound_name;
 import static mame.sndintrf.sound_num;
 import static mame.sndintrfH.MachineSound;
-import static mame.version.build_version;
+import static mame056.version.build_version;
 import static arcadeflex.libc.cstring.*;
 import static mame056.cpuintrf.cputype_name;
 
