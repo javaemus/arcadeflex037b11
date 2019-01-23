@@ -37,7 +37,7 @@ import static old.mame.inptportH.IPT_UI_SHOW_FPS;
 import static old.mame.input.input_ui_pressed;
 import static old.mame.usrintrf.set_ui_visarea;
 import static old.mame.usrintrf.ui_text;
-import old2.arcadeflex.settings;
+import arcadeflex056.settings;
 import static old2.mame.mame.Machine;
 import static old2.mame.mame.bitmap_dirty;
 import static old2.mame.mame.need_to_clear_bitmap;

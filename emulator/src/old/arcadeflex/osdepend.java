@@ -1,6 +1,6 @@
 package old.arcadeflex;
 
-import old2.arcadeflex.settings;
+import arcadeflex056.settings;
 import static old.arcadeflex.config.parse_cmdline;
 import static old.arcadeflex.fronthlp.frontend_help;
 import static old.arcadeflex.libc_old.*;

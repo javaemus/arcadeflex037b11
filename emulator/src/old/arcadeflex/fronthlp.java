@@ -18,7 +18,7 @@ package old.arcadeflex;
 
 import static mame056.cpuexecH.*;
 import static arcadeflex.util.gamesxml.gamesXmlParser.writeGamesXml;
-import old2.arcadeflex.settings;
+import arcadeflex056.settings;
 import static old.arcadeflex.libc_old.*;
 import static mame056.common.*;
 import static mame056.commonH.*;
