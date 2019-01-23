@@ -44,10 +44,10 @@ public class fmoplH {
         public int TL;/* total level     :TL << 8            */
         public int TLL;/* adjusted now TL                     */
         public int /*UINT8*/ KSR;/* key scale rate  :(shift down bit)   */
-        public IntSubArray AR;/* attack rate     :&AR_TABLE[AR<<2]   */
-        public IntSubArray DR;/* decay rate      :&DR_TALBE[DR<<2]   */
+        public IntArray AR;/* attack rate     :&AR_TABLE[AR<<2]   */
+        public IntArray DR;/* decay rate      :&DR_TALBE[DR<<2]   */
         public int SL;/* sustin level    :SL_TALBE[SL]       */
-        public IntSubArray RR;/* release rate    :&DR_TABLE[RR<<2]   */
+        public IntArray RR;/* release rate    :&DR_TABLE[RR<<2]   */
         public int /*UINT8*/ ksl;/* keyscale level  :(shift down bits)  */
         public int /*UINT8*/ ksr;/* key scale rate  :kcode>>KSR         */
         public long /*UINT32*/ mul;/* multiple        :ML_TABLE[ML]       */
@@ -66,7 +66,7 @@ public class fmoplH {
         public int /*UINT8*/ ams;/* ams flag                            */
         public int /*UINT8*/ vib;/* vibrate flag                        */
  /* wave selector */
-        public IntSubArray[] wavetable;
+        public IntArray[] wavetable;
         public int wt_offset = 0;
     }
 
@@ -141,8 +141,8 @@ public class fmoplH {
         public int[] DR_TABLE;/* decay rate tables   */
         public /*UINT32*/ long[] FN_TABLE;/* fnumber -> increment counter */
  /* LFO */
-        public IntSubArray ams_table;
-        public IntSubArray vib_table;
+        public IntArray ams_table;
+        public IntArray vib_table;
         public int amsCnt;
         public int amsIncr;
         public int vibCnt;

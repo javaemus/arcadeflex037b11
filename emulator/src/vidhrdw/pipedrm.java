@@ -350,7 +350,7 @@ public class pipedrm {
      ************************************
      */
     static void common_screenrefresh(int full_refresh) {
-        char[] saved_pens = new char[64];
+        int[] saved_pens = new int[64];
         int offs;
 
         /* update the palette usage */

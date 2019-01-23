@@ -4,7 +4,7 @@
 package sound;
 
 import arcadeflex.libc.ptr.UBytePtr;
-import common.subArrays.IntSubArray;
+import common.subArrays.IntArray;
 import static sound.ymdeltat.*;
 
 public class ymdeltatH {
@@ -36,7 +36,7 @@ public class ymdeltatH {
         public /*UINT32*/ long end;
         public /*UINT32*/ long delta;
         public int volume;
-        public IntSubArray pan;/* &output_pointer[pan] */
+        public IntArray pan;/* &output_pointer[pan] */
         public int /*adpcmm,*/ adpcmx, adpcmd;
         public int adpcml;/* hiro-shi!! */
 

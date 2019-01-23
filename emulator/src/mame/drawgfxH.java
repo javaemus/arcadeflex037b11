@@ -88,7 +88,7 @@ public class drawgfxH {
         public int width, height;
         public /*unsigned */ int total_elements;/* total number of characters/sprites */
         public int color_granularity;/* number of colors for each color code (for example, 4 for 2 bitplanes gfx) */
-        public UShortArray colortable;/* map color codes to screen pens */ /* if this is 0, the function does a verbatim copy */
+        public IntArray colortable;/* map color codes to screen pens */ /* if this is 0, the function does a verbatim copy */
         public int total_colors;
         public /*unsigned */ int[] pen_usage;/* an array of total_elements ints. */
         public UBytePtr gfxdata;/* pixel data */

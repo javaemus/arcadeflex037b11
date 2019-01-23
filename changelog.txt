@@ -2,6 +2,7 @@
 ==========
 -Ported ui_text to 0.56
 -Ported input class to 0.56
+-Changed pens and colortables to be int[] instead of char[] (WIP)
 
 22/01/2019
 ==========

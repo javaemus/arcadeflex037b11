@@ -208,7 +208,7 @@ public class thief {
             /*unsigned*/
             int offs;
             int flipscreen = u8_thief_video_control & 1;
-            char[] pal_data = Machine.pens;
+            int[] pal_data = Machine.pens;
             UBytePtr dirty = new UBytePtr(dirtybuffer);
             UBytePtr source = new UBytePtr(videoram);
             osd_bitmap page;

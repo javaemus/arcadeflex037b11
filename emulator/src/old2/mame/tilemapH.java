@@ -53,7 +53,7 @@ public class tilemapH {
     public static class cached_tile_info {
 
         public UBytePtr pen_data;
-        public UShortArray pal_data;
+        public IntArray pal_data;
         public int u32_pen_usage;
         public int u32_flags;
     }
@@ -67,7 +67,7 @@ public class tilemapH {
 		games that don't need them don't need to explicitly set them to 0
          */
         public UBytePtr pen_data;
-        public UShortArray pal_data;
+        public IntArray pal_data;
         public int u32_pen_usage;
         public int u32_flags;
 
@@ -79,7 +79,7 @@ public class tilemapH {
         GfxElement gfx = Machine.gfx[(GFX)];
         int _code = (CODE) % gfx.total_elements;
         tile_info.pen_data = new UBytePtr(gfx.gfxdata, _code * gfx.char_modulo);
-        tile_info.pal_data = new UShortArray(gfx.colortable, gfx.color_granularity * (COLOR));
+        tile_info.pal_data = new IntArray(gfx.colortable, gfx.color_granularity * (COLOR));
         tile_info.u32_pen_usage = gfx.pen_usage != null ? gfx.pen_usage[_code] : 0;
     }
 

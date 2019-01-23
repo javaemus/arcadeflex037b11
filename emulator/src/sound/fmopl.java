@@ -150,13 +150,13 @@ public class fmopl {
  /* TL_TABLE[ 0      to TL_MAX          ] : plus  section */
  /* TL_TABLE[ TL_MAX to TL_MAX+TL_MAX-1 ] : minus section */
 
-    static IntSubArray TL_TABLE;
+    static IntArray TL_TABLE;
     /* pointers to TL_TABLE with sinwave output offset */
-    static IntSubArray[] SIN_TABLE;//static INT32 **SIN_TABLE;
+    static IntArray[] SIN_TABLE;//static INT32 **SIN_TABLE;
 
     /* LFO table */
-    static IntSubArray AMS_TABLE;
-    static IntSubArray VIB_TABLE;
+    static IntArray AMS_TABLE;
+    static IntArray VIB_TABLE;
 
     /* envelope output curve table */
  /* attack + decay + OFF */
@@ -188,8 +188,8 @@ public class fmopl {
     static int[] outd = new int[1];
     static int ams;
     static int vib;
-    static IntSubArray ams_table;
-    static IntSubArray vib_table;
+    static IntArray ams_table;
+    static IntArray vib_table;
     static int amsIncr;
     static int vibIncr;
     static int[] feedback2 = new int[1];/* connect for SLOT 2 */
@@ -377,13 +377,13 @@ public class fmopl {
         int ar = v >> 4;
         int dr = v & 0x0f;
 
-        SLOT.AR = ar != 0 ? new IntSubArray(OPL.AR_TABLE, ar << 2) : new IntSubArray(RATE_0);
+        SLOT.AR = ar != 0 ? new IntArray(OPL.AR_TABLE, ar << 2) : new IntArray(RATE_0);
         SLOT.evsa = SLOT.AR.read(SLOT.ksr);
         if (SLOT.evm == ENV_MOD_AR) {
             SLOT.evs = SLOT.evsa;
         }
 
-        SLOT.DR = dr != 0 ? new IntSubArray(OPL.DR_TABLE, dr << 2) : new IntSubArray(RATE_0);
+        SLOT.DR = dr != 0 ? new IntArray(OPL.DR_TABLE, dr << 2) : new IntArray(RATE_0);
         SLOT.evsd = SLOT.DR.read(SLOT.ksr);
         if (SLOT.evm == ENV_MOD_DR) {
             SLOT.evs = SLOT.evsd;
@@ -402,7 +402,7 @@ public class fmopl {
         if (SLOT.evm == ENV_MOD_DR) {
             SLOT.eve = SLOT.SL;
         }
-        SLOT.RR = new IntSubArray(OPL.DR_TABLE, rr << 2);
+        SLOT.RR = new IntArray(OPL.DR_TABLE, rr << 2);
         SLOT.evsr = SLOT.RR.read(SLOT.ksr);
         if (SLOT.evm == ENV_MOD_RR) {
             SLOT.evs = SLOT.evsr;
@@ -596,10 +596,10 @@ public class fmopl {
         double pom;
 
         /* allocate dynamic tables */
-        TL_TABLE = new IntSubArray(TL_MAX * 2);
-        SIN_TABLE = new IntSubArray[SIN_ENT * 4];
-        AMS_TABLE = new IntSubArray(AMS_ENT * 2);
-        VIB_TABLE = new IntSubArray(VIB_ENT * 2);
+        TL_TABLE = new IntArray(TL_MAX * 2);
+        SIN_TABLE = new IntArray[SIN_ENT * 4];
+        AMS_TABLE = new IntArray(AMS_ENT * 2);
+        VIB_TABLE = new IntArray(VIB_ENT * 2);
         /* make total level table */
         for (t = 0; t < EG_ENT - 1; t++) {
             rate = ((1 << TL_BITS) - 1) / Math.pow(10, EG_STEP * t / 20);
@@ -618,7 +618,7 @@ public class fmopl {
 
         /* make sinwave table (total level offet) */
  /* degree 0 = degree 180                   = off */
-        SIN_TABLE[0] = SIN_TABLE[SIN_ENT / 2] = new IntSubArray(TL_TABLE, EG_ENT - 1);
+        SIN_TABLE[0] = SIN_TABLE[SIN_ENT / 2] = new IntArray(TL_TABLE, EG_ENT - 1);
         for (s = 1; s <= SIN_ENT / 4; s++) {
             pom = Math.sin(2 * Math.PI * s / SIN_ENT);
             /* sin     */
@@ -630,15 +630,15 @@ public class fmopl {
             /* TL_TABLE steps */
 
  /* degree 0   -  90    , degree 180 -  90 : plus section */
-            SIN_TABLE[s] = SIN_TABLE[SIN_ENT / 2 - s] = new IntSubArray(TL_TABLE, j);
+            SIN_TABLE[s] = SIN_TABLE[SIN_ENT / 2 - s] = new IntArray(TL_TABLE, j);
             /* degree 180 - 270    , degree 360 - 270 : minus section */
-            SIN_TABLE[SIN_ENT / 2 + s] = SIN_TABLE[SIN_ENT - s] = new IntSubArray(TL_TABLE, TL_MAX + j);
+            SIN_TABLE[SIN_ENT / 2 + s] = SIN_TABLE[SIN_ENT - s] = new IntArray(TL_TABLE, TL_MAX + j);
             /*		Log(LOG_INF,"sin(%3d) = %f:%f db\n",s,pom,(double)j * EG_STEP);*/
         }
         for (s = 0; s < SIN_ENT; s++) {
-            SIN_TABLE[SIN_ENT * 1 + s] = s < (SIN_ENT / 2) ? SIN_TABLE[s] : new IntSubArray(TL_TABLE, EG_ENT);
+            SIN_TABLE[SIN_ENT * 1 + s] = s < (SIN_ENT / 2) ? SIN_TABLE[s] : new IntArray(TL_TABLE, EG_ENT);
             SIN_TABLE[SIN_ENT * 2 + s] = SIN_TABLE[s % (SIN_ENT / 2)];
-            SIN_TABLE[SIN_ENT * 3 + s] = ((s / (SIN_ENT / 4)) & 1) != 0 ? new IntSubArray(TL_TABLE, EG_ENT) : SIN_TABLE[SIN_ENT * 2 + s];
+            SIN_TABLE[SIN_ENT * 3 + s] = ((s / (SIN_ENT / 4)) & 1) != 0 ? new IntArray(TL_TABLE, EG_ENT) : SIN_TABLE[SIN_ENT * 2 + s];
         }
         /* envelope counter . envelope output table */
         for (i = 0; i < EG_ENT; i++) {
@@ -877,8 +877,8 @@ public class fmopl {
                 switch (r) {
                     case 0xbd: /* amsep,vibdep,r,bd,sd,tom,tc,hh */ {
                         int rkey = ((OPL.rythm ^ v) & 0xFF);
-                        OPL.ams_table = new IntSubArray(AMS_TABLE, (v & 0x80) != 0 ? AMS_ENT : 0);
-                        OPL.vib_table = new IntSubArray(VIB_TABLE, (v & 0x40) != 0 ? VIB_ENT : 0);
+                        OPL.ams_table = new IntArray(AMS_TABLE, (v & 0x80) != 0 ? AMS_ENT : 0);
+                        OPL.vib_table = new IntArray(VIB_TABLE, (v & 0x40) != 0 ? VIB_ENT : 0);
                         OPL.rythm = ((v & 0x3f) & 0xFF);
 
                         if ((OPL.rythm & 0x20) != 0) {

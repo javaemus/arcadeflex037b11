@@ -2378,7 +2378,7 @@ public class drawgfx {
         is_raw[TRANSPARENCY_BLEND_RAW] = 1;
     }
 
-    public static void blockmove_8toN_opaque8(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, UShortArray paldata) {
+    public static void blockmove_8toN_opaque8(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, IntArray paldata) {
         int end;
 
         srcmodulo -= srcwidth;
@@ -2443,7 +2443,7 @@ public class drawgfx {
 /*TODO*///	}
 /*TODO*///})
 /*TODO*///
-    public static void blockmove_8toN_opaque_flipx8(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, UShortArray paldata) {
+    public static void blockmove_8toN_opaque_flipx8(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, IntArray paldata) {
         int end;
 
         srcmodulo += srcwidth;
@@ -2708,7 +2708,7 @@ public class drawgfx {
         }
     }
 
-    public static void blockmove_8toN_transpen8(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, UShortArray paldata, int transpen) {
+    public static void blockmove_8toN_transpen8(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, IntArray paldata, int transpen) {
 
         int end;
         int trans4;
@@ -2822,7 +2822,7 @@ public class drawgfx {
 /*TODO*///	}
 /*TODO*///})
 /*TODO*///
-    public static void blockmove_8toN_transpen_flipx8(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, UShortArray paldata, int transpen) {
+    public static void blockmove_8toN_transpen_flipx8(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, IntArray paldata, int transpen) {
         int end;
         IntPtr sd4;//UINT32 *sd4;
         srcmodulo += srcwidth;
@@ -3261,7 +3261,7 @@ public class drawgfx {
 /*TODO*///
 /*TODO*///#define PEN_IS_OPAQUE ((1<<col)&transmask) == 0
 /*TODO*///
-    static void blockmove_transmask8(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, UShortArray paldata, int transmask) {
+    static void blockmove_transmask8(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, IntArray paldata, int transmask) {
         int end;
         IntPtr sd4;//UINT32 *sd4;
 
@@ -3380,7 +3380,7 @@ public class drawgfx {
 /*TODO*///	}
 /*TODO*///})
 /*TODO*///
-    static void blockmove_transmask_flipx8(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, UShortArray paldata, int transmask) {
+    static void blockmove_transmask_flipx8(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, IntArray paldata, int transmask) {
         int end;
         IntPtr sd4;//UINT32 *sd4;
 
@@ -3807,7 +3807,7 @@ public class drawgfx {
     public static void blockmove_8toN_transcolor8(
             UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo,
             UBytePtr dstdata, int dstmodulo,
-            UShortArray paldata, int transcolor) {
+            IntArray paldata, int transcolor) {
         int end;
         //const UINT16 *lookupdata = Machine->game_colortable + (paldata - Machine->remapped_colortable);
         UShortArray lookupdata = new UShortArray(Machine.game_colortable, (paldata.offset - Machine.remapped_colortable.offset));
@@ -3864,7 +3864,7 @@ public class drawgfx {
     public static void blockmove_8toN_transcolor_flipx8(
             UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo,
             UBytePtr dstdata, int dstmodulo,
-            UShortArray paldata, int transcolor) {
+            IntArray paldata, int transcolor) {
         int end;
         //const UINT16 *lookupdata = Machine->game_colortable + (paldata - Machine->remapped_colortable);
         UShortArray lookupdata = new UShortArray(Machine.game_colortable, (paldata.offset - Machine.remapped_colortable.offset));
@@ -4317,7 +4317,7 @@ public class drawgfx {
     public static void blockmove_NtoN_opaque_remap8(
             UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo,
             UBytePtr dstdata, int dstmodulo,
-            char[] paldata) {
+            int[] paldata) {
         int end;
 
         srcmodulo -= srcwidth;
@@ -4685,9 +4685,9 @@ public class drawgfx {
         UBytePtr dd = new UBytePtr(dest.line[sy], sx);
         /* dest data */
         int dm = (int) ((dest.line[1].offset) - (dest.line[0].offset));/* dest modulo */
-        UShortArray paldata = null;
+        IntArray paldata = null;
         if (gfx.colortable != null) {
-            paldata = new UShortArray(gfx.colortable, gfx.color_granularity * color);
+            paldata = new IntArray(gfx.colortable, gfx.color_granularity * color);
         }
         UBytePtr pribuf = (pri_buffer != null) ? new UBytePtr(pri_buffer.line[sy], sx) : null;
 

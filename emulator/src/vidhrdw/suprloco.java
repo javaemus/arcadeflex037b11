@@ -10,6 +10,7 @@ import static mame.osdependH.*;
 import static old2.mame.mame.*;
 import static arcadeflex.libc.ptr.*;
 import static arcadeflex.fucPtr.*;
+import common.subArrays.IntArray;
 import common.subArrays.UShortArray;
 import static mame056.common.*;
 import static old2.mame.common.*;
@@ -210,7 +211,7 @@ public class suprloco {
     static void render_sprite(osd_bitmap bitmap, int spr_number) {
         int sx, sy, col, row, height, src, adjy, dy;
         UBytePtr spr_reg;
-        UShortArray spr_palette;
+        IntArray spr_palette;
         short skip;
         /* bytes to skip before drawing each row (can be negative) */
 
@@ -220,7 +221,7 @@ public class suprloco {
         skip = (short) (spr_reg.read(SPR_SKIP_LO) + (spr_reg.read(SPR_SKIP_HI) << 8));
 
         height = spr_reg.read(SPR_Y_BOTTOM) - spr_reg.read(SPR_Y_TOP);
-        spr_palette = new UShortArray(Machine.remapped_colortable, 0x100 + 0x10 * spr_reg.read(SPR_COL) + ((control & 0x20) != 0 ? 0x100 : 0));
+        spr_palette = new IntArray(Machine.remapped_colortable, 0x100 + 0x10 * spr_reg.read(SPR_COL) + ((control & 0x20) != 0 ? 0x100 : 0));
         sx = spr_reg.read(SPR_X);
         sy = spr_reg.read(SPR_Y_TOP) + 1;
 

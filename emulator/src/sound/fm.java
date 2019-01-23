@@ -128,11 +128,11 @@ public class fm {
         public int DT2;/* multiple,Detune2:(DT2<<4)|ML for OPM*/
         public int TL;/* total level     :TL << 8            */
         public int /*UINT8*/ KSR;/* key scale rate  :3-KSR              */
-        public IntSubArray AR;/* attack rate     :&AR_TABLE[AR<<1]   */
-        public IntSubArray DR;/* decay rate      :&DR_TABLE[DR<<1]   */
-        public IntSubArray SR;/* sustin rate     :&DR_TABLE[SR<<1]   */
+        public IntArray AR;/* attack rate     :&AR_TABLE[AR<<1]   */
+        public IntArray DR;/* decay rate      :&DR_TABLE[DR<<1]   */
+        public IntArray SR;/* sustin rate     :&DR_TABLE[SR<<1]   */
         public int SL;/* sustin level    :SL_TABLE[SL]       */
-        public IntSubArray RR;/* release rate    :&DR_TABLE[RR<<2+2] */
+        public IntArray RR;/* release rate    :&DR_TABLE[RR<<2+2] */
         public int /*UINT8*/ SEG;/* SSG EG type     :SSGEG              */
         public int /*UINT8*/ ksr;/* key scale rate  :kcode>>(3-KSR)     */
         public long /*UINT32*/ mul;/* multiple        :ML_TABLE[ML]       */
@@ -170,10 +170,10 @@ public class fm {
         public int /*UINT8*/ FB;/* shift count of self feed back  */
         public int[] op1_out;/* op1 output for beedback        */
  /* Algorythm (connection) */
-        public IntSubArray connect1;/* pointer of SLOT1 output    */
-        public IntSubArray connect2;/* pointer of SLOT2 output    */
-        public IntSubArray connect3;/* pointer of SLOT3 output    */
-        public IntSubArray connect4;/* pointer of SLOT4 output    */
+        public IntArray connect1;/* pointer of SLOT1 output    */
+        public IntArray connect2;/* pointer of SLOT2 output    */
+        public IntArray connect3;/* pointer of SLOT3 output    */
+        public IntArray connect4;/* pointer of SLOT4 output    */
  /*TODO*///	/* LFO */
 /*TODO*///	INT32 pms;				/* PMS depth level of channel */
 /*TODO*///	UINT32 ams;				/* AMS depth level of channel */
@@ -191,8 +191,8 @@ public class fm {
             for (int i = 0; i < 8; i++) {
                 DT_TABLE[i] = new int[32];
             }
-            AR_TABLE = new IntSubArray(94);
-            DR_TABLE = new IntSubArray(94);
+            AR_TABLE = new IntArray(94);
+            DR_TABLE = new IntArray(94);
 
         }
 
@@ -213,8 +213,8 @@ public class fm {
  /* speedup customize */
  /* local time tables */
         public int[][] DT_TABLE;/* DeTune tables       */
-        public IntSubArray AR_TABLE;/* Atttack rate tables */
-        public IntSubArray DR_TABLE;/* Decay rate tables   */
+        public IntArray AR_TABLE;/* Atttack rate tables */
+        public IntArray DR_TABLE;/* Decay rate tables   */
  /* Extention Timer and IRQ handler */
         public FM_TIMERHANDLER_Ptr Timer_Handler;
         public FM_IRQHANDLER_Ptr IRQ_Handler;
@@ -244,7 +244,7 @@ public class fm {
     static int[] TL_TABLE;
 
     /* pointers to TL_TABLE with sinwave output offset */
-    static IntSubArray[] SIN_TABLE = new IntSubArray[SIN_ENT];
+    static IntArray[] SIN_TABLE = new IntArray[SIN_ENT];
 
     /* envelope output curve table */
  /* attack + decay + OFF */
@@ -581,43 +581,43 @@ public class fm {
 
     /* setup Algorythm and PAN connection */
     static void setup_connection(FM_CH CH) {
-        IntSubArray carrier = new IntSubArray(out_ch, CH.PAN);
+        IntArray carrier = new IntArray(out_ch, CH.PAN);
         /* NONE,LEFT,RIGHT or CENTER */
 
         switch (CH.ALGO) {
             case 0:
                 /*  PG---S1---S2---S3---S4---OUT */
-                CH.connect1 = new IntSubArray(pg_in2);
-                CH.connect2 = new IntSubArray(pg_in3);
-                CH.connect3 = new IntSubArray(pg_in4);
+                CH.connect1 = new IntArray(pg_in2);
+                CH.connect2 = new IntArray(pg_in3);
+                CH.connect3 = new IntArray(pg_in4);
                 break;
             case 1:
                 /*  PG---S1-+-S3---S4---OUT */
  /*  PG---S2-+               */
-                CH.connect1 = new IntSubArray(pg_in3);
-                CH.connect2 = new IntSubArray(pg_in3);
-                CH.connect3 = new IntSubArray(pg_in4);
+                CH.connect1 = new IntArray(pg_in3);
+                CH.connect2 = new IntArray(pg_in3);
+                CH.connect3 = new IntArray(pg_in4);
                 break;
             case 2:
                 /* PG---S1------+-S4---OUT */
  /* PG---S2---S3-+          */
-                CH.connect1 = new IntSubArray(pg_in4);
-                CH.connect2 = new IntSubArray(pg_in3);
-                CH.connect3 = new IntSubArray(pg_in4);
+                CH.connect1 = new IntArray(pg_in4);
+                CH.connect2 = new IntArray(pg_in3);
+                CH.connect3 = new IntArray(pg_in4);
                 break;
             case 3:
                 /* PG---S1---S2-+-S4---OUT */
  /* PG---S3------+          */
-                CH.connect1 = new IntSubArray(pg_in2);
-                CH.connect2 = new IntSubArray(pg_in4);
-                CH.connect3 = new IntSubArray(pg_in4);
+                CH.connect1 = new IntArray(pg_in2);
+                CH.connect2 = new IntArray(pg_in4);
+                CH.connect3 = new IntArray(pg_in4);
                 break;
             case 4:
                 /* PG---S1---S2-+--OUT */
  /* PG---S3---S4-+      */
-                CH.connect1 = new IntSubArray(pg_in2);
+                CH.connect1 = new IntArray(pg_in2);
                 CH.connect2 = carrier;
-                CH.connect3 = new IntSubArray(pg_in4);
+                CH.connect3 = new IntArray(pg_in4);
                 break;
             case 5:
                 /*         +-S2-+     */
@@ -633,7 +633,7 @@ public class fm {
                 /* PG---S1---S2-+     */
  /* PG--------S3-+-OUT */
  /* PG--------S4-+     */
-                CH.connect1 = new IntSubArray(pg_in2);
+                CH.connect1 = new IntArray(pg_in2);
                 CH.connect2 = carrier;
                 CH.connect3 = carrier;
                 break;
@@ -672,9 +672,9 @@ public class fm {
     }
 
     /* set attack rate & key scale  */
-    static void set_ar_ksr(FM_CH CH, FM_SLOT SLOT, int v, IntSubArray ar_table) {
+    static void set_ar_ksr(FM_CH CH, FM_SLOT SLOT, int v, IntArray ar_table) {
         SLOT.KSR = (3 - (v >> 6));
-        SLOT.AR = (v &= 0x1f) != 0 ? new IntSubArray(ar_table, v << 1) : new IntSubArray(RATE_0);
+        SLOT.AR = (v &= 0x1f) != 0 ? new IntArray(ar_table, v << 1) : new IntArray(RATE_0);
         SLOT.evsa = SLOT.AR.read(SLOT.ksr);
         if (SLOT.eg_next == FM_EG_AR) {
             SLOT.evs = SLOT.evsa;
@@ -684,8 +684,8 @@ public class fm {
     }
 
     /* set decay rate */
-    static void set_dr(FM_SLOT SLOT, int v, IntSubArray dr_table) {
-        SLOT.DR = (v &= 0x1f) != 0 ? new IntSubArray(dr_table, v << 1) : new IntSubArray(RATE_0);
+    static void set_dr(FM_SLOT SLOT, int v, IntArray dr_table) {
+        SLOT.DR = (v &= 0x1f) != 0 ? new IntArray(dr_table, v << 1) : new IntArray(RATE_0);
         SLOT.evsd = SLOT.DR.read(SLOT.ksr);
         if (SLOT.eg_next == FM_EG_DR) {
             SLOT.evs = SLOT.evsd;
@@ -693,8 +693,8 @@ public class fm {
     }
 
     /* set sustain rate */
-    static void set_sr(FM_SLOT SLOT, int v, IntSubArray dr_table) {
-        SLOT.SR = (v &= 0x1f) != 0 ? new IntSubArray(dr_table, v << 1) : new IntSubArray(RATE_0);
+    static void set_sr(FM_SLOT SLOT, int v, IntArray dr_table) {
+        SLOT.SR = (v &= 0x1f) != 0 ? new IntArray(dr_table, v << 1) : new IntArray(RATE_0);
         SLOT.evss = SLOT.SR.read(SLOT.ksr);
         if (SLOT.eg_next == FM_EG_SR) {
             SLOT.evs = SLOT.evss;
@@ -702,9 +702,9 @@ public class fm {
     }
 
     /* set release rate */
-    static void set_sl_rr(FM_SLOT SLOT, int v, IntSubArray dr_table) {
+    static void set_sl_rr(FM_SLOT SLOT, int v, IntArray dr_table) {
         SLOT.SL = SL_TABLE[(v >> 4)];
-        SLOT.RR = new IntSubArray(dr_table, ((v & 0x0f) << 2) | 2);
+        SLOT.RR = new IntArray(dr_table, ((v & 0x0f) << 2) | 2);
         SLOT.evsr = SLOT.RR.read(SLOT.ksr);
         if (SLOT.eg_next == FM_EG_Release) {
             SLOT.evs = SLOT.evsr;
@@ -935,13 +935,13 @@ public class fm {
                 j = PG_CUT_OFF;
             }
             /* degree 0   -  90    , degree 180 -  90 : plus section */
-            SIN_TABLE[s] = SIN_TABLE[SIN_ENT / 2 - s] = new IntSubArray(TL_TABLE, j);
+            SIN_TABLE[s] = SIN_TABLE[SIN_ENT / 2 - s] = new IntArray(TL_TABLE, j);
             /* degree 180 - 270    , degree 360 - 270 : minus section */
-            SIN_TABLE[SIN_ENT / 2 + s] = SIN_TABLE[SIN_ENT - s] = new IntSubArray(TL_TABLE, TL_MAX + j);
+            SIN_TABLE[SIN_ENT / 2 + s] = SIN_TABLE[SIN_ENT - s] = new IntArray(TL_TABLE, TL_MAX + j);
             /* Log(LOG_INF,"sin(%3d) = %f:%f db\n",s,pom,(double)j * EG_STEP); */
         }
         /* degree 0 = degree 180                   = off */
-        SIN_TABLE[0] = SIN_TABLE[SIN_ENT / 2] = new IntSubArray(TL_TABLE, PG_CUT_OFF);
+        SIN_TABLE[0] = SIN_TABLE[SIN_ENT / 2] = new IntArray(TL_TABLE, PG_CUT_OFF);
 
         /* envelope counter -> envelope output table */
         for (i = 0; i < EG_ENT; i++) {
@@ -1655,7 +1655,7 @@ public class fm {
         public long/*UINT32*/ u32_end;
         public int IL;
         public int volume;/* calcrated mixing level */
-        public IntSubArray pan;/* &out_ch[OPN_xxxx] */
+        public IntArray pan;/* &out_ch[OPN_xxxx] */
         public int /*adpcmm,*/ adpcmx, adpcmd;
         public int adpcml;/* hiro-shi!! */
     }
@@ -1685,7 +1685,7 @@ public class fm {
         /* ADPCM-A unit */
         public UBytePtr pcmbuf;/* pcm rom buffer */
         public long u32_pcm_size;/* size of pcm rom */
-        public IntSubArray adpcmTL;/* adpcmA total level */
+        public IntArray adpcmTL;/* adpcmA total level */
         public long[] adpcmreg;/* registers */
         public int u8_adpcm_arrivedEndAddress;
         /* Delta-T ADPCM unit */
@@ -1717,7 +1717,7 @@ public class fm {
         /* ADPCM-A unit */
         public UBytePtr pcmbuf;/* pcm rom buffer */
         public long u32_pcm_size;/* size of pcm rom */
-        public IntSubArray adpcmTL;/* adpcmA total level */
+        public IntArray adpcmTL;/* adpcmA total level */
         public long[] adpcmreg;/* registers */
         public int u8_adpcm_arrivedEndAddress;
         /* Delta-T ADPCM unit */
@@ -1902,7 +1902,7 @@ pcmbufA[adpcm[c].start],pcmbufA[adpcm[c].start+1],pcmbufA[adpcm[c].start+2]));*/
                 break;
             case 0x01:
                 /* B0-5 = TL 0.75dB step */
-                F2610.adpcmTL = new IntSubArray(TL_TABLE, ((v & 0x3f) ^ 0x3f) * (int) (0.75 / EG_STEP));
+                F2610.adpcmTL = new IntArray(TL_TABLE, ((v & 0x3f) ^ 0x3f) * (int) (0.75 / EG_STEP));
                 for (c = 0; c < 6; c++) {
                     adpcm[c].volume = F2610.adpcmTL.read(adpcm[c].IL * (int) (0.75 / EG_STEP)) / ADPCMA_DECODE_RANGE / ADPCMA_VOLUME_DIV;
                     /**
@@ -1921,7 +1921,7 @@ pcmbufA[adpcm[c].start],pcmbufA[adpcm[c].start+1],pcmbufA[adpcm[c].start+2]));*/
                         /* B7=L,B6=R,B4-0=IL */
                         adpcm[c].IL = (v & 0x1f) ^ 0x1f;
                         adpcm[c].volume = F2610.adpcmTL.read(adpcm[c].IL * (int) (0.75 / EG_STEP)) / ADPCMA_DECODE_RANGE / ADPCMA_VOLUME_DIV;
-                        adpcm[c].pan = new IntSubArray(out_ch, (v >> 6) & 0x03);
+                        adpcm[c].pan = new IntArray(out_ch, (v >> 6) & 0x03);
                         /**
                          * ** calc pcm * volume data ***
                          */
@@ -2232,7 +2232,7 @@ pcmbufA[adpcm[c].start],pcmbufA[adpcm[c].start+1],pcmbufA[adpcm[c].start+2]));*/
             F2608.adpcm[i].u32_end = 0;
             /* F2608->adpcm[i].delta     = 21866; */
             F2608.adpcm[i].volume = 0;
-            F2608.adpcm[i].pan = new IntSubArray(out_ch, OUTD_CENTER);
+            F2608.adpcm[i].pan = new IntArray(out_ch, OUTD_CENTER);
             /* default center */
             F2608.adpcm[i].u8_flagMask = (i == 6) ? 0x20 : 0;
             F2608.adpcm[i].u8_flag = 0;
@@ -2240,7 +2240,7 @@ pcmbufA[adpcm[c].start],pcmbufA[adpcm[c].start+1],pcmbufA[adpcm[c].start+2]));*/
             F2608.adpcm[i].adpcmd = 127;
             F2608.adpcm[i].adpcml = 0;
         }
-        F2608.adpcmTL = new IntSubArray(TL_TABLE, 0x3f * (int) (0.75 / EG_STEP));
+        F2608.adpcmTL = new IntArray(TL_TABLE, 0x3f * (int) (0.75 / EG_STEP));
         /* F2608->port1state = -1; */
         F2608.u8_adpcm_arrivedEndAddress = 0;
         /* don't used */
@@ -2477,7 +2477,7 @@ pcmbufA[adpcm[c].start],pcmbufA[adpcm[c].start+1],pcmbufA[adpcm[c].start+2]));*/
                 break;
             case 0x01:
                 /* B0-5 = TL 0.75dB step */
-                F2608.adpcmTL = new IntSubArray(TL_TABLE, ((v & 0x3f) ^ 0x3f) * (int) (0.75 / EG_STEP));
+                F2608.adpcmTL = new IntArray(TL_TABLE, ((v & 0x3f) ^ 0x3f) * (int) (0.75 / EG_STEP));
                 for (c = 0; c < 6; c++) {
                     adpcm[c].volume = F2608.adpcmTL.read(adpcm[c].IL * (int) (0.75 / EG_STEP)) / ADPCMA_DECODE_RANGE / ADPCMA_VOLUME_DIV;
                     /**
@@ -2496,7 +2496,7 @@ pcmbufA[adpcm[c].start],pcmbufA[adpcm[c].start+1],pcmbufA[adpcm[c].start+2]));*/
                         /* B7=L,B6=R,B4-0=IL */
                         adpcm[c].IL = (v & 0x1f) ^ 0x1f;
                         adpcm[c].volume = F2608.adpcmTL.read(adpcm[c].IL * (int) (0.75 / EG_STEP)) / ADPCMA_DECODE_RANGE / ADPCMA_VOLUME_DIV;
-                        adpcm[c].pan = new IntSubArray(out_ch, (v >> 6) & 0x03);
+                        adpcm[c].pan = new IntArray(out_ch, (v >> 6) & 0x03);
                         /**
                          * ** calc pcm * volume data ***
                          */
@@ -2847,14 +2847,14 @@ pcmbufA[adpcm[c].start],pcmbufA[adpcm[c].start+1],pcmbufA[adpcm[c].start+2]));*/
             /* F2610.adpcm[i].delta     = 21866; */
             F2610.adpcm[i].volume = 0;
             //F2610.adpcm[i].pan       = &out_ch[OUTD_CENTER]; /* default center */
-            F2610.adpcm[i].pan = new IntSubArray(out_ch, OUTD_CENTER);
+            F2610.adpcm[i].pan = new IntArray(out_ch, OUTD_CENTER);
             F2610.adpcm[i].u8_flagMask = (i == 6) ? 0x80 : (1 << i);
             F2610.adpcm[i].u8_flag = 0;
             F2610.adpcm[i].adpcmx = 0;
             F2610.adpcm[i].adpcmd = 127;
             F2610.adpcm[i].adpcml = 0;
         }
-        F2610.adpcmTL = new IntSubArray(TL_TABLE, 0x3f * (int) (0.75 / EG_STEP));
+        F2610.adpcmTL = new IntArray(TL_TABLE, 0x3f * (int) (0.75 / EG_STEP));
         /* F2610.port1state = -1; */
         F2610.u8_adpcm_arrivedEndAddress = 0;
 

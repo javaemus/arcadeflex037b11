@@ -231,7 +231,7 @@ public class superqix {
     public static VhUpdatePtr superqix_vh_screenrefresh = new VhUpdatePtr() {
         public void handler(osd_bitmap bitmap, int full_refresh) {
             int offs, i;
-            char[] pens = new char[16];
+            int[] pens = new int[16];
 
             /* recalc the palette if necessary */
             if (palette_recalc() != null) {

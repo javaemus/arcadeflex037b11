@@ -257,7 +257,7 @@ public class system1 {
     static void draw_sprite(osd_bitmap bitmap, int spr_number) {
         int sy, row, height, src, bank;
         UBytePtr sprite_base;
-        UShortArray sprite_palette;
+        IntArray sprite_palette;
         short skip;
         /* bytes to skip before drawing each row (can be negative) */
         UBytePtr gfx;
@@ -271,7 +271,7 @@ public class system1 {
         skip = (short) (sprite_base.read(SPR_SKIP_LO) + (sprite_base.read(SPR_SKIP_HI) << 8));
 
         height = sprite_base.read(SPR_Y_BOTTOM) - sprite_base.read(SPR_Y_TOP);
-        sprite_palette = new UShortArray(Machine.remapped_colortable, 0x10 * spr_number);
+        sprite_palette = new IntArray(Machine.remapped_colortable, 0x10 * spr_number);
 
         sy = sprite_base.read(SPR_Y_TOP) + 1;
 

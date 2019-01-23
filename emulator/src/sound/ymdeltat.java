@@ -4,7 +4,7 @@
 package sound;
 
 import arcadeflex.libc.ptr.UBytePtr;
-import common.subArrays.IntSubArray;
+import common.subArrays.IntArray;
 import sound.ymdeltatH.YM_DELTAT;
 import static sound.ymdeltatH.YM_DELTAT_SHIFT;
 
@@ -94,7 +94,7 @@ public class ymdeltat {
             case 0x01:
                 /* L,R,-,-,SAMPLE,DA/AD,RAMTYPE,ROM */
                 DELTAT.portcontrol = v & 0xff;
-                DELTAT.pan = new IntSubArray(DELTAT.output_pointer, (v >> 6) & 0x03);//&DELTAT.output_pointer[(v>>6)&0x03];
+                DELTAT.pan = new IntArray(DELTAT.output_pointer, (v >> 6) & 0x03);//&DELTAT.output_pointer[(v>>6)&0x03];
                 break;
             case 0x02:
             /* Start Address L */
@@ -145,7 +145,7 @@ public class ymdeltat {
         DELTAT.end = 0;
         /* F2610.adpcm[i].delta     = 21866; */
         DELTAT.volume = 0;
-        DELTAT.pan = new IntSubArray(DELTAT.output_pointer, pan);
+        DELTAT.pan = new IntArray(DELTAT.output_pointer, pan);
         /* DELTAT.flagMask  = 0; */
         DELTAT.arrivedFlag = 0;
         DELTAT.flag = 0;

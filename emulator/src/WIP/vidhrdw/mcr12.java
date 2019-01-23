@@ -474,7 +474,7 @@ public class mcr12 {
 /*TODO*///	 *		Core refresh routine
 /*TODO*///	 *
 /*TODO*///	 *************************************/
-    public static void render_sprite_tile_8(osd_bitmap bitmap, char[] pens, int offset, int sx, int sy) {
+    public static void render_sprite_tile_8(osd_bitmap bitmap, int[] pens, int offset, int sx, int sy) {
         int orientation = Machine.orientation;
         int x, y;
 

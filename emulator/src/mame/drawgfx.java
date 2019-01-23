@@ -2329,7 +2329,7 @@ public class drawgfx {
 /*TODO*///	}
 /*TODO*///})
 /*TODO*///
-    public static void blockmove_8toN_opaque_pri(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, UShortArray paldata, UBytePtr pridata,/*UINT32*/ int pmask) {
+    public static void blockmove_8toN_opaque_pri(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, IntArray paldata, UBytePtr pridata,/*UINT32*/ int pmask) {
         int end;
 
         pmask |= (1 << 31);
@@ -2433,7 +2433,7 @@ public class drawgfx {
 /*TODO*///	}
 /*TODO*///})
 /*TODO*///
-    public static void blockmove_8toN_opaque_pri_flipx(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, UShortArray paldata, UBytePtr pridata, int /*UINT32*/ pmask) {
+    public static void blockmove_8toN_opaque_pri_flipx(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, IntArray paldata, UBytePtr pridata, int /*UINT32*/ pmask) {
         int end;
 
         pmask |= (1 << 31);
@@ -2731,7 +2731,7 @@ public class drawgfx {
 /*TODO*///	}
 /*TODO*///})
 /*TODO*///
-    public static void blockmove_8toN_transpen_pri(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, UShortArray paldata, int transpen, UBytePtr pridata, int pmask) {
+    public static void blockmove_8toN_transpen_pri(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, IntArray paldata, int transpen, UBytePtr pridata, int pmask) {
         int end;
         int trans4;
         IntPtr sd4;//UINT32 *sd4;
@@ -2912,7 +2912,7 @@ public class drawgfx {
 /*TODO*///	}
 /*TODO*///})
 /*TODO*///
-    public static void blockmove_8toN_transpen_pri_flipx(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, UShortArray paldata, int transpen, UBytePtr pridata, int/*UINT32*/ pmask) {
+    public static void blockmove_8toN_transpen_pri_flipx(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, IntArray paldata, int transpen, UBytePtr pridata, int/*UINT32*/ pmask) {
         int end;
         int trans4;
         IntPtr sd4;//UINT32 *sd4;
@@ -3767,7 +3767,7 @@ public class drawgfx {
 /*TODO*///})
 /*TODO*///
 /*TODO*///
-    public static void blockmove_8toN_transthrough(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, UShortArray paldata, int transcolor) {
+    public static void blockmove_8toN_transthrough(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, IntArray paldata, int transcolor) {
         int/*DATA_TYPE * */ end;
 
         srcmodulo -= srcwidth;
@@ -3789,7 +3789,7 @@ public class drawgfx {
         }
     }
 
-    public static void blockmove_8toN_transthrough(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UShortPtr dstdata, int dstmodulo, UShortArray paldata, int transcolor) {
+    public static void blockmove_8toN_transthrough(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UShortPtr dstdata, int dstmodulo, IntArray paldata, int transcolor) {
         throw new UnsupportedOperationException("unimplemented");
         /*TODO*///	DATA_TYPE *end;
 /*TODO*///
@@ -3812,7 +3812,7 @@ public class drawgfx {
 /*TODO*///	}
     }
 
-    public static void blockmove_8toN_transthrough_flipx(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, UShortArray paldata, int transcolor) {
+    public static void blockmove_8toN_transthrough_flipx(UBytePtr srcdata, int srcwidth, int srcheight, int srcmodulo, UBytePtr dstdata, int dstmodulo, IntArray paldata, int transcolor) {
         int /*DATA_TYPE * */ end;
 
         srcmodulo += srcwidth;

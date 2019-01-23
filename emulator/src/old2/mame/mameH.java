@@ -49,9 +49,9 @@ public class mameH {
         public GfxElement gfx[] = new GfxElement[MAX_GFX_ELEMENTS];
         public osd_bitmap scrbitmap;
         public rectangle visible_area;
-        public /*UINT16 * */ char[] pens;
+        public /*UINT32 * */ int[] pens;
         public /*UINT16 * */ char[] game_colortable;
-        public UShortArray remapped_colortable;
+        public IntArray remapped_colortable;
         public GameDriver gamedrv;
         public MachineDriver drv;
         public int color_depth;

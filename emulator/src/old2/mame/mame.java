@@ -387,7 +387,7 @@ public class mame {
                     return 1;
                 }
                 if (Machine.remapped_colortable != null) {
-                    Machine.gfx[i].colortable = new UShortArray(Machine.remapped_colortable, drv.gfxdecodeinfo[i].color_codes_start);
+                    Machine.gfx[i].colortable = new IntArray(Machine.remapped_colortable, drv.gfxdecodeinfo[i].color_codes_start);
                 }
                 Machine.gfx[i].total_colors = drv.gfxdecodeinfo[i].total_color_codes;
             }

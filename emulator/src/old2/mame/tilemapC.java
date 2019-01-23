@@ -543,7 +543,7 @@ public class tilemapC {
      * ********************************************************************************
      */
     public static void unregister_pens(struct_tilemap tilemap, int cache_ptr, int num_pens) {
-        UShortArray pal_data = tilemap.cached_tile_info[cache_ptr].pal_data;
+        IntArray pal_data = tilemap.cached_tile_info[cache_ptr].pal_data;
         if (pal_data != null) {
             int /*UINT32*/ pen_usage = tilemap.cached_tile_info[cache_ptr].u32_pen_usage;
             if (pen_usage != 0) {
@@ -744,7 +744,7 @@ public class tilemapC {
         int /*UINT32*/ tile_height = tilemap.cached_tile_height;
         int cache_ptr = cached_index;//struct cached_tile_info *cached_tile_info = &tilemap->cached_tile_info[cached_index];
 /*TOCHECK*/ UBytePtr pendata = new UBytePtr(tilemap.cached_tile_info[cache_ptr].pen_data);
-        /*TOCHECK*/ UShortArray paldata = tilemap.cached_tile_info[cache_ptr].pal_data;
+        /*TOCHECK*/ IntArray paldata = tilemap.cached_tile_info[cache_ptr].pal_data;
 
         int /*UINT32*/ flags = tilemap.cached_tile_info[cache_ptr].u32_flags;
         int x, sx = tile_width * col;

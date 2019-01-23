@@ -26,8 +26,8 @@ public class palette {
     /* arrays which keep track of colors actually used, to help in the palette shrinking. */
     public static UBytePtr palette_used_colors;
     public static UBytePtr old_used_colors;
-    public static IntSubArray pen_visiblecount;
-    public static IntSubArray pen_cachedcount;
+    public static IntArray pen_visiblecount;
+    public static IntArray pen_cachedcount;
     public static UBytePtr just_remapped;/* colors which have been remapped in this frame, returned by palette_recalc() */
 
     static int use_16bit;
@@ -64,7 +64,7 @@ public class palette {
         palette_map = new char[Machine.drv.total_colors * 2];
         if (Machine.drv.color_table_len != 0) {
             Machine.game_colortable = new char[Machine.drv.color_table_len * 2];
-            Machine.remapped_colortable = new UShortArray(Machine.drv.color_table_len * 2);
+            Machine.remapped_colortable = new IntArray(Machine.drv.color_table_len * 2);
 
         } else {
             Machine.game_colortable = null;
@@ -100,12 +100,12 @@ public class palette {
         shrinked_pens = new char[total_shrinked_pens * 2];
         shrinked_palette = new char[3 * total_shrinked_pens];
 
-        Machine.pens = new char[Machine.drv.total_colors * 2];
+        Machine.pens = new int[Machine.drv.total_colors * 2];
 
         if ((Machine.drv.video_attributes & VIDEO_MODIFIES_PALETTE) != 0) {
             /* if the palette changes dynamically, we'll need the usage arrays to help in shrinking. */
             palette_used_colors = new UBytePtr((1 + 1 + 1 + 3 + 1) * Machine.drv.total_colors);
-            pen_visiblecount = new IntSubArray((int) (2 * Machine.drv.total_colors * 4));
+            pen_visiblecount = new IntArray((int) (2 * Machine.drv.total_colors * 4));
 
             if (palette_used_colors == null || pen_visiblecount == null) {
                 palette_stop();
@@ -124,7 +124,7 @@ public class palette {
             for (int mem = 0; mem < Machine.drv.total_colors; mem++) {
                 palette_dirty.write(mem, 0);
             }
-            pen_cachedcount = new IntSubArray(pen_visiblecount, (int) Machine.drv.total_colors);
+            pen_cachedcount = new IntArray(pen_visiblecount, (int) Machine.drv.total_colors);
             for (i = 0; i < Machine.drv.total_colors * 4; i++) {
                 pen_visiblecount.write(i, 0);
                 pen_cachedcount.write(i, 0);

@@ -274,7 +274,7 @@ public class usrintrf {
                         8 * 8 /* every char takes 8 consecutive bytes */
                 );
         GfxElement font;
-        char[] colortable = new char[2 * 2];	/* ASG 980209 */
+        int[] colortable = new int[2 * 2];	/* ASG 980209 */
 
 
         switch_ui_orientation();
@@ -296,7 +296,7 @@ public class usrintrf {
         if (font != null) {
         /* colortable will be set at run time */
             //memset(colortable,0,sizeof(colortable));
-            font.colortable = new UShortArray(colortable);
+            font.colortable = new IntArray(colortable);
             font.total_colors = 2;
         }
 
@@ -391,7 +391,7 @@ public class usrintrf {
     }
 
     public static void ui_drawbox(osd_bitmap bitmap, int leftx, int topy, int width, int height) {
-        char black, white;
+        int black, white;
 
 
         switch_ui_orientation();
@@ -417,7 +417,7 @@ public class usrintrf {
     }
 
     public static void drawbar(osd_bitmap bitmap, int leftx, int topy, int width, int height, int percentage, int default_percentage) {
-        char black, white;
+        int black, white;
 
 
         switch_ui_orientation();

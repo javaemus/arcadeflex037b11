@@ -15,6 +15,7 @@ import static mame.driverH.ORIENTATION_FLIP_Y;
 import static old.mame.usrintrf.usrintf_showmessage;
 import static arcadeflex.libc.cstring.*;
 import static common.libc.expressions.NOT;
+import common.subArrays.IntArray;
 import common.subArrays.UShortArray;
 public class drawgfx {
 
@@ -1224,7 +1225,7 @@ public class drawgfx {
         /* ASG 980209 -- added 16-bit version */
         if (dest_bmp.depth != 16) {
             if (gfx != null && gfx.colortable != null) {
-                UShortArray pal = new UShortArray(gfx.colortable, gfx.color_granularity * (color % gfx.total_colors));
+                IntArray pal = new IntArray(gfx.colortable, gfx.color_granularity * (color % gfx.total_colors));
                 /* ASG 980209 */
                 int source_base = (code % gfx.total_elements) * gfx.height;
 
@@ -1599,7 +1600,7 @@ public class drawgfx {
             }
         } /* ASG 980209 -- new 16-bit part */ else {
             if (gfx != null && gfx.colortable != null) {
-                UShortArray pal = new UShortArray(gfx.colortable, gfx.color_granularity * (color % gfx.total_colors));
+                IntArray pal = new IntArray(gfx.colortable, gfx.color_granularity * (color % gfx.total_colors));
                 /* ASG 980209 */
                 int source_base = (code % gfx.total_elements) * gfx.height;
 

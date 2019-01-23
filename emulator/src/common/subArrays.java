@@ -56,32 +56,32 @@ public class subArrays {
         public int offset;
     }
 
-    public static class IntSubArray {
+    public static class IntArray {
 
         public int[] buffer;
         public int offset;
 
-        public IntSubArray(int size) {
+        public IntArray(int size) {
             this.buffer = new int[size];
             this.offset = 0;
         }
 
-        public IntSubArray(int[] buffer) {
+        public IntArray(int[] buffer) {
             this.buffer = buffer;
             this.offset = 0;
         }
 
-        public IntSubArray(IntSubArray subarray) {
+        public IntArray(IntArray subarray) {
             this.buffer = subarray.buffer;
             this.offset = subarray.offset;
         }
 
-        public IntSubArray(IntSubArray subarray, int offset) {
+        public IntArray(IntArray subarray, int offset) {
             this.buffer = subarray.buffer;
             this.offset = subarray.offset + offset;
         }
 
-        public IntSubArray(int[] buffer, int offset) {
+        public IntArray(int[] buffer, int offset) {
             this.buffer = buffer;
             this.offset = offset;
         }
