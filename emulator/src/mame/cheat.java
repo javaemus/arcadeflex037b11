@@ -10,8 +10,8 @@ import static mame056.hiscore.*;
 import java.util.ArrayList;
 
 import mame.osdependH.osd_bitmap;
-import static mame.ui_text.*;
-import static mame.ui_textH.*;
+import static mame056.ui_text.*;
+import static mame056.ui_textH.*;
 import static old.mame.inptportH.*;
 import static old.mame.input.*;
 import static old.mame.usrintrf.*;
