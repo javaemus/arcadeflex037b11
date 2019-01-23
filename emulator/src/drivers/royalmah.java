@@ -19,7 +19,8 @@ import static old2.mame.mame.*;
 import static old.mame.drawgfx.plot_pixel;
 import static mame.osdependH.*;
 import static mame056.cpuexec.interrupt;
-import static old.mame.inputH.*;
+import static mame056.input.*;
+import static mame056.inputH.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 

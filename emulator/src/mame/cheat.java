@@ -13,14 +13,14 @@ import mame.osdependH.osd_bitmap;
 import static mame056.ui_text.*;
 import static mame056.ui_textH.*;
 import static old.mame.inptportH.*;
-import static old.mame.input.*;
 import static old.mame.usrintrf.*;
 import static old2.mame.mame.*;
 import static mame056.cpuintrf.cpunum_address_mask;
 import static mame056.cpuintrf.cpunum_read_byte;
 import static mame056.cpuintrf.cpunum_write_byte;
 import static mame056.cpuintrfH.cpu_gettotalcpu;
-import static old.mame.inputH.*;
+import static mame056.input.*;
+import static mame056.inputH.*;
 
 public class cheat {
 

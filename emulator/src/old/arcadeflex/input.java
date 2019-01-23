@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 
 import static arcadeflex.video.screen;
 import static arcadeflex.fucPtr.WriteHandlerPtr;
-import static old.mame.inputH.*;
+import static mame056.inputH.*;
 
 public class input {
     static KeyboardInfo[] keylist = {

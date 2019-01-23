@@ -8,7 +8,7 @@ package old.mame;
 import java.util.ArrayList;
 
 import static old.mame.inptport.ipdn_defaultstrings;
-import static old.mame.inputH.*;
+import static mame056.inputH.*;
 
 /* input ports handling */
 

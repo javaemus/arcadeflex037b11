@@ -26,8 +26,8 @@ import static old.mame.inptportH.*;
 import static old2.mame.memoryH.*;
 import static mame056.cpuexec.interrupt;
 import static mame056.cpuexec.nmi_interrupt;
-import static old.mame.inputH.KEYCODE_F1;
-import static old.mame.inputH.KEYCODE_F2;
+import static mame056.input.*;
+import static mame056.inputH.*;
 
 public class slapfght {
 

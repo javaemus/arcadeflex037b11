@@ -25,7 +25,8 @@ import static mame056.common.*;
 import static mame056.cpuexec.cpu_cause_interrupt;
 import static mame056.cpuexec.interrupt_enable_w;
 import static mame056.cpuexec.nmi_interrupt;
-import static old.mame.inputH.KEYCODE_F1;
+import static mame056.input.*;
+import static mame056.inputH.*;
 import static old2.mame.common.*;
 import static old2.mame.memory.*;
 
