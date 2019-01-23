@@ -8,7 +8,7 @@ import static arcadeflex.libc.ptr.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static vidhrdw.generic.*;
 import static common.libc.cstring.*;
 import static old2.mame.drawgfx.decodechar;
@@ -129,7 +129,7 @@ public class polyplay {
     };
 
     public static VhUpdatePtr polyplay_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             if (full_refresh != 0) {

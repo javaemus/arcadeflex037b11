@@ -9,7 +9,7 @@ import static old.mame.drawgfx.copybitmap;
 import static old.mame.drawgfx.drawgfx;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static vidhrdw.generic.*;
 import static arcadeflex.libc.cstring.*;
 
@@ -173,7 +173,7 @@ public class pengo {
      * *************************************************************************
      */
     public static VhUpdatePtr pengo_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             for (offs = videoram_size[0] - 1; offs > 0; offs--) {

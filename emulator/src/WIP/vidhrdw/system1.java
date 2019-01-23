@@ -41,7 +41,7 @@ public class system1 {
     static char[] bg_dirtybuffer;
 
     static int[] scrollx_row = new int[32];
-    static osd_bitmap tmp_bitmap;
+    static mame_bitmap tmp_bitmap;
 
     //static int system1_pixel_mode = 0
     static int system1_background_memory, system1_video_mode = 0;
@@ -192,7 +192,7 @@ public class system1 {
         return spriteram.read(0x10 * spr_number + SPR_Y_BOTTOM);
     }
 
-    public static void draw_pixel(osd_bitmap bitmap, int x, int y, int x_flipped, int y_flipped, int spr_number, int color) {
+    public static void draw_pixel(mame_bitmap bitmap, int x, int y, int x_flipped, int y_flipped, int spr_number, int color) {
         int xr, yr;
         int sprite_onscreen;
 
@@ -254,7 +254,7 @@ public class system1 {
         }
     };
 
-    static void draw_sprite(osd_bitmap bitmap, int spr_number) {
+    static void draw_sprite(mame_bitmap bitmap, int spr_number) {
         int sy, row, height, src, bank;
         UBytePtr sprite_base;
         IntArray sprite_palette;
@@ -340,7 +340,7 @@ public class system1 {
         }
     }
 
-    static void draw_sprites(osd_bitmap bitmap) {
+    static void draw_sprites(mame_bitmap bitmap) {
         int spr_number, sprite_bottom_y, sprite_top_y;
         UBytePtr sprite_base;
 
@@ -427,7 +427,7 @@ public class system1 {
         }
     };
 
-    static int system1_draw_fg(osd_bitmap bitmap, int priority) {
+    static int system1_draw_fg(mame_bitmap bitmap, int priority) {
         int sx, sy, offs;
         int drawn = 0;
 
@@ -465,7 +465,7 @@ public class system1 {
         return drawn;
     }
 
-    static void system1_draw_bg(osd_bitmap bitmap, int priority) {
+    static void system1_draw_bg(mame_bitmap bitmap, int priority) {
         int sx, sy, offs;
         int background_scrollx_flip, background_scrolly_flip;
 
@@ -567,7 +567,7 @@ public class system1 {
     }
 
     public static VhUpdatePtr system1_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int drawn;
 
             system1_compute_palette();
@@ -597,7 +597,7 @@ public class system1 {
         }
     };
 
-    static void chplft_draw_bg(osd_bitmap bitmap, int priority) {
+    static void chplft_draw_bg(mame_bitmap bitmap, int priority) {
         int sx, sy, offs;
         int choplifter_scroll_x_on = (system1_scrollx_ram.read(0) == 0xe5 && system1_scrollx_ram.read(1) == 0xff) ? 0 : 1;
 
@@ -693,7 +693,7 @@ public class system1 {
     }
 
     public static VhUpdatePtr choplifter_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int drawn;
 
             system1_compute_palette();
@@ -742,7 +742,7 @@ public class system1 {
         }
     };
 
-    static void wbml_draw_bg(osd_bitmap bitmap, int trasp) {
+    static void wbml_draw_bg(mame_bitmap bitmap, int trasp) {
         int page;
 
         int xscroll = (wbml_paged_videoram.read(0x7c0) >> 1) + ((wbml_paged_videoram.read(0x7c1) & 1) << 7) - 256 + 5;
@@ -798,7 +798,7 @@ public class system1 {
         /* next page */
     }
 
-    static void wbml_draw_fg(osd_bitmap bitmap) {
+    static void wbml_draw_fg(mame_bitmap bitmap) {
         int offs;
 
         for (offs = 0; offs < 0x700; offs += 2) {
@@ -824,7 +824,7 @@ public class system1 {
     }
 
     public static VhUpdatePtr wbml_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             palette_recalc();
             /* no need to check the return code since we redraw everything each frame */
 

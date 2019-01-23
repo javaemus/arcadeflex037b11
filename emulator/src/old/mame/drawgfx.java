@@ -17,7 +17,7 @@ import static arcadeflex.video.osd_mark_dirty;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static old.mame.usrintrf.usrintf_showmessage;
 import static old2.mame.drawgfx.*;
 
@@ -419,10 +419,10 @@ public class drawgfx {
      * changed through palette_shadow_table[]
      * *************************************************************************
      */
-    public static void common_drawgfx(osd_bitmap dest, GfxElement gfx,
+    public static void common_drawgfx(mame_bitmap dest, GfxElement gfx,
             /*unsigned*/ int code,/*unsigned*/ int color, int flipx, int flipy, int sx, int sy,
             rectangle clip, int transparency, int transparent_color,
-            osd_bitmap pri_buffer,/*UINT32*/ int pri_mask) {
+            mame_bitmap pri_buffer,/*UINT32*/ int pri_mask) {
         rectangle myclip = new rectangle();
 
         if (gfx == null) {
@@ -517,7 +517,7 @@ public class drawgfx {
         }
     }
 
-    public static void drawgfx(osd_bitmap dest, GfxElement gfx,
+    public static void drawgfx(mame_bitmap dest, GfxElement gfx,
             /*unsigned*/ int code,/*unsigned*/ int color, int flipx, int flipy, int sx, int sy,
             rectangle clip, int transparency, int transparent_color) {
         common_drawgfx(dest, gfx, code, color, flipx, flipy, sx, sy, clip, transparency, transparent_color, null, 0);
@@ -538,7 +538,7 @@ public class drawgfx {
      * function will very likely change in the future.
      * *************************************************************************
      */
-    public static void copybitmap(osd_bitmap dest, osd_bitmap src, int flipx, int flipy, int sx, int sy,
+    public static void copybitmap(mame_bitmap dest, mame_bitmap src, int flipx, int flipy, int sx, int sy,
             rectangle clip, int transparency, int transparent_color) {
         /* translate to proper transparency here */
         if (transparency == TRANSPARENCY_NONE) {
@@ -555,7 +555,7 @@ public class drawgfx {
         copybitmap_remap(dest, src, flipx, flipy, sx, sy, clip, transparency, transparent_color);
     }
 
-    public static void copybitmap_remap(osd_bitmap dest, osd_bitmap src, int flipx, int flipy, int sx, int sy,
+    public static void copybitmap_remap(mame_bitmap dest, mame_bitmap src, int flipx, int flipy, int sx, int sy,
             rectangle clip, int transparency, int transparent_color) {
         rectangle myclip = new rectangle();
 
@@ -633,7 +633,7 @@ public class drawgfx {
      * *************************************************************************
      */
     /*leave it here for compatibility  (shadow)*/
-    public static void copyscrollbitmap(osd_bitmap dest, osd_bitmap src,
+    public static void copyscrollbitmap(mame_bitmap dest, mame_bitmap src,
             int rows, int[] rowscroll, int cols, int[] colscroll,
             rectangle clip, int transparency, int transparent_color) {
         /* translate to proper transparency here */
@@ -694,7 +694,7 @@ public class drawgfx {
 /*TODO*///
 
     /* fill a bitmap using the specified pen */
-    public static void fillbitmap(osd_bitmap dest, int pen, rectangle clip) {
+    public static void fillbitmap(mame_bitmap dest, int pen, rectangle clip) {
         int sx, sy, ex, ey, y;
         rectangle myclip = new rectangle();
 
@@ -1737,74 +1737,74 @@ public class drawgfx {
 /*TODO*///}
 /*TODO*///
 /*TODO*///
-    public static void plot_pixel2(osd_bitmap bitmap1, osd_bitmap bitmap2, int x, int y, int pen) {
+    public static void plot_pixel2(mame_bitmap bitmap1, mame_bitmap bitmap2, int x, int y, int pen) {
         plot_pixel.handler(bitmap1, x, y, pen);
         plot_pixel.handler(bitmap2, x, y, pen);
     }
 
     public static plot_pixel_procPtr pp_8_nd = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             b.line[y].write(x, p);
         }
     };
     public static plot_pixel_procPtr pp_8_nd_fx = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             b.line[y].write(b.width - 1 - x, p);
         }
     };
     public static plot_pixel_procPtr pp_8_nd_fy = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             b.line[b.height - 1 - y].write(x, p);
         }
     };
     public static plot_pixel_procPtr pp_8_nd_fxy = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             b.line[b.height - 1 - y].write(b.width - 1 - x, p);
         }
     };
     public static plot_pixel_procPtr pp_8_nd_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             b.line[x].write(y, p);
         }
     };
     public static plot_pixel_procPtr pp_8_nd_fx_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             b.line[x].write(b.width - 1 - y, p);
         }
     };
     public static plot_pixel_procPtr pp_8_nd_fy_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             b.line[b.height - 1 - x].write(y, p);
         }
     };
     public static plot_pixel_procPtr pp_8_nd_fxy_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             b.line[b.height - 1 - x].write(b.width - 1 - y, p);
         }
     };
 
     public static plot_pixel_procPtr pp_8_d = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             b.line[y].write(x, p);
             osd_mark_dirty(x, y, x, y, 0);
         }
     };
     public static plot_pixel_procPtr pp_8_d_fx = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             x = b.width - 1 - x;
             b.line[y].write(x, p);
             osd_mark_dirty(x, y, x, y, 0);
         }
     };
     public static plot_pixel_procPtr pp_8_d_fy = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             y = b.height - 1 - y;
             b.line[y].write(x, p);
             osd_mark_dirty(x, y, x, y, 0);
         }
     };
     public static plot_pixel_procPtr pp_8_d_fxy = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             x = b.width - 1 - x;
             y = b.height - 1 - y;
             b.line[y].write(x, p);
@@ -1812,27 +1812,27 @@ public class drawgfx {
         }
     };
     public static plot_pixel_procPtr pp_8_d_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             b.line[x].write(y, p);
             osd_mark_dirty(y, x, y, x, 0);
         }
     };
     public static plot_pixel_procPtr pp_8_d_fx_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             y = b.width - 1 - y;
             b.line[x].write(y, p);
             osd_mark_dirty(y, x, y, x, 0);
         }
     };
     public static plot_pixel_procPtr pp_8_d_fy_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             x = b.height - 1 - x;
             b.line[x].write(y, p);
             osd_mark_dirty(y, x, y, x, 0);
         }
     };
     public static plot_pixel_procPtr pp_8_d_fxy_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             x = b.height - 1 - x;
             y = b.width - 1 - y;
             b.line[x].write(y, p);
@@ -1840,63 +1840,63 @@ public class drawgfx {
         }
     };
     public static plot_pixel_procPtr pp_16_nd = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///           ((UINT16 *) b.line[y])[x]=p;
             throw new UnsupportedOperationException("Unsupported");
         }
     };
     public static plot_pixel_procPtr pp_16_nd_fx = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///            ((UINT16 *) b.line[y])[b.width - 1 - x]=p;
             throw new UnsupportedOperationException("Unsupported");
         }
     };
     public static plot_pixel_procPtr pp_16_nd_fy = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///           ((UINT16 *) b.line[b.height - 1 - y])[x]=p;
             throw new UnsupportedOperationException("Unsupported");
         }
     };
     public static plot_pixel_procPtr pp_16_nd_fxy = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///           ((UINT16 *) b.line[b.height - 1 - y])[b.width - 1 - x]=p;
             throw new UnsupportedOperationException("Unsupported");
         }
     };
     public static plot_pixel_procPtr pp_16_nd_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///            ((UINT16 *) b.line[x])[y]=p;
             throw new UnsupportedOperationException("Unsupported");
         }
     };
     public static plot_pixel_procPtr pp_16_nd_fx_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///            ((UINT16 *) b.line[x])[b.width - 1 - y]=p;
             throw new UnsupportedOperationException("Unsupported");
         }
     };
     public static plot_pixel_procPtr pp_16_nd_fy_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///            ((UINT16 *) b.line[b.height - 1 - x])[y]=p;
             throw new UnsupportedOperationException("Unsupported");
         }
     };
     public static plot_pixel_procPtr pp_16_nd_fxy_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///            ((UINT16 *) b.line[b.height - 1 - x])[b.width - 1 - y]=p;
             throw new UnsupportedOperationException("Unsupported");
         }
     };
 
     public static plot_pixel_procPtr pp_16_d = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///             ((UINT16 *) b.line[y])[x]=p;
 /*TODO*///            osd_mark_dirty(x, y, x, y, 0);
             throw new UnsupportedOperationException("Unsupported");
         }
     };
     public static plot_pixel_procPtr pp_16_d_fx = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///            x = b.width - 1 - x;
 /*TODO*///             ((UINT16 *) b.line[y])[x]=p;
 /*TODO*///            osd_mark_dirty(x, y, x, y, 0);
@@ -1904,7 +1904,7 @@ public class drawgfx {
         }
     };
     public static plot_pixel_procPtr pp_16_d_fy = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///           y = b.height - 1 - y;
             /*TODO*///            ((UINT16 *) b.line[y])[x]=p;
             /*TODO*///           osd_mark_dirty(x, y, x, y, 0);
@@ -1912,7 +1912,7 @@ public class drawgfx {
         }
     };
     public static plot_pixel_procPtr pp_16_d_fxy = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///            x = b.width - 1 - x;
 /*TODO*///            y = b.height - 1 - y;
 /*TODO*///             ((UINT16 *) b.line[y])[x]=p;
@@ -1921,14 +1921,14 @@ public class drawgfx {
         }
     };
     public static plot_pixel_procPtr pp_16_d_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///            ((UINT16 *) b.line[x])[y]=p;
 /*TODO*///            osd_mark_dirty(y, x, y, x, 0);
             throw new UnsupportedOperationException("Unsupported");
         }
     };
     public static plot_pixel_procPtr pp_16_d_fx_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///           y = b.width - 1 - y;
 /*TODO*///             ((UINT16 *) b.line[x])[y]=p;
 /*TODO*///            osd_mark_dirty(y, x, y, x, 0);
@@ -1936,7 +1936,7 @@ public class drawgfx {
         }
     };
     public static plot_pixel_procPtr pp_16_d_fy_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///           x = b.height - 1 - x;
             /*TODO*///            ((UINT16 *) b.line[x])[y]=p;
             /*TODO*///           osd_mark_dirty(y, x, y, x, 0);
@@ -1944,7 +1944,7 @@ public class drawgfx {
         }
     };
     public static plot_pixel_procPtr pp_16_d_fxy_s = new plot_pixel_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int p) {
+        public void handler(mame_bitmap b, int x, int y, int p) {
             /*TODO*///           x = b.height - 1 - x;
             /*TODO*///           y = b.width - 1 - y;
             /*TODO*///            ((UINT16 *) b.line[x])[y]=p;
@@ -1953,95 +1953,95 @@ public class drawgfx {
         }
     };
     public static read_pixel_procPtr rp_8 = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             return bitmap.line[y].read(x);
         }
     };
     public static read_pixel_procPtr rp_8_fx = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             return bitmap.line[y].read(bitmap.width - 1 - x);
         }
     };
     public static read_pixel_procPtr rp_8_fy = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             return bitmap.line[bitmap.height - 1 - y].read(x);
         }
     };
     public static read_pixel_procPtr rp_8_fxy = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             return bitmap.line[bitmap.height - 1 - y].read(bitmap.width - 1 - x);
         }
     };
     public static read_pixel_procPtr rp_8_s = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             return bitmap.line[x].read(y);
         }
     };
     public static read_pixel_procPtr rp_8_fx_s = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             return bitmap.line[x].read(bitmap.width - 1 - y);
         }
     };
     public static read_pixel_procPtr rp_8_fy_s = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             return bitmap.line[bitmap.height - 1 - x].read(y);
         }
     };
     public static read_pixel_procPtr rp_8_fxy_s = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             return bitmap.line[bitmap.height - 1 - x].read(bitmap.width - 1 - y);
         }
     };
     /*TODO*///static int rp_16(struct osd_bitmap *b,int x,int y)  { return ((unsigned short *)b->line[y])[x]; }
     public static read_pixel_procPtr rp_16 = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             throw new UnsupportedOperationException("Unsupported rp_16");
         }
     };
     /*TODO*///static int rp_16_fx(struct osd_bitmap *b,int x,int y)  { return ((unsigned short *)b->line[y])[b->width-1-x]; }
     public static read_pixel_procPtr rp_16_fx = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             throw new UnsupportedOperationException("Unsupported rp_16_fx");
         }
     };
     /*TODO*///static int rp_16_fy(struct osd_bitmap *b,int x,int y)  { return ((unsigned short *)b->line[b->height-1-y])[x]; }
     public static read_pixel_procPtr rp_16_fy = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             throw new UnsupportedOperationException("Unsupported rp_16_fy");
         }
     };
     /*TODO*///static int rp_16_fxy(struct osd_bitmap *b,int x,int y)  { return ((unsigned short *)b->line[b->height-1-y])[b->width-1-x]; }
     public static read_pixel_procPtr rp_16_fxy = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             throw new UnsupportedOperationException("Unsupported rp_16_fxy");
         }
     };
     /*TODO*///static int rp_16_s(struct osd_bitmap *b,int x,int y)  { return ((unsigned short *)b->line[x])[y]; }
     public static read_pixel_procPtr rp_16_s = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             throw new UnsupportedOperationException("Unsupported rp_16_s");
         }
     };
     /*TODO*///static int rp_16_fx_s(struct osd_bitmap *b,int x,int y)  { return ((unsigned short *)b->line[x])[b->width-1-y]; }
     public static read_pixel_procPtr rp_16_fx_s = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             throw new UnsupportedOperationException("Unsupported rp_16_fx_s");
         }
     };
     /*TODO*///static int rp_16_fy_s(struct osd_bitmap *b,int x,int y)  { return ((unsigned short *)b->line[b->height-1-x])[y]; }
     public static read_pixel_procPtr rp_16_fy_s = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             throw new UnsupportedOperationException("Unsupported rp_16_fy_s");
         }
     };
     /*TODO*///static int rp_16_fxy_s(struct osd_bitmap *b,int x,int y)  { return ((unsigned short *)b->line[b->height-1-x])[b->width-1-y]; }
     public static read_pixel_procPtr rp_16_fxy_s = new read_pixel_procPtr() {
-        public int handler(osd_bitmap bitmap, int x, int y) {
+        public int handler(mame_bitmap bitmap, int x, int y) {
             throw new UnsupportedOperationException("Unsupported rp_16_fxy_s");
         }
     };
     public static plot_box_procPtr pb_8_nd = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = x;
             while (h-- > 0) {
                 int c = w;
@@ -2055,7 +2055,7 @@ public class drawgfx {
         }
     };
     public static plot_box_procPtr pb_8_nd_fx = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = b.width - 1 - x;
             while (h-- > 0) {
                 int c = w;
@@ -2069,7 +2069,7 @@ public class drawgfx {
         }
     };
     public static plot_box_procPtr pb_8_nd_fy = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = x;
             y = b.height - 1 - y;
             while (h-- > 0) {
@@ -2084,7 +2084,7 @@ public class drawgfx {
         }
     };
     public static plot_box_procPtr pb_8_nd_fxy = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = b.width - 1 - x;
             y = b.height - 1 - y;
             while (h-- > 0) {
@@ -2099,7 +2099,7 @@ public class drawgfx {
         }
     };
     public static plot_box_procPtr pb_8_nd_s = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = x;
             while (h-- > 0) {
                 int c = w;
@@ -2113,7 +2113,7 @@ public class drawgfx {
         }
     };
     public static plot_box_procPtr pb_8_nd_fx_s = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = x;
             y = b.width - 1 - y;
             while (h-- > 0) {
@@ -2128,7 +2128,7 @@ public class drawgfx {
         }
     };
     public static plot_box_procPtr pb_8_nd_fy_s = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = b.height - 1 - x;
             while (h-- > 0) {
                 int c = w;
@@ -2142,7 +2142,7 @@ public class drawgfx {
         }
     };
     public static plot_box_procPtr pb_8_nd_fxy_s = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = b.height - 1 - x;
             y = b.width - 1 - y;
             while (h-- > 0) {
@@ -2158,7 +2158,7 @@ public class drawgfx {
     };
 
     public static plot_box_procPtr pb_8_d = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = x;
             osd_mark_dirty(t, y, t + w - 1, y + h - 1, 0);
             while (h-- > 0) {
@@ -2173,7 +2173,7 @@ public class drawgfx {
         }
     };
     public static plot_box_procPtr pb_8_d_fx = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = b.width - 1 - x;
             osd_mark_dirty(t - w + 1, y, t, y + h - 1, 0);
             while (h-- > 0) {
@@ -2188,7 +2188,7 @@ public class drawgfx {
         }
     };
     public static plot_box_procPtr pb_8_d_fy = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = x;
             y = b.height - 1 - y;
             osd_mark_dirty(t, y - h + 1, t + w - 1, y, 0);
@@ -2204,7 +2204,7 @@ public class drawgfx {
         }
     };
     public static plot_box_procPtr pb_8_d_fxy = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = b.width - 1 - x;
             y = b.height - 1 - y;
             osd_mark_dirty(t - w + 1, y - h + 1, t, y, 0);
@@ -2220,7 +2220,7 @@ public class drawgfx {
         }
     };
     public static plot_box_procPtr pb_8_d_s = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = x;
             osd_mark_dirty(y, t, y + h - 1, t + w - 1, 0);
             while (h-- > 0) {
@@ -2235,7 +2235,7 @@ public class drawgfx {
         }
     };
     public static plot_box_procPtr pb_8_d_fx_s = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = x;
             y = b.width - 1 - y;
             osd_mark_dirty(y - h + 1, t, y, t + w - 1, 0);
@@ -2251,7 +2251,7 @@ public class drawgfx {
         }
     };
     public static plot_box_procPtr pb_8_d_fy_s = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = b.height - 1 - x;
             osd_mark_dirty(y, t - w + 1, y + h - 1, t, 0);
             while (h-- > 0) {
@@ -2266,7 +2266,7 @@ public class drawgfx {
         }
     };
     public static plot_box_procPtr pb_8_d_fxy_s = new plot_box_procPtr() {
-        public void handler(osd_bitmap b, int x, int y, int w, int h, int p) {
+        public void handler(mame_bitmap b, int x, int y, int w, int h, int p) {
             int t = b.height - 1 - x;
             y = b.width - 1 - y;
             osd_mark_dirty(y - h + 1, t - w + 1, y, t, 0);
@@ -4623,10 +4623,10 @@ public class drawgfx {
 /*TODO*///
 /*TODO*///
     public static void drawgfx_core8(
-            osd_bitmap dest, GfxElement gfx,
+            mame_bitmap dest, GfxElement gfx,
             /*unsigned*/ int code,/*unsigned*/ int color, int flipx, int flipy, int sx, int sy,
             rectangle clip, int transparency, int transparent_color,
-            osd_bitmap pri_buffer,/*UINT32*/ int pri_mask) {
+            mame_bitmap pri_buffer,/*UINT32*/ int pri_mask) {
         int ox;
         int oy;
         int ex;
@@ -5004,7 +5004,7 @@ public class drawgfx {
 /*TODO*///})
 /*TODO*///
     public static void copybitmap_core8(
-            osd_bitmap dest, osd_bitmap src,
+            mame_bitmap dest, mame_bitmap src,
             int flipx, int flipy, int sx, int sy,
             rectangle clip, int transparency, int transparent_color) {
         int ox;

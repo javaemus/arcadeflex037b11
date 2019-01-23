@@ -9,7 +9,7 @@ import static arcadeflex.libc.ptr.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static vidhrdw.generic.*;
 import static old2.mame.common.*;
 import static common.libc.cstring.*;
@@ -144,7 +144,7 @@ public class munchmo {
         }
     };
 
-    static void draw_status(osd_bitmap bitmap) {
+    static void draw_status(mame_bitmap bitmap) {
         rectangle clip = Machine.visible_area;
         GfxElement gfx = Machine.gfx[0];
         int row;
@@ -168,7 +168,7 @@ public class munchmo {
         }
     }
 
-    static void draw_background(osd_bitmap bitmap) {
+    static void draw_background(mame_bitmap bitmap) {
         /*
 		ROM B1.2C contains 256 tilemaps defining 4x4 configurations of
 		the tiles in ROM B2.2B
@@ -207,7 +207,7 @@ public class munchmo {
         }
     }
 
-    static void draw_sprites(osd_bitmap bitmap) {
+    static void draw_sprites(mame_bitmap bitmap) {
         rectangle clip = Machine.visible_area;
         int scroll = mnchmobl_vreg.read(6);
         int flags = mnchmobl_vreg.read(7);
@@ -241,7 +241,7 @@ public class munchmo {
     }
 
     public static VhUpdatePtr mnchmobl_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             draw_background(bitmap);
             draw_sprites(bitmap);
             draw_status(bitmap);

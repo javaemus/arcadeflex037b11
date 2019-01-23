@@ -9,7 +9,7 @@ import static common.libc.expressions.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static vidhrdw.generic.*;
 import static common.libc.cstring.*;
 
@@ -31,7 +31,7 @@ public class pkunwar {
     };
 
     public static VhUpdatePtr pkunwar_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             /* for every character in the Video RAM, check if it has been modified */

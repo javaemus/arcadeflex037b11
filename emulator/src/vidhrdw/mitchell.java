@@ -293,7 +293,7 @@ public class mitchell {
         }
     }
 
-    static void draw_sprites(osd_bitmap bitmap) {
+    static void draw_sprites(mame_bitmap bitmap) {
         int offs, sx, sy;
 
         /* the last entry is not a sprite, we skip it otherwise spang shows a bubble */
@@ -319,7 +319,7 @@ public class mitchell {
     }
 
     public static VhUpdatePtr pang_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int i;
 
             tilemap_update(ALL_TILEMAPS);

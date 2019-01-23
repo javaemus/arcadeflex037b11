@@ -12,15 +12,15 @@ import static mame.commonH.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static arcadeflex.video.osd_free_bitmap;
 import static mame.palette.*;
 import static vidhrdw.generic.*;
 import static mame056.common.*;
 public class thief {
 
-    public static osd_bitmap thief_page0;
-    public static osd_bitmap thief_page1;
+    public static mame_bitmap thief_page0;
+    public static mame_bitmap thief_page1;
 
     static /*UINT8*/ int u8_thief_read_mask, u8_thief_write_mask;
     static /*UINT8*/ int u8_thief_video_control;
@@ -204,14 +204,14 @@ public class thief {
     };
 
     public static VhUpdatePtr thief_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             /*unsigned*/
             int offs;
             int flipscreen = u8_thief_video_control & 1;
             int[] pal_data = Machine.pens;
             UBytePtr dirty = new UBytePtr(dirtybuffer);
             UBytePtr source = new UBytePtr(videoram);
-            osd_bitmap page;
+            mame_bitmap page;
 
             if ((u8_thief_video_control & 4) != 0) {
                 /* visible page */

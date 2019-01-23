@@ -694,7 +694,7 @@ public class drawgfx {
      *
      **************************************************************************
      */
-    public static void copyscrollbitmap(osd_bitmap dest, osd_bitmap src,
+    public static void copyscrollbitmap(mame_bitmap dest, mame_bitmap src,
             int rows, int[] rowscroll, int cols, int[] colscroll,
             rectangle clip, int transparency, int transparent_color) {
         /* translate to proper transparency here */
@@ -712,7 +712,7 @@ public class drawgfx {
         copyscrollbitmap_remap(dest, src, rows, rowscroll, cols, colscroll, clip, transparency, transparent_color);
     }
 
-    public static void copyscrollbitmap_remap(osd_bitmap dest, osd_bitmap src,
+    public static void copyscrollbitmap_remap(mame_bitmap dest, mame_bitmap src,
             int rows, int[] rowscroll, int cols, int[] colscroll,
             rectangle clip, int transparency, int transparent_color) {
         int srcwidth, srcheight, destwidth, destheight;
@@ -982,7 +982,7 @@ public class drawgfx {
    - startx and starty MUST be UINT32 for calculations to work correctly
    - srcbitmap->width and height are assumed to be a power of 2 to speed up wraparound
      */
-    public static void copyrozbitmap(osd_bitmap dest, osd_bitmap src,
+    public static void copyrozbitmap(mame_bitmap dest, mame_bitmap src,
             long u32_startx, long u32_starty, int incxx, int incxy, int incyx, int incyy, int wraparound,
             rectangle clip, int transparency, int transparent_color,/*UINT32*/ int priority) {
 
@@ -1109,7 +1109,7 @@ public class drawgfx {
 /*TODO*///}
 /*TODO*///
 /*TODO*///
-    public static void common_drawgfxzoom(osd_bitmap dest_bmp, GfxElement gfx,/*unsigned*/ int code,/*unsigned*/ int color, int flipx, int flipy, int sx, int sy, rectangle clip, int transparency, int transparent_color, int scalex, int scaley, osd_bitmap pri_buffer, int/*UINT32*/ pri_mask) {
+    public static void common_drawgfxzoom(mame_bitmap dest_bmp, GfxElement gfx,/*unsigned*/ int code,/*unsigned*/ int color, int flipx, int flipy, int sx, int sy, rectangle clip, int transparency, int transparent_color, int scalex, int scaley, mame_bitmap pri_buffer, int/*UINT32*/ pri_mask) {
         rectangle myclip = new rectangle();
 
         if (scalex == 0 || scaley == 0) {
@@ -1989,7 +1989,7 @@ public class drawgfx {
         }
     }
 
-    public static void drawgfxzoom(osd_bitmap dest_bmp, GfxElement gfx,/*unsigned*/ int code,/*unsigned*/ int color, int flipx, int flipy, int sx, int sy, rectangle clip, int transparency, int transparent_color, int scalex, int scaley) {
+    public static void drawgfxzoom(mame_bitmap dest_bmp, GfxElement gfx,/*unsigned*/ int code,/*unsigned*/ int color, int flipx, int flipy, int sx, int sy, rectangle clip, int transparency, int transparent_color, int scalex, int scaley) {
         common_drawgfxzoom(dest_bmp, gfx, code, color, flipx, flipy, sx, sy, clip, transparency, transparent_color, scalex, scaley, null, 0);
     }
 
@@ -4640,7 +4640,7 @@ public class drawgfx {
 /*TODO*///		}
 /*TODO*///	}
 /*TODO*///})
-    public static void copyrozbitmap_core8(osd_bitmap bitmap, osd_bitmap srcbitmap,
+    public static void copyrozbitmap_core8(mame_bitmap bitmap, mame_bitmap srcbitmap,
             long u32_startx, long u32_starty, int incxx, int incxy, int incyx, int incyy, int wraparound,
             rectangle clip, int transparency, int transparent_color,/*UINT32*/ int priority) {
         long u32_cx;

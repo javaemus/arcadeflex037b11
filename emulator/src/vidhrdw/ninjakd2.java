@@ -10,7 +10,7 @@ import static old2.mame.common.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static mame.palette.*;
 import static mame.paletteH.*;
 import static common.libc.cstring.*;
@@ -32,8 +32,8 @@ public class ninjakd2 {
     public static UBytePtr ninjakd2_foreground_videoram = new UBytePtr();
     public static int[] ninjakd2_foregroundram_size = new int[1];
 
-    static osd_bitmap bitmap_bg;
-    static osd_bitmap bitmap_sp;
+    static mame_bitmap bitmap_bg;
+    static mame_bitmap bitmap_sp;
 
     static char[] bg_dirtybuffer;
     static int bg_enable = 1;
@@ -117,7 +117,7 @@ public class ninjakd2 {
         }
     };
 
-    public static void ninjakd2_draw_foreground(osd_bitmap bitmap) {
+    public static void ninjakd2_draw_foreground(mame_bitmap bitmap) {
         int offs;
 
         /* Draw the foreground text */
@@ -146,7 +146,7 @@ public class ninjakd2 {
         }
     }
 
-    public static void ninjakd2_draw_background(osd_bitmap bitmap) {
+    public static void ninjakd2_draw_background(mame_bitmap bitmap) {
         int offs;
 
         /* for every character in the Video RAM, check if it has been modified */
@@ -177,7 +177,7 @@ public class ninjakd2 {
         }
     }
 
-    public static void ninjakd2_draw_sprites(osd_bitmap bitmap) {
+    public static void ninjakd2_draw_sprites(mame_bitmap bitmap) {
         int offs;
 
         /* Draw the sprites */
@@ -215,7 +215,7 @@ public class ninjakd2 {
      **************************************************************************
      */
     public static VhUpdatePtr ninjakd2_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int scrollx, scrolly;
 
             if (palette_recalc() != null) {

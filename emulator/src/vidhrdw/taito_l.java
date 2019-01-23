@@ -7,7 +7,7 @@ package vidhrdw;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static common.libc.cstring.*;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
 import static mame.palette.*;
@@ -286,7 +286,7 @@ public class taito_l {
 		07: xxxxxxxx unknown / ignored? Seems just garbage in many cases, e.g
 		             plgirs2 bullets and raimais big bosses.
      */
-    static void draw_sprites(osd_bitmap bitmap) {
+    static void draw_sprites(mame_bitmap bitmap) {
         int offs;
 
         /* at spriteram + 0x3f0 and 03f8 are the tilemap control registers;
@@ -327,7 +327,7 @@ public class taito_l {
     }
 
     public static VhUpdatePtr taitol_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int dx, dy;
 
             /* tilemap bug? If I do this just in vh_start(), it won't work */

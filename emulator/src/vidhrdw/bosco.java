@@ -57,7 +57,7 @@ public class bosco {
     static char[] dirtybuffer2;
     /* keep track of modified portions of the screen */
  /* to speed up video refresh */
-    static osd_bitmap tmpbitmap1;
+    static mame_bitmap tmpbitmap1;
 
     static rectangle spritevisiblearea = new rectangle(
             0 * 8 + 3, 28 * 8 - 1,
@@ -272,7 +272,7 @@ public class bosco {
      **************************************************************************
      */
     public static VhUpdatePtr bosco_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs, sx, sy;
 
             /* for every character in the Video RAM, check if it has been modified */

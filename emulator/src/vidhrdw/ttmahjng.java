@@ -23,8 +23,8 @@ public class ttmahjng {
     public static UBytePtr ttmahjng_videoram2 = new UBytePtr();
     public static int[] ttmahjng_videoram_size = new int[1];
 
-    static osd_bitmap tmpbitmap1;
-    static osd_bitmap tmpbitmap2;
+    static mame_bitmap tmpbitmap1;
+    static mame_bitmap tmpbitmap2;
 
     static int video_flip;
     static int video_color_select_1;
@@ -204,7 +204,7 @@ public class ttmahjng {
      * common_videoram_w
      * *************************************************************************
      */
-    static void common_videoram_w(int offset, int data, int coloroffset, osd_bitmap bitmap) {
+    static void common_videoram_w(int offset, int data, int coloroffset, mame_bitmap bitmap) {
         int x, y, color1, color2, color3, color4;
 
         x = ((offset & 0x3f) << 2);
@@ -243,7 +243,7 @@ public class ttmahjng {
      **************************************************************************
      */
     public static VhUpdatePtr ttmahjng_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             if (video_remap_1 != 0) {
                 modify_pen(0, video_color_select_1 + 0);
                 modify_pen(1, video_color_select_1 + 1);

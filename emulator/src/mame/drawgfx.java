@@ -8,7 +8,7 @@ import static arcadeflex.libc.cstring.memset;
 import arcadeflex.libc.ptr.*;
 import mame.drawgfxH.*;
 import static old2.mame.tilemapC.priority_bitmap;
-import mame.osdependH.osd_bitmap;
+import mame.osdependH.mame_bitmap;
 import static common.subArrays.*;
 import old.arcadeflex.libc_old.IntPtr;
 import static old.mame.drawgfx.common_drawgfx;
@@ -594,7 +594,7 @@ public class drawgfx {
 /*TODO*///	profiler_mark(PROFILER_END);
 /*TODO*///}
 /*TODO*///
-    public static void pdrawgfx(osd_bitmap dest, GfxElement gfx,/*unsigned*/ int code,/*unsigned*/ int color, int flipx, int flipy, int sx, int sy, rectangle clip, int transparency, int transparent_color,/*UINT32*/ int priority_mask) {
+    public static void pdrawgfx(mame_bitmap dest, GfxElement gfx,/*unsigned*/ int code,/*unsigned*/ int color, int flipx, int flipy, int sx, int sy, rectangle clip, int transparency, int transparent_color,/*UINT32*/ int priority_mask) {
         common_drawgfx(dest, gfx, code, color, flipx, flipy, sx, sy, clip, transparency, transparent_color, priority_bitmap, priority_mask);
     }
 

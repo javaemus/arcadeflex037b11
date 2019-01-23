@@ -937,11 +937,11 @@ public class common {
         Machine.absolute_visible_area.max_y = max_y;
     }
 
-    public static osd_bitmap bitmap_alloc(int width, int height) {
+    public static mame_bitmap bitmap_alloc(int width, int height) {
         return bitmap_alloc_depth(width, height, Machine.scrbitmap.depth);
     }
 
-    public static osd_bitmap bitmap_alloc_depth(int width, int height, int depth) {
+    public static mame_bitmap bitmap_alloc_depth(int width, int height, int depth) {
         if ((Machine.orientation & ORIENTATION_SWAP_XY) != 0) {
             int temp;
 
@@ -953,7 +953,7 @@ public class common {
         return osd_alloc_bitmap(width, height, depth);
     }
 
-    public static void bitmap_free(osd_bitmap bitmap) {
+    public static void bitmap_free(mame_bitmap bitmap) {
         osd_free_bitmap(bitmap);
     }
     /*TODO*///

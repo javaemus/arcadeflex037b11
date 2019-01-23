@@ -10,7 +10,7 @@ import static old2.mame.common.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static vidhrdw.generic.*;
 import static common.libc.cstring.*;
 import static common.libc.expressions.*;
@@ -21,7 +21,7 @@ public class bankp {
     public static UBytePtr bankp_videoram2 = new UBytePtr();
     public static UBytePtr bankp_colorram2 = new UBytePtr();
     static char[] dirtybuffer2;
-    static osd_bitmap tmpbitmap2;
+    static mame_bitmap tmpbitmap2;
     static int scroll_x;
     static int flipscreen;
     static int priority;
@@ -181,7 +181,7 @@ public class bankp {
      * *************************************************************************
      */
     public static VhUpdatePtr bankp_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             /* for every character in the Video RAM, check if it has been modified */

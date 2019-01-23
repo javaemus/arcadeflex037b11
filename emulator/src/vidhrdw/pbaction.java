@@ -10,7 +10,7 @@ import static old2.mame.common.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static mame.palette.*;
 import static mame.paletteH.*;
 import static vidhrdw.generic.*;
@@ -22,7 +22,7 @@ public class pbaction {
     public static UBytePtr pbaction_videoram2 = new UBytePtr();
     public static UBytePtr pbaction_colorram2 = new UBytePtr();
     static char[] dirtybuffer2;
-    static osd_bitmap tmpbitmap2;
+    static mame_bitmap tmpbitmap2;
     static int scroll;
     static int flipscreen;
 
@@ -123,7 +123,7 @@ public class pbaction {
      * *************************************************************************
      */
     public static VhUpdatePtr pbaction_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             /* recalc the palette if necessary */

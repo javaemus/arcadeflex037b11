@@ -186,7 +186,7 @@ public class vulgus {
      *
      **************************************************************************
      */
-    static void draw_sprites(osd_bitmap bitmap) {
+    static void draw_sprites(mame_bitmap bitmap) {
         int offs;
 
         for (offs = spriteram_size[0] - 4; offs >= 0; offs -= 4) {
@@ -229,7 +229,7 @@ public class vulgus {
     }
 
     public static VhUpdatePtr vulgus_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             tilemap_set_scrollx(bg_tilemap, 0, vulgus_scroll_low.read(1) + 256 * vulgus_scroll_high.read(1));
             tilemap_set_scrolly(bg_tilemap, 0, vulgus_scroll_low.read(0) + 256 * vulgus_scroll_high.read(0));
 

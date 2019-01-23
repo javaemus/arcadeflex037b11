@@ -11,7 +11,7 @@ import static vidhrdw.generic.*;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static old2.mame.mame.Machine;
 import static old.mame.drawgfx.*;
 import static old2.mame.common.*;
@@ -51,7 +51,7 @@ public class mcr3 {
      ************************************
      */
     /* Spy Hunter-specific scrolling background */
-    static osd_bitmap spyhunt_backbitmap;
+    static mame_bitmap spyhunt_backbitmap;
 
     /* Discs of Tron artwork globals */
     public static int[][]/*UINT8*/ u8_dotron_palettes = new int[3][3 * 256];
@@ -110,7 +110,7 @@ public class mcr3 {
      *
      ************************************
      */
-    static void mcr3_update_background(osd_bitmap bitmap, int color_xor) {
+    static void mcr3_update_background(mame_bitmap bitmap, int color_xor) {
         int offs;
 
         /* for every character in the Video RAM, check if it has been modified */
@@ -143,7 +143,7 @@ public class mcr3 {
      *
      ************************************
      */
-    public static void mcr3_update_sprites(osd_bitmap bitmap, int color_mask, int code_xor, int dx, int dy) {
+    public static void mcr3_update_sprites(mame_bitmap bitmap, int color_mask, int code_xor, int dx, int dy) {
         int offs;
 
         /* loop over sprite RAM */
@@ -201,7 +201,7 @@ public class mcr3 {
      ************************************
      */
     public static VhUpdatePtr mcr3_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             /* mark everything dirty on a cocktail flip change */
             if (palette_recalc() != null || u8_last_cocktail_flip != mcr_cocktail_flip) {
                 memset(dirtybuffer, 1, videoram_size[0]);
@@ -227,7 +227,7 @@ public class mcr3 {
      ************************************
      */
     public static VhUpdatePtr mcrmono_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             if (palette_recalc() != null) {
                 memset(dirtybuffer, 1, videoram_size[0]);
             }
@@ -326,7 +326,7 @@ public class mcr3 {
      */
     static rectangle spyhunt_clip = new rectangle(0, 30 * 16 - 1, 0, 30 * 16 - 1);
     public static VhUpdatePtr spyhunt_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs, scrollx, scrolly;
 
             if (palette_recalc() != null) {
@@ -467,7 +467,7 @@ public class mcr3 {
      ************************************
      */
     public static VhUpdatePtr dotron_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             rectangle sclip = new rectangle();
             int offs;
 

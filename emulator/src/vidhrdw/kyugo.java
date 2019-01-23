@@ -105,7 +105,7 @@ public class kyugo {
         }
     };
 
-    static void draw_sprites(osd_bitmap bitmap) {
+    static void draw_sprites(mame_bitmap bitmap) {
         /* sprite information is scattered through memory */
  /* and uses a portion of the text layer memory (outside the visible area) */
         UBytePtr spriteram_area1 = new UBytePtr(spriteram, 0x28);
@@ -160,7 +160,7 @@ public class kyugo {
     }
 
     public static VhUpdatePtr kyugo_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             /* back layer */

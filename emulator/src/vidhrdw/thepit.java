@@ -114,7 +114,7 @@ public class thepit {
      *
      **************************************************************************
      */
-    static void drawtiles(osd_bitmap bitmap, int priority) {
+    static void drawtiles(mame_bitmap bitmap, int priority) {
         int offs, spacechar = 0;
 
         if (priority == 1) {
@@ -197,7 +197,7 @@ public class thepit {
         }
     }
 
-    static void drawsprites(osd_bitmap bitmap, int priority) {
+    static void drawsprites(mame_bitmap bitmap, int priority) {
         int offs;
 
         /* draw low priority sprites */
@@ -242,7 +242,7 @@ public class thepit {
     }
 
     public static VhUpdatePtr thepit_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             if (full_refresh != 0) {
                 memset(dirtybuffer, 1, videoram_size[0]);
             }

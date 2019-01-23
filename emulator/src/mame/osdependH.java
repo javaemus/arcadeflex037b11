@@ -12,9 +12,9 @@ public class osdependH {
      * Display
      * ****************************************************************************
      */
-    public static class osd_bitmap {
+    public static class mame_bitmap {
 
-        public osd_bitmap() {
+        public mame_bitmap() {
         }
 
         public int width, height;/* width and hegiht of the bitmap */

@@ -30,7 +30,7 @@ public class retofinv {
     static char[] bg_dirtybuffer;
     static int/*unsigned*/ bg_bank;
     /* last background bank active, 0 or 1 */
-    static osd_bitmap bitmap_bg;
+    static mame_bitmap bitmap_bg;
 
     /* data corrections for color rom */
     static int/*unsigned*/ adj_data(int/*unsigned*/ v) {
@@ -186,7 +186,7 @@ public class retofinv {
         }
     };
 
-    public static void retofinv_render_sprites(osd_bitmap bitmap) {
+    public static void retofinv_render_sprites(mame_bitmap bitmap) {
         int offs, sx, sy, flipx, flipy, tile, palette, size;
         int tileofs0, tileofs1, tileofs2, tileofs3;
 
@@ -273,7 +273,7 @@ public class retofinv {
         }
     }
 
-    public static void retofinv_draw_background(osd_bitmap bitmap) {
+    public static void retofinv_draw_background(mame_bitmap bitmap) {
         int x, y, offs;
         int sx, sy, tile, palette;
         int bg_dirtybank;
@@ -316,7 +316,7 @@ public class retofinv {
         copybitmap(bitmap, bitmap_bg, 0, 0, 0, 0, Machine.visible_area, TRANSPARENCY_NONE, 0);
     }
 
-    public static void retofinv_draw_foreground(osd_bitmap bitmap) {
+    public static void retofinv_draw_foreground(mame_bitmap bitmap) {
         int x, y, offs;
         int sx, sy, tile, palette, flipx, flipy;
 
@@ -410,7 +410,7 @@ public class retofinv {
      **************************************************************************
      */
     public static VhUpdatePtr retofinv_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             retofinv_draw_background(bitmap);
             retofinv_render_sprites(bitmap);
             retofinv_draw_foreground(bitmap);

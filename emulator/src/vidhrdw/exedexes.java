@@ -126,7 +126,7 @@ public class exedexes {
         }
     };
 
-    static void draw_sprites(osd_bitmap bitmap, int priority) {
+    static void draw_sprites(mame_bitmap bitmap, int priority) {
         int offs;
 
         priority = priority != 0 ? 0x40 : 0x00;
@@ -153,7 +153,7 @@ public class exedexes {
     }
 
     public static VhUpdatePtr exedexes_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs, sx, sy;
 
             if (sc2on != 0) {

@@ -10,7 +10,7 @@ import static mame.commonH.REGION_GFX4;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static mame056.common.*;
 import static vidhrdw.generic.*;
 import static common.libc.cstring.*;
@@ -141,7 +141,7 @@ public class digdug {
         }
     };
 
-    public static void digdug_draw_sprite(osd_bitmap dest, int code, int color,
+    public static void digdug_draw_sprite(mame_bitmap dest, int code, int color,
             int flipx, int flipy, int sx, int sy) {
         drawgfx(dest, Machine.gfx[1], code, color, flipx, flipy, sx, sy, Machine.visible_area,
                 TRANSPARENCY_PEN, 0);
@@ -166,7 +166,7 @@ public class digdug {
      * *************************************************************************
      */
     public static VhUpdatePtr digdug_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs, pfindex, pfcolor;
             UBytePtr pf;
 

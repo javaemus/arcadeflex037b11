@@ -8,7 +8,7 @@ import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static common.libc.expressions.*;
 import static common.libc.cstring.*;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
 import static mame.commonH.*;
@@ -210,7 +210,7 @@ public class lwings {
         return sx != 0 && sy != 0;
     }
 
-    static void lwings_draw_sprites(osd_bitmap bitmap) {
+    static void lwings_draw_sprites(mame_bitmap bitmap) {
         int offs;
 
         for (offs = spriteram_size[0] - 4; offs >= 0; offs -= 4) {
@@ -240,7 +240,7 @@ public class lwings {
         }
     }
 
-    static void trojan_draw_sprites(osd_bitmap bitmap) {
+    static void trojan_draw_sprites(mame_bitmap bitmap) {
         int offs;
 
         for (offs = spriteram_size[0] - 4; offs >= 0; offs -= 4) {
@@ -314,7 +314,7 @@ public class lwings {
     }
 
     public static VhUpdatePtr lwings_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             tilemap_update(ALL_TILEMAPS);
 
             palette_init_used_colors();
@@ -333,7 +333,7 @@ public class lwings {
     };
 
     public static VhUpdatePtr trojan_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             tilemap_update(ALL_TILEMAPS);
 
             palette_init_used_colors();

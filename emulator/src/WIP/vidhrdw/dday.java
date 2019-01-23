@@ -11,7 +11,7 @@ import static mame.commonH.flip_screen;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static vidhrdw.generic.*;
 import static common.libc.cstring.*;
 import common.subArrays.UShortArray;
@@ -40,7 +40,7 @@ public class dday {
     public static final int BL2 = 2;
     public static final int BL3 = 3;
 
-    static void drawgfx_shadow(osd_bitmap dest, GfxElement gfx,/*unsigned*/ int code,/*unsigned*/ int color, int sx, int sy, rectangle clip, int transparency, UBytePtr shadow_mask, UBytePtr layer_mask, int layer) {
+    static void drawgfx_shadow(mame_bitmap dest, GfxElement gfx,/*unsigned*/ int code,/*unsigned*/ int color, int sx, int sy, rectangle clip, int transparency, UBytePtr shadow_mask, UBytePtr layer_mask, int layer) {
         int ox, oy, ex, ey, y, start;
         UBytePtr sd;
         UBytePtr bm, bme;
@@ -366,7 +366,7 @@ public class dday {
      **************************************************************************
      */
     public static VhUpdatePtr dday_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             for (offs = videoram_size[0] - 1; offs >= 0; offs--) {

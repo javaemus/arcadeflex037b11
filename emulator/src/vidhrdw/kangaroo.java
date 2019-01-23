@@ -9,7 +9,7 @@ import static arcadeflex.libc.ptr.*;
 import static mame.commonH.REGION_CPU1;
 import static old.mame.drawgfx.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static old2.mame.common.*;
@@ -25,7 +25,7 @@ public class kangaroo {
     public static UBytePtr kangaroo_scroll = new UBytePtr();
 
     static int screen_flipped;
-    static osd_bitmap tmpbitmap2;
+    static mame_bitmap tmpbitmap2;
 
     /**
      * *************************************************************************
@@ -215,7 +215,7 @@ public class kangaroo {
         }
     };
 
-    public static void kangaroo_plot_pixel(osd_bitmap bitmap, int x, int y, int col, int color_base, int flip) {
+    public static void kangaroo_plot_pixel(mame_bitmap bitmap, int x, int y, int col, int color_base, int flip) {
         if (flip != 0) {
             x = bitmap.width - 1 - x;
             y = bitmap.height - 1 - y;
@@ -298,7 +298,7 @@ public class kangaroo {
      **************************************************************************
      */
     public static VhUpdatePtr kangaroo_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int scrollx, scrolly;
 
             if (palette_recalc() != null || screen_flipped != 0) {

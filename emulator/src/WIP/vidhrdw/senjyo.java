@@ -18,7 +18,7 @@ import static common.libc.expressions.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.TRANSPARENCY_PEN;
 import static old2.mame.common.*;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
 import static mame.palette.*;
@@ -53,7 +53,7 @@ public class senjyo {
 
     static int senjyo, scrollhack;
 
-    static osd_bitmap bgbitmap;
+    static mame_bitmap bgbitmap;
 
     public static InitDriverPtr init_starforc = new InitDriverPtr() {
         public void handler() {
@@ -238,7 +238,7 @@ public class senjyo {
      *
      **************************************************************************
      */
-    static void draw_bgbitmap(osd_bitmap bitmap, int full_refresh) {
+    static void draw_bgbitmap(mame_bitmap bitmap, int full_refresh) {
         int x, y, pen, strwid, count;
 
         if (senjyo_bgstripes.read() == 0xff) /* off */ {
@@ -279,7 +279,7 @@ public class senjyo {
         copybitmap(bitmap, bgbitmap, 0, 0, 0, 0, Machine.visible_area, TRANSPARENCY_NONE, 0);
     }
 
-    static void draw_radar(osd_bitmap bitmap) {
+    static void draw_radar(mame_bitmap bitmap) {
         int offs, x;
 
         for (offs = 0; offs < 0x400; offs++) {
@@ -305,7 +305,7 @@ public class senjyo {
         }
     }
 
-    static void draw_sprites(osd_bitmap bitmap, int priority) {
+    static void draw_sprites(mame_bitmap bitmap, int priority) {
         rectangle clip = new rectangle(Machine.visible_area);
         int offs;
 
@@ -351,7 +351,7 @@ public class senjyo {
     }
 
     public static VhUpdatePtr senjyo_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int i;
 
             /* two colors for the radar dots (verified on the real board) */

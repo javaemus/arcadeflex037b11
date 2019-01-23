@@ -24,7 +24,7 @@ import static mame056.input.*;
 import static mame056.inputH.*;
 import static old2.mame.mame.*;
 import static old2.mame.mameH.MAX_GFX_ELEMENTS;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static mame.sndintrf.*;
 import static mame056.ui_text.ui_getstring;
 import static mame056.ui_textH.*;
@@ -310,7 +310,7 @@ public class usrintrf {
      * the last frame displayed.
      ***************************************************************************/
 
-    public static void displaytext(osd_bitmap bitmap, DisplayText[] dt, int erase, int update_screen) {
+    public static void displaytext(mame_bitmap bitmap, DisplayText[] dt, int erase, int update_screen) {
         if (erase != 0)
             osd_clearbitmap(bitmap);
 
@@ -372,7 +372,7 @@ public class usrintrf {
     }
 
     /* Writes messages on the screen. */
-    public static void ui_text_ex(osd_bitmap bitmap, String buf_begin, int buf_end, int x, int y, int color) {
+    public static void ui_text_ex(mame_bitmap bitmap, String buf_begin, int buf_end, int x, int y, int color) {
         switch_ui_orientation();
 
         for (int i = 0; i < buf_end; ++i) {
@@ -386,11 +386,11 @@ public class usrintrf {
     }
 
     /* Writes messages on the screen. */
-    public static void ui_text(osd_bitmap bitmap, String buf, int x, int y) {
+    public static void ui_text(mame_bitmap bitmap, String buf, int x, int y) {
         ui_text_ex(bitmap, buf, buf.length(), x, y, UI_COLOR_NORMAL);
     }
 
-    public static void ui_drawbox(osd_bitmap bitmap, int leftx, int topy, int width, int height) {
+    public static void ui_drawbox(mame_bitmap bitmap, int leftx, int topy, int width, int height) {
         int black, white;
 
 
@@ -416,7 +416,7 @@ public class usrintrf {
         switch_true_orientation();
     }
 
-    public static void drawbar(osd_bitmap bitmap, int leftx, int topy, int width, int height, int percentage, int default_percentage) {
+    public static void drawbar(mame_bitmap bitmap, int leftx, int topy, int width, int height, int percentage, int default_percentage) {
         int black, white;
 
 
@@ -534,7 +534,7 @@ public class usrintrf {
 /*TODO*///	ui_multitext_ex(bitmap,begin,end,max,x,y,color);
 /*TODO*///}
 /*TODO*///
-    public static void ui_displaymenu(osd_bitmap bitmap, String[] items, String[] subitems, char[] flag, int selected, int arrowize_subitem) {
+    public static void ui_displaymenu(mame_bitmap bitmap, String[] items, String[] subitems, char[] flag, int selected, int arrowize_subitem) {
         DisplayText[] dt = DisplayText.create(256);
         int curr_dt;
         String lefthilight = ui_getstring(UI_lefthilight);
@@ -681,7 +681,7 @@ public class usrintrf {
         }
     }
 
-    public static void ui_displaymessagewindow(osd_bitmap bitmap, String text) {
+    public static void ui_displaymessagewindow(mame_bitmap bitmap, String text) {
         DisplayText[] dt = DisplayText.create(256);
         int curr_dt;
         int c, c2;
@@ -779,7 +779,7 @@ public class usrintrf {
         displaytext(bitmap, dt, 0, 0);
     }
 
-    public static void showcharset(osd_bitmap bitmap) {
+    public static void showcharset(mame_bitmap bitmap) {
         int i;
         String buf = "";
         int bank, color, firstdrawn;
@@ -1039,7 +1039,7 @@ public class usrintrf {
         return;
     }
 
-    static void showtotalcolors(osd_bitmap bitmap) {
+    static void showtotalcolors(mame_bitmap bitmap) {
         char[] used;
         int i, l, x, y, total;
         char[] r = new char[1];
@@ -1080,7 +1080,7 @@ public class usrintrf {
         used = null;
     }
 
-    public static int setdipswitches(osd_bitmap bitmap, int selected) {
+    public static int setdipswitches(mame_bitmap bitmap, int selected) {
         String[] menu_item = new String[128];
         String[] menu_subitem = new String[128];
         InputPort[] entry = new InputPort[128];
@@ -1234,7 +1234,7 @@ public class usrintrf {
 
     static String[] menu_subitem_buffer = new String[400];//static char menu_subitem_buffer[400][96];
 
-    public static int setdefcodesettings(osd_bitmap bitmap, int selected) {
+    public static int setdefcodesettings(mame_bitmap bitmap, int selected) {
         String[] menu_item = new String[400];
         String[] menu_subitem = new String[400];
         ipd[] entry = new ipd[400];
@@ -1341,7 +1341,7 @@ public class usrintrf {
         return sel + 1;
     }
 
-    public static int setcodesettings(osd_bitmap bitmap, int selected) {
+    public static int setcodesettings(mame_bitmap bitmap, int selected) {
         String[] menu_item = new String[400];
         String[] menu_subitem = new String[400];
         InputPort[] entry = new InputPort[400];
@@ -1703,7 +1703,7 @@ public class usrintrf {
 /*TODO*///	return sel + 1;
 /*TODO*///}
 /*TODO*///
-    public static int mame_stats(osd_bitmap bitmap, int selected) {
+    public static int mame_stats(mame_bitmap bitmap, int selected) {
         String temp = "";
         String buf = "";
         int sel, i;
@@ -1766,7 +1766,7 @@ public class usrintrf {
         return sel + 1;
     }
 
-    public static int showcopyright(osd_bitmap bitmap) {
+    public static int showcopyright(mame_bitmap bitmap) {
         int done;
         String buf = "";
         String buf2 = "";
@@ -1804,7 +1804,7 @@ public class usrintrf {
         return 0;
     }
 
-    public static int displaygameinfo(osd_bitmap bitmap, int selected) {
+    public static int displaygameinfo(mame_bitmap bitmap, int selected) {
         int i;
         String buf = "";
         String buf2 = "";
@@ -1956,7 +1956,7 @@ public class usrintrf {
         return sel + 1;
     }
 
-    public static int showgamewarnings(osd_bitmap bitmap) {
+    public static int showgamewarnings(mame_bitmap bitmap) {
         int i;
         String buf = "";
 
@@ -2233,7 +2233,7 @@ public class usrintrf {
     static int hist_scroll = 0;
 
     /* Display text entry for current driver from history.dat and mameinfo.dat. */
-    public static int displayhistory(osd_bitmap bitmap, int selected) {
+    public static int displayhistory(mame_bitmap bitmap, int selected) {
 
 /*TODO*///	static char *buf = 0;
         int maxcols, maxrows;
@@ -2536,7 +2536,7 @@ public class usrintrf {
 
     static int menu_lastselected = 0;
 
-    public static int setup_menu(osd_bitmap bitmap, int selected) {
+    public static int setup_menu(mame_bitmap bitmap, int selected) {
         int sel, res = -1;
 
         if (selected == -1)
@@ -2645,7 +2645,7 @@ public class usrintrf {
      * *******************************************************************
      */
 
-    public static void displayosd(osd_bitmap bitmap, String text, int percentage, int default_percentage) {
+    public static void displayosd(mame_bitmap bitmap, String text, int percentage, int default_percentage) {
         DisplayText[] dt = DisplayText.create(2);
         int avail;
 
@@ -2674,7 +2674,7 @@ public class usrintrf {
     }
 
     public static onscrd_fncPtr onscrd_volume = new onscrd_fncPtr() {
-        public void handler(osd_bitmap bitmap, int increment, int arg) {
+        public void handler(mame_bitmap bitmap, int increment, int arg) {
             String buf;
             int attenuation;
 
@@ -2776,7 +2776,7 @@ public class usrintrf {
 /*TODO*///}
 
     public static onscrd_fncPtr onscrd_brightness = new onscrd_fncPtr() {
-        public void handler(osd_bitmap bitmap, int increment, int arg) {
+        public void handler(mame_bitmap bitmap, int increment, int arg) {
             String buf;
             int brightness;
 
@@ -2872,7 +2872,7 @@ public class usrintrf {
     public static final int MAX_OSD_ITEMS = 30;
 
     public static abstract interface onscrd_fncPtr {
-        public abstract void handler(osd_bitmap bitmap, int increment, int arg);
+        public abstract void handler(mame_bitmap bitmap, int increment, int arg);
 
     }
 
@@ -2930,7 +2930,7 @@ public class usrintrf {
 
     static int lastselected = 0;
 
-    public static int on_screen_display(osd_bitmap bitmap, int selected) {
+    public static int on_screen_display(mame_bitmap bitmap, int selected) {
         int increment, sel;
 
         if (selected == -1)
@@ -2967,7 +2967,7 @@ public class usrintrf {
      * <p>
      * *******************************************************************
      */
-    public static void displaymessage(osd_bitmap bitmap, String text) {
+    public static void displaymessage(mame_bitmap bitmap, String text) {
         DisplayText[] dt = DisplayText.create(2);
         int avail;
 
@@ -3014,7 +3014,7 @@ public class usrintrf {
 /*TODO*///
     static int show_total_colors;
 
-    public static int handle_user_interface(osd_bitmap bitmap) {
+    public static int handle_user_interface(mame_bitmap bitmap) {
 /*TODO*///	/* if the user pressed F12, save the screen to a file */
 /*TODO*///	if (input_ui_pressed(IPT_UI_SNAPSHOT))
 /*TODO*///		osd_save_snapshot(bitmap);

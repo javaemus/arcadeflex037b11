@@ -27,7 +27,7 @@ public class gsword {
     public static UBytePtr gs_spritetile_ram = new UBytePtr();
     public static UBytePtr gs_spriteattrib_ram = new UBytePtr();
 
-    static osd_bitmap bitmap_bg;
+    static mame_bitmap bitmap_bg;
     static char[] dirtybuffer;
     static int charbank, charpalbank;
     static int flipscreen;
@@ -146,7 +146,7 @@ public class gsword {
         }
     };
 
-    public static void render_background(osd_bitmap bitmap) {
+    public static void render_background(mame_bitmap bitmap) {
         int offs;
 
         /* for every character in the Video RAM, check if it has been modified */
@@ -179,7 +179,7 @@ public class gsword {
         }
     }
 
-    public static void render_sprites(osd_bitmap bitmap) {
+    public static void render_sprites(mame_bitmap bitmap) {
         int offs;
 
         for (offs = 0; offs < gs_spritexy_size[0] - 1; offs += 2) {
@@ -219,7 +219,7 @@ public class gsword {
     }
 
     public static VhUpdatePtr gsword_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int scrollx = 0, scrolly = -(gs_scrolly_ram.read());
 
             render_background(bitmap_bg);

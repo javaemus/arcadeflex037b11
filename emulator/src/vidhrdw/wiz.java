@@ -135,7 +135,7 @@ public class wiz {
         }
     };
 
-    static void draw_background(osd_bitmap bitmap, int bank, int colortype) {
+    static void draw_background(mame_bitmap bitmap, int bank, int colortype) {
         int i, offs;
 
         /* for every character in the Video RAM, check if it has been modified */
@@ -196,7 +196,7 @@ public class wiz {
         }
     }
 
-    static void draw_foreground(osd_bitmap bitmap, int colortype) {
+    static void draw_foreground(mame_bitmap bitmap, int colortype) {
         int offs;
 
         /* draw the frontmost playfield. They are characters, but draw them as sprites. */
@@ -229,7 +229,7 @@ public class wiz {
         }
     }
 
-    static void draw_sprites(osd_bitmap bitmap, UBytePtr sprite_ram,
+    static void draw_sprites(mame_bitmap bitmap, UBytePtr sprite_ram,
             int bank, rectangle visible_area) {
         int offs;
 
@@ -269,7 +269,7 @@ public class wiz {
      **************************************************************************
      */
     public static VhUpdatePtr wiz_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int bank;
             rectangle visible_area;
 
@@ -291,7 +291,7 @@ public class wiz {
     };
 
     public static VhUpdatePtr stinger_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             draw_background(bitmap, 2 + char_bank[0], 1);
             draw_foreground(bitmap, 1);
             draw_sprites(bitmap, spriteram_2, 4, Machine.visible_area);

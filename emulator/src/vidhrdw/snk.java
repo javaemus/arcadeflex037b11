@@ -10,7 +10,7 @@ import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
 import static arcadeflex.libc.ptr.*;
 import static vidhrdw.generic.*;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static old2.mame.mame.Machine;
 import static old.mame.drawgfx.*;
 import static old2.mame.common.*;
@@ -25,7 +25,7 @@ public class snk {
     //static int k = 0; /*for debugging use */
     static int shadows_visible = 0;/* toggles rapidly to fake translucency in ikari warriors */
 
-    static void print(osd_bitmap bitmap, int num, int row) {
+    static void print(mame_bitmap bitmap, int num, int row) {
         char[] digit = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
         drawgfx(bitmap, Machine.uifont,
@@ -124,7 +124,7 @@ public class snk {
     /**
      * ***********************************************************************************
      */
-    static void tnk3_draw_background(osd_bitmap bitmap, int scrollx, int scrolly) {
+    static void tnk3_draw_background(mame_bitmap bitmap, int scrollx, int scrolly) {
         rectangle clip = Machine.visible_area;
         GfxElement gfx = Machine.gfx[GFX_TILES];
         int offs;
@@ -158,7 +158,7 @@ public class snk {
         }
     }
 
-    static void tnk3_draw_text(osd_bitmap bitmap, int bank, UBytePtr source) {
+    static void tnk3_draw_text(mame_bitmap bitmap, int bank, UBytePtr source) {
         GfxElement gfx = Machine.gfx[GFX_CHARS];
         int offs;
 
@@ -175,7 +175,7 @@ public class snk {
         }
     }
 
-    public static void tnk3_draw_status(osd_bitmap bitmap, int bank, UBytePtr source) {
+    public static void tnk3_draw_status(mame_bitmap bitmap, int bank, UBytePtr source) {
         rectangle clip = Machine.visible_area;
         GfxElement gfx = Machine.gfx[GFX_CHARS];
         int offs;
@@ -207,7 +207,7 @@ public class snk {
     }
     static int n = 50;
 
-    public static void tnk3_draw_sprites(osd_bitmap bitmap, int xscroll, int yscroll) {
+    public static void tnk3_draw_sprites(mame_bitmap bitmap, int xscroll, int yscroll) {
         UBytePtr source = new UBytePtr(spriteram);
         int finish = source.offset + n * 4;
         rectangle clip = Machine.visible_area;
@@ -249,7 +249,7 @@ public class snk {
     }
 
     public static VhUpdatePtr tnk3_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             UBytePtr ram = memory_region(REGION_CPU1);
             int attributes = ram.read(0xc800);
             /*
@@ -290,7 +290,7 @@ public class snk {
     /**
      * ***********************************************************************************
      */
-    static void ikari_draw_background(osd_bitmap bitmap, int xscroll, int yscroll) {
+    static void ikari_draw_background(mame_bitmap bitmap, int xscroll, int yscroll) {
         GfxElement gfx = Machine.gfx[GFX_TILES];
         UBytePtr source = new UBytePtr(memory_region(REGION_CPU1), snk_bg_tilemap_baseaddr);
 
@@ -330,7 +330,7 @@ public class snk {
         }
     }
 
-    static void ikari_draw_text(osd_bitmap bitmap) {
+    static void ikari_draw_text(mame_bitmap bitmap) {
         rectangle clip = Machine.visible_area;
         GfxElement gfx = Machine.gfx[GFX_CHARS];
         UBytePtr source = new UBytePtr(memory_region(REGION_CPU1), 0xf800);
@@ -350,7 +350,7 @@ public class snk {
         }
     }
 
-    static void ikari_draw_status(osd_bitmap bitmap) {
+    static void ikari_draw_status(mame_bitmap bitmap) {
         /*	this is drawn above and below the main display */
 
         rectangle clip = Machine.visible_area;
@@ -382,7 +382,7 @@ public class snk {
         }
     }
 
-    static void ikari_draw_sprites_16x16(osd_bitmap bitmap, int start, int quantity, int xscroll, int yscroll) {
+    static void ikari_draw_sprites_16x16(mame_bitmap bitmap, int start, int quantity, int xscroll, int yscroll) {
         int transp_mode = shadows_visible != 0 ? TRANSPARENCY_PEN : TRANSPARENCY_PENS;
         int transp_param = shadows_visible != 0 ? 7 : ((1 << 7) | (1 << 6));
 
@@ -409,7 +409,7 @@ public class snk {
         }
     }
 
-    static void ikari_draw_sprites_32x32(osd_bitmap bitmap, int start, int quantity, int xscroll, int yscroll) {
+    static void ikari_draw_sprites_32x32(mame_bitmap bitmap, int start, int quantity, int xscroll, int yscroll) {
         int transp_mode = shadows_visible != 0 ? TRANSPARENCY_PEN : TRANSPARENCY_PENS;
         int transp_param = shadows_visible != 0 ? 7 : ((1 << 7) | (1 << 6));
 
@@ -440,7 +440,7 @@ public class snk {
     }
 
     public static VhUpdatePtr ikari_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             UBytePtr ram = memory_region(REGION_CPU1);
 
             shadows_visible = NOT(shadows_visible);
@@ -472,7 +472,7 @@ public class snk {
     /**
      * ***********************************************************
      */
-    static void tdfever_draw_background(osd_bitmap bitmap, int xscroll, int yscroll) {
+    static void tdfever_draw_background(mame_bitmap bitmap, int xscroll, int yscroll) {
         GfxElement gfx = Machine.gfx[GFX_TILES];
         UBytePtr source = new UBytePtr(memory_region(REGION_CPU1), 0xd000); //d000
 
@@ -513,7 +513,7 @@ public class snk {
         }
     }
 
-    static void tdfever_draw_sprites(osd_bitmap bitmap, int xscroll, int yscroll) {
+    static void tdfever_draw_sprites(mame_bitmap bitmap, int xscroll, int yscroll) {
         int transp_mode = shadows_visible != 0 ? TRANSPARENCY_PEN : TRANSPARENCY_PENS;
         int transp_param = shadows_visible != 0 ? 15 : ((1 << 15) | (1 << 14));
 
@@ -555,7 +555,7 @@ public class snk {
         }
     }
 
-    static void tdfever_draw_text(osd_bitmap bitmap, int attributes, int dx, int dy, int base) {
+    static void tdfever_draw_text(mame_bitmap bitmap, int attributes, int dx, int dy, int base) {
         int bank = attributes >> 4;
         int color = attributes & 0xf;
 
@@ -585,7 +585,7 @@ public class snk {
     }
 
     public static VhUpdatePtr tdfever_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             UBytePtr ram = memory_region(REGION_CPU1);
             shadows_visible = NOT(shadows_visible);
 
@@ -611,7 +611,7 @@ public class snk {
     };
 
     public static VhUpdatePtr ftsoccer_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             UBytePtr ram = memory_region(REGION_CPU1);
             shadows_visible = NOT(shadows_visible);
             {
@@ -635,7 +635,7 @@ public class snk {
         }
     };
 
-    static void gwar_draw_sprites_16x16(osd_bitmap bitmap, int xscroll, int yscroll) {
+    static void gwar_draw_sprites_16x16(mame_bitmap bitmap, int xscroll, int yscroll) {
         GfxElement gfx = Machine.gfx[GFX_SPRITES];
         UBytePtr source = new UBytePtr(memory_region(REGION_CPU1), 0xe800);
 
@@ -683,7 +683,7 @@ public class snk {
         }
     }
 
-    static void gwar_draw_sprites_32x32(osd_bitmap bitmap, int xscroll, int yscroll) {
+    static void gwar_draw_sprites_32x32(mame_bitmap bitmap, int xscroll, int yscroll) {
         GfxElement gfx = Machine.gfx[GFX_BIGSPRITES];
         UBytePtr source = new UBytePtr(memory_region(REGION_CPU1), 0xe000);
 
@@ -722,7 +722,7 @@ public class snk {
     }
 
     public static VhUpdatePtr gwar_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             UBytePtr ram = memory_region(REGION_CPU1);
             /*unsigned*/ char bg_attributes, sp_attributes;
 

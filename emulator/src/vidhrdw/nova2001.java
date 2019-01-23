@@ -9,7 +9,7 @@ import static arcadeflex.libc.ptr.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static vidhrdw.generic.*;
 import static common.libc.cstring.*;
 import static common.libc.expressions.*;
@@ -94,7 +94,7 @@ public class nova2001 {
      * *************************************************************************
      */
     public static VhUpdatePtr nova2001_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             /* for every character in the Video RAM, check if it has been modified */

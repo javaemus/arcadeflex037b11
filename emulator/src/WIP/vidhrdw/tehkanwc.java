@@ -21,7 +21,7 @@ public class tehkanwc {
 
     public static UBytePtr tehkanwc_videoram1 = new UBytePtr();
     public static int[] tehkanwc_videoram1_size = new int[1];
-    static osd_bitmap tmpbitmap1 = null;
+    static mame_bitmap tmpbitmap1 = null;
     static char[] dirtybuffer1;
     static /*unsigned*/ char[] scroll_x = new char[2];
     static /*unsigned*/ char scroll_y;
@@ -126,7 +126,7 @@ public class tehkanwc {
     static int ledvalues[]
             = {0x86, 0xdb, 0xcf, 0xe6, 0xed, 0xfd, 0x87, 0xff, 0xf3, 0xf1};
 
-    static void gridiron_drawled(osd_bitmap bitmap,/*unsigned*/ char led, int player) {
+    static void gridiron_drawled(mame_bitmap bitmap,/*unsigned*/ char led, int player) {
         int i;
 
         if ((led & 0x80) == 0) {
@@ -161,7 +161,7 @@ public class tehkanwc {
     }
 
     public static VhUpdatePtr tehkanwc_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             palette_init_used_colors();

@@ -112,7 +112,7 @@ public class tilemapH {
 
     public static class tilemap_mask {
 
-        osd_bitmap bitmask;
+        mame_bitmap bitmask;
         int line_offset;
         char[]/*UINT8*/ u8_data;
         UBytePtr[] data_row;
@@ -168,7 +168,7 @@ public class tilemapH {
         public int clip_left, clip_right, clip_top, clip_bottom;
 
         /* cached color data */
-        public osd_bitmap pixmap;
+        public mame_bitmap pixmap;
         public int pixmap_line_offset;
 
         public tilemap_mask foreground;

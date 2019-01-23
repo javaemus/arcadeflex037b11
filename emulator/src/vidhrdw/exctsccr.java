@@ -130,7 +130,7 @@ public class exctsccr {
         }
     };
 
-    static void exctsccr_drawsprites(osd_bitmap bitmap) {
+    static void exctsccr_drawsprites(mame_bitmap bitmap) {
         int offs;
         UBytePtr OBJ1, OBJ2;
 
@@ -231,7 +231,7 @@ public class exctsccr {
      **************************************************************************
      */
     public static VhUpdatePtr exctsccr_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             /* background chars */

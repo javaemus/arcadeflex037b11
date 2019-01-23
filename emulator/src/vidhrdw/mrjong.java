@@ -95,7 +95,7 @@ public class mrjong {
      **************************************************************************
      */
     public static VhUpdatePtr mrjong_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             /* Draw the tiles. */

@@ -16,7 +16,7 @@ public class kchamp {
 
     public static abstract interface kchamp_drawspritesproc {
 
-        public abstract void handler(osd_bitmap bitmap);
+        public abstract void handler(mame_bitmap bitmap);
     }
 
     static kchamp_drawspritesproc kchamp_drawsprites;
@@ -69,7 +69,7 @@ public class kchamp {
         }
     };
     public static kchamp_drawspritesproc kchamp_vs_drawsprites = new kchamp_drawspritesproc() {
-        public void handler(osd_bitmap bitmap) {
+        public void handler(mame_bitmap bitmap) {
             int offs;
             /*
              Sprites
@@ -101,7 +101,7 @@ public class kchamp {
         }
     };
     public static kchamp_drawspritesproc kchamp_1p_drawsprites = new kchamp_drawspritesproc() {
-        public void handler(osd_bitmap bitmap) {
+        public void handler(mame_bitmap bitmap) {
 
             int offs;
             /*
@@ -144,7 +144,7 @@ public class kchamp {
      **************************************************************************
      */
     public static VhUpdatePtr kchamp_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             /* for every character in the Video RAM, check if it has been modified */

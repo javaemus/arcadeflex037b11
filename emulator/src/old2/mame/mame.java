@@ -63,7 +63,7 @@ public class mame {
     public static RunningMachine Machine = machine;
     static GameDriver gamedrv;
     private static MachineDriver drv;
-    static osd_bitmap real_scrbitmap;
+    static mame_bitmap real_scrbitmap;
 
     /* Variables to hold the status of various game options */
     public static GameOptions options = new GameOptions();

@@ -150,7 +150,7 @@ public class mcr12 {
      *
      ************************************
      */
-    static void mcr1_update_background(osd_bitmap bitmap) {
+    static void mcr1_update_background(mame_bitmap bitmap) {
         int offs;
 
         /* for every character in the Video RAM, check if it has been modified */
@@ -191,7 +191,7 @@ public class mcr12 {
         }
     }
 
-    static void mcr2_update_background(osd_bitmap bitmap, int check_sprites) {
+    static void mcr2_update_background(mame_bitmap bitmap, int check_sprites) {
         int offs;
 
         /* for every character in the Video RAM, check if it has been modified */
@@ -321,7 +321,7 @@ public class mcr12 {
      ************************************
      */
     public static VhUpdatePtr mcr1_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             /* mark everything dirty on a full refresh or cocktail flip change */
             if (palette_recalc() != null || full_refresh != 0 || last_cocktail_flip != mcr_cocktail_flip) {
                 memset(dirtybuffer, 1, videoram_size[0]);
@@ -337,7 +337,7 @@ public class mcr12 {
     };
 
     public static VhUpdatePtr mcr2_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             /* mark everything dirty on a full refresh or cocktail flip change */
             if (palette_recalc() != null || full_refresh != 0 || last_cocktail_flip != mcr_cocktail_flip) {
                 memset(dirtybuffer, 1, videoram_size[0]);
@@ -362,7 +362,7 @@ public class mcr12 {
      ************************************
      */
     public static VhUpdatePtr journey_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             /* mark everything dirty on a cocktail flip change */
             if (palette_recalc() != null || last_cocktail_flip != mcr_cocktail_flip) {
                 memset(dirtybuffer, 1, videoram_size[0]);
@@ -474,7 +474,7 @@ public class mcr12 {
 /*TODO*///	 *		Core refresh routine
 /*TODO*///	 *
 /*TODO*///	 *************************************/
-    public static void render_sprite_tile_8(osd_bitmap bitmap, int[] pens, int offset, int sx, int sy) {
+    public static void render_sprite_tile_8(mame_bitmap bitmap, int[] pens, int offset, int sx, int sy) {
         int orientation = Machine.orientation;
         int x, y;
 

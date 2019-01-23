@@ -13,7 +13,7 @@ import static old2.mame.common.*;
 import static old.mame.drawgfx.copybitmap;
 import static mame.drawgfxH.TRANSPARENCY_NONE;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 
 public class generic {
 
@@ -30,7 +30,7 @@ public class generic {
     public static int[] spriteram_3_size = new int[1];/* ... here just for convenience */
 
     public static char dirtybuffer[];
-    public static osd_bitmap tmpbitmap;
+    public static mame_bitmap tmpbitmap;
 
     /**
      * *************************************************************************
@@ -102,7 +102,7 @@ public class generic {
      * *************************************************************************
      */
     public static VhUpdatePtr generic_bitmapped_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             if (full_refresh != 0) {
                 copybitmap(bitmap, tmpbitmap, 0, 0, 0, 0, Machine.visible_area, TRANSPARENCY_NONE, 0);
             }

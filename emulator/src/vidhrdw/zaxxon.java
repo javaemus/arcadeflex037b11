@@ -23,7 +23,7 @@ public class zaxxon {
     public static UBytePtr zaxxon_background_enable = new UBytePtr();
     public static UBytePtr zaxxon_char_color_bank = new UBytePtr();
     public static UBytePtr color_codes = new UBytePtr();
-    static osd_bitmap backgroundbitmap1, backgroundbitmap2;
+    static mame_bitmap backgroundbitmap1, backgroundbitmap2;
 
     public static int zaxxon_vid_type;
     /* set by init_machine; 0 = zaxxon; 1 = congobongo */
@@ -101,11 +101,11 @@ public class zaxxon {
      *
      **************************************************************************
      */
-    static void copy_pixel(osd_bitmap dst_bm, int dx, int dy, osd_bitmap src_bm, int sx, int sy) {
+    static void copy_pixel(mame_bitmap dst_bm, int dx, int dy, mame_bitmap src_bm, int sx, int sy) {
         plot_pixel.handler(dst_bm, dx, dy, read_pixel.handler(src_bm, sx, sy));
     }
 
-    static void create_background(osd_bitmap dst_bm, osd_bitmap src_bm, int col) {
+    static void create_background(mame_bitmap dst_bm, mame_bitmap src_bm, int col) {
         int offs;
         int sx, sy;
 
@@ -146,7 +146,7 @@ public class zaxxon {
 
     public static VhStartPtr zaxxon_vh_start = new VhStartPtr() {
         public int handler() {
-            osd_bitmap prebitmap;
+            mame_bitmap prebitmap;
             int width, height;
 
             if (generic_vh_start.handler() != 0) {
@@ -286,7 +286,7 @@ public class zaxxon {
 			                             * for 0xff which is set when sprite is off
 			                             * -V-
      */
-    static void draw_sprites(osd_bitmap bitmap) {
+    static void draw_sprites(mame_bitmap bitmap) {
         int offs;
 
         if (zaxxon_vid_type == CONGO_VID) {
@@ -342,7 +342,7 @@ public class zaxxon {
     }
 
     public static VhUpdatePtr zaxxon_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             /* copy the background */
@@ -440,7 +440,7 @@ public class zaxxon {
     };
 
     public static VhUpdatePtr razmataz_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             /* copy the background */

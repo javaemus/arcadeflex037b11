@@ -9,7 +9,7 @@ import static arcadeflex.libc.ptr.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static old2.mame.common.*;
 import static mame.commonH.*;
 import static mame056.common.*;
@@ -249,7 +249,7 @@ public class bking2 {
      **************************************************************************
      */
     public static VhUpdatePtr bking2_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             if (full_refresh != 0) {

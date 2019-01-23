@@ -9,7 +9,7 @@ import static arcadeflex.libc.ptr.*;
 import static common.libc.expressions.NOT;
 import static mame.commonH.*;
 import static mame.drawgfxH.TRANSPARENCY_PEN;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
 import static old.arcadeflex.osdepend.*;
@@ -339,7 +339,7 @@ public class galivan {
      *
      **************************************************************************
      */
-    static void draw_sprites(osd_bitmap bitmap) {
+    static void draw_sprites(mame_bitmap bitmap) {
         int offs;
 
         /* draw the sprites */
@@ -373,7 +373,7 @@ public class galivan {
     }
 
     public static VhUpdatePtr galivan_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             tilemap_set_scrollx(bg_tilemap, 0, scrollx[0] + 256 * (scrollx[1] & 0x07));
             tilemap_set_scrolly(bg_tilemap, 0, scrolly[0] + 256 * (scrolly[1] & 0x07));
 
@@ -395,7 +395,7 @@ public class galivan {
     };
 
     public static VhUpdatePtr ninjemak_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             /* (scrollx[1] & 0x40) does something */
             tilemap_set_scrollx(bg_tilemap, 0, scrollx[0] + 256 * (scrollx[1] & 0x1f));
             tilemap_set_scrolly(bg_tilemap, 0, scrolly[0] + 256 * (scrolly[1] & 0xff));

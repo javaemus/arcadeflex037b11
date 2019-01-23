@@ -243,7 +243,7 @@ public class marvins {
      ** Screen Refresh *
 	**************************************************************************
      */
-    static void draw_status(osd_bitmap bitmap) {
+    static void draw_status(mame_bitmap bitmap) {
         UBytePtr base = new UBytePtr(videoram, 0x2400);
         rectangle clip = Machine.visible_area;
         GfxElement gfx = Machine.gfx[0];
@@ -269,7 +269,7 @@ public class marvins {
         }
     }
 
-    static void draw_sprites(osd_bitmap bitmap, int scrollx, int scrolly,
+    static void draw_sprites(mame_bitmap bitmap, int scrollx, int scrolly,
             int priority, /*unsigned*/ char sprite_partition) {
         GfxElement gfx = Machine.gfx[3];
         rectangle clip = Machine.visible_area;
@@ -325,7 +325,7 @@ public class marvins {
     }
 
     public static VhUpdatePtr marvins_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             UBytePtr mem = memory_region(REGION_CPU1);
 
             /*unsigned*/ char sprite_partition = mem.read(0xfe00);
@@ -382,7 +382,7 @@ public class marvins {
     };
 
     public static VhUpdatePtr madcrash_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             UBytePtr mem = new UBytePtr(memory_region(REGION_CPU1), madcrash_vreg);
 
             int attributes = mem.read(0x8600);

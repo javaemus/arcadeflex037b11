@@ -11,7 +11,7 @@ import static common.libc.expressions.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static vidhrdw.generic.*;
 import static old2.mame.common.*;
 
@@ -56,7 +56,7 @@ public class marineb {
      *
      **************************************************************************
      */
-    static void draw_chars(osd_bitmap _tmpbitmap, osd_bitmap bitmap,
+    static void draw_chars(mame_bitmap _tmpbitmap, mame_bitmap bitmap,
             int scroll_cols, int full_refresh) {
         int offs;
 
@@ -123,7 +123,7 @@ public class marineb {
     }
 
     public static VhUpdatePtr marineb_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             draw_chars(tmpbitmap, bitmap, 24, full_refresh);
@@ -180,7 +180,7 @@ public class marineb {
     };
 
     public static VhUpdatePtr changes_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs, sx, sy, code, col, flipx, flipy;
 
             draw_chars(tmpbitmap, bitmap, 26, full_refresh);
@@ -252,7 +252,7 @@ public class marineb {
     };
 
     public static VhUpdatePtr springer_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             draw_chars(tmpbitmap, bitmap, 0, full_refresh);
@@ -306,7 +306,7 @@ public class marineb {
     };
 
     public static VhUpdatePtr hoccer_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             draw_chars(tmpbitmap, bitmap, 0, full_refresh);
@@ -345,7 +345,7 @@ public class marineb {
     };
 
     public static VhUpdatePtr hopprobo_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             draw_chars(tmpbitmap, bitmap, 0, full_refresh);

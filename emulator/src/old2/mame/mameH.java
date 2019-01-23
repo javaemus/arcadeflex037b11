@@ -27,7 +27,7 @@ import static mame.drawgfxH.rectangle;
 import static mame.driverH.GameDriver;
 import static mame.driverH.MachineDriver;
 import static old.mame.inptportH.InputPort;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static common.subArrays.*;
 
 public class mameH {
@@ -47,7 +47,7 @@ public class mameH {
         public RegionInfo[] memory_region = new RegionInfo[MAX_MEMORY_REGIONS];
 
         public GfxElement gfx[] = new GfxElement[MAX_GFX_ELEMENTS];
-        public osd_bitmap scrbitmap;
+        public mame_bitmap scrbitmap;
         public rectangle visible_area;
         public /*UINT32 * */ int[] pens;
         public /*UINT16 * */ char[] game_colortable;

@@ -9,7 +9,7 @@ import static arcadeflex.libc.ptr.*;
 import static common.libc.cstring.*;
 import static common.libc.expressions.*;
 import static old2.mame.common.*;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
 import static mame.commonH.*;
@@ -177,7 +177,7 @@ public class tecmo {
      *
      **************************************************************************
      */
-    static void draw_sprites(osd_bitmap bitmap) {
+    static void draw_sprites(mame_bitmap bitmap) {
         int offs;
         int layout[][]
                 = {
@@ -287,7 +287,7 @@ public class tecmo {
     }
 
     public static VhUpdatePtr tecmo_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             tilemap_update(ALL_TILEMAPS);
 
             palette_init_used_colors();

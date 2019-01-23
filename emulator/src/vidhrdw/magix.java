@@ -6,7 +6,7 @@ package vidhrdw;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
 import static mame.palette.*;
@@ -191,7 +191,7 @@ public class magix {
      **************************************************************************
      */
     public static VhUpdatePtr magix_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int layers_ctrl = -1;
 
             tilemap_update(ALL_TILEMAPS);

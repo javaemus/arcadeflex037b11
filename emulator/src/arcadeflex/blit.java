@@ -186,7 +186,7 @@ public class blit {
             }
         }
     
-    public static void blitscreen_dirty1_vga(osd_bitmap bitmap)
+    public static void blitscreen_dirty1_vga(mame_bitmap bitmap)
     {
     	int width4, x, y;
     	int lb, address;

@@ -84,7 +84,7 @@ public class sauro
 	  the main emulation engine.
 	
 	***************************************************************************/
-	public static VhUpdatePtr sauro_vh_screenrefresh = new VhUpdatePtr() { public void handler(osd_bitmap bitmap,int full_refresh) 
+	public static VhUpdatePtr sauro_vh_screenrefresh = new VhUpdatePtr() { public void handler(mame_bitmap bitmap,int full_refresh) 
 	{
 		int offs,code,sx,sy,color,flipx;
 	

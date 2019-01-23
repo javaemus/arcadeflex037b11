@@ -42,7 +42,7 @@ import arcadeflex056.settings;
 import static old2.mame.mame.Machine;
 import static old2.mame.mame.bitmap_dirty;
 import static old2.mame.mame.need_to_clear_bitmap;
-import mame.osdependH.osd_bitmap;
+import mame.osdependH.mame_bitmap;
 
 /**
  *
@@ -950,10 +950,10 @@ public class video {
         return 0;
     }
 
-    public static void osd_update_video_and_audio(osd_bitmap bitmap,int led) {
+    public static void osd_update_video_and_audio(mame_bitmap bitmap,int led) {
     osd_update_video_and_audio(bitmap);
 }
-    public static void osd_update_video_and_audio(osd_bitmap bitmap) {
+    public static void osd_update_video_and_audio(mame_bitmap bitmap) {
         if (++framecount > frameskip) {
             framecount = 0;
 
@@ -1558,7 +1558,7 @@ public class video {
         internal_set_visible_area(min_x, max_x, min_y, max_y, 0);
     }
     
-    public static void osd_free_bitmap(osd_bitmap bitmap) {
+    public static void osd_free_bitmap(mame_bitmap bitmap) {
         if (bitmap != null) {
             //bitmap->line -= safety;
             bitmap.line = null;
@@ -1567,10 +1567,10 @@ public class video {
         }
     }
 
-    public static osd_bitmap osd_alloc_bitmap(int width, int height, int depth) {
-        osd_bitmap bitmap;
+    public static mame_bitmap osd_alloc_bitmap(int width, int height, int depth) {
+        mame_bitmap bitmap;
 
-        if ((bitmap = new osd_bitmap()) != null) {
+        if ((bitmap = new mame_bitmap()) != null) {
             int i, rowlen, rdwidth;
             UBytePtr bm;
 
@@ -1699,7 +1699,7 @@ public class video {
     }
 
     /* set the bitmap to black */
-    public static void osd_clearbitmap(osd_bitmap bitmap) {
+    public static void osd_clearbitmap(mame_bitmap bitmap) {
         int i;
 
         for (i = 0; i < bitmap.height; i++) {

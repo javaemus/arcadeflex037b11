@@ -9,7 +9,7 @@ import static arcadeflex.libc.ptr.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static vidhrdw.generic.*;
 import static arcadeflex.libc.cstring.*;
 import static common.libc.expressions.*;
@@ -26,7 +26,7 @@ public class cop01 {
     static int spritebank = 0;
     static int flipscreen;
 
-    static osd_bitmap tmpbitmap2;
+    static mame_bitmap tmpbitmap2;
 
     static int TOTAL_COLORS(int gfxn) {
         return Machine.gfx[gfxn].total_colors * Machine.gfx[gfxn].color_granularity;
@@ -148,7 +148,7 @@ public class cop01 {
      **************************************************************************
      */
     public static VhUpdatePtr cop01_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             /* draw the background */

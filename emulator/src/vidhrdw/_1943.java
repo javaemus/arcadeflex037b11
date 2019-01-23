@@ -11,7 +11,7 @@ import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
 import static mame056.memoryH.*;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static vidhrdw.generic.*;
 import static mame056.common.*;
 import static old2.mame.common.bitmap_alloc;
@@ -25,8 +25,8 @@ public class _1943 {
     static int chon, objon, sc1on, sc2on;
     static int flipscreen;
 
-    static osd_bitmap sc2bitmap;
-    static osd_bitmap sc1bitmap;
+    static mame_bitmap sc2bitmap;
+    static mame_bitmap sc1bitmap;
     static /*unsigned char*/ char[][][] sc2map = new char[9][8][2];
     static /*unsigned char*/ char[][][] sc1map = new char[9][9][2];
 
@@ -207,7 +207,7 @@ public class _1943 {
      * *************************************************************************
      */
     public static VhUpdatePtr c1943_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs, sx, sy;
             int bg_scrolly, bg_scrollx;
             UBytePtr p;

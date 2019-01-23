@@ -14,7 +14,7 @@ public class artworkC {
     /* the overlay instance */
     public static artwork_info artwork_overlay = null;
 
-    public static osd_bitmap artwork_real_scrbitmap = null;
+    public static mame_bitmap artwork_real_scrbitmap = null;
 
     /*TODO*///static void brightness_update (struct artwork_info *a)
 /*TODO*///{
@@ -787,7 +787,7 @@ public class artworkC {
 /*TODO*///  levels of transparancy of the overlay (only in 16 bpp modes).
 /*TODO*/// *********************************************************************/
 /*TODO*///
-    public static void overlay_draw(osd_bitmap dest, osd_bitmap source) {
+    public static void overlay_draw(mame_bitmap dest, mame_bitmap source) {
         /*TODO*///	int i,j;
 /*TODO*///	int height,width;
 /*TODO*///
@@ -981,7 +981,7 @@ public class artworkC {
 /*TODO*///	}
 /*TODO*///}
 /*TODO*///
-    public static void artwork_draw(osd_bitmap dest, osd_bitmap source, int _bitmap_dirty) {
+    public static void artwork_draw(mame_bitmap dest, mame_bitmap source, int _bitmap_dirty) {
         /*TODO*///	if (_bitmap_dirty)
 /*TODO*///	{
 /*TODO*///		artwork_remap();

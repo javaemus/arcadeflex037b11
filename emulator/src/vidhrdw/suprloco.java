@@ -192,7 +192,7 @@ public class suprloco {
      *
      **************************************************************************
      */
-    public static void draw_pixel(osd_bitmap bitmap, int x, int y, int color) {
+    public static void draw_pixel(mame_bitmap bitmap, int x, int y, int color) {
         if (flip_screen() != 0) {
             x = bitmap.width - x - 1;
             y = bitmap.height - y - 1;
@@ -208,7 +208,7 @@ public class suprloco {
         plot_pixel.handler(bitmap, x, y, color);
     }
 
-    static void render_sprite(osd_bitmap bitmap, int spr_number) {
+    static void render_sprite(mame_bitmap bitmap, int spr_number) {
         int sx, sy, col, row, height, src, adjy, dy;
         UBytePtr spr_reg;
         IntArray spr_palette;
@@ -278,7 +278,7 @@ public class suprloco {
         }
     }
 
-    static void draw_sprites(osd_bitmap bitmap) {
+    static void draw_sprites(mame_bitmap bitmap) {
         int spr_number;
         UBytePtr spr_reg;
 
@@ -291,7 +291,7 @@ public class suprloco {
     }
 
     public static VhUpdatePtr suprloco_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             tilemap_update(ALL_TILEMAPS);
 
             tilemap_render(ALL_TILEMAPS);

@@ -53,7 +53,7 @@ public class fucPtr {
 
     public static abstract interface VhUpdatePtr {
 
-        public abstract void handler(osd_bitmap bitmap, int full_refresh);
+        public abstract void handler(mame_bitmap bitmap, int full_refresh);
     }
 
     public static abstract interface ShStartPtr {

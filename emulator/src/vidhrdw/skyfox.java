@@ -9,7 +9,7 @@ import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
 import static arcadeflex.libc.ptr.*;
 import static vidhrdw.generic.*;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static old2.mame.mame.Machine;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
@@ -147,7 +147,7 @@ public class skyfox {
      *
      **************************************************************************
      */
-    public static void skyfox_draw_sprites(osd_bitmap bitmap) {
+    public static void skyfox_draw_sprites(mame_bitmap bitmap) {
         int offs;
 
         int width = Machine.drv.screen_width;
@@ -242,7 +242,7 @@ public class skyfox {
      *
      **************************************************************************
      */
-    public static void skyfox_draw_background(osd_bitmap bitmap) {
+    public static void skyfox_draw_background(mame_bitmap bitmap) {
         UBytePtr RAM = memory_region(REGION_GFX2);
         int x, y, i;
 
@@ -284,7 +284,7 @@ public class skyfox {
      **************************************************************************
      */
     public static VhUpdatePtr skyfox_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int layers_ctrl = -1;
 
             osd_clearbitmap(bitmap);	// the bg is black

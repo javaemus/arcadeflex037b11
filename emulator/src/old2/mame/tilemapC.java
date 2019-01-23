@@ -43,11 +43,11 @@ public class tilemapC {
     /**
      * ******************************************************************************
      */
-    static osd_bitmap create_tmpbitmap(int width, int height, int depth) {
+    static mame_bitmap create_tmpbitmap(int width, int height, int depth) {
         return osd_alloc_bitmap(width, height, depth);
     }
 
-    static osd_bitmap create_bitmask(int width, int height) {
+    static mame_bitmap create_bitmask(int width, int height) {
         width = (width + 7) / 8;
         /* 8 bits per byte */
         return osd_alloc_bitmap(width, height, 8);
@@ -164,7 +164,7 @@ public class tilemapC {
     /**
      * ********************************************************************************
      */
-    public static osd_bitmap priority_bitmap;
+    public static mame_bitmap priority_bitmap;
     /* priority buffer (corresponds to screen bitmap) */
     static int priority_bitmap_line_offset;
 
@@ -188,9 +188,9 @@ public class tilemapC {
         int source_width, source_height;
         int dest_line_offset, source_line_offset, mask_line_offset;
         int dest_row_offset, source_row_offset, mask_row_offset;
-        osd_bitmap screen;
-        osd_bitmap pixmap;
-        osd_bitmap bitmask;
+        mame_bitmap screen;
+        mame_bitmap pixmap;
+        mame_bitmap bitmask;
         public UBytePtr[] mask_data_row;
         public UBytePtr[] priority_data_row;
         int tile_priority;
@@ -739,7 +739,7 @@ public class tilemapC {
             int/*UINT32*/ cached_index,
             int/*UINT32*/ col, int/*UINT32*/ row
     ) {
-        osd_bitmap pixmap = tilemap.pixmap;
+        mame_bitmap pixmap = tilemap.pixmap;
         int /*UINT32*/ tile_width = tilemap.cached_tile_width;
         int /*UINT32*/ tile_height = tilemap.cached_tile_height;
         int cache_ptr = cached_index;//struct cached_tile_info *cached_tile_info = &tilemap->cached_tile_info[cached_index];
@@ -892,7 +892,7 @@ public class tilemapC {
 /*TODO*///}
 /*TODO*///
     static int draw_color_mask(
-            osd_bitmap mask,
+            mame_bitmap mask,
             int/*UINT32*/ col, int/*UINT32*/ row,
             int/*UINT32*/ tile_width, int/*UINT32*/ tile_height,
             UBytePtr pendata,
@@ -1031,7 +1031,7 @@ public class tilemapC {
 /*TODO*///}
 /*TODO*///
     public static void draw_mask(
-            osd_bitmap mask,
+            mame_bitmap mask,
             int/*UINT32*/ col, int/*UINT32*/ row,
             int/*UINT32*/ tile_width, int/*UINT32*/ tile_height,
             UBytePtr pendata,
@@ -1316,7 +1316,7 @@ public class tilemapC {
     /**
      * ********************************************************************************
      */
-    public static void tilemap_draw(osd_bitmap dest, struct_tilemap tilemap, int u32_priority) {
+    public static void tilemap_draw(mame_bitmap dest, struct_tilemap tilemap, int u32_priority) {
         int xpos, ypos;
         if (tilemap.enable != 0) {
             WriteHandlerPtr draw;

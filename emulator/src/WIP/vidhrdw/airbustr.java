@@ -164,7 +164,7 @@ public class airbustr {
 				---43217	Code High Bits
 	
      */
-    static void draw_sprites(osd_bitmap bitmap) {
+    static void draw_sprites(mame_bitmap bitmap) {
         int i, offs;
 
         /* Let's draw the sprites */
@@ -218,7 +218,7 @@ public class airbustr {
     }
 
     public static VhUpdatePtr airbustr_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             UBytePtr ram;
             int i, offs;
 

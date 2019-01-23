@@ -9,7 +9,7 @@ import arcadeflex.util.cheatFileParser;
 import static mame056.hiscore.*;
 import java.util.ArrayList;
 
-import mame.osdependH.osd_bitmap;
+import mame.osdependH.mame_bitmap;
 import static mame056.ui_text.*;
 import static mame056.ui_textH.*;
 import static old.mame.inptportH.*;
@@ -690,7 +690,7 @@ public class cheat {
     static int ed_submenu_choice;
     static int[] ed_tag = new int[MAX_LOADEDCHEATS];
 
-    static int EnableDisableCheatMenu(osd_bitmap bitmap, int selected) {
+    static int EnableDisableCheatMenu(mame_bitmap bitmap, int selected) {
         int sel;
         String[] menu_item = new String[MAX_LOADEDCHEATS + 2];
         String[] menu_subitem = new String[MAX_LOADEDCHEATS];
@@ -797,7 +797,7 @@ public class cheat {
         return sel + 1;
     }
 
-    static int CommentMenu(osd_bitmap bitmap, int selected, int cheat_index) {
+    static int CommentMenu(mame_bitmap bitmap, int selected, int cheat_index) {
         String buf;
         String buf2;
 
@@ -1912,7 +1912,7 @@ public class cheat {
 /*TODO*///	return -1;
 /*TODO*///}
 /*TODO*///
-    public static void DisplayWatches(osd_bitmap bitmap) {
+    public static void DisplayWatches(mame_bitmap bitmap) {
         /*TODO*///	int i;
 /*TODO*///	char buf[256];
 /*TODO*///
@@ -2391,7 +2391,7 @@ public class cheat {
     public static final int Menu_DisplayHelp = 7;
     public static final int Menu_Return = 8;
 
-    public static int cheat_menu(osd_bitmap bitmap, int selected) {
+    public static int cheat_menu(mame_bitmap bitmap, int selected) {
 
         String[] menu_item = new String[10];
         int sel;
@@ -2522,7 +2522,7 @@ public class cheat {
 /*TODO*///	reset_table (OldFlagTable);
     }
 
-    public static void DoCheat(osd_bitmap bitmap) {
+    public static void DoCheat(mame_bitmap bitmap) {
         DisplayWatches(bitmap);
 
         if ((CheatEnabled) != 0 && (ActiveCheatTotal) != 0) {

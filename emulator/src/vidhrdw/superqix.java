@@ -25,7 +25,7 @@ public class superqix {
     public static UBytePtr superqix_bitmapram2;
     public static char[] superqix_bitmapram_dirty;
     public static char[] superqix_bitmapram2_dirty;
-    static osd_bitmap tmpbitmap2;
+    static mame_bitmap tmpbitmap2;
     public static int sqix_minx, sqix_maxx, sqix_miny, sqix_maxy;
     public static int sqix_last_bitmap;
     public static int sqix_current_bitmap;
@@ -229,7 +229,7 @@ public class superqix {
      **************************************************************************
      */
     public static VhUpdatePtr superqix_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs, i;
             int[] pens = new int[16];
 

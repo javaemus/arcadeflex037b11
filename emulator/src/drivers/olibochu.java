@@ -74,7 +74,7 @@ public class olibochu {
     };
 
     public static VhUpdatePtr olibochu_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             for (offs = 0; offs < 0x400; offs++) {

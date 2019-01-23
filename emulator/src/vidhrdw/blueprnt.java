@@ -89,7 +89,7 @@ public class blueprnt {
      **************************************************************************
      */
     public static VhUpdatePtr blueprnt_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
             int[] scroll = new int[32];
 

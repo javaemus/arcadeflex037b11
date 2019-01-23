@@ -15,12 +15,12 @@ import static old.mame.drawgfx.copybitmap;
 import static old.mame.drawgfx.drawgfx;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static vidhrdw.generic.*;
 
 public class docastle {
 
-    static osd_bitmap tmpbitmap1;
+    static mame_bitmap tmpbitmap1;
     static char[] sprite_transparency = new char[256];
 
     static void convert_color_prom(char[] palette, char[] colortable, UBytePtr color_prom,
@@ -209,7 +209,7 @@ public class docastle {
      * *************************************************************************
      */
     public static VhUpdatePtr docastle_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             if (full_refresh != 0) {

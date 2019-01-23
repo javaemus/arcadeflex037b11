@@ -734,7 +734,7 @@ public class astrocde {
     /**
      * *************************************************************************
      */
-    public static void wow_update_line(osd_bitmap bitmap, int line) {
+    public static void wow_update_line(mame_bitmap bitmap, int line) {
         /* Copy one line to bitmap, using current color register settings */
 
         int memloc;
@@ -794,7 +794,7 @@ public class astrocde {
     }
 
     public static VhUpdatePtr astrocde_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             if (full_refresh != 0) {
                 int i;
 
@@ -806,7 +806,7 @@ public class astrocde {
     };
 
     public static VhUpdatePtr seawolf2_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int x, y, centre;
             UBytePtr RAM = memory_region(REGION_CPU1);
 

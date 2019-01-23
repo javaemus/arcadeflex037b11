@@ -119,7 +119,7 @@ public class frogger {
      **************************************************************************
      */
     public static VhUpdatePtr frogger_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int i, offs;
 
             /* for every character in the Video RAM, check if it has been modified */
@@ -207,7 +207,7 @@ public class frogger {
     /* the alternate version doesn't have the sprite & scroll registers mangling, */
  /* but it still has the color code mangling. */
     public static VhUpdatePtr frogger2_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int i, offs;
 
             /* for every character in the Video RAM, check if it has been modified */

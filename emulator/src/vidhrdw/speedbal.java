@@ -29,10 +29,10 @@ public class speedbal {
     static char[] ch_dirtybuffer;
     /* foreground char  */
 
-    static osd_bitmap bitmap_bg;
+    static mame_bitmap bitmap_bg;
     /* background tiles */
 
-    static osd_bitmap bitmap_ch;
+    static mame_bitmap bitmap_ch;
 
     /* foreground char  */
 
@@ -174,7 +174,7 @@ public class speedbal {
      *				   *
      * Sprite drawing	* * ***********************************
      */
-    public static void speedbal_draw_sprites(osd_bitmap bitmap) {
+    public static void speedbal_draw_sprites(mame_bitmap bitmap) {
         int SPTX, SPTY, SPTTile, SPTColor, offset, f;
         char carac;
         UBytePtr SPTRegs;
@@ -211,7 +211,7 @@ public class speedbal {
      *				   *
      * Background drawing: Tiles * * ***********************************
      */
-    public static void speedbal_draw_background(osd_bitmap bitmap) {
+    public static void speedbal_draw_background(mame_bitmap bitmap) {
         int sx, sy, code, tile, offset, color;
 
         for (offset = 0; offset < speedbal_background_videoram_size[0]; offset += 2) {
@@ -241,7 +241,7 @@ public class speedbal {
      *				   *
      * Foreground drawing: 8x8 graphs * * ***********************************
      */
-    public static void speedbal_draw_foreground1(osd_bitmap bitmap) {
+    public static void speedbal_draw_foreground1(mame_bitmap bitmap) {
         int sx, sy, code, caracter, color, offset;
 
         for (offset = 0; offset < speedbal_foreground_videoram_size[0]; offset += 2) {
@@ -274,7 +274,7 @@ public class speedbal {
      * Refresh screen	* * ***********************************
      */
     public static VhUpdatePtr speedbal_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             palette_init_used_colors();

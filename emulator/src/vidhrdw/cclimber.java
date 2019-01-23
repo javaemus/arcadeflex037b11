@@ -8,7 +8,7 @@ import static arcadeflex.fucPtr.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static vidhrdw.generic.*;
 import static arcadeflex.libc.cstring.*;
 import static common.libc.expressions.*;
@@ -26,7 +26,7 @@ public class cclimber {
     public static UBytePtr cclimber_bigspriteram = new UBytePtr();
     public static UBytePtr cclimber_column_scroll = new UBytePtr();
     static char[] bsdirtybuffer;
-    static osd_bitmap bsbitmap;
+    static mame_bitmap bsbitmap;
     static int[] palettebank = new int[1];
     static int[] sidepanel_enabled = new int[1];
     static int bgpen;
@@ -342,7 +342,7 @@ public class cclimber {
      *
      **************************************************************************
      */
-    static void drawbigsprite(osd_bitmap bitmap) {
+    static void drawbigsprite(mame_bitmap bitmap) {
         int sx, sy, flipx, flipy;
 
         sx = 136 - cclimber_bigspriteram.read(3);
@@ -377,7 +377,7 @@ public class cclimber {
 
     static int lastcol_1;
     public static VhUpdatePtr cclimber_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             if (palette_recalc() != null || full_refresh != 0) {
@@ -510,7 +510,7 @@ public class cclimber {
 
     static int lastcol_2;
     public static VhUpdatePtr swimmer_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             if (palette_recalc() != null || full_refresh != 0) {

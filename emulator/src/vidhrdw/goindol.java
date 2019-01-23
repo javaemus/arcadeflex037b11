@@ -21,8 +21,8 @@ public class goindol {
     public static UBytePtr goindol_spriteram2 = new UBytePtr();
     public static UBytePtr goindol_fg_scrollx = new UBytePtr();
     public static UBytePtr goindol_fg_scrolly = new UBytePtr();
-    static osd_bitmap bitmap_bg;
-    static osd_bitmap bitmap_fg;
+    static mame_bitmap bitmap_bg;
+    static mame_bitmap bitmap_fg;
     static char[] fg_dirtybuffer;
     static char[] bg_dirtybuffer;
 
@@ -128,7 +128,7 @@ public class goindol {
         }
     };
 
-    static void goindol_draw_background(osd_bitmap bitmap) {
+    static void goindol_draw_background(mame_bitmap bitmap) {
         int x, y, offs;
         int sx, sy, tile, palette, lo, hi;
 
@@ -158,7 +158,7 @@ public class goindol {
         }
     }
 
-    static void goindol_draw_foreground(osd_bitmap bitmap) {
+    static void goindol_draw_foreground(mame_bitmap bitmap) {
         int x, y, offs;
         int sx, sy, tile, palette, lo, hi;
 
@@ -187,7 +187,7 @@ public class goindol {
 
     }
 
-    static void goindol_draw_sprites(osd_bitmap bitmap, int gfxbank, UBytePtr sprite_ram) {
+    static void goindol_draw_sprites(mame_bitmap bitmap, int gfxbank, UBytePtr sprite_ram) {
         int offs, sx, sy, tile, palette;
 
         for (offs = 0; offs < goindol_spriteram_size[0]; offs += 4) {
@@ -218,7 +218,7 @@ public class goindol {
     }
 
     public static VhUpdatePtr goindol_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int fg_scrollx, fg_scrolly;
 
             fg_scrollx = -goindol_fg_scrollx.read();

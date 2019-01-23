@@ -7,7 +7,7 @@ package mame;
 import static common.subArrays.*;
 import static arcadeflex.libc.ptr.*;
 import static common.util.combineIntArrays;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import java.util.Arrays;
 
 public class drawgfxH {
@@ -178,17 +178,17 @@ public class drawgfxH {
 
     public static abstract interface plot_pixel_procPtr {
 
-        public abstract void handler(osd_bitmap bitmap, int x, int y, int pen);
+        public abstract void handler(mame_bitmap bitmap, int x, int y, int pen);
     }
 
     public static abstract interface read_pixel_procPtr {
 
-        public abstract int handler(osd_bitmap bitmap, int x, int y);
+        public abstract int handler(mame_bitmap bitmap, int x, int y);
     }
 
     public static abstract interface plot_box_procPtr {
 
-        public abstract void handler(osd_bitmap bitmap, int x, int y, int width, int height, int pen);
+        public abstract void handler(mame_bitmap bitmap, int x, int y, int width, int height, int pen);
     }
 
 }

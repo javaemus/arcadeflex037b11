@@ -31,7 +31,7 @@ public class appoooh {
     public static UBytePtr appoooh_colorram2 = new UBytePtr();
     public static UBytePtr appoooh_spriteram2 = new UBytePtr();
     static char[] dirtybuffer2;
-    static osd_bitmap tmpbitmap2;
+    static mame_bitmap tmpbitmap2;
 
     static int scroll_x;
     static int flipscreen;
@@ -203,7 +203,7 @@ public class appoooh {
         }
     };
 
-    public static void appoooh_draw_sprites(osd_bitmap dest_bmp,
+    public static void appoooh_draw_sprites(mame_bitmap dest_bmp,
             GfxElement gfx,
             UBytePtr sprite) {
         int offs;
@@ -246,7 +246,7 @@ public class appoooh {
      **************************************************************************
      */
     public static VhUpdatePtr appoooh_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
             int scroll;
 

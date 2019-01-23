@@ -68,7 +68,7 @@ public class funkybee {
      *
      **************************************************************************
      */
-    static void draw_chars(osd_bitmap _tmpbitmap, osd_bitmap bitmap) {
+    static void draw_chars(mame_bitmap _tmpbitmap, mame_bitmap bitmap) {
         int sx, sy;
 
         /* for every character in the Video RAM, check if it has been modified */
@@ -110,7 +110,7 @@ public class funkybee {
     }
 
     public static VhUpdatePtr funkybee_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             draw_chars(tmpbitmap, bitmap);

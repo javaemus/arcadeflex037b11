@@ -23,7 +23,7 @@ public class solomon {
     public static UBytePtr solomon_bgvideoram = new UBytePtr();
     public static UBytePtr solomon_bgcolorram = new UBytePtr();
 
-    static osd_bitmap tmpbitmap2;
+    static mame_bitmap tmpbitmap2;
     static /*unsigned*/ char[] dirtybuffer2;
     static int flipscreen;
 
@@ -118,7 +118,7 @@ public class solomon {
      **************************************************************************
      */
     public static VhUpdatePtr solomon_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             /* recalc the palette if necessary */

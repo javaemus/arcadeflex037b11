@@ -6,7 +6,7 @@ package vidhrdw;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
 import static old2.mame.mame.Machine;
@@ -179,7 +179,7 @@ public class tsamurai {
      */
     static int flicker;
 
-    static void draw_sprites(osd_bitmap bitmap) {
+    static void draw_sprites(mame_bitmap bitmap) {
         GfxElement gfx = Machine.gfx[2];
         rectangle clip = new rectangle(Machine.visible_area);
         UBytePtr source = new UBytePtr(spriteram, 32 * 4 - 4);
@@ -222,7 +222,7 @@ public class tsamurai {
     }
 
     public static VhUpdatePtr tsamurai_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             tilemap_update(ALL_TILEMAPS);
             tilemap_render(ALL_TILEMAPS);
 

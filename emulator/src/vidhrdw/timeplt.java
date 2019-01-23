@@ -184,7 +184,7 @@ public class timeplt {
      *
      **************************************************************************
      */
-    static void draw_sprites(osd_bitmap bitmap) {
+    static void draw_sprites(mame_bitmap bitmap) {
         GfxElement gfx = Machine.gfx[1];
         rectangle clip = Machine.visible_area;
         int offs;
@@ -225,7 +225,7 @@ public class timeplt {
     }
 
     public static VhUpdatePtr timeplt_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             tilemap_update(ALL_TILEMAPS);
 
             tilemap_render(ALL_TILEMAPS);

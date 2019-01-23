@@ -7,7 +7,7 @@ package vidhrdw;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static common.libc.expressions.*;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static mame.commonH.flip_screen;
 import static old2.mame.mame.Machine;
 import static old.mame.drawgfx.*;
@@ -66,7 +66,7 @@ public class ambush {
      *
      **************************************************************************
      */
-    static void draw_chars(osd_bitmap bitmap, int priority) {
+    static void draw_chars(mame_bitmap bitmap, int priority) {
         int offs, transparency;
 
         transparency = (priority == 0) ? TRANSPARENCY_NONE : TRANSPARENCY_PEN;
@@ -104,7 +104,7 @@ public class ambush {
     }
 
     public static VhUpdatePtr ambush_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             fillbitmap(bitmap, Machine.pens[0], Machine.visible_area);

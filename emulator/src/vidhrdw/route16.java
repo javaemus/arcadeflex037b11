@@ -9,7 +9,7 @@ import static arcadeflex.libc.ptr.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static mame.commonH.REGION_CPU1;
 import static mame056.common.*;
 import static mame056.sound.sn76477.*;
@@ -24,8 +24,8 @@ public class route16 {
     public static UBytePtr route16_videoram2 = new UBytePtr();
     public static int[] route16_videoram_size = new int[1];
 
-    static osd_bitmap tmpbitmap1;
-    static osd_bitmap tmpbitmap2;
+    static mame_bitmap tmpbitmap1;
+    static mame_bitmap tmpbitmap2;
 
     static int video_flip;
     static int video_color_select_1;
@@ -284,7 +284,7 @@ public class route16 {
      * *************************************************************************
      */
     static void common_videoram_w(int offset, int data,
-            int coloroffset, osd_bitmap bitmap) {
+            int coloroffset, mame_bitmap bitmap) {
         int x, y, color1, color2, color3, color4;
 
         x = ((offset & 0x3f) << 2);
@@ -323,7 +323,7 @@ public class route16 {
      **************************************************************************
      */
     public static VhUpdatePtr route16_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             if (video_remap_1 != 0) {
                 modify_pen(0, video_color_select_1 + 0);
                 modify_pen(1, video_color_select_1 + 1);

@@ -10,7 +10,7 @@ import static common.libc.expressions.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.osd_bitmap;
+import static mame.osdependH.mame_bitmap;
 import static vidhrdw.generic.*;
 import static common.libc.cstring.*;
 import static drivers.pipedrm.*;
@@ -28,7 +28,7 @@ public class pipedrm {
      *
      ************************************
      */
-    static osd_bitmap[] background = new osd_bitmap[2];
+    static mame_bitmap[] background = new mame_bitmap[2];
     static UBytePtr[] background_dirty = new UBytePtr[2];
     static UBytePtr[] local_videoram = new UBytePtr[2];
 
@@ -245,7 +245,7 @@ public class pipedrm {
      *
      ************************************
      */
-    static void draw_sprites(osd_bitmap bitmap, int draw_priority) {
+    static void draw_sprites(mame_bitmap bitmap, int draw_priority) {
         int zoomtable[] = {0, 7, 14, 20, 25, 30, 34, 38, 42, 46, 49, 52, 54, 57, 59, 61};
         int offs;
 
@@ -404,7 +404,7 @@ public class pipedrm {
     }
 
     public static VhUpdatePtr pipedrm_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int x, y;
 
             common_screenrefresh(full_refresh);
@@ -428,7 +428,7 @@ public class pipedrm {
     };
 
     public static VhUpdatePtr hatris_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int x, y;
 
             common_screenrefresh(full_refresh);

@@ -113,7 +113,7 @@ public class zodiack {
      **************************************************************************
      */
     public static VhUpdatePtr zodiack_vh_screenrefresh = new VhUpdatePtr() {
-        public void handler(osd_bitmap bitmap, int full_refresh) {
+        public void handler(mame_bitmap bitmap, int full_refresh) {
             int offs;
 
             /* draw the background characters */
