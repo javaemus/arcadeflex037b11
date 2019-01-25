@@ -10,7 +10,7 @@ import static old2.mame.common.*;
 import static old2.mame.mame.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static old.mame.drawgfx.*;
 import static common.libc.cstring.*;
 import static mame.commonH.flip_screen;

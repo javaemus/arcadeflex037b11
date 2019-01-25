@@ -11,7 +11,7 @@ import static common.libc.cstring.*;
 import static drivers.sauro.*;
 import static mame.drawgfxH.*;
 import static old2.mame.common.*;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static old2.mame.mame.*;
 import static drivers.speedbal.*;
 import static mame.palette.*;

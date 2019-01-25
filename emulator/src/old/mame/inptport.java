@@ -30,10 +30,11 @@ import static mame056.input.*;
 import static mame056.inputH.*;
 import static old2.mame.mame.Machine;
 import static old2.mame.mame.options;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static mame056.cpuexec.cpu_scalebyfcount;
 import static mame056.cpuexec.cpu_set_reset_line;
 import static mame056.cpuintrfH.PULSE_LINE;
+import static mame.osdependH.*;
 
 public class inptport {
 

@@ -26,7 +26,7 @@ import static old2.mame.tilemapC.*;
 import static mame.gfxobjC.*;
 import static mame.spriteC.*;
 import static mame056.ui_text.*;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static mame056.memory.*;
 import static old2.mame.common.*;
 
@@ -56,6 +56,7 @@ import static mame056.cpuexec.cpu_init;
 import static mame056.cpuexec.cpu_run;
 import static old.mame.usrintrf.*;
 import static vidhrdw.generic.*;
+
 
 public class mame {
 

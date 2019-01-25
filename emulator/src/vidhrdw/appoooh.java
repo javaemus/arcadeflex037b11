@@ -9,7 +9,7 @@ import static arcadeflex.fucPtr.*;
 import static common.libc.cstring.*;
 import static common.libc.expressions.*;
 import static mame056.commonH.*;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static old.mame.drawgfx.*;

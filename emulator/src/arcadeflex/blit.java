@@ -11,7 +11,7 @@ import static arcadeflex.dirtyH.*;
 import old.arcadeflex.MainApplet;
 
 import static old2.mame.mame.Machine;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 
 /**
  *

@@ -7,7 +7,7 @@ import static arcadeflex.fucPtr.*;
 import static common.subArrays.*;
 import static arcadeflex.libc.ptr.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static old2.mame.tilemapC.tile_info;
 import mame.drawgfxH.GfxElement;
 

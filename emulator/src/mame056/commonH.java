@@ -3,6 +3,7 @@
  */
 package mame056;
 
+import arcadeflex.libc.ptr.UBytePtr;
 import java.util.ArrayList;
 
 public class commonH {
@@ -14,16 +15,17 @@ public class commonH {
      *
      **************************************************************************
      */
-/*TODO*///    public static class mame_bitmap {
-        /*TODO*///	int width,height;	/* width and height of the bitmap */
-/*TODO*///	int depth;			/* bits per pixel */
-/*TODO*///	void **line;		/* pointers to the start of each line - can be UINT8 **, UINT16 ** or UINT32 ** */
-/*TODO*///
+    public static class mame_bitmap {
+
+        public int width, height;/* width and height of the bitmap */
+        public int depth;/* bits per pixel */
+        public UBytePtr[] line;/* pointers to the start of each line - can be UINT8 **, UINT16 ** or UINT32 ** */
+ /*TODO*///
 /*TODO*///	/* alternate way of accessing the pixels */
 /*TODO*///	void *base;			/* pointer to pixel (0,0) (adjusted for padding) */
 /*TODO*///	int rowpixels;		/* pixels per row (including padding) */
 /*TODO*///	int rowbytes;		/* bytes per row (including padding) */
-/*TODO*///    }
+    }
 
     public static class RomModule {
 

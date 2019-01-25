@@ -17,9 +17,10 @@ import static arcadeflex.video.osd_mark_dirty;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.mame_bitmap;
+import static mame056.commonH.*;
 import static old.mame.usrintrf.usrintf_showmessage;
 import static old2.mame.drawgfx.*;
+import static mame056.commonH.*;
 
 public class drawgfx {
 

@@ -12,7 +12,7 @@ import static common.libc.expressions.*;
 
 
 import static mame.drawgfxH.*;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static old2.mame.mame.Machine;
 import static old.mame.drawgfx.*;
 

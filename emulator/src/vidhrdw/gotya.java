@@ -11,7 +11,7 @@ import static common.libc.cstring.*;
 import static mame.commonH.flip_screen;
 
 import static mame.drawgfxH.*;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static old2.mame.drawgfx.*;
 import static old2.mame.mame.Machine;
 import static old.mame.drawgfx.drawgfx;

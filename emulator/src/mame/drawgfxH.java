@@ -7,7 +7,7 @@ package mame;
 import static common.subArrays.*;
 import static arcadeflex.libc.ptr.*;
 import static common.util.combineIntArrays;
-import static mame.osdependH.mame_bitmap;
+import static mame056.commonH.*;
 import java.util.Arrays;
 
 public class drawgfxH {

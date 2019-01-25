@@ -9,13 +9,13 @@ import static arcadeflex.libc.ptr.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.*;
 import static vidhrdw.generic.*;
 import static mame.commonH.*;
 import static mame056.common.*;
 import static mame056.timer.*;
 import static mame056.timerH.*;
 import static mame056.cpuexec.cpu_cause_interrupt;
+import mame056.commonH.mame_bitmap;
 
 public class exctsccr {
 

@@ -13,7 +13,7 @@ import static common.libc.expressions.*;
 import static drivers.zodiack.*;
 
 import static mame.drawgfxH.*;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static mame056.common.*;
 import static old2.mame.drawgfx.*;
 import static old2.mame.mame.Machine;

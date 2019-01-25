@@ -2,7 +2,7 @@ package arcadeflex;
 
 import static arcadeflex.libc.ptr.*;
 import static mame.sndintrfH.*;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 
 public class fucPtr {
 

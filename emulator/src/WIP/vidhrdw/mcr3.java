@@ -11,7 +11,7 @@ import static vidhrdw.generic.*;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
-import static mame.osdependH.mame_bitmap;
+import static mame056.commonH.*;
 import static old2.mame.mame.Machine;
 import static old.mame.drawgfx.*;
 import static old2.mame.common.*;

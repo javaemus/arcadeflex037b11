@@ -9,7 +9,7 @@ import static arcadeflex.libc.ptr.*;
 import static mame.commonH.REGION_CPU1;
 import static old.mame.drawgfx.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.mame_bitmap;
+import mame056.commonH.mame_bitmap;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static old2.mame.common.*;

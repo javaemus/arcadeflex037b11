@@ -6,15 +6,10 @@ package WIP.vidhrdw;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
-import static old2.mame.common.flip_screen_w;
-import static mame.commonH.flip_screen;
-import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.mame_bitmap;
+import static mame056.commonH.*;
 import static vidhrdw.generic.*;
-import static common.libc.cstring.*;
-import common.subArrays.UShortArray;
 import static mame.commonH.REGION_GFX4;
 import static mame.commonH.REGION_GFX5;
 import old.arcadeflex.libc_old.IntPtr;
@@ -22,7 +17,6 @@ import static arcadeflex.video.osd_mark_dirty;
 import common.subArrays.IntArray;
 import static old.sound.mixer.*;
 import static sound.ay8910.*;
-import static sound.ay8910H.*;
 import static mame056.common.*;
 
 public class dday {

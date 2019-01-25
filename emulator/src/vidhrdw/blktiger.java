@@ -7,7 +7,7 @@ package vidhrdw;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static common.libc.expressions.*;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
 import static mame056.common.*;

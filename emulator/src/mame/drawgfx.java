@@ -8,7 +8,7 @@ import static arcadeflex.libc.cstring.memset;
 import arcadeflex.libc.ptr.*;
 import mame.drawgfxH.*;
 import static old2.mame.tilemapC.priority_bitmap;
-import mame.osdependH.mame_bitmap;
+import static mame056.commonH.*;
 import static common.subArrays.*;
 import old.arcadeflex.libc_old.IntPtr;
 import static old.mame.drawgfx.common_drawgfx;

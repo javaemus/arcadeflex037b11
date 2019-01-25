@@ -8,7 +8,7 @@ import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.cstring.*;
 import static arcadeflex.libc.ptr.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static old2.mame.common.*;
 import static mame.drawgfxH.*;
 import static old.mame.drawgfx.*;

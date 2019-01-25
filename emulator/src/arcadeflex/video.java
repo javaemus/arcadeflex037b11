@@ -42,7 +42,7 @@ import arcadeflex056.settings;
 import static old2.mame.mame.Machine;
 import static old2.mame.mame.bitmap_dirty;
 import static old2.mame.mame.need_to_clear_bitmap;
-import mame.osdependH.mame_bitmap;
+import static mame056.commonH.*;
 
 /**
  *
@@ -1562,7 +1562,7 @@ public class video {
         if (bitmap != null) {
             //bitmap->line -= safety;
             bitmap.line = null;
-            bitmap._private = null;
+//            bitmap._private = null;
             bitmap = null;
         }
     }
@@ -1614,7 +1614,7 @@ public class video {
             }
             ///bitmap.line += safety;
 
-            bitmap._private = bm;
+//            bitmap._private = bm;
 
             osd_clearbitmap(bitmap);
         }

@@ -27,7 +27,7 @@ import static mame.drawgfxH.rectangle;
 import static mame.driverH.GameDriver;
 import static mame.driverH.MachineDriver;
 import static old.mame.inptportH.InputPort;
-import static mame.osdependH.mame_bitmap;
+import static mame056.commonH.*;
 import static common.subArrays.*;
 
 public class mameH {

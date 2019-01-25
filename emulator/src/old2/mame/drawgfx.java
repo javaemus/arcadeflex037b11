@@ -5,7 +5,7 @@ package old2.mame;
 
 import static arcadeflex.libc.ptr.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.ORIENTATION_SWAP_XY;
 import static old.mame.drawgfx.*;

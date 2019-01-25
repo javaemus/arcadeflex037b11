@@ -7,7 +7,7 @@ package WIP.vidhrdw;
 import arcadeflex.fucPtr.*;
 import arcadeflex.libc.ptr.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static old.mame.drawgfx.*;
 import static mame056.cpu.z80.z80H.*;
 import static mame.commonH.REGION_CPU1;

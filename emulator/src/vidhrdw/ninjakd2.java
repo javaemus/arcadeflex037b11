@@ -10,7 +10,7 @@ import static old2.mame.common.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.mame_bitmap;
+import mame056.commonH.mame_bitmap;
 import static mame.palette.*;
 import static mame.paletteH.*;
 import static common.libc.cstring.*;

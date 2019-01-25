@@ -6,7 +6,7 @@ package vidhrdw;
 
 import static old.mame.drawgfx.*;
 import static vidhrdw.generic.*;
-import static mame.osdependH.*;
+import mame056.commonH.mame_bitmap;
 import static old2.mame.mame.*;
 import static arcadeflex.libc.ptr.*;
 import static arcadeflex.fucPtr.*;

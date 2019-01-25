@@ -9,7 +9,7 @@ import static arcadeflex.libc.ptr.*;
 import static common.libc.cstring.*;
 import static common.libc.expressions.*;
 import static old2.mame.common.*;
-import static mame.osdependH.mame_bitmap;
+import static mame056.commonH.*;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
 import static mame.commonH.*;

@@ -9,7 +9,7 @@ import static arcadeflex.libc.cstring.*;
 import static arcadeflex.libc.ptr.*;
 import static mame.commonH.REGION_PROMS;
 import static mame.drawgfxH.*;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static old.mame.drawgfx.*;
 import static old2.mame.mame.Machine;
 import static old2.mame.tilemapC.*;

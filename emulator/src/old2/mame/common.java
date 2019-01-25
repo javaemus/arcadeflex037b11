@@ -24,7 +24,7 @@ import static old2.mame.mame.Machine;
 import static old2.mame.mame.bitmap_dirty;
 import static arcadeflex.video.osd_alloc_bitmap;
 import static mame.driverH.ORIENTATION_SWAP_XY;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static arcadeflex.video.osd_free_bitmap;
 import static arcadeflex.video.osd_set_visible_area;
 import static old2.mame.tilemapC.*;

@@ -7,7 +7,7 @@ package vidhrdw;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static common.libc.expressions.*;
-import static mame.osdependH.mame_bitmap;
+import mame056.commonH.mame_bitmap;
 import static mame.commonH.flip_screen;
 import static old2.mame.mame.Machine;
 import static old.mame.drawgfx.*;

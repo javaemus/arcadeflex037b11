@@ -11,7 +11,7 @@ import static mame.commonH.*;
 import static mame.drawgfx.pdrawgfx;
 import static mame.drawgfxH.TRANSPARENCY_PEN;
 import static old2.mame.common.*;
-import static mame.osdependH.mame_bitmap;
+import mame056.commonH.mame_bitmap;
 import static old2.mame.tilemapH.*;
 import static old2.mame.tilemapC.*;
 import static mame.palette.*;

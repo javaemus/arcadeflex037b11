@@ -13,8 +13,9 @@ import static arcadeflex.libc.ptr.*;
 import static arcadeflex.libc.cstdio.*;
 import static old2.arcadeflex.libc_v2.*;
 import static old2.mame.mame.mame_highscore_enabled;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static arcadeflex.fileio.*;
+import static mame.osdependH.*;
 
 public class fileio {
 

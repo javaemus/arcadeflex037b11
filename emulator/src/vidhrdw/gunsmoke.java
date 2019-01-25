@@ -11,7 +11,7 @@ import static common.libc.expressions.*;
 import static arcadeflex.fucPtr.*;
 import static mame.drawgfxH.*;
 import static old2.mame.drawgfx.*;
-import static mame.osdependH.*;
+import mame056.commonH.mame_bitmap;
 import static old2.mame.mame.*;
 import static arcadeflex.libc.ptr.*;
 import static mame.commonH.*;

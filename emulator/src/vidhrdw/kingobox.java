@@ -9,7 +9,7 @@ import static common.libc.cstring.*;
 import static mame.drawgfxH.*;
 import static old.mame.drawgfx.*;
 import static vidhrdw.generic.*;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static old2.mame.mame.*;
 import static drivers.kingobox.*;
 import static arcadeflex.libc.ptr.*;

@@ -8,7 +8,7 @@ import static arcadeflex.fucPtr.*;
 import static common.libc.expressions.*;
 import static arcadeflex.libc.ptr.*;
 import static mame.drawgfxH.*;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static old.mame.drawgfx.*;
 import static old2.mame.common.flip_screen_w;
 import static old2.mame.mame.Machine;

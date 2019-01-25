@@ -13,7 +13,7 @@ import static old2.mame.common.*;
 import static old.mame.drawgfx.copybitmap;
 import static mame.drawgfxH.TRANSPARENCY_NONE;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.mame_bitmap;
+import static mame056.commonH.*;
 
 public class generic {
 

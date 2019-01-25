@@ -9,7 +9,7 @@ import arcadeflex.util.cheatFileParser;
 import static mame056.hiscore.*;
 import java.util.ArrayList;
 
-import mame.osdependH.mame_bitmap;
+import static mame056.commonH.*;
 import static mame056.ui_text.*;
 import static mame056.ui_textH.*;
 import static old.mame.inptportH.*;

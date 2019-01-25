@@ -1,3 +1,7 @@
+26/01/2019
+==========
+-Implemented partialy the new mame_bitmap in commonH
+
 24/01/2019
 ==========
 -Renamed osd_bitmap to mame_bitmap

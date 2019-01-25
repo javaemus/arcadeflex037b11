@@ -13,7 +13,7 @@ import static common.libc.expressions.*;
 import static WIP.drivers.scramble.*;
 
 import static mame.drawgfxH.*;
-import static mame.osdependH.*;
+import mame056.commonH.mame_bitmap;
 import static mame056.common.*;
 import static old2.mame.common.*;
 import static old2.mame.drawgfx.*;

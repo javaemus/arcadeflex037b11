@@ -11,7 +11,7 @@ import static arcadeflex.libc.ptr.*;
 import static mame.commonH.REGION_GFX2;
 import static mame.commonH.flip_screen;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static old2.mame.common.*;
 import static mame.drawgfxH.*;
 import static mame.paletteH.*;

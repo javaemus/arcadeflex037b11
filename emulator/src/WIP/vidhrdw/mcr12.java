@@ -11,7 +11,7 @@ import static arcadeflex.libc.ptr.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static vidhrdw.generic.*;
 import static WIP.machine.mcr.*;
 import static mame.driverH.*;

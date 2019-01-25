@@ -3,26 +3,9 @@
  */
 package mame;
 
-import static arcadeflex.libc.ptr.*;
-
 public class osdependH {
 
-    /**
-     * ****************************************************************************
-     * Display
-     * ****************************************************************************
-     */
-    public static class mame_bitmap {
-
-        public mame_bitmap() {
-        }
-
-        public int width, height;/* width and hegiht of the bitmap */
-        public int depth;/* bits per pixel*/
-        public Object _private;/* don't touch! - reserved for osdepend use */
-        public UBytePtr[] line;/* pointers to the start of each line */
-    }
-
+ 
     /**
      * ****************************************************************************
      * Joystick & Mouse/Trackball

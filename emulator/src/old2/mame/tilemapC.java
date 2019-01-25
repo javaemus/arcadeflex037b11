@@ -9,7 +9,7 @@ import static old.arcadeflex.libc.memcpy.memcpy;
 import static arcadeflex.libc.ptr.*;
 import static common.subArrays.*;
 import static old2.mame.mame.Machine;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 import static old2.mame.tilemapH.*;
 import static arcadeflex.video.osd_alloc_bitmap;
 import static mame.driverH.*;

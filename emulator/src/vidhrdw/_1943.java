@@ -11,7 +11,7 @@ import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
 import static mame056.memoryH.*;
-import static mame.osdependH.mame_bitmap;
+import mame056.commonH.mame_bitmap;
 import static vidhrdw.generic.*;
 import static mame056.common.*;
 import static old2.mame.common.bitmap_alloc;

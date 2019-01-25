@@ -4,7 +4,7 @@
 package mame;
 
 import static mame.artworkH.*;
-import static mame.osdependH.*;
+import static mame056.commonH.*;
 
 public class artworkC {
 
