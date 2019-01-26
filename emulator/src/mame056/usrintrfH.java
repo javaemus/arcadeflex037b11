@@ -1,7 +1,8 @@
 /**
- * ported to 0.37b7
+ * ported to v0.56
+ * ported to v0.37b7
  */
-package mame;
+package mame056;
 
 public class usrintrfH {
 

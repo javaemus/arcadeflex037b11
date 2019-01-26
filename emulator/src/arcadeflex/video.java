@@ -36,13 +36,13 @@ import static old.arcadeflex.ticker.TICKS_PER_SEC;
 import static old.mame.inptportH.IPT_UI_SHOW_FPS;
 import static mame056.input.*;
 import static mame056.inputH.*;
-import static old.mame.usrintrf.set_ui_visarea;
 import static old.mame.usrintrf.ui_text;
 import arcadeflex056.settings;
 import static old2.mame.mame.Machine;
 import static old2.mame.mame.bitmap_dirty;
 import static old2.mame.mame.need_to_clear_bitmap;
 import static mame056.commonH.*;
+import static mame056.usrintrf.set_ui_visarea;
 
 /**
  *
@@ -1714,6 +1714,10 @@ public class video {
             osd_mark_dirty(0, 0, bitmap.width - 1, bitmap.height - 1, 1);
             bitmap_dirty = 1;
         }
+    }
+    public static void osd_save_snapshot(mame_bitmap bitmap)
+    {
+        
     }
 
 }

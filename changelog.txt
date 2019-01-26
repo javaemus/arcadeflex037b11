@@ -1,6 +1,7 @@
 26/01/2019
 ==========
 -Implemented partialy the new mame_bitmap in commonH
+-Some intial port of usrintrf to 0.56
 
 24/01/2019
 ==========

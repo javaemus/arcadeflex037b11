@@ -79,7 +79,7 @@ public class common {
 
     /*TODO*///    public static int[] flip_screen_x = new int[1];
 /*TODO*///    public static int[] flip_screen_y = new int[1];
-    static int snapno;
+    public static int snapno;
 
     /**
      * *************************************************************************

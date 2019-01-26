@@ -54,6 +54,7 @@ import static mame056.common.*;
 import static mame056.commonH.*;
 import static mame056.cpuexec.cpu_init;
 import static mame056.cpuexec.cpu_run;
+import static mame056.usrintrf.init_user_interface;
 import static old.mame.usrintrf.*;
 import static vidhrdw.generic.*;
 

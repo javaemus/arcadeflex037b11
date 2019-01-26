@@ -28,87 +28,21 @@ import static old2.mame.mameH.MAX_GFX_ELEMENTS;
 import static mame.sndintrf.*;
 import static mame056.ui_text.ui_getstring;
 import static mame056.ui_textH.*;
-import static mame.usrintrfH.*;
+import static mame056.usrintrfH.*;
 import static mame056.version.build_version;
 import static mame056.cpuexec.machine_reset;
 import static mame056.cpuexecH.CPU_AUDIO_CPU;
 import static mame056.cpuintrf.cputype_name;
+import static mame056.usrintrf.showcharset;
+import static mame056.usrintrf.switch_true_orientation;
+import static mame056.usrintrf.switch_ui_orientation;
 
 
 public class usrintrf {
     public static int setup_selected;
     public static int osd_selected;
     public static int single_step;
-    public static int trueorientation;
-    public static int orientation_count;
 
-    public static void switch_ui_orientation() {
-        if (orientation_count == 0) {
-            trueorientation = Machine.orientation;
-            Machine.orientation = Machine.ui_orientation;
-            set_pixel_functions();
-        }
-
-        orientation_count++;
-    }
-
-    public static void switch_true_orientation() {
-        orientation_count--;
-
-        if (orientation_count == 0) {
-            Machine.orientation = trueorientation;
-            set_pixel_functions();
-        }
-    }
-
-    public static void set_ui_visarea(int xmin, int ymin, int xmax, int ymax) {
-        int temp, w, h;
-
-	/* special case for vectors */
-        if (Machine.drv.video_attributes == VIDEO_TYPE_VECTOR) {
-            if ((Machine.ui_orientation & ORIENTATION_SWAP_XY) != 0) {
-                temp = xmin;
-                xmin = ymin;
-                ymin = temp;
-                temp = xmax;
-                xmax = ymax;
-                ymax = temp;
-            }
-        } else {
-            if ((Machine.orientation & ORIENTATION_SWAP_XY) != 0) {
-                w = Machine.drv.screen_height;
-                h = Machine.drv.screen_width;
-            } else {
-                w = Machine.drv.screen_width;
-                h = Machine.drv.screen_height;
-            }
-
-            if ((Machine.ui_orientation & ORIENTATION_FLIP_X) != 0) {
-                temp = w - xmin - 1;
-                xmin = w - xmax - 1;
-                xmax = temp;
-            }
-            if ((Machine.ui_orientation & ORIENTATION_FLIP_Y) != 0) {
-                temp = h - ymin - 1;
-                ymin = h - ymax - 1;
-                ymax = temp;
-            }
-
-            if ((Machine.ui_orientation & ORIENTATION_SWAP_XY) != 0) {
-                temp = xmin;
-                xmin = ymin;
-                ymin = temp;
-                temp = xmax;
-                xmax = ymax;
-                ymax = temp;
-            }
-
-        }
-        Machine.uiwidth = xmax - xmin + 1;
-        Machine.uiheight = ymax - ymin + 1;
-        Machine.uixmin = xmin;
-        Machine.uiymin = ymin;
-    }
 
     public static GfxElement builduifont() {
         char fontdata6x8[] =
@@ -779,266 +713,7 @@ public class usrintrf {
         displaytext(bitmap, dt, 0, 0);
     }
 
-    public static void showcharset(mame_bitmap bitmap) {
-        int i;
-        String buf = "";
-        int bank, color, firstdrawn;
-        int palpage;
-        int changed;
-        int game_is_neogeo = 0;
-/*TODO*///	unsigned char *orig_used_colors=0;
-/*TODO*///
-/*TODO*///
-/*TODO*///	if (palette_used_colors)
-/*TODO*///	{
-/*TODO*///		orig_used_colors = malloc(Machine->drv->total_colors * sizeof(unsigned char));
-/*TODO*///		if (!orig_used_colors) return;
-/*TODO*///
-/*TODO*///		memcpy(orig_used_colors,palette_used_colors,Machine->drv->total_colors * sizeof(unsigned char));
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	if (Machine->gamedrv->clone_of == &driver_neogeo ||
-/*TODO*///			(Machine->gamedrv->clone_of &&
-/*TODO*///				Machine->gamedrv->clone_of->clone_of == &driver_neogeo))
-/*TODO*///		game_is_neogeo=1;
-/*TODO*///
-        bank = -1;
-        color = 0;
-        firstdrawn = 0;
-        palpage = 0;
-
-        changed = 1;
-
-        do {
-            int cpx, cpy, skip_chars;
-
-            if (bank >= 0) {
-                cpx = Machine.uiwidth / Machine.gfx[bank].width;
-                cpy = (Machine.uiheight - Machine.uifontheight) / Machine.gfx[bank].height;
-                skip_chars = cpx * cpy;
-            } else cpx = cpy = skip_chars = 0;
-
-            if (changed != 0) {
-                int lastdrawn = 0;
-
-                osd_clearbitmap(bitmap);
-
-			/* validity chack after char bank change */
-                if (bank >= 0) {
-                    if (firstdrawn >= Machine.gfx[bank].total_elements) {
-                        firstdrawn = Machine.gfx[bank].total_elements - skip_chars;
-                        if (firstdrawn < 0) firstdrawn = 0;
-                    }
-                }
-
-                if (bank != 2 || game_is_neogeo == 0) {
-                    switch_ui_orientation();
-
-                    if (bank >= 0) {
-                        int table_offs;
-                        int flipx, flipy;
-
-/*TODO*///					if (palette_used_colors)
-/*TODO*///					{
-/*TODO*///						memset(palette_used_colors,PALETTE_COLOR_TRANSPARENT,Machine->drv->total_colors * sizeof(unsigned char));
-/*TODO*///						table_offs = Machine->gfx[bank]->colortable - Machine->remapped_colortable
-/*TODO*///								+ Machine->gfx[bank]->color_granularity * color;
-/*TODO*///						for (i = 0;i < Machine->gfx[bank]->color_granularity;i++)
-/*TODO*///							palette_used_colors[Machine->game_colortable[table_offs + i]] = PALETTE_COLOR_USED;
-/*TODO*///						palette_recalc();	/* do it twice in case of previous overflow */
-/*TODO*///						palette_recalc();	/*(we redraw the screen only when it changes) */
-/*TODO*///					}
-                        flipx = (Machine.orientation ^ trueorientation) & ORIENTATION_FLIP_X;
-                        flipy = (Machine.orientation ^ trueorientation) & ORIENTATION_FLIP_Y;
-
-                        if ((Machine.orientation & ORIENTATION_SWAP_XY) != 0) {
-                            int t;
-                            t = flipx;
-                            flipx = flipy;
-                            flipy = t;
-                        }
-
-
-                        for (i = 0; i + firstdrawn < Machine.gfx[bank].total_elements && i < cpx * cpy; i++) {
-                            drawgfx(bitmap, Machine.gfx[bank],
-                                    i + firstdrawn, color,  /*sprite num, color*/
-                                    flipx, flipy,
-                                    (i % cpx) * Machine.gfx[bank].width + Machine.uixmin,
-                                    Machine.uifontheight + (i / cpx) * Machine.gfx[bank].height + Machine.uiymin,
-                                    null, TRANSPARENCY_NONE, 0);
-
-                            lastdrawn = i + firstdrawn;
-                        }
-                    } else {
-                        int sx, sy, colors;
-
-                        colors = Machine.drv.total_colors - 256 * palpage;
-                        if (colors > 256) colors = 256;
-/*TODO*///					if (palette_used_colors)
-/*TODO*///					{
-/*TODO*///						memset(palette_used_colors,PALETTE_COLOR_UNUSED,Machine->drv->total_colors * sizeof(unsigned char));
-/*TODO*///						memset(palette_used_colors+256*palpage,PALETTE_COLOR_USED,colors * sizeof(unsigned char));
-/*TODO*///						palette_recalc();	/* do it twice in case of previous overflow */
-/*TODO*///						palette_recalc();	/*(we redraw the screen only when it changes) */
-/*TODO*///					}
-
-                        for (i = 0; i < 16; i++) {
-                            String bf = "";
-
-                            sx = 3 * Machine.uifontwidth + (Machine.uifontwidth * 4 / 3) * (i % 16);
-                            bf = sprintf("%X", i);
-                            ui_text(bitmap, bf, sx, 2 * Machine.uifontheight);
-                            if (16 * i < colors) {
-                                sy = 3 * Machine.uifontheight + (Machine.uifontheight) * (i % 16);
-                                bf = sprintf("%3X", i + 16 * palpage);
-                                ui_text(bitmap, bf, 0, sy);
-                            }
-                        }
-
-                        for (i = 0; i < colors; i++) {
-                            sx = Machine.uixmin + 3 * Machine.uifontwidth + (Machine.uifontwidth * 4 / 3) * (i % 16);
-                            sy = Machine.uiymin + 2 * Machine.uifontheight + (Machine.uifontheight) * (i / 16) + Machine.uifontheight;
-                            plot_box.handler(bitmap, sx, sy, Machine.uifontwidth * 4 / 3, Machine.uifontheight, Machine.pens[i + 256 * palpage]);
-                        }
-                    }
-
-                    switch_true_orientation();
-                } else	/* neogeo sprite tiles */ {
-                    throw new UnsupportedOperationException("unsupported");
-/*TODO*///				struct rectangle clip;
-/*TODO*///
-/*TODO*///				clip.min_x = Machine->uixmin;
-/*TODO*///				clip.max_x = Machine->uixmin + Machine->uiwidth - 1;
-/*TODO*///				clip.min_y = Machine->uiymin;
-/*TODO*///				clip.max_y = Machine->uiymin + Machine->uiheight - 1;
-/*TODO*///
-/*TODO*///				if (palette_used_colors)
-/*TODO*///				{
-/*TODO*///					memset(palette_used_colors,PALETTE_COLOR_TRANSPARENT,Machine->drv->total_colors * sizeof(unsigned char));
-/*TODO*///					memset(palette_used_colors+Machine->gfx[bank]->color_granularity*color,PALETTE_COLOR_USED,Machine->gfx[bank]->color_granularity * sizeof(unsigned char));
-/*TODO*///					palette_recalc();	/* do it twice in case of previous overflow */
-/*TODO*///					palette_recalc();	/*(we redraw the screen only when it changes) */
-/*TODO*///				}
-/*TODO*///
-/*TODO*///				for (i = 0; i+firstdrawn < no_of_tiles && i<cpx*cpy; i++)
-/*TODO*///				{
-/*TODO*///					if (bitmap->depth == 16)
-/*TODO*///						NeoMVSDrawGfx16(bitmap->line,Machine->gfx[bank],
-/*TODO*///							i+firstdrawn,color,  /*sprite num, color*/
-/*TODO*///							0,0,
-/*TODO*///							(i % cpx) * Machine->gfx[bank]->width + Machine->uixmin,
-/*TODO*///							Machine->uifontheight+1 + (i / cpx) * Machine->gfx[bank]->height + Machine->uiymin,
-/*TODO*///							16,16,&clip);
-/*TODO*///					else
-/*TODO*///						NeoMVSDrawGfx(bitmap->line,Machine->gfx[bank],
-/*TODO*///							i+firstdrawn,color,  /*sprite num, color*/
-/*TODO*///							0,0,
-/*TODO*///							(i % cpx) * Machine->gfx[bank]->width + Machine->uixmin,
-/*TODO*///							Machine->uifontheight+1 + (i / cpx) * Machine->gfx[bank]->height + Machine->uiymin,
-/*TODO*///							16,16,&clip);
-/*TODO*///
-/*TODO*///					lastdrawn = i+firstdrawn;
-/*TODO*///				}
-                }
-                if (bank >= 0)
-                    buf = sprintf("GFXSET %d COLOR %2X CODE %X-%X", bank, color, firstdrawn, lastdrawn);
-                else
-                    buf = "PALETTE";
-                ui_text(bitmap, buf, 0, 0);
-
-                changed = 0;
-            }
-
-            update_video_and_audio();
-
-            if (code_pressed(KEYCODE_LCONTROL) != 0 || code_pressed(KEYCODE_RCONTROL) != 0) {
-                skip_chars = cpx;
-            }
-            if (code_pressed(KEYCODE_LSHIFT) != 0 || code_pressed(KEYCODE_RSHIFT) != 0) {
-                skip_chars = 1;
-            }
-
-
-            if (input_ui_pressed_repeat(IPT_UI_RIGHT, 8) != 0) {
-                if (bank + 1 < MAX_GFX_ELEMENTS && Machine.gfx[bank + 1] != null) {
-                    bank++;
-//				firstdrawn = 0;
-                    changed = 1;
-                }
-            }
-
-            if (input_ui_pressed_repeat(IPT_UI_LEFT, 8) != 0) {
-                if (bank > -1) {
-                    bank--;
-//				firstdrawn = 0;
-                    changed = 1;
-                }
-            }
-
-            if (code_pressed_memory_repeat(KEYCODE_PGDN, 4) != 0) {
-                if (bank >= 0) {
-                    if (firstdrawn + skip_chars < Machine.gfx[bank].total_elements) {
-                        firstdrawn += skip_chars;
-                        changed = 1;
-                    }
-                } else {
-                    if (256 * (palpage + 1) < Machine.drv.total_colors) {
-                        palpage++;
-                        changed = 1;
-                    }
-                }
-            }
-
-            if (code_pressed_memory_repeat(KEYCODE_PGUP, 4) != 0) {
-                if (bank >= 0) {
-                    firstdrawn -= skip_chars;
-                    if (firstdrawn < 0) firstdrawn = 0;
-                    changed = 1;
-                } else {
-                    if (palpage > 0) {
-                        palpage--;
-                        changed = 1;
-                    }
-                }
-            }
-
-            if (input_ui_pressed_repeat(IPT_UI_UP, 6) != 0) {
-                if (bank >= 0) {
-                    if (color < Machine.gfx[bank].total_colors - 1) {
-                        color++;
-                        changed = 1;
-                    }
-                }
-            }
-
-            if (input_ui_pressed_repeat(IPT_UI_DOWN, 6) != 0) {
-                if (color > 0) {
-                    color--;
-                    changed = 1;
-                }
-            }
-
-/*TODO*///		if (input_ui_pressed(IPT_UI_SNAPSHOT))
-/*TODO*///			osd_save_snapshot(bitmap);
-        } while (input_ui_pressed(IPT_UI_SHOW_GFX) == 0 &&
-                input_ui_pressed(IPT_UI_CANCEL) == 0);
-
-			/* clear the screen before returning */
-        osd_clearbitmap(bitmap);
-
-/*TODO*///	if (palette_used_colors)
-/*TODO*///	{
-/*TODO*///		/* this should force a full refresh by the video driver */
-/*TODO*///		memset(palette_used_colors,PALETTE_COLOR_TRANSPARENT,Machine->drv->total_colors * sizeof(unsigned char));
-/*TODO*///		palette_recalc();
-/*TODO*///		/* restore the game used colors array */
-/*TODO*///		memcpy(palette_used_colors,orig_used_colors,Machine->drv->total_colors * sizeof(unsigned char));
-/*TODO*///		free(orig_used_colors);
-/*TODO*///	}
-
-        return;
-    }
-
+ 
     static void showtotalcolors(mame_bitmap bitmap) {
         char[] used;
         int i, l, x, y, total;
@@ -2880,7 +2555,7 @@ public class usrintrf {
     public static int[] onscrd_arg = new int[MAX_OSD_ITEMS];
     static int onscrd_total_items;
 
-    static void onscrd_init() {
+    public static void onscrd_init() {
         int item, ch;
 
 
@@ -3142,31 +2817,5 @@ public class usrintrf {
         }
 
         return 0;
-    }
-
-
-    public static void init_user_interface() {
-/*TODO*///	extern int snapno;	/* in common.c */
-/*TODO*///
-/*TODO*///	snapno = 0; /* reset snapshot counter */
-/*TODO*///
-        setup_menu_init();
-        setup_selected = 0;
-
-        onscrd_init();
-        osd_selected = 0;
-
-
-        single_step = 0;
-
-        orientation_count = 0;
-    }
-
-    public static int onscrd_active() {
-        return osd_selected;
-    }
-
-    public static int setup_active() {
-        return setup_selected;
     }
 }
