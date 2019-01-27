@@ -13,7 +13,7 @@ import mame056.commonH.mame_bitmap;
 import static old2.mame.common.*;
 import static mame.commonH.*;
 import static mame056.common.*;
-import static old.mame.inptport.*;
+import static mame056.inptport.*;
 import static old.sound.mixer.*;
 import static vidhrdw.generic.*;
 import static common.libc.cstring.*;

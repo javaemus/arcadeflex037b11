@@ -6,7 +6,7 @@ package machine;
 
 import static arcadeflex.fucPtr.*;
 import static mame056.cpuintrfH.cpu_get_pc;
-import static old.mame.inptport.*;
+import static mame056.inptport.*;
 import static old.arcadeflex.osdepend.*;
 
 public class scramble {

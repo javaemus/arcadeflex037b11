@@ -10,7 +10,7 @@ import static mame056.sound.samples.*;
 import static mame056.cpu.z80.z80H.*;
 import mame056.commonH.GameSamples;
 import mame.sndintrfH.MachineSound;
-import static old.mame.inptport.input_port_2_r;
+import static mame056.inptport.input_port_2_r;
 import static WIP.sndhrdw.gorf.*;
 import static mame056.cpuintrfH.cpu_get_reg;
 

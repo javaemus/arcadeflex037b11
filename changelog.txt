@@ -3,6 +3,7 @@
 -More work on usrintrf porting 
 -More to usrintrf
 -More to usrintrf and fixed a long term issue in inptport (was missing "No" string )
+-Ported inptports to 0.56
 
 26/01/2019
 ==========

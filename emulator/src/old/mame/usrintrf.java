@@ -14,7 +14,7 @@ import static old.mame.drawgfx.drawgfx;
 import static mame.drawgfxH.*;
 import static mame.driver.drivers;
 import static mame.driverH.*;
-import static old.mame.inptportH.*;
+import static mame056.inptportH.*;
 import mame056.commonH.mame_bitmap;
 import static mame056.input.*;
 import static mame056.inputH.*;
@@ -1022,13 +1022,6 @@ public class usrintrf {
                 need_to_clear_bitmap = 1;
         }
 
-        if (input_ui_pressed(IPT_UI_SHOW_COLORS) != 0) {
-            show_total_colors ^= 1;
-            if (show_total_colors == 0)
-			/* tell updatescreen() to clean after us */
-                need_to_clear_bitmap = 1;
-        }
-        if (show_total_colors != 0) showtotalcolors(bitmap);
 
 
 	/* if the user pressed F4, show the character set */

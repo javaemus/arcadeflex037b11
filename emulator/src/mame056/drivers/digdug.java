@@ -12,7 +12,7 @@ import static mame056.machine.digdug.*;
 import static mame056.commonH.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
-import static old.mame.inptportH.*;
+import static mame056.inptportH.*;
 import static mame056.memoryH.*;
 import static mame.sndintrfH.*;
 import static mame056.cpuexec.watchdog_reset_w;

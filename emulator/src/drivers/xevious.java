@@ -10,7 +10,7 @@ import static arcadeflex.libc.ptr.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
 import static mame.driverH.*;
-import static old.mame.inptportH.*;
+import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;
 import static mame.sndintrfH.*;
 import static sound.namco.*;

@@ -33,7 +33,7 @@ import static old.arcadeflex.osdepend.logerror;
 import old.arcadeflex.software_gfx;
 import static old.arcadeflex.sound.update_audio;
 import static old.arcadeflex.ticker.TICKS_PER_SEC;
-import static old.mame.inptportH.IPT_UI_SHOW_FPS;
+import static mame056.inptportH.IPT_UI_SHOW_FPS;
 import static mame056.input.*;
 import static mame056.inputH.*;
 import static old.mame.usrintrf.ui_text;

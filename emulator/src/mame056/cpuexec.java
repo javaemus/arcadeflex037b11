@@ -15,7 +15,7 @@ import static old2.mame.mame.*;
 import static mame056.timer.*;
 import static mame056.timerH.*;
 import static old.arcadeflex.osdepend.*;
-import static old.mame.inptport.*;
+import static mame056.inptport.*;
 
 public class cpuexec {
 

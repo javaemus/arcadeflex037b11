@@ -9,11 +9,11 @@ import static arcadeflex.fucPtr.*;
 import static mame.driverH.*;
 import static old2.mame.memoryH.*;
 import static mame.commonH.*;
-import static old.mame.inptport.*;
+import static mame056.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame056.cpuexec.interrupt;
-import static old.mame.inptportH.*;
+import static mame056.inptportH.*;
 import static vidhrdw.minivadr.*;
 
 public class minivadr {

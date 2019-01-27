@@ -6,7 +6,7 @@
 package machine;
 
 import static arcadeflex.fucPtr.*;
-import static old.mame.inptport.*;
+import static mame056.inptport.*;
 import static arcadeflex.libc.ptr.*;
 import static vidhrdw.generic.*;
 import static mame056.cpuexec.cpu_cause_interrupt;

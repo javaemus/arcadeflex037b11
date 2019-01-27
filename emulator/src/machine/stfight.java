@@ -12,7 +12,7 @@ import static arcadeflex.libc.ptr.*;
 import static mame056.cpuexec.interrupt;
 import static mame056.cpuexec.interrupt_vector_w;
 import static old2.mame.memory.*;
-import static old.mame.inptport.*;
+import static mame056.inptport.*;
 import static sound.MSM5205.*;
 import static sound.MSM5205H.*;
 

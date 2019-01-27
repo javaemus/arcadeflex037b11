@@ -46,7 +46,7 @@ import static mame.driver.drivers;
 import static mame.driverH.*;
 import static mame056.input.*;
 import static mame056.inputH.*;
-import static old.mame.inptport.*;
+import static mame056.inptport.*;
 import static mame.osdependH.OSD_FILETYPE_NVRAM;
 import static mame.palette.*;
 import static mame.sndintrf.*;
@@ -74,7 +74,7 @@ public class mame {
 
     static FILE record;
     /* for -record */
-    static FILE playback;
+    public static FILE playback;
     /* for -playback */
 
     public static int bailing;

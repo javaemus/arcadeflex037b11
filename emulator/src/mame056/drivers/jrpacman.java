@@ -23,8 +23,8 @@ import static vidhrdw.generic.*;
 import static vidhrdw.jrpacman.*;
 
 import static mame056.common.*;
-import static old.mame.inptport.*;
-import static old.mame.inptportH.*;
+import static mame056.inptport.*;
+import static mame056.inptportH.*;
 import static mame056.inputH.*;
 import static mame056.cpuexec.*;
 

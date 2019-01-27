@@ -29,7 +29,7 @@ import mame056.commonH.mame_bitmap;
 import static mame056.inputH.*;
 import static mame056.input.*;
 import static old.mame.drawgfx.*;
-import static old.mame.inptportH.*;
+import static mame056.inptportH.*;
 import static old.mame.usrintrf.*;
 import static old.mame.usrintrf.ui_text;
 import static old2.mame.common.schedule_full_refresh;
@@ -44,7 +44,7 @@ import static mame056.usrintrfH.SEL_BITS;
 import static mame056.usrintrfH.SEL_MASK;
 import static old.arcadeflex.sound.osd_get_mastervolume;
 import static old.arcadeflex.sound.osd_set_mastervolume;
-import static old.mame.inptport.*;
+import static mame056.inptport.*;
 
 public class usrintrf {
 

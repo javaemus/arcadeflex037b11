@@ -19,7 +19,7 @@ import static mame056.cpuintrfH.ASSERT_LINE;
 import static mame056.cpuintrfH.CLEAR_LINE;
 import static mame056.cpuintrfH.cpu_get_pc;
 import static mame056.cpuintrfH.cpu_getactivecpu;
-import static old.mame.inptport.*;
+import static mame056.inptport.*;
 import static mame056.timer.*;
 import static mame056.timerH.*;
 import static vidhrdw.generic.*;

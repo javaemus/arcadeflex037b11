@@ -9,7 +9,7 @@ import arcadeflex.libc.ptr.*;
 import static mame.commonH.*;
 import static mame056.common.*;
 import static mame056.cpuintrfH.cpu_get_pc;
-import static old.mame.inptport.*;
+import static mame056.inptport.*;
 import static old.arcadeflex.osdepend.*;
 
 public class astrocde {

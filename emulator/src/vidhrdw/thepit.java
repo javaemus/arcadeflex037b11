@@ -15,7 +15,7 @@ import static mame056.commonH.*;
 import static mame.drawgfxH.*;
 import static old2.mame.common.*;
 import static old.mame.drawgfx.*;
-import static old.mame.inptport.*;
+import static mame056.inptport.*;
 import static old.sound.mixer.*;
 import static vidhrdw.generic.*;
 import static common.libc.cstring.*;

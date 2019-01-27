@@ -5,7 +5,7 @@
 package mame056.machine;
 
 import static arcadeflex.fucPtr.*;
-import static old.mame.inptport.*;
+import static mame056.inptport.*;
 import static arcadeflex.libc.ptr.*;
 import static mame.commonH.*;
 import static mame056.timer.*;

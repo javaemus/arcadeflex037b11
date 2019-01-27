@@ -24,8 +24,8 @@ import static vidhrdw.amidar.*;
 
 import static old2.mame.common.*;
 import static mame056.common.*;
-import static old.mame.inptport.*;
-import static old.mame.inptportH.*;
+import static mame056.inptport.*;
+import static mame056.inptportH.*;
 import static old.sound.mixerH.*;
 import static old2.mame.memoryH.*;
 import static mame056.cpuexec.ignore_interrupt;

@@ -7,7 +7,7 @@ package WIP.sndhrdw;
 import static arcadeflex.fucPtr.*;
 import static common.libc.expressions.*;
 import static old2.mame.memoryH.*;
-import static old.mame.inptport.*;
+import static mame056.inptport.*;
 import static sound.ay8910.*;
 import static sound.ay8910H.*;
 import static old.sound.mixerH.*;
