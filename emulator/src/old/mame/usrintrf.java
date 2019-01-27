@@ -4,27 +4,21 @@
 package old.mame;
 import static arcadeflex.libc.cstdio.*;
 import static old.arcadeflex.libc_old.strlen;
-import static common.subArrays.*;
-import static arcadeflex.libc.ptr.*;
 import static mame.cheat.DoCheat;
 import static mame.cheat.cheat_menu;
 import static old.arcadeflex.sound.*;
 import static arcadeflex.video.*;
 import static old2.mame.mame.update_video_and_audio;
-import static mame056.common.*;
-import static mame056.commonH.COIN_COUNTERS;
 import static old.mame.drawgfx.*;
 import static old.mame.drawgfx.drawgfx;
 import static mame.drawgfxH.*;
 import static mame.driver.drivers;
 import static mame.driverH.*;
-import static old.mame.inptport.*;
 import static old.mame.inptportH.*;
 import mame056.commonH.mame_bitmap;
 import static mame056.input.*;
 import static mame056.inputH.*;
 import static old2.mame.mame.*;
-import static old2.mame.mameH.MAX_GFX_ELEMENTS;
 import static mame.sndintrf.*;
 import static mame056.ui_text.ui_getstring;
 import static mame056.ui_textH.*;
@@ -34,9 +28,15 @@ import static mame056.cpuexec.machine_reset;
 import static mame056.cpuexecH.CPU_AUDIO_CPU;
 import static mame056.cpuintrf.cputype_name;
 import static mame056.usrintrf.mame_stats;
+import static mame056.usrintrf.messagecounter;
+import static mame056.usrintrf.messagetext;
+import static mame056.usrintrf.on_screen_display;
+import static mame056.usrintrf.onscrd_brightness;
+import static mame056.usrintrf.onscrd_volume;
 import static mame056.usrintrf.setcodesettings;
 import static mame056.usrintrf.setdefcodesettings;
 import static mame056.usrintrf.setdipswitches;
+import static mame056.usrintrf.setup_menu;
 import static mame056.usrintrf.showcharset;
 import static mame056.usrintrf.switch_true_orientation;
 import static mame056.usrintrf.switch_ui_orientation;
@@ -883,196 +883,6 @@ public class usrintrf {
         return sel + 1;
     }
 
-    public static final int UI_SWITCH = 0;
-    public static final int UI_DEFCODE = 1;
-    public static final int UI_CODE = 2;
-    public static final int UI_ANALOG = 3;
-    public static final int UI_CALIBRATE = 4;
-    public static final int UI_STATS = 5;
-    public static final int UI_GAMEINFO = 6;
-    public static final int UI_HISTORY = 7;
-    public static final int UI_CHEAT = 8;
-    public static final int UI_RESET = 9;
-    public static final int UI_MEMCARD = 10;
-    public static final int UI_EXIT = 11;
-
-    public static final int MAX_SETUPMENU_ITEMS = 20;
-    static String[] menu_item = new String[MAX_SETUPMENU_ITEMS];
-    static int[] menu_action = new int[MAX_SETUPMENU_ITEMS];
-    static int menu_total;
-
-
-    public static void setup_menu_init() {
-        menu_total = 0;
-
-        menu_item[menu_total] = ui_getstring(UI_inputgeneral);
-        menu_action[menu_total++] = UI_DEFCODE;
-        menu_item[menu_total] = ui_getstring(UI_inputspecific);
-        menu_action[menu_total++] = UI_CODE;
-        menu_item[menu_total] = ui_getstring(UI_dipswitches);
-        menu_action[menu_total++] = UI_SWITCH;
-
-/*TODO*///	/* Determine if there are any analog controls */
-/*TODO*///	{
-/*TODO*///		struct InputPort *in;
-/*TODO*///		int num;
-/*TODO*///
-/*TODO*///		in = Machine->input_ports;
-/*TODO*///
-/*TODO*///		num = 0;
-/*TODO*///		while (in->type != IPT_END)
-/*TODO*///		{
-/*TODO*///			if (((in->type & 0xff) > IPT_ANALOG_START) && ((in->type & 0xff) < IPT_ANALOG_END)
-/*TODO*///					&& !(!options.cheat && (in->type & IPF_CHEAT)))
-/*TODO*///				num++;
-/*TODO*///			in++;
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		if (num != 0)
-/*TODO*///		{
-/*TODO*///			menu_item[menu_total] = ui_getstring (UI_analogcontrols); menu_action[menu_total++] = UI_ANALOG;
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* Joystick calibration possible? */
-/*TODO*///	if ((osd_joystick_needs_calibration()) != 0)
-/*TODO*///	{
-/*TODO*///		menu_item[menu_total] = ui_getstring (UI_calibrate); menu_action[menu_total++] = UI_CALIBRATE;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///
-        menu_item[menu_total] = ui_getstring(UI_bookkeeping);
-        menu_action[menu_total++] = UI_STATS;
-        menu_item[menu_total] = ui_getstring(UI_gameinfo);
-        menu_action[menu_total++] = UI_GAMEINFO;
-        menu_item[menu_total] = ui_getstring(UI_history);
-        menu_action[menu_total++] = UI_HISTORY;
-
-
-	if (options.cheat!=0)
-	{
-		menu_item[menu_total] = ui_getstring (UI_cheat); menu_action[menu_total++] = UI_CHEAT;
-	}
-
-
-/*TODO*///	if (Machine->gamedrv->clone_of == &driver_neogeo ||
-/*TODO*///			(Machine->gamedrv->clone_of &&
-/*TODO*///				Machine->gamedrv->clone_of->clone_of == &driver_neogeo))
-/*TODO*///	{
-/*TODO*///		menu_item[menu_total] = ui_getstring (UI_memorycard); menu_action[menu_total++] = UI_MEMCARD;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///
-        menu_item[menu_total] = ui_getstring(UI_resetgame);
-        menu_action[menu_total++] = UI_RESET;
-        menu_item[menu_total] = ui_getstring(UI_returntogame);
-        menu_action[menu_total++] = UI_EXIT;
-        menu_item[menu_total] = null; /* terminate array */
-    }
-
-    static int menu_lastselected = 0;
-
-    public static int setup_menu(mame_bitmap bitmap, int selected) {
-        int sel, res = -1;
-
-        if (selected == -1)
-            sel = menu_lastselected;
-        else sel = selected - 1;
-
-        if (sel > SEL_MASK) {
-            switch (menu_action[sel & SEL_MASK]) {
-                case UI_SWITCH:
-                    res = setdipswitches(bitmap, sel >> SEL_BITS);
-                    break;
-                case UI_DEFCODE:
-                    res = setdefcodesettings(bitmap, sel >> SEL_BITS);
-                    break;
-                case UI_CODE:
-                    res = setcodesettings(bitmap, sel >> SEL_BITS);
-                    break;
-/*TODO*///			case UI_ANALOG:
-/*TODO*///				res = settraksettings(bitmap, sel >> SEL_BITS);
-/*TODO*///				break;
-/*TODO*///			case UI_CALIBRATE:
-/*TODO*///				res = calibratejoysticks(bitmap, sel >> SEL_BITS);
-/*TODO*///				break;
-                case UI_STATS:
-                    res = mame_stats(bitmap, sel >> SEL_BITS);
-                    break;
-                case UI_GAMEINFO:
-                    res = displaygameinfo(bitmap, sel >> SEL_BITS);
-                    break;
-                case UI_HISTORY:
-                    res = displayhistory(bitmap, sel >> SEL_BITS);
-                    break;
-			case UI_CHEAT:
-				res = cheat_menu(bitmap, sel >> SEL_BITS);
-				break;
-/*TODO*///			case UI_MEMCARD:
-/*TODO*///				res = memcard_menu(bitmap, sel >> SEL_BITS);
-/*TODO*///				break;
-            }
-
-            if (res == -1) {
-                menu_lastselected = sel;
-                sel = -1;
-            } else
-                sel = (sel & SEL_MASK) | (res << SEL_BITS);
-
-            return sel + 1;
-        }
-
-
-        ui_displaymenu(bitmap, menu_item, null, null, sel, 0);
-
-        if (input_ui_pressed_repeat(IPT_UI_DOWN, 8) != 0)
-            sel = (sel + 1) % menu_total;
-
-        if (input_ui_pressed_repeat(IPT_UI_UP, 8) != 0)
-            sel = (sel + menu_total - 1) % menu_total;
-
-        if (input_ui_pressed(IPT_UI_SELECT) != 0) {
-            switch (menu_action[sel]) {
-                case UI_SWITCH:
-                case UI_DEFCODE:
-                case UI_CODE:
-                case UI_ANALOG:
-                case UI_CALIBRATE:
-                case UI_STATS:
-                case UI_GAMEINFO:
-                case UI_HISTORY:
-                case UI_CHEAT:
-                case UI_MEMCARD:
-                    sel |= 1 << SEL_BITS;
-					/* tell updatescreen() to clean after us */
-                    need_to_clear_bitmap = 1;
-                    break;
-
-                case UI_RESET:
-                    machine_reset();
-                    break;
-
-                case UI_EXIT:
-                    menu_lastselected = 0;
-                    sel = -1;
-                    break;
-            }
-        }
-
-        if (input_ui_pressed(IPT_UI_CANCEL) != 0 ||
-                input_ui_pressed(IPT_UI_CONFIGURE) != 0) {
-            menu_lastselected = sel;
-            sel = -1;
-        }
-
-        if (sel == -1) {
-			/* tell updatescreen() to clean after us */
-            need_to_clear_bitmap = 1;
-        }
-
-        return sel + 1;
-    }
-
     /**
      * ******************************************************************
      * <p>
@@ -1109,293 +919,6 @@ public class usrintrf {
         displaytext(bitmap, dt, 0, 0);
     }
 
-    public static onscrd_fncPtr onscrd_volume = new onscrd_fncPtr() {
-        public void handler(mame_bitmap bitmap, int increment, int arg) {
-            String buf;
-            int attenuation;
-
-            if (increment != 0) {
-                attenuation = osd_get_mastervolume();
-                attenuation += increment;
-                if (attenuation > 0) attenuation = 0;
-                if (attenuation < -32) attenuation = -32;
-                osd_set_mastervolume(attenuation);
-            }
-            attenuation = osd_get_mastervolume();
-
-            buf = sprintf("%s %3ddB", ui_getstring(UI_volume), attenuation);
-            displayosd(bitmap, buf, 100 * (attenuation + 32) / 32, 100);
-        }
-    };
-    /*TODO*///
-/*TODO*///static void onscrd_mixervol(struct osd_bitmap *bitmap,int increment,int arg)
-/*TODO*///{
-/*TODO*///	static void *driver = 0;
-/*TODO*///	char buf[40];
-/*TODO*///	int volume,ch;
-/*TODO*///	int doallchannels = 0;
-/*TODO*///	int proportional = 0;
-/*TODO*///
-/*TODO*///
-/*TODO*///	if (code_pressed(KEYCODE_LSHIFT) || code_pressed(KEYCODE_RSHIFT))
-/*TODO*///		doallchannels = 1;
-/*TODO*///	if (!code_pressed(KEYCODE_LCONTROL) && !code_pressed(KEYCODE_RCONTROL))
-/*TODO*///		increment *= 5;
-/*TODO*///	if (code_pressed(KEYCODE_LALT) || code_pressed(KEYCODE_RALT))
-/*TODO*///		proportional = 1;
-/*TODO*///
-/*TODO*///	if (increment)
-/*TODO*///	{
-/*TODO*///		if (proportional)
-/*TODO*///		{
-/*TODO*///			static int old_vol[MIXER_MAX_CHANNELS];
-/*TODO*///			float ratio = 1.0;
-/*TODO*///			int overflow = 0;
-/*TODO*///
-/*TODO*///			if (driver != Machine->drv)
-/*TODO*///			{
-/*TODO*///				driver = (void *)Machine->drv;
-/*TODO*///				for (ch = 0; ch < MIXER_MAX_CHANNELS; ch++)
-/*TODO*///					old_vol[ch] = mixer_get_mixing_level(ch);
-/*TODO*///			}
-/*TODO*///
-/*TODO*///			volume = mixer_get_mixing_level(arg);
-/*TODO*///			if (old_vol[arg])
-/*TODO*///				ratio = (float)(volume + increment) / (float)old_vol[arg];
-/*TODO*///
-/*TODO*///			for (ch = 0; ch < MIXER_MAX_CHANNELS; ch++)
-/*TODO*///			{
-/*TODO*///				if (mixer_get_name(ch) != 0)
-/*TODO*///				{
-/*TODO*///					volume = ratio * old_vol[ch];
-/*TODO*///					if (volume < 0 || volume > 100)
-/*TODO*///						overflow = 1;
-/*TODO*///				}
-/*TODO*///			}
-/*TODO*///
-/*TODO*///			if (!overflow)
-/*TODO*///			{
-/*TODO*///				for (ch = 0; ch < MIXER_MAX_CHANNELS; ch++)
-/*TODO*///				{
-/*TODO*///					volume = ratio * old_vol[ch];
-/*TODO*///					mixer_set_mixing_level(ch,volume);
-/*TODO*///				}
-/*TODO*///			}
-/*TODO*///		}
-/*TODO*///		else
-/*TODO*///		{
-/*TODO*///			driver = 0; /* force reset of saved volumes */
-/*TODO*///
-/*TODO*///			volume = mixer_get_mixing_level(arg);
-/*TODO*///			volume += increment;
-/*TODO*///			if (volume > 100) volume = 100;
-/*TODO*///			if (volume < 0) volume = 0;
-/*TODO*///
-/*TODO*///			if (doallchannels)
-/*TODO*///			{
-/*TODO*///				for (ch = 0;ch < MIXER_MAX_CHANNELS;ch++)
-/*TODO*///					mixer_set_mixing_level(ch,volume);
-/*TODO*///			}
-/*TODO*///			else
-/*TODO*///				mixer_set_mixing_level(arg,volume);
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///	volume = mixer_get_mixing_level(arg);
-/*TODO*///
-/*TODO*///	if (proportional)
-/*TODO*///		sprintf(buf,"%s %s %3d%%", ui_getstring (UI_allchannels), ui_getstring (UI_relative), volume);
-/*TODO*///	else if (doallchannels)
-/*TODO*///		sprintf(buf,"%s %s %3d%%", ui_getstring (UI_allchannels), ui_getstring (UI_volume), volume);
-/*TODO*///	else
-/*TODO*///		sprintf(buf,"%s %s %3d%%",mixer_get_name(arg), ui_getstring (UI_volume), volume);
-/*TODO*///	displayosd(bitmap,buf,volume,mixer_get_default_mixing_level(arg));
-/*TODO*///}
-
-    public static onscrd_fncPtr onscrd_brightness = new onscrd_fncPtr() {
-        public void handler(mame_bitmap bitmap, int increment, int arg) {
-            String buf;
-            int brightness;
-
-
-            if (increment != 0) {
-                brightness = osd_get_brightness();
-                brightness += 5 * increment;
-                if (brightness < 0) brightness = 0;
-                if (brightness > 100) brightness = 100;
-                osd_set_brightness(brightness);
-            }
-            brightness = osd_get_brightness();
-            buf = sprintf("%s %3d%%", ui_getstring(UI_brightness), brightness);
-            displayosd(bitmap, buf, brightness, 100);
-        }
-    };
-
-    /*TODO*///static void onscrd_gamma(struct osd_bitmap *bitmap,int increment,int arg)
-/*TODO*///{
-/*TODO*///	char buf[20];
-/*TODO*///	float gamma_correction;
-/*TODO*///
-/*TODO*///	if (increment)
-/*TODO*///	{
-/*TODO*///		gamma_correction = osd_get_gamma();
-/*TODO*///
-/*TODO*///		gamma_correction += 0.05 * increment;
-/*TODO*///		if (gamma_correction < 0.5) gamma_correction = 0.5;
-/*TODO*///		if (gamma_correction > 2.0) gamma_correction = 2.0;
-/*TODO*///
-/*TODO*///		osd_set_gamma(gamma_correction);
-/*TODO*///	}
-/*TODO*///	gamma_correction = osd_get_gamma();
-/*TODO*///
-/*TODO*///	sprintf(buf,"%s %1.2f", ui_getstring (UI_gamma), gamma_correction);
-/*TODO*///	displayosd(bitmap,buf,100*(gamma_correction-0.5)/(2.0-0.5),100*(1.0-0.5)/(2.0-0.5));
-/*TODO*///}
-/*TODO*///
-/*TODO*///static void onscrd_vector_intensity(struct osd_bitmap *bitmap,int increment,int arg)
-/*TODO*///{
-/*TODO*///	char buf[30];
-/*TODO*///	float intensity_correction;
-/*TODO*///
-/*TODO*///	if (increment)
-/*TODO*///	{
-/*TODO*///		intensity_correction = vector_get_intensity();
-/*TODO*///
-/*TODO*///		intensity_correction += 0.05 * increment;
-/*TODO*///		if (intensity_correction < 0.5) intensity_correction = 0.5;
-/*TODO*///		if (intensity_correction > 3.0) intensity_correction = 3.0;
-/*TODO*///
-/*TODO*///		vector_set_intensity(intensity_correction);
-/*TODO*///	}
-/*TODO*///	intensity_correction = vector_get_intensity();
-/*TODO*///
-/*TODO*///	sprintf(buf,"%s %1.2f", ui_getstring (UI_vectorintensity), intensity_correction);
-/*TODO*///	displayosd(bitmap,buf,100*(intensity_correction-0.5)/(3.0-0.5),100*(1.5-0.5)/(3.0-0.5));
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///static void onscrd_overclock(struct osd_bitmap *bitmap,int increment,int arg)
-/*TODO*///{
-/*TODO*///	char buf[30];
-/*TODO*///	double overclock;
-/*TODO*///	int cpu_old, doallcpus = 0, oc;
-/*TODO*///
-/*TODO*///	if (code_pressed(KEYCODE_LSHIFT) || code_pressed(KEYCODE_RSHIFT))
-/*TODO*///		doallcpus = 1;
-/*TODO*///	if (!code_pressed(KEYCODE_LCONTROL) && !code_pressed(KEYCODE_RCONTROL))
-/*TODO*///		increment *= 5;
-/*TODO*///	if( increment )
-/*TODO*///	{
-/*TODO*///		overclock = timer_get_overclock(arg);
-/*TODO*///		overclock += 0.01 * increment;
-/*TODO*///		if (overclock < 0.01) overclock = 0.01;
-/*TODO*///		if (overclock > 2.0) overclock = 2.0;
-/*TODO*///		if( doallcpus )
-/*TODO*///			for( cpu_old = 0; cpu_old < cpu_gettotalcpu(); cpu_old++ )
-/*TODO*///				timer_set_overclock(cpu_old, overclock);
-/*TODO*///		else
-/*TODO*///			timer_set_overclock(arg, overclock);
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	oc = 100 * timer_get_overclock(arg) + 0.5;
-/*TODO*///
-/*TODO*///	if( doallcpus )
-/*TODO*///		sprintf(buf,"%s %s %3d%%", ui_getstring (UI_allcpus), ui_getstring (UI_overclock), oc);
-/*TODO*///	else
-/*TODO*///		sprintf(buf,"%s %s%d %3d%%", ui_getstring (UI_overclock), ui_getstring (UI_cpu), arg, oc);
-/*TODO*///	displayosd(bitmap,buf,oc/2,100/2);
-/*TODO*///}
-/*TODO*///
-    public static final int MAX_OSD_ITEMS = 30;
-
-    public static abstract interface onscrd_fncPtr {
-        public abstract void handler(mame_bitmap bitmap, int increment, int arg);
-
-    }
-
-    public static onscrd_fncPtr[] onscrd_fnc = new onscrd_fncPtr[MAX_OSD_ITEMS];
-    public static int[] onscrd_arg = new int[MAX_OSD_ITEMS];
-    static int onscrd_total_items;
-
-    public static void onscrd_init() {
-        int item, ch;
-
-
-        item = 0;
-
-        onscrd_fnc[item] = onscrd_volume;
-        onscrd_arg[item] = 0;
-        item++;
-
-/*TODO*///	for (ch = 0;ch < MIXER_MAX_CHANNELS;ch++)
-/*TODO*///	{
-/*TODO*///		if (mixer_get_name(ch) != 0)
-/*TODO*///		{
-/*TODO*///			onscrd_fnc[item] = onscrd_mixervol;
-/*TODO*///			onscrd_arg[item] = ch;
-/*TODO*///			item++;
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	if (options.cheat)
-/*TODO*///	{
-/*TODO*///		for (ch = 0;ch < cpu_gettotalcpu();ch++)
-/*TODO*///		{
-/*TODO*///			onscrd_fnc[item] = onscrd_overclock;
-/*TODO*///			onscrd_arg[item] = ch;
-/*TODO*///			item++;
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///
-        onscrd_fnc[item] = onscrd_brightness;
-        onscrd_arg[item] = 0;
-        item++;
-
-/*TODO*///	onscrd_fnc[item] = onscrd_gamma;
-/*TODO*///	onscrd_arg[item] = 0;
-/*TODO*///	item++;
-/*TODO*///
-/*TODO*///	if (Machine->drv->video_attributes & VIDEO_TYPE_VECTOR)
-/*TODO*///	{
-/*TODO*///		onscrd_fnc[item] = onscrd_vector_intensity;
-/*TODO*///		onscrd_arg[item] = 0;
-/*TODO*///		item++;
-/*TODO*///	}
-
-        onscrd_total_items = item;
-    }
-
-    static int lastselected = 0;
-
-    public static int on_screen_display(mame_bitmap bitmap, int selected) {
-        int increment, sel;
-
-        if (selected == -1)
-            sel = lastselected;
-        else sel = selected - 1;
-
-        increment = 0;
-        if (input_ui_pressed_repeat(IPT_UI_LEFT, 8) != 0)
-            increment = -1;
-        if (input_ui_pressed_repeat(IPT_UI_RIGHT, 8) != 0)
-            increment = 1;
-        if (input_ui_pressed_repeat(IPT_UI_DOWN, 8) != 0)
-            sel = (sel + 1) % onscrd_total_items;
-        if (input_ui_pressed_repeat(IPT_UI_UP, 8) != 0)
-            sel = (sel + onscrd_total_items - 1) % onscrd_total_items;
-
-        onscrd_fnc[sel].handler(bitmap, increment, onscrd_arg[sel]);
-
-        lastselected = sel;
-
-        if (input_ui_pressed(IPT_UI_ON_SCREEN_DISPLAY) != 0) {
-            sel = -1;
-			/* tell updatescreen() to clean after us */
-            need_to_clear_bitmap = 1;
-        }
-
-        return sel + 1;
-    }
-
     /**
      * ******************************************************************
      * <p>
@@ -1428,26 +951,8 @@ public class usrintrf {
         displaytext(bitmap, dt, 0, 0);
     }
 
-    public static String messagetext;
-    public static int messagecounter;
 
-    public static void usrintf_showmessage(String text, Object... arg) {
-        messagetext = sprintf(text, arg);
-        messagecounter = (int) (2 * Machine.drv.frames_per_second);
-    }
 
-    /*TODO*///
-/*TODO*///void CLIB_DECL usrintf_showmessage_secs(int seconds, const char *text,...)
-/*TODO*///{
-/*TODO*///	va_list arg;
-/*TODO*///	va_start(arg,text);
-/*TODO*///	vsprintf(messagetext,text,arg);
-/*TODO*///	va_end(arg);
-/*TODO*///	messagecounter = seconds * Machine->drv->frames_per_second;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
     static int show_total_colors;
 
     public static int handle_user_interface(mame_bitmap bitmap) {

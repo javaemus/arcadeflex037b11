@@ -26,6 +26,7 @@ import static mame056.cpuexec.interrupt;
 import static mame056.cpuexec.interrupt_enable_w;
 import static mame056.cpuintrfH.CLEAR_LINE;
 import static mame056.cpuintrfH.cpu_get_reg;
+import static mame056.usrintrf.*;
 
 public class astrocde {
 

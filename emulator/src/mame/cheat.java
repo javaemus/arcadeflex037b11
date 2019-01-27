@@ -6,7 +6,6 @@ package mame;
 
 import static arcadeflex.libc.cstdio.sprintf;
 import arcadeflex.util.cheatFileParser;
-import static mame056.hiscore.*;
 import java.util.ArrayList;
 
 import static mame056.commonH.*;
@@ -21,6 +20,7 @@ import static mame056.cpuintrf.cpunum_write_byte;
 import static mame056.cpuintrfH.cpu_gettotalcpu;
 import static mame056.input.*;
 import static mame056.inputH.*;
+import static mame056.usrintrf.*;
 
 public class cheat {
 

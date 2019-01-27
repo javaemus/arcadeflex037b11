@@ -5,10 +5,13 @@ package mame056;
 
 import static arcadeflex.libc.cstdio.sprintf;
 import arcadeflex.libc.ptr.UBytePtr;
+import static arcadeflex.video.osd_get_brightness;
 import static arcadeflex.video.osd_save_snapshot;
+import static arcadeflex.video.osd_set_brightness;
 import static common.libc.cstring.memset;
 import static common.libc.expressions.sizeof;
 import common.subArrays.IntArray;
+import static mame.cheat.cheat_menu;
 import mame.drawgfxH.GfxElement;
 import mame.drawgfxH.GfxLayout;
 import static mame.drawgfxH.TRANSPARENCY_NONE;
@@ -34,10 +37,13 @@ import static old2.mame.mame.*;
 import static old2.mame.mameH.MAX_GFX_ELEMENTS;
 import static mame056.common.snapno;
 import static mame056.commonH.COIN_COUNTERS;
+import static mame056.cpuexec.machine_reset;
 import static mame056.ui_text.*;
 import static mame056.ui_textH.*;
 import static mame056.usrintrfH.SEL_BITS;
 import static mame056.usrintrfH.SEL_MASK;
+import static old.arcadeflex.sound.osd_get_mastervolume;
+import static old.arcadeflex.sound.osd_set_mastervolume;
 import static old.mame.inptport.*;
 
 public class usrintrf {
@@ -1413,7 +1419,8 @@ public class usrintrf {
                 }
 
             } else {
-                menu_subitem[i] = null;	/* no subitem */
+                menu_subitem[i] = null;
+                /* no subitem */
             }
         }
         if (sel > SEL_MASK) /* are we waiting for a new key? */ {
@@ -2526,27 +2533,35 @@ public class usrintrf {
 /*TODO*///#endif
 /*TODO*///#endif
 /*TODO*///
-/*TODO*///
-/*TODO*///enum { UI_SWITCH = 0,UI_DEFCODE,UI_CODE,UI_ANALOG,UI_CALIBRATE,
-/*TODO*///		UI_STATS,UI_GAMEINFO, UI_HISTORY,
-/*TODO*///		UI_CHEAT,UI_RESET,UI_MEMCARD,UI_EXIT };
-/*TODO*///
-/*TODO*///
-/*TODO*///#define MAX_SETUPMENU_ITEMS 20
-/*TODO*///static const char *menu_item[MAX_SETUPMENU_ITEMS];
-/*TODO*///static int menu_action[MAX_SETUPMENU_ITEMS];
-/*TODO*///static int menu_total;
-/*TODO*///
-/*TODO*///
-/*TODO*///static void setup_menu_init(void)
-/*TODO*///{
-/*TODO*///	menu_total = 0;
-/*TODO*///
-/*TODO*///	menu_item[menu_total] = ui_getstring (UI_inputgeneral); menu_action[menu_total++] = UI_DEFCODE;
-/*TODO*///	menu_item[menu_total] = ui_getstring (UI_inputspecific); menu_action[menu_total++] = UI_CODE;
-/*TODO*///	menu_item[menu_total] = ui_getstring (UI_dipswitches); menu_action[menu_total++] = UI_SWITCH;
-/*TODO*///
-/*TODO*///	/* Determine if there are any analog controls */
+    public static final int UI_SWITCH = 0;
+    public static final int UI_DEFCODE = 1;
+    public static final int UI_CODE = 2;
+    public static final int UI_ANALOG = 3;
+    public static final int UI_CALIBRATE = 4;
+    public static final int UI_STATS = 5;
+    public static final int UI_GAMEINFO = 6;
+    public static final int UI_HISTORY = 7;
+    public static final int UI_CHEAT = 8;
+    public static final int UI_RESET = 9;
+    public static final int UI_MEMCARD = 10;
+    public static final int UI_EXIT = 11;
+
+    public static final int MAX_SETUPMENU_ITEMS = 20;
+    static String[] menu_item = new String[MAX_SETUPMENU_ITEMS];
+    static int[] menu_action = new int[MAX_SETUPMENU_ITEMS];
+    static int menu_total;
+
+    static void setup_menu_init() {
+        menu_total = 0;
+
+        menu_item[menu_total] = ui_getstring(UI_inputgeneral);
+        menu_action[menu_total++] = UI_DEFCODE;
+        menu_item[menu_total] = ui_getstring(UI_inputspecific);
+        menu_action[menu_total++] = UI_CODE;
+        menu_item[menu_total] = ui_getstring(UI_dipswitches);
+        menu_action[menu_total++] = UI_SWITCH;
+
+        /*TODO*///	/* Determine if there are any analog controls */
 /*TODO*///	{
 /*TODO*///		struct InputPort *in;
 /*TODO*///		int num;
@@ -2573,140 +2588,136 @@ public class usrintrf {
 /*TODO*///	{
 /*TODO*///		menu_item[menu_total] = ui_getstring (UI_calibrate); menu_action[menu_total++] = UI_CALIBRATE;
 /*TODO*///	}
-/*TODO*///
-/*TODO*///	menu_item[menu_total] = ui_getstring (UI_bookkeeping); menu_action[menu_total++] = UI_STATS;
-/*TODO*///	menu_item[menu_total] = ui_getstring (UI_gameinfo); menu_action[menu_total++] = UI_GAMEINFO;
-/*TODO*///	menu_item[menu_total] = ui_getstring (UI_history); menu_action[menu_total++] = UI_HISTORY;
-/*TODO*///
-/*TODO*///	if (options.cheat)
-/*TODO*///	{
-/*TODO*///		menu_item[menu_total] = ui_getstring (UI_cheat); menu_action[menu_total++] = UI_CHEAT;
-/*TODO*///	}
-/*TODO*///	if (Machine->gamedrv->clone_of == &driver_neogeo ||
+        menu_item[menu_total] = ui_getstring(UI_bookkeeping);
+        menu_action[menu_total++] = UI_STATS;
+        menu_item[menu_total] = ui_getstring(UI_gameinfo);
+        menu_action[menu_total++] = UI_GAMEINFO;
+        menu_item[menu_total] = ui_getstring(UI_history);
+        menu_action[menu_total++] = UI_HISTORY;
+
+        if (options.cheat != 0) {
+            menu_item[menu_total] = ui_getstring(UI_cheat);
+            menu_action[menu_total++] = UI_CHEAT;
+        }
+        /*TODO*///	if (Machine->gamedrv->clone_of == &driver_neogeo ||
 /*TODO*///			(Machine->gamedrv->clone_of &&
 /*TODO*///				Machine->gamedrv->clone_of->clone_of == &driver_neogeo))
 /*TODO*///	{
 /*TODO*///		menu_item[menu_total] = ui_getstring (UI_memorycard); menu_action[menu_total++] = UI_MEMCARD;
 /*TODO*///	}
-/*TODO*///	menu_item[menu_total] = ui_getstring (UI_resetgame); menu_action[menu_total++] = UI_RESET;
-/*TODO*///	menu_item[menu_total] = ui_getstring (UI_returntogame); menu_action[menu_total++] = UI_EXIT;
-/*TODO*///	menu_item[menu_total] = 0; /* terminate array */
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///static int setup_menu(struct mame_bitmap *bitmap, int selected)
-/*TODO*///{
-/*TODO*///	int sel,res=-1;
-/*TODO*///	static int menu_lastselected = 0;
-/*TODO*///
-/*TODO*///
-/*TODO*///	if (selected == -1)
-/*TODO*///		sel = menu_lastselected;
-/*TODO*///	else sel = selected - 1;
-/*TODO*///
-/*TODO*///	if (sel > SEL_MASK)
-/*TODO*///	{
-/*TODO*///		switch (menu_action[sel & SEL_MASK])
-/*TODO*///		{
-/*TODO*///			case UI_SWITCH:
-/*TODO*///				res = setdipswitches(bitmap, sel >> SEL_BITS);
-/*TODO*///				break;
-/*TODO*///			case UI_DEFCODE:
-/*TODO*///				res = setdefcodesettings(bitmap, sel >> SEL_BITS);
-/*TODO*///				break;
-/*TODO*///			case UI_CODE:
-/*TODO*///				res = setcodesettings(bitmap, sel >> SEL_BITS);
-/*TODO*///				break;
-/*TODO*///			case UI_ANALOG:
+        menu_item[menu_total] = ui_getstring(UI_resetgame);
+        menu_action[menu_total++] = UI_RESET;
+        menu_item[menu_total] = ui_getstring(UI_returntogame);
+        menu_action[menu_total++] = UI_EXIT;
+        menu_item[menu_total] = null;/* terminate array */
+    }
+
+    static int menu_lastselected = 0;
+
+    public static int setup_menu(mame_bitmap bitmap, int selected) {
+        int sel, res = -1;
+
+        if (selected == -1) {
+            sel = menu_lastselected;
+        } else {
+            sel = selected - 1;
+        }
+
+        if (sel > SEL_MASK) {
+            switch (menu_action[sel & SEL_MASK]) {
+                case UI_SWITCH:
+                    res = setdipswitches(bitmap, sel >> SEL_BITS);
+                    break;
+                case UI_DEFCODE:
+                    res = setdefcodesettings(bitmap, sel >> SEL_BITS);
+                    break;
+                case UI_CODE:
+                    res = setcodesettings(bitmap, sel >> SEL_BITS);
+                    break;
+                /*TODO*///			case UI_ANALOG:
 /*TODO*///				res = settraksettings(bitmap, sel >> SEL_BITS);
 /*TODO*///				break;
 /*TODO*///			case UI_CALIBRATE:
 /*TODO*///				res = calibratejoysticks(bitmap, sel >> SEL_BITS);
 /*TODO*///				break;
-/*TODO*///			case UI_STATS:
-/*TODO*///				res = mame_stats(bitmap, sel >> SEL_BITS);
-/*TODO*///				break;
-/*TODO*///			case UI_GAMEINFO:
-/*TODO*///				res = displaygameinfo(bitmap, sel >> SEL_BITS);
-/*TODO*///				break;
-/*TODO*///			case UI_HISTORY:
-/*TODO*///				res = displayhistory(bitmap, sel >> SEL_BITS);
-/*TODO*///				break;
-/*TODO*///			case UI_CHEAT:
-/*TODO*///				res = cheat_menu(bitmap, sel >> SEL_BITS);
-/*TODO*///				break;
-/*TODO*///			case UI_MEMCARD:
+                case UI_STATS:
+                    res = mame_stats(bitmap, sel >> SEL_BITS);
+                    break;
+                case UI_GAMEINFO:
+                    res = displaygameinfo(bitmap, sel >> SEL_BITS);
+                    break;
+                case UI_HISTORY:
+                    res = displayhistory(bitmap, sel >> SEL_BITS);
+                    break;
+                case UI_CHEAT:
+                    res = cheat_menu(bitmap, sel >> SEL_BITS);
+                    break;
+                /*TODO*///			case UI_MEMCARD:
 /*TODO*///				res = memcard_menu(bitmap, sel >> SEL_BITS);
 /*TODO*///				break;
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		if (res == -1)
-/*TODO*///		{
-/*TODO*///			menu_lastselected = sel;
-/*TODO*///			sel = -1;
-/*TODO*///		}
-/*TODO*///		else
-/*TODO*///			sel = (sel & SEL_MASK) | (res << SEL_BITS);
-/*TODO*///
-/*TODO*///		return sel + 1;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///
-/*TODO*///	ui_displaymenu(bitmap,menu_item,0,0,sel,0);
-/*TODO*///
-/*TODO*///	if (input_ui_pressed_repeat(IPT_UI_DOWN,8))
-/*TODO*///		sel = (sel + 1) % menu_total;
-/*TODO*///
-/*TODO*///	if (input_ui_pressed_repeat(IPT_UI_UP,8))
-/*TODO*///		sel = (sel + menu_total - 1) % menu_total;
-/*TODO*///
-/*TODO*///	if (input_ui_pressed(IPT_UI_SELECT))
-/*TODO*///	{
-/*TODO*///		switch (menu_action[sel])
-/*TODO*///		{
-/*TODO*///			case UI_SWITCH:
-/*TODO*///			case UI_DEFCODE:
-/*TODO*///			case UI_CODE:
-/*TODO*///			case UI_ANALOG:
-/*TODO*///			case UI_CALIBRATE:
-/*TODO*///			case UI_STATS:
-/*TODO*///			case UI_GAMEINFO:
-/*TODO*///			case UI_HISTORY:
-/*TODO*///			case UI_CHEAT:
-/*TODO*///			case UI_MEMCARD:
-/*TODO*///				sel |= 1 << SEL_BITS;
-/*TODO*///				schedule_full_refresh();
-/*TODO*///				break;
-/*TODO*///
-/*TODO*///			case UI_RESET:
-/*TODO*///				machine_reset();
-/*TODO*///				break;
-/*TODO*///
-/*TODO*///			case UI_EXIT:
-/*TODO*///				menu_lastselected = 0;
-/*TODO*///				sel = -1;
-/*TODO*///				break;
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	if (input_ui_pressed(IPT_UI_CANCEL) ||
-/*TODO*///			input_ui_pressed(IPT_UI_CONFIGURE))
-/*TODO*///	{
-/*TODO*///		menu_lastselected = sel;
-/*TODO*///		sel = -1;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	if (sel == -1)
-/*TODO*///	{
-/*TODO*///		schedule_full_refresh();
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	return sel + 1;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
-/*TODO*////*********************************************************************
+            }
+
+            if (res == -1) {
+                menu_lastselected = sel;
+                sel = -1;
+            } else {
+                sel = (sel & SEL_MASK) | (res << SEL_BITS);
+            }
+
+            return sel + 1;
+        }
+
+        ui_displaymenu(bitmap, menu_item, null, null, sel, 0);
+
+        if (input_ui_pressed_repeat(IPT_UI_DOWN, 8) != 0) {
+            sel = (sel + 1) % menu_total;
+        }
+
+        if (input_ui_pressed_repeat(IPT_UI_UP, 8) != 0) {
+            sel = (sel + menu_total - 1) % menu_total;
+        }
+
+        if (input_ui_pressed(IPT_UI_SELECT) != 0) {
+            switch (menu_action[sel]) {
+                case UI_SWITCH:
+                case UI_DEFCODE:
+                case UI_CODE:
+                case UI_ANALOG:
+                case UI_CALIBRATE:
+                case UI_STATS:
+                case UI_GAMEINFO:
+                case UI_HISTORY:
+                case UI_CHEAT:
+                case UI_MEMCARD:
+                    sel |= 1 << SEL_BITS;
+                    schedule_full_refresh();
+                    break;
+
+                case UI_RESET:
+                    machine_reset();
+                    break;
+
+                case UI_EXIT:
+                    menu_lastselected = 0;
+                    sel = -1;
+                    break;
+            }
+        }
+
+        if (input_ui_pressed(IPT_UI_CANCEL) != 0
+                || input_ui_pressed(IPT_UI_CONFIGURE) != 0) {
+            menu_lastselected = sel;
+            sel = -1;
+        }
+
+        if (sel == -1) {
+            schedule_full_refresh();
+        }
+
+        return sel + 1;
+    }
+
+    /*TODO*////*********************************************************************
 /*TODO*///
 /*TODO*///  start of On Screen Display handling
 /*TODO*///
@@ -2742,27 +2753,30 @@ public class usrintrf {
 /*TODO*///}
 /*TODO*///
 /*TODO*///
-/*TODO*///
-/*TODO*///static void onscrd_volume(struct mame_bitmap *bitmap,int increment,int arg)
-/*TODO*///{
-/*TODO*///	char buf[20];
-/*TODO*///	int attenuation;
-/*TODO*///
-/*TODO*///	if (increment)
-/*TODO*///	{
-/*TODO*///		attenuation = osd_get_mastervolume();
-/*TODO*///		attenuation += increment;
-/*TODO*///		if (attenuation > 0) attenuation = 0;
-/*TODO*///		if (attenuation < -32) attenuation = -32;
-/*TODO*///		osd_set_mastervolume(attenuation);
-/*TODO*///	}
-/*TODO*///	attenuation = osd_get_mastervolume();
-/*TODO*///
-/*TODO*///	sprintf(buf,"%s %3ddB", ui_getstring (UI_volume), attenuation);
-/*TODO*///	displayosd(bitmap,buf,100 * (attenuation + 32) / 32,100);
-/*TODO*///}
-/*TODO*///
-/*TODO*///static void onscrd_mixervol(struct mame_bitmap *bitmap,int increment,int arg)
+    public static onscrd_fncPtr onscrd_volume = new onscrd_fncPtr() {
+        public void handler(mame_bitmap bitmap, int increment, int arg) {
+            String buf;
+            int attenuation;
+
+            if (increment != 0) {
+                attenuation = osd_get_mastervolume();
+                attenuation += increment;
+                if (attenuation > 0) {
+                    attenuation = 0;
+                }
+                if (attenuation < -32) {
+                    attenuation = -32;
+                }
+                osd_set_mastervolume(attenuation);
+            }
+            attenuation = osd_get_mastervolume();
+
+            buf = sprintf("%s %3ddB", ui_getstring(UI_volume), attenuation);
+            displayosd(bitmap, buf, 100 * (attenuation + 32) / 32, 100);
+        }
+    };
+
+    /*TODO*///static void onscrd_mixervol(struct mame_bitmap *bitmap,int increment,int arg)
 /*TODO*///{
 /*TODO*///	static void *driver = 0;
 /*TODO*///	char buf[40];
@@ -2844,28 +2858,29 @@ public class usrintrf {
 /*TODO*///		sprintf(buf,"%s %s %3d%%",mixer_get_name(arg), ui_getstring (UI_volume), volume);
 /*TODO*///	displayosd(bitmap,buf,volume,mixer_get_default_mixing_level(arg));
 /*TODO*///}
-/*TODO*///
-/*TODO*///static void onscrd_brightness(struct mame_bitmap *bitmap,int increment,int arg)
-/*TODO*///{
-/*TODO*///	char buf[20];
-/*TODO*///	int brightness;
-/*TODO*///
-/*TODO*///
-/*TODO*///	if (increment)
-/*TODO*///	{
-/*TODO*///		brightness = osd_get_brightness();
-/*TODO*///		brightness += 5 * increment;
-/*TODO*///		if (brightness < 0) brightness = 0;
-/*TODO*///		if (brightness > 100) brightness = 100;
-/*TODO*///		osd_set_brightness(brightness);
-/*TODO*///	}
-/*TODO*///	brightness = osd_get_brightness();
-/*TODO*///
-/*TODO*///	sprintf(buf,"%s %3d%%", ui_getstring (UI_brightness), brightness);
-/*TODO*///	displayosd(bitmap,buf,brightness,100);
-/*TODO*///}
-/*TODO*///
-/*TODO*///static void onscrd_gamma(struct mame_bitmap *bitmap,int increment,int arg)
+    public static onscrd_fncPtr onscrd_brightness = new onscrd_fncPtr() {
+        public void handler(mame_bitmap bitmap, int increment, int arg) {
+            String buf;
+            int brightness;
+
+            if (increment != 0) {
+                brightness = osd_get_brightness();
+                brightness += 5 * increment;
+                if (brightness < 0) {
+                    brightness = 0;
+                }
+                if (brightness > 100) {
+                    brightness = 100;
+                }
+                osd_set_brightness(brightness);
+            }
+            brightness = osd_get_brightness();
+            buf = sprintf("%s %3d%%", ui_getstring(UI_brightness), brightness);
+            displayosd(bitmap, buf, brightness, 100);
+        }
+    };
+
+    /*TODO*///static void onscrd_gamma(struct mame_bitmap *bitmap,int increment,int arg)
 /*TODO*///{
 /*TODO*///	char buf[20];
 /*TODO*///	float gamma_correction;
@@ -2964,24 +2979,28 @@ public class usrintrf {
 /*TODO*///	displayosd(bitmap,buf,oc/2,100/2);
 /*TODO*///}
 /*TODO*///
-/*TODO*///#define MAX_OSD_ITEMS 30
-/*TODO*///static void (*onscrd_fnc[MAX_OSD_ITEMS])(struct mame_bitmap *bitmap,int increment,int arg);
-/*TODO*///static int onscrd_arg[MAX_OSD_ITEMS];
-/*TODO*///static int onscrd_total_items;
-/*TODO*///
-/*TODO*///static void onscrd_init(void)
-/*TODO*///{
-/*TODO*///	int item,ch;
-/*TODO*///
-/*TODO*///
-/*TODO*///	item = 0;
-/*TODO*///
-/*TODO*///	if (Machine->sample_rate)
-/*TODO*///	{
-/*TODO*///		onscrd_fnc[item] = onscrd_volume;
-/*TODO*///		onscrd_arg[item] = 0;
-/*TODO*///		item++;
-/*TODO*///
+    public static final int MAX_OSD_ITEMS = 30;
+
+    public static abstract interface onscrd_fncPtr {
+
+        public abstract void handler(mame_bitmap bitmap, int increment, int arg);
+
+    }
+
+    public static onscrd_fncPtr[] onscrd_fnc = new onscrd_fncPtr[MAX_OSD_ITEMS];
+    public static int[] onscrd_arg = new int[MAX_OSD_ITEMS];
+    static int onscrd_total_items;
+
+    public static void onscrd_init() {
+        int item, ch;
+
+        item = 0;
+
+        if (Machine.sample_rate != 0) {
+            onscrd_fnc[item] = onscrd_volume;
+            onscrd_arg[item] = 0;
+            item++;
+            /*TODO*///
 /*TODO*///		for (ch = 0;ch < MIXER_MAX_CHANNELS;ch++)
 /*TODO*///		{
 /*TODO*///			if (mixer_get_name(ch) != 0)
@@ -2991,8 +3010,8 @@ public class usrintrf {
 /*TODO*///				item++;
 /*TODO*///			}
 /*TODO*///		}
-/*TODO*///	}
-/*TODO*///
+        }
+        /*TODO*///
 /*TODO*///	if (options.cheat)
 /*TODO*///	{
 /*TODO*///		for (ch = 0;ch < cpu_gettotalcpu();ch++)
@@ -3003,10 +3022,10 @@ public class usrintrf {
 /*TODO*///		}
 /*TODO*///	}
 /*TODO*///
-/*TODO*///	onscrd_fnc[item] = onscrd_brightness;
-/*TODO*///	onscrd_arg[item] = 0;
-/*TODO*///	item++;
-/*TODO*///
+        onscrd_fnc[item] = onscrd_brightness;
+        onscrd_arg[item] = 0;
+        item++;
+        /*TODO*///
 /*TODO*///	onscrd_fnc[item] = onscrd_gamma;
 /*TODO*///	onscrd_arg[item] = 0;
 /*TODO*///	item++;
@@ -3022,44 +3041,47 @@ public class usrintrf {
 /*TODO*///		item++;
 /*TODO*///	}
 /*TODO*///
-/*TODO*///	onscrd_total_items = item;
-/*TODO*///}
-/*TODO*///
-/*TODO*///static int on_screen_display(struct mame_bitmap *bitmap, int selected)
-/*TODO*///{
-/*TODO*///	int increment,sel;
-/*TODO*///	static int lastselected = 0;
-/*TODO*///
-/*TODO*///
-/*TODO*///	if (selected == -1)
-/*TODO*///		sel = lastselected;
-/*TODO*///	else sel = selected - 1;
-/*TODO*///
-/*TODO*///	increment = 0;
-/*TODO*///	if (input_ui_pressed_repeat(IPT_UI_LEFT,8))
-/*TODO*///		increment = -1;
-/*TODO*///	if (input_ui_pressed_repeat(IPT_UI_RIGHT,8))
-/*TODO*///		increment = 1;
-/*TODO*///	if (input_ui_pressed_repeat(IPT_UI_DOWN,8))
-/*TODO*///		sel = (sel + 1) % onscrd_total_items;
-/*TODO*///	if (input_ui_pressed_repeat(IPT_UI_UP,8))
-/*TODO*///		sel = (sel + onscrd_total_items - 1) % onscrd_total_items;
-/*TODO*///
-/*TODO*///	(*onscrd_fnc[sel])(bitmap,increment,onscrd_arg[sel]);
-/*TODO*///
-/*TODO*///	lastselected = sel;
-/*TODO*///
-/*TODO*///	if (input_ui_pressed(IPT_UI_ON_SCREEN_DISPLAY))
-/*TODO*///	{
-/*TODO*///		sel = -1;
-/*TODO*///
-/*TODO*///		schedule_full_refresh();
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	return sel + 1;
-/*TODO*///}
-/*TODO*///
-/*TODO*////*********************************************************************
+        onscrd_total_items = item;
+    }
+    static int lastselected = 0;
+
+    public static int on_screen_display(mame_bitmap bitmap, int selected) {
+        int increment, sel;
+
+        if (selected == -1) {
+            sel = lastselected;
+        } else {
+            sel = selected - 1;
+        }
+
+        increment = 0;
+        if (input_ui_pressed_repeat(IPT_UI_LEFT, 8) != 0) {
+            increment = -1;
+        }
+        if (input_ui_pressed_repeat(IPT_UI_RIGHT, 8) != 0) {
+            increment = 1;
+        }
+        if (input_ui_pressed_repeat(IPT_UI_DOWN, 8) != 0) {
+            sel = (sel + 1) % onscrd_total_items;
+        }
+        if (input_ui_pressed_repeat(IPT_UI_UP, 8) != 0) {
+            sel = (sel + onscrd_total_items - 1) % onscrd_total_items;
+        }
+
+        onscrd_fnc[sel].handler(bitmap, increment, onscrd_arg[sel]);
+
+        lastselected = sel;
+
+        if (input_ui_pressed(IPT_UI_ON_SCREEN_DISPLAY) != 0) {
+            sel = -1;
+
+            schedule_full_refresh();
+        }
+
+        return sel + 1;
+    }
+
+    /*TODO*////*********************************************************************
 /*TODO*///
 /*TODO*///  end of On Screen Display handling
 /*TODO*///
@@ -3094,19 +3116,15 @@ public class usrintrf {
 /*TODO*///}
 /*TODO*///
 /*TODO*///
-/*TODO*///static char messagetext[80];
-/*TODO*///static int messagecounter;
-/*TODO*///
-/*TODO*///void CLIB_DECL usrintf_showmessage(const char *text,...)
-/*TODO*///{
-/*TODO*///	va_list arg;
-/*TODO*///	va_start(arg,text);
-/*TODO*///	vsprintf(messagetext,text,arg);
-/*TODO*///	va_end(arg);
-/*TODO*///	messagecounter = 2 * Machine->drv->frames_per_second;
-/*TODO*///}
-/*TODO*///
-/*TODO*///void CLIB_DECL usrintf_showmessage_secs(int seconds, const char *text,...)
+    public static String messagetext;
+    public static int messagecounter;
+
+    public static void usrintf_showmessage(String text, Object... arg) {
+        messagetext = sprintf(text, arg);
+        messagecounter = (int) (2 * Machine.drv.frames_per_second);
+    }
+
+    /*TODO*///void CLIB_DECL usrintf_showmessage_secs(int seconds, const char *text,...)
 /*TODO*///{
 /*TODO*///	va_list arg;
 /*TODO*///	va_start(arg,text);
@@ -3154,54 +3172,6 @@ public class usrintrf {
 /*TODO*///		}
 /*TODO*///	}
 /*TODO*///	if (osd_selected != 0) osd_selected = on_screen_display(bitmap, osd_selected);
-/*TODO*///
-/*TODO*///
-/*TODO*///#if 0
-/*TODO*///	if (keyboard_pressed_memory(KEYCODE_BACKSPACE))
-/*TODO*///	{
-/*TODO*///		if (jukebox_selected != -1)
-/*TODO*///		{
-/*TODO*///			jukebox_selected = -1;
-/*TODO*///			cpu_halt(0,1);
-/*TODO*///		}
-/*TODO*///		else
-/*TODO*///		{
-/*TODO*///			jukebox_selected = 0;
-/*TODO*///			cpu_halt(0,0);
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	if (jukebox_selected != -1)
-/*TODO*///	{
-/*TODO*///		char buf[40];
-/*TODO*///		watchdog_reset_w(0,0);
-/*TODO*///		if (keyboard_pressed_memory(KEYCODE_LCONTROL))
-/*TODO*///		{
-/*TODO*///#include "cpu/z80/z80.h"
-/*TODO*///			soundlatch_w(0,jukebox_selected);
-/*TODO*///			cpu_cause_interrupt(1,Z80_NMI_INT);
-/*TODO*///		}
-/*TODO*///		if (input_ui_pressed_repeat(IPT_UI_RIGHT,8))
-/*TODO*///		{
-/*TODO*///			jukebox_selected = (jukebox_selected + 1) & 0xff;
-/*TODO*///		}
-/*TODO*///		if (input_ui_pressed_repeat(IPT_UI_LEFT,8))
-/*TODO*///		{
-/*TODO*///			jukebox_selected = (jukebox_selected - 1) & 0xff;
-/*TODO*///		}
-/*TODO*///		if (input_ui_pressed_repeat(IPT_UI_UP,8))
-/*TODO*///		{
-/*TODO*///			jukebox_selected = (jukebox_selected + 16) & 0xff;
-/*TODO*///		}
-/*TODO*///		if (input_ui_pressed_repeat(IPT_UI_DOWN,8))
-/*TODO*///		{
-/*TODO*///			jukebox_selected = (jukebox_selected - 16) & 0xff;
-/*TODO*///		}
-/*TODO*///		sprintf(buf,"sound cmd %02x",jukebox_selected);
-/*TODO*///		displaymessage(buf);
-/*TODO*///	}
-/*TODO*///#endif
-/*TODO*///
 /*TODO*///
 /*TODO*///	/* if the user pressed F3, reset the emulation */
 /*TODO*///	if (input_ui_pressed(IPT_UI_RESET_MACHINE))

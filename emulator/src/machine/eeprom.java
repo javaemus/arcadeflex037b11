@@ -11,7 +11,7 @@ import static mame056.cpuintrfH.CLEAR_LINE;
 import static mame056.cpuintrfH.PULSE_LINE;
 import static old.arcadeflex.fileio.*;
 import static old.arcadeflex.libc_old.*;
-import static old.mame.usrintrf.*;
+import static mame056.usrintrf.*;
 import static old.arcadeflex.osdepend.*;
 
 public class eeprom {

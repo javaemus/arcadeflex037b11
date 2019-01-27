@@ -18,7 +18,7 @@ import static mame.drawgfxH.*;
 import static mame.driverH.*;
 import static old2.mame.mame.Machine;
 import static mame056.commonH.*;
-import static old.mame.usrintrf.usrintf_showmessage;
+import static mame056.usrintrf.*;
 import static old2.mame.drawgfx.*;
 import static mame056.commonH.*;
 

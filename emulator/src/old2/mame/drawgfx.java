@@ -12,11 +12,11 @@ import static old.mame.drawgfx.*;
 import java.util.Arrays;
 import static mame.driverH.ORIENTATION_FLIP_X;
 import static mame.driverH.ORIENTATION_FLIP_Y;
-import static old.mame.usrintrf.usrintf_showmessage;
 import static arcadeflex.libc.cstring.*;
 import static common.libc.expressions.NOT;
 import common.subArrays.IntArray;
 import common.subArrays.UShortArray;
+import static mame056.usrintrf.usrintf_showmessage;
 public class drawgfx {
 
     /*TODO*///
