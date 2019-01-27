@@ -1799,49 +1799,47 @@ public class usrintrf {
         return sel + 1;
     }
 
-    /*TODO*///
-/*TODO*///int showcopyright(struct mame_bitmap *bitmap)
-/*TODO*///{
-/*TODO*///	int done;
-/*TODO*///	char buf[1000];
-/*TODO*///	char buf2[256];
-/*TODO*///
-/*TODO*///	strcpy (buf, ui_getstring(UI_copyright1));
-/*TODO*///	strcat (buf, "\n\n");
-/*TODO*///	sprintf(buf2, ui_getstring(UI_copyright2), Machine->gamedrv->description);
-/*TODO*///	strcat (buf, buf2);
-/*TODO*///	strcat (buf, "\n\n");
-/*TODO*///	strcat (buf, ui_getstring(UI_copyright3));
-/*TODO*///
-/*TODO*///	erase_screen(bitmap);
-/*TODO*///	ui_displaymessagewindow(bitmap,buf);
-/*TODO*///
-/*TODO*///	setup_selected = -1;////
-/*TODO*///	done = 0;
-/*TODO*///	do
-/*TODO*///	{
-/*TODO*///		update_video_and_audio();
-/*TODO*///		if (input_ui_pressed(IPT_UI_CANCEL))
-/*TODO*///		{
-/*TODO*///			setup_selected = 0;////
-/*TODO*///			return 1;
-/*TODO*///		}
-/*TODO*///		if (keyboard_pressed_memory(KEYCODE_O) ||
-/*TODO*///				input_ui_pressed(IPT_UI_LEFT))
-/*TODO*///			done = 1;
-/*TODO*///		if (done == 1 && (keyboard_pressed_memory(KEYCODE_K) ||
-/*TODO*///				input_ui_pressed(IPT_UI_RIGHT)))
-/*TODO*///			done = 2;
-/*TODO*///	} while (done < 2);
-/*TODO*///
-/*TODO*///	setup_selected = 0;////
-/*TODO*///	erase_screen(bitmap);
-/*TODO*///	update_video_and_audio();
-/*TODO*///
-/*TODO*///	return 0;
-/*TODO*///}
-/*TODO*///
-/*TODO*///static int displaygameinfo(struct mame_bitmap *bitmap,int selected)
+    public static int showcopyright(mame_bitmap bitmap) {
+        int done;
+        String buf = "";
+        String buf2 = "";
+
+        buf = ui_getstring(UI_copyright1);
+        buf += "\n\n";
+        buf2 = sprintf(ui_getstring(UI_copyright2), Machine.gamedrv.description);
+        buf += buf2;
+        buf += "\n\n";
+        buf += ui_getstring(UI_copyright3);
+
+        erase_screen(bitmap);
+        ui_displaymessagewindow(bitmap, buf);
+
+        setup_selected = -1;////
+        done = 0;
+        do {
+            update_video_and_audio();
+            if (input_ui_pressed(IPT_UI_CANCEL) != 0) {
+                setup_selected = 0;////
+                return 1;
+            }
+            if (keyboard_pressed_memory(KEYCODE_O) != 0
+                    || input_ui_pressed(IPT_UI_LEFT) != 0) {
+                done = 1;
+            }
+            if (done == 1 && (keyboard_pressed_memory(KEYCODE_K) != 0
+                    || input_ui_pressed(IPT_UI_RIGHT) != 0)) {
+                done = 2;
+            }
+        } while (done < 2);
+
+        setup_selected = 0;////
+        erase_screen(bitmap);
+        update_video_and_audio();
+
+        return 0;
+    }
+
+    /*TODO*///static int displaygameinfo(struct mame_bitmap *bitmap,int selected)
 /*TODO*///{
 /*TODO*///	int i;
 /*TODO*///	char buf[2048];

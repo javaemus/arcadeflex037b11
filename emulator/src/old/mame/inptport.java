@@ -67,6 +67,7 @@ public class inptport {
         {
             put("Off", "Off");
             put("On", "On");
+            put("No","No");
             put("Yes", "Yes");
             put("Lives", "Lives");
             put("Bonus_Life", "Bonus Life");

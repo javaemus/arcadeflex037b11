@@ -476,48 +476,6 @@ public class usrintrf {
         used = null;
     }
 
- 
-
-
-
-
-    public static int showcopyright(mame_bitmap bitmap) {
-        int done;
-        String buf = "";
-        String buf2 = "";
-
-        buf = ui_getstring(UI_copyright1);
-        buf += "\n\n";
-        buf2 = sprintf(ui_getstring(UI_copyright2), Machine.gamedrv.description);
-        buf += buf2;
-        buf += "\n\n";
-        buf += ui_getstring(UI_copyright3);
-
-        ui_displaymessagewindow(bitmap, buf);
-
-        setup_selected = -1;////
-        done = 0;
-        do {
-            update_video_and_audio();
-/*TODO*///		osd_poll_joysticks();
-            if (input_ui_pressed(IPT_UI_CANCEL) != 0) {
-                setup_selected = 0;////
-                return 1;
-            }
-            if (keyboard_pressed_memory(KEYCODE_O) != 0 ||
-                    input_ui_pressed(IPT_UI_LEFT) != 0)
-                done = 1;
-            if (done == 1 && (keyboard_pressed_memory(KEYCODE_K) != 0 ||
-                    input_ui_pressed(IPT_UI_RIGHT) != 0))
-                done = 2;
-        } while (done < 2);
-
-        setup_selected = 0;////
-        osd_clearbitmap(bitmap);
-        update_video_and_audio();
-
-        return 0;
-    }
 
     public static int displaygameinfo(mame_bitmap bitmap, int selected) {
         int i;
