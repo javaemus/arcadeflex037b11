@@ -17,7 +17,7 @@ import static old.arcadeflex.fileio.*;
 import old.arcadeflex.libc_old.FILE;
 import static old.arcadeflex.libc_old.*;
 import static old2.mame.mame.*;
-import static old2.mame.mameH.MAX_MEMORY_REGIONS;
+import static mame056.mameH.*;
 import static mame056.cpuexecH.CPU_FLAGS_MASK;
 import static mame056.cpuintrf.cputype_databus_width;
 import static mame056.cpuintrf.cputype_endianess;

@@ -19,7 +19,7 @@ along with Arcadeflex.  If not, see <http://www.gnu.org/licenses/>.
  */
 package old2.mame;
 
-import static old2.mame.mameH.*;
+import static mame056.mameH.*;
 import static mame.artworkC.*;
 import static mame.cheat.*;
 import static old2.mame.tilemapC.*;

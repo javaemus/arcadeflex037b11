@@ -34,7 +34,7 @@ import static old.mame.usrintrf.*;
 import static old.mame.usrintrf.ui_text;
 import static old2.mame.common.schedule_full_refresh;
 import static old2.mame.mame.*;
-import static old2.mame.mameH.MAX_GFX_ELEMENTS;
+import static mame056.mameH.*;
 import static mame056.common.snapno;
 import static mame056.commonH.COIN_COUNTERS;
 import static mame056.cpuexec.machine_reset;
