@@ -12,7 +12,7 @@ import static mame.commonH.*;
 import static mame.sndintrfH.*;
 import static mame.sndintrf.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 //sndhrdw imports
 import static sndhrdw.scramble.*;
 //sound imports

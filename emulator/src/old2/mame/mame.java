@@ -43,7 +43,7 @@ import static old.mame.drawgfx.*;
 import static old.mame.drawgfx.set_pixel_functions;
 import static mame.drawgfxH.*;
 import static mame.driver.drivers;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.input.*;
 import static mame056.inputH.*;
 import static mame056.inptport.*;
@@ -98,12 +98,12 @@ public class mame {
         Machine.drv = drv = gamedrv.drv;
 
         /* copy configuration */
-        if (options.color_depth == 16
+        /*if (options.color_depth == 16
                 || (options.color_depth != 8 && (Machine.gamedrv.flags & GAME_REQUIRES_16BIT) != 0)) {
             Machine.color_depth = 16;
-        } else {
+        } else {*/
             Machine.color_depth = 8;
-        }
+        //}
         if (options.vector_width == 0) {
             options.vector_width = 640;
         }

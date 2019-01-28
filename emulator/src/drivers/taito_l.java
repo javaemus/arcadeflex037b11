@@ -13,7 +13,7 @@ import static sound._2610intf.*;
 import static sound._2151intfH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;
@@ -2293,7 +2293,7 @@ public class taito_l {
             gfxdecodeinfo2,
             256, 256,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             taitol_eof_callback,
             taitol_vh_start,
             null,
@@ -2335,7 +2335,7 @@ public class taito_l {
             gfxdecodeinfo2,
             256, 256,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             taitol_eof_callback,
             taitol_vh_start,
             null,
@@ -2376,7 +2376,7 @@ public class taito_l {
             gfxdecodeinfo2,
             256, 256,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             taitol_eof_callback,
             taitol_vh_start,
             null,
@@ -2412,7 +2412,7 @@ public class taito_l {
             gfxdecodeinfo1,
             256, 256,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             taitol_eof_callback,
             taitol_vh_start,
             null,
@@ -2441,7 +2441,7 @@ public class taito_l {
             gfxdecodeinfo1,
             256, 256,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             taitol_eof_callback,
             taitol_vh_start,
             null,
@@ -2471,7 +2471,7 @@ public class taito_l {
             gfxdecodeinfo1,
             256, 256,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             taitol_eof_callback,
             taitol_vh_start,
             null,
@@ -2501,7 +2501,7 @@ public class taito_l {
             gfxdecodeinfo1,
             256, 256,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             taitol_eof_callback,
             taitol_vh_start,
             null,
@@ -2531,7 +2531,7 @@ public class taito_l {
             gfxdecodeinfo1,
             256, 256,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             taitol_eof_callback,
             taitol_vh_start,
             null,
@@ -2561,7 +2561,7 @@ public class taito_l {
             gfxdecodeinfo1,
             256, 256,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             taitol_eof_callback,
             taitol_vh_start,
             null,

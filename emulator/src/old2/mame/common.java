@@ -23,16 +23,16 @@ import static arcadeflex.fucPtr.*;
 import static old2.mame.mame.Machine;
 import static old2.mame.mame.bitmap_dirty;
 import static arcadeflex.video.osd_alloc_bitmap;
-import static mame.driverH.ORIENTATION_SWAP_XY;
+import static mame056.driverH.ORIENTATION_SWAP_XY;
 import static mame056.commonH.*;
 import static arcadeflex.video.osd_free_bitmap;
 import static arcadeflex.video.osd_set_visible_area;
 import static old2.mame.tilemapC.*;
 import static old2.mame.tilemapH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.ORIENTATION_FLIP_X;
-import static mame.driverH.ORIENTATION_FLIP_Y;
-import static mame.driverH.VIDEO_TYPE_VECTOR;
+import static mame056.driverH.ORIENTATION_FLIP_X;
+import static mame056.driverH.ORIENTATION_FLIP_Y;
+import static mame056.driverH.VIDEO_TYPE_VECTOR;
 
 public class common {
 

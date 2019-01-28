@@ -10,7 +10,7 @@ import arcadeflex.libc.ptr.UBytePtr;
 import static old.arcadeflex.osdepend.logerror;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;
@@ -392,7 +392,7 @@ public class gundealr
 		512, 512,
 		null,
 	
-		VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+		VIDEO_TYPE_RASTER,
 		null,
 		gundealr_vh_start,
 		null,

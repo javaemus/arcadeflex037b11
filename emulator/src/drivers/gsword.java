@@ -7,7 +7,7 @@ import static mame056.cpu.z80.z80H.*;
 import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static old2.mame.memoryH.*;
 import static mame.commonH.*;
 import static mame056.inptport.*;

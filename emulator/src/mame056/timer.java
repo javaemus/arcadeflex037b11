@@ -4,7 +4,7 @@
  */
 package mame056;
 
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.cpuexecH.CPU_FLAGS_MASK;
 import mame056.cpuintrfH.burnPtr;
 import static mame056.cpuintrfH.cpu_gettotalcpu;

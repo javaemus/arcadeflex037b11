@@ -8,7 +8,7 @@ import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;
@@ -484,7 +484,7 @@ public class thief {
             null, /* no gfxdecodeinfo - bitmapped display */
             16, 16,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             thief_vh_start,
             thief_vh_stop,
@@ -520,7 +520,7 @@ public class thief {
             null,
             16, 16,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             thief_vh_start,
             thief_vh_stop,
@@ -556,7 +556,7 @@ public class thief {
             null,
             16, 16,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             thief_vh_start,
             thief_vh_stop,

@@ -7,7 +7,7 @@ import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static old.arcadeflex.osdepend.*;
 import static arcadeflex.libc.cstring.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static old2.mame.memoryH.*;
 import static mame.paletteH.*;
 import static old2.mame.mame.*;
@@ -73,7 +73,7 @@ public class palette {
             Machine.remapped_colortable = null;
 
         }
-        if (Machine.color_depth == 16 || (Machine.gamedrv.flags & GAME_REQUIRES_16BIT) != 0) {
+        if (Machine.color_depth == 16 /*|| (Machine.gamedrv.flags & GAME_REQUIRES_16BIT) != 0*/) {
             if (Machine.color_depth == 8 || Machine.drv.total_colors > 65532) {
                 use_16bit = STATIC_16BIT;
             } else {
@@ -85,11 +85,11 @@ public class palette {
 
         switch (use_16bit) {
             case NO_16BIT:
-                if ((Machine.drv.video_attributes & VIDEO_MODIFIES_PALETTE) != 0) {
-                    total_shrinked_pens = DYNAMIC_MAX_PENS;
-                } else {
+                //if ((Machine.drv.video_attributes & VIDEO_MODIFIES_PALETTE) != 0) {
+                //    total_shrinked_pens = DYNAMIC_MAX_PENS;
+                //} else {
                     total_shrinked_pens = STATIC_MAX_PENS;
-                }
+                //}
                 break;
             case STATIC_16BIT:
                 total_shrinked_pens = 32768;
@@ -104,9 +104,9 @@ public class palette {
 
         Machine.pens = new int[Machine.drv.total_colors * 2];
 
-        if ((Machine.drv.video_attributes & VIDEO_MODIFIES_PALETTE) != 0) {
+      /*  if ((Machine.drv.video_attributes & VIDEO_MODIFIES_PALETTE) != 0) {
             /* if the palette changes dynamically, we'll need the usage arrays to help in shrinking. */
-            palette_used_colors = new UBytePtr((1 + 1 + 1 + 3 + 1) * Machine.drv.total_colors);
+      /*      palette_used_colors = new UBytePtr((1 + 1 + 1 + 3 + 1) * Machine.drv.total_colors);
             pen_visiblecount = new IntArray((int) (2 * Machine.drv.total_colors * 4));
 
             if (palette_used_colors == null || pen_visiblecount == null) {
@@ -131,9 +131,9 @@ public class palette {
                 pen_visiblecount.write(i, 0);
                 pen_cachedcount.write(i, 0);
             }
-        } else {
+        } else {*/
             palette_used_colors = old_used_colors = just_remapped = new_palette = palette_dirty = null;
-        }
+        //}
 
         if (Machine.color_depth == 8) {
             num = 256;
@@ -205,30 +205,30 @@ public class palette {
                     shrinked_palette[3 * i + 2] = 0;
                 }
 
-                if ((Machine.drv.video_attributes & VIDEO_MODIFIES_PALETTE) != 0) {
+     /*           if ((Machine.drv.video_attributes & VIDEO_MODIFIES_PALETTE) != 0) {
                     /* initialize pen usage counters */
-                    for (i = 0; i < DYNAMIC_MAX_PENS; i++) {
+    /*                for (i = 0; i < DYNAMIC_MAX_PENS; i++) {
                         pen_usage_count[i] = 0;
                     }
 
                     /* allocate two fixed pens at the beginning: */
  /* transparent black */
-                    pen_usage_count[TRANSPARENT_PEN] = 1;
+     //               pen_usage_count[TRANSPARENT_PEN] = 1;
                     /* so the pen will not be reused */
 
  /* non transparent black */
-                    pen_usage_count[BLACK_PEN] = 1;
+    //                pen_usage_count[BLACK_PEN] = 1;
 
                     /* create some defaults associations of game colors to shrinked pens. */
  /* They will be dynamically modified at run time. */
-                    for (i = 0; i < Machine.drv.total_colors; i++) {
+    /*                for (i = 0; i < Machine.drv.total_colors; i++) {
                         palette_map[i] = (char) ((i & 7) + 8);
                     }
 
                     if (osd_allocate_colors(total_shrinked_pens, shrinked_palette, shrinked_pens, 1) != 0) {
                         return 1;
-                    }
-                } else {
+                    }*/
+               // } else {
                     int j, used;
 
                     logerror("shrinking %d colors palette...\n", Machine.drv.total_colors);
@@ -267,7 +267,7 @@ public class palette {
                     if (osd_allocate_colors(used, shrinked_palette, shrinked_pens, 0) != 0) {
                         return 1;
                     }
-                }
+                //}
 
                 for (i = 0; i < Machine.drv.total_colors; i++) {
                     Machine.pens[i] = shrinked_pens[palette_map[i]];
@@ -338,7 +338,7 @@ public class palette {
                     shrinked_palette[3 * (i + RESERVED_PENS) + 2] = game_palette[3 * i + 2];
                 }
 
-                if (osd_allocate_colors(total_shrinked_pens, shrinked_palette, shrinked_pens, (Machine.drv.video_attributes & VIDEO_MODIFIES_PALETTE)) != 0) {
+                if (osd_allocate_colors(total_shrinked_pens, shrinked_palette, shrinked_pens, 0/*(Machine.drv.video_attributes & VIDEO_MODIFIES_PALETTE)*/) != 0) {
                     return 1;
                 }
 
@@ -458,10 +458,10 @@ public class palette {
     }
 
     public static void palette_change_color(int color, int red, int green, int blue) {
-        if ((Machine.drv.video_attributes & VIDEO_MODIFIES_PALETTE) == 0) {
+/*        if ((Machine.drv.video_attributes & VIDEO_MODIFIES_PALETTE) == 0) {
             logerror("Error: palette_change_color() called, but VIDEO_MODIFIES_PALETTE not set.\n");
             return;
-        }
+        }*/
 
         if (color >= Machine.drv.total_colors) {
             logerror("error: palette_change_color() called with color %d, but only %d allocated.\n", color, Machine.drv.total_colors);

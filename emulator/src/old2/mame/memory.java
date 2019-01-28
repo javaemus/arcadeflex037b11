@@ -8,7 +8,7 @@ import static arcadeflex.libc.ptr.*;
 import static arcadeflex.libc.cstring.*;
 import java.util.Arrays;
 import static old2.mame.mame.Machine;
-import static mame.driverH.MAX_CPU;
+import static mame056.driverH.MAX_CPU;
 import static old2.mame.memoryH.*;
 import old.arcadeflex.libc_old.FILE;
 import static old.arcadeflex.libc_old.fclose;

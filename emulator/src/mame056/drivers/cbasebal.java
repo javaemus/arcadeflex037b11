@@ -7,7 +7,7 @@ package mame056.drivers;
 import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.memoryH.*;
 import static mame056.commonH.*;
 import static mame056.inptport.*;

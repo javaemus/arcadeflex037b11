@@ -7,7 +7,7 @@ import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;
@@ -281,7 +281,7 @@ public class stfight {
             gfxdecodeinfo,
             256 + 1, 16 * 4 + 16 * 16 + 16 * 16 + 16 * 16,
             stfight_vh_convert_color_prom,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             stfight_vh_start,
             null,

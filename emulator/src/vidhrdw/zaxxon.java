@@ -12,7 +12,7 @@ import static old2.mame.mame.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static mame.commonH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static old2.mame.common.*;
 import static mame056.common.*;
 

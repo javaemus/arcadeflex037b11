@@ -13,7 +13,7 @@ import static old.mame.drawgfx.*;
 import static old.mame.drawgfx.drawgfx;
 import static mame.drawgfxH.*;
 import static mame.driver.drivers;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptportH.*;
 import mame056.commonH.mame_bitmap;
 import static mame056.input.*;
@@ -573,14 +573,14 @@ public class usrintrf {
                     (Machine.gamedrv.flags & ORIENTATION_SWAP_XY) != 0 ? "V" : "H",
                     Machine.drv.frames_per_second);
 //#if 0
-            buf += sprintf("pixel aspect ratio %d:%d\n",
-                    pixelx, pixely);
-            buf += sprintf("%d colors ", Machine.drv.total_colors);
-            if ((Machine.gamedrv.flags & GAME_REQUIRES_16BIT) != 0)
-                buf += "(16-bit required)\n";
-            else if ((Machine.drv.video_attributes & VIDEO_MODIFIES_PALETTE) != 0)
-                buf += "(dynamic)\n";
-            else buf += "(static)\n";
+//            buf += sprintf("pixel aspect ratio %d:%d\n",
+//                    pixelx, pixely);
+//            buf += sprintf("%d colors ", Machine.drv.total_colors);
+//            if ((Machine.gamedrv.flags & GAME_REQUIRES_16BIT) != 0)
+//                buf += "(16-bit required)\n";
+//            else if ((Machine.drv.video_attributes & VIDEO_MODIFIES_PALETTE) != 0)
+//                buf += "(dynamic)\n";
+//            else buf += "(static)\n";
 //#endif
         }
 

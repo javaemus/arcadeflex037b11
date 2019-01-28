@@ -9,7 +9,7 @@ import static common.ptr.*;
 
 import static old.arcadeflex.osdepend.logerror;
 import static old.arcadeflex.sound.*;
-import static mame.driverH.SOUND_SUPPORTS_STEREO;
+import static mame056.driverH.SOUND_SUPPORTS_STEREO;
 import static old2.mame.mame.Machine;
 import static mame.sndintrf.sound_scalebufferpos;
 import static old.sound.mixerH.*;

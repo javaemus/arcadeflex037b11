@@ -13,7 +13,7 @@ import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
 import static mame.sndintrfH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 //sound imports
 import static sound.namco.*;
 import static sound.namcoH.*;
@@ -624,7 +624,7 @@ public class marvins {
             marvins_gfxdecodeinfo,
             (16 + 2) * 16, (16 + 2) * 16,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             marvins_vh_start,
             null,
@@ -671,7 +671,7 @@ public class marvins {
             marvins_gfxdecodeinfo,
             (16 + 2) * 16, (16 + 2) * 16,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             marvins_vh_start,
             null,

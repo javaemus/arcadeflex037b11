@@ -9,7 +9,7 @@ import static arcadeflex.fucPtr.*;
 import static common.libc.expressions.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;
@@ -763,7 +763,7 @@ public class lwings {
             gfxdecodeinfo,
             1024, 1024,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE | VIDEO_BUFFERS_SPRITERAM,
+            VIDEO_TYPE_RASTER| VIDEO_BUFFERS_SPRITERAM,
             lwings_eof_callback,
             lwings_vh_start,
             null,
@@ -809,7 +809,7 @@ public class lwings {
             gfxdecodeinfo_trojan,
             1024, 1024,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE | VIDEO_BUFFERS_SPRITERAM,
+            VIDEO_TYPE_RASTER | VIDEO_BUFFERS_SPRITERAM,
             lwings_eof_callback,
             trojan_vh_start,
             null,
@@ -859,7 +859,7 @@ public class lwings {
             gfxdecodeinfo_trojan,
             1024, 1024,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE | VIDEO_BUFFERS_SPRITERAM,
+            VIDEO_TYPE_RASTER | VIDEO_BUFFERS_SPRITERAM,
             lwings_eof_callback,
             avengers_vh_start,
             null,

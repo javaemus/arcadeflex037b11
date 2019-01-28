@@ -14,7 +14,7 @@ import static mame.sndintrfH.*;
 import static mame.sndintrf.*;
 import static mame056.cpuexec.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static sound._3812intf.*;
@@ -397,7 +397,7 @@ public class magix {
             magix_gfxdecodeinfo,
             0x800, 0x800,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             magix_vh_start,
             null,
@@ -470,5 +470,5 @@ public class magix {
      **************************************************************************
      */
     // Title changes to "Rock" via DSW
-    public static GameDriver driver_magix = new GameDriver("1995", "magix", "magix.java", rom_magix, null, machine_driver_magix, input_ports_magix, null, ROT0_16BIT, "Yun Sung", "Magix", GAME_IMPERFECT_SOUND);
+    public static GameDriver driver_magix = new GameDriver("1995", "magix", "magix.java", rom_magix, null, machine_driver_magix, input_ports_magix, null, ROT0, "Yun Sung", "Magix", GAME_IMPERFECT_SOUND);
 }

@@ -16,7 +16,7 @@ import static mame056.cpuintrf.*;
 import static mame056.cpuexec.*;
 import static mame056.cpuexecH.*;
 import static mame056.common.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static old2.mame.mame.*;
 import static mame056.memoryH.*;
 import static old.arcadeflex.libc_old.*;

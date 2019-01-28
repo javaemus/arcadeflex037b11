@@ -9,7 +9,7 @@ import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;
@@ -338,7 +338,7 @@ public class ninjakd2 {
             gfxdecodeinfo,
             48 * 16, 48 * 16,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             ninjakd2_vh_start,
             ninjakd2_vh_stop,
@@ -376,7 +376,7 @@ public class ninjakd2 {
             gfxdecodeinfo,
             48 * 16, 48 * 16,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             ninjakd2_vh_start,
             ninjakd2_vh_stop,

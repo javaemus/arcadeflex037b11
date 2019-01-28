@@ -9,7 +9,7 @@ import static mame056.memoryH.*;
 import static arcadeflex.fucPtr.*;
 import static mame056.commonH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static mame.sndintrfH.*;

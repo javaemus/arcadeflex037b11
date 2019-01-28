@@ -12,7 +12,7 @@ import static arcadeflex.libc.ptr.*;
 import static common.libc.cstring.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;
@@ -342,7 +342,7 @@ public class mcr1 {
             gfxdecodeinfo,
             32, 32,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE | VIDEO_UPDATE_BEFORE_VBLANK,
+            VIDEO_TYPE_RASTER | VIDEO_UPDATE_BEFORE_VBLANK,
             null,
             mcr12_vh_start,
             mcr12_vh_stop,

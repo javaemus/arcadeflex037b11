@@ -16,7 +16,7 @@ import static machine.pacplus.*;
 //mame imports
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame.sndintrfH.*;
 import static mame056.common.*;
 //sound imports

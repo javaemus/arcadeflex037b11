@@ -13,7 +13,7 @@ import static WIP.machine.slapfght.*;
 import static mame.commonH.*;
 import static mame.sndintrfH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 //sound imports
 import static sound.ay8910.*;
 import static sound.ay8910H.*;

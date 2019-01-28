@@ -7,7 +7,7 @@ import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;
@@ -271,7 +271,7 @@ public class pbaction {
             gfxdecodeinfo,
             256, 256,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             pbaction_vh_start,
             pbaction_vh_stop,

@@ -11,7 +11,7 @@ import static vidhrdw.snk.*;
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;
@@ -3915,7 +3915,7 @@ public class snk {
     /*          rom       parent    machine   inp       init */
     public static GameDriver driver_tnk3 = new GameDriver("1985", "tnk3", "snk.java", rom_tnk3, null, machine_driver_tnk3, input_ports_tnk3, init_tnk3, ROT270, "SNK", "TNK III (US?)", GAME_NO_COCKTAIL);
     public static GameDriver driver_tnk3j = new GameDriver("1985", "tnk3j", "snk.java", rom_tnk3j, driver_tnk3, machine_driver_tnk3, input_ports_tnk3, init_tnk3, ROT270, "SNK", "Tank (Japan)", GAME_NO_COCKTAIL);
-    public static GameDriver driver_athena = new GameDriver("1986", "athena", "snk.java", rom_athena, null, machine_driver_athena, input_ports_athena, init_athena, ROT0_16BIT, "SNK", "Athena", GAME_NO_COCKTAIL);
+    public static GameDriver driver_athena = new GameDriver("1986", "athena", "snk.java", rom_athena, null, machine_driver_athena, input_ports_athena, init_athena, ROT0, "SNK", "Athena", GAME_NO_COCKTAIL);
     public static GameDriver driver_fitegolf = new GameDriver("1988", "fitegolf", "snk.java", rom_fitegolf, null, machine_driver_athena, input_ports_fitegolf, init_fitegolf, ROT0, "SNK", "Fighting Golf", GAME_NO_COCKTAIL);
     public static GameDriver driver_ikari = new GameDriver("1986", "ikari", "snk.java", rom_ikari, null, machine_driver_ikari, input_ports_ikari, init_ikari, ROT270, "SNK", "Ikari Warriors (US)", GAME_NO_COCKTAIL);
     public static GameDriver driver_ikarijp = new GameDriver("1986", "ikarijp", "snk.java", rom_ikarijp, driver_ikari, machine_driver_ikari, input_ports_ikarijp, init_ikarijp, ROT270, "SNK", "Ikari Warriors (Japan)", GAME_NO_COCKTAIL);
@@ -3926,15 +3926,15 @@ public class snk {
     public static GameDriver driver_gwarj = new GameDriver("1987", "gwarj", "snk.java", rom_gwarj, driver_gwar, machine_driver_gwar, input_ports_gwar, init_gwar, ROT270, "SNK", "Guevara (Japan)", GAME_NO_COCKTAIL);
     public static GameDriver driver_gwara = new GameDriver("1987", "gwara", "snk.java", rom_gwara, driver_gwar, machine_driver_gwar, input_ports_gwar, init_gwara, ROT270, "SNK", "Guerrilla War (Version 1)", GAME_NOT_WORKING | GAME_NO_COCKTAIL);
     public static GameDriver driver_gwarb = new GameDriver("1987", "gwarb", "snk.java", rom_gwarb, driver_gwar, machine_driver_gwar, input_ports_gwar, init_gwar, ROT270, "bootleg", "Guerrilla War (bootleg)", GAME_NO_COCKTAIL);
-    public static GameDriver driver_bermudat = new GameDriver("1987", "bermudat", "snk.java", rom_bermudat, null, machine_driver_bermudat, input_ports_bermudat, init_bermudat, ROT270_16BIT, "SNK", "Bermuda Triangle (US)", GAME_NO_COCKTAIL);
-    public static GameDriver driver_bermudaj = new GameDriver("1987", "bermudaj", "snk.java", rom_bermudaj, driver_bermudat, machine_driver_bermudat, input_ports_bermudat, init_bermudat, ROT270_16BIT, "SNK", "Bermuda Triangle (Japan)", GAME_NO_COCKTAIL);
-    public static GameDriver driver_bermudaa = new GameDriver("1987", "bermudaa", "snk.java", rom_bermudaa, driver_bermudat, machine_driver_bermudat, input_ports_bermudaa, init_worldwar, ROT270_16BIT, "SNK", "Bermuda Triangle (US early version)", GAME_NO_COCKTAIL);
-    public static GameDriver driver_worldwar = new GameDriver("1987", "worldwar", "snk.java", rom_worldwar, driver_bermudat, machine_driver_bermudat, input_ports_worldwar, init_worldwar, ROT270_16BIT, "SNK", "World Wars (Japan)", GAME_NO_COCKTAIL);
-    public static GameDriver driver_psychos = new GameDriver("1987", "psychos", "snk.java", rom_psychos, null, machine_driver_psychos, input_ports_psychos, init_psychos, ROT0_16BIT, "SNK", "Psycho Soldier (US)", GAME_IMPERFECT_SOUND | GAME_NO_COCKTAIL);
-    public static GameDriver driver_psychosj = new GameDriver("1987", "psychosj", "snk.java", rom_psychosj, driver_psychos, machine_driver_psychos, input_ports_psychos, init_psychos, ROT0_16BIT, "SNK", "Psycho Soldier (Japan)", GAME_IMPERFECT_SOUND | GAME_NO_COCKTAIL);
-    public static GameDriver driver_chopper = new GameDriver("1988", "chopper", "snk.java", rom_chopper, null, machine_driver_chopper1, input_ports_legofair, init_chopper, ROT270_16BIT, "SNK", "Chopper I", GAME_IMPERFECT_SOUND | GAME_NO_COCKTAIL);
-    public static GameDriver driver_legofair = new GameDriver("1988", "legofair", "snk.java", rom_legofair, driver_chopper, machine_driver_chopper1, input_ports_legofair, init_chopper, ROT270_16BIT, "SNK", "Koukuu Kihei Monogatari - The Legend of Air Cavalry", GAME_IMPERFECT_SOUND | GAME_NO_COCKTAIL);
+    public static GameDriver driver_bermudat = new GameDriver("1987", "bermudat", "snk.java", rom_bermudat, null, machine_driver_bermudat, input_ports_bermudat, init_bermudat, ROT270, "SNK", "Bermuda Triangle (US)", GAME_NO_COCKTAIL);
+    public static GameDriver driver_bermudaj = new GameDriver("1987", "bermudaj", "snk.java", rom_bermudaj, driver_bermudat, machine_driver_bermudat, input_ports_bermudat, init_bermudat, ROT270, "SNK", "Bermuda Triangle (Japan)", GAME_NO_COCKTAIL);
+    public static GameDriver driver_bermudaa = new GameDriver("1987", "bermudaa", "snk.java", rom_bermudaa, driver_bermudat, machine_driver_bermudat, input_ports_bermudaa, init_worldwar, ROT270, "SNK", "Bermuda Triangle (US early version)", GAME_NO_COCKTAIL);
+    public static GameDriver driver_worldwar = new GameDriver("1987", "worldwar", "snk.java", rom_worldwar, driver_bermudat, machine_driver_bermudat, input_ports_worldwar, init_worldwar, ROT270, "SNK", "World Wars (Japan)", GAME_NO_COCKTAIL);
+    public static GameDriver driver_psychos = new GameDriver("1987", "psychos", "snk.java", rom_psychos, null, machine_driver_psychos, input_ports_psychos, init_psychos, ROT0, "SNK", "Psycho Soldier (US)", GAME_IMPERFECT_SOUND | GAME_NO_COCKTAIL);
+    public static GameDriver driver_psychosj = new GameDriver("1987", "psychosj", "snk.java", rom_psychosj, driver_psychos, machine_driver_psychos, input_ports_psychos, init_psychos, ROT0, "SNK", "Psycho Soldier (Japan)", GAME_IMPERFECT_SOUND | GAME_NO_COCKTAIL);
+    public static GameDriver driver_chopper = new GameDriver("1988", "chopper", "snk.java", rom_chopper, null, machine_driver_chopper1, input_ports_legofair, init_chopper, ROT270, "SNK", "Chopper I", GAME_IMPERFECT_SOUND | GAME_NO_COCKTAIL);
+    public static GameDriver driver_legofair = new GameDriver("1988", "legofair", "snk.java", rom_legofair, driver_chopper, machine_driver_chopper1, input_ports_legofair, init_chopper, ROT270, "SNK", "Koukuu Kihei Monogatari - The Legend of Air Cavalry", GAME_IMPERFECT_SOUND | GAME_NO_COCKTAIL);
     public static GameDriver driver_tdfever = new GameDriver("1987", "tdfever", "snk.java", rom_tdfever, null, machine_driver_tdfever, input_ports_tdfever, init_tdfever, ROT270, "SNK", "TouchDown Fever", GAME_NO_COCKTAIL);
     public static GameDriver driver_tdfeverj = new GameDriver("1987", "tdfeverj", "snk.java", rom_tdfeverj, driver_tdfever, machine_driver_tdfever, input_ports_tdfever, init_tdfever, ROT270, "SNK", "TouchDown Fever (Japan)", GAME_NO_COCKTAIL);
-    public static GameDriver driver_ftsoccer = new GameDriver("1988", "ftsoccer", "snk.java", rom_ftsoccer, null, machine_driver_ftsoccer, input_ports_ftsoccer, init_ftsoccer, ROT0_16BIT, "SNK", "Fighting Soccer", GAME_NO_COCKTAIL);
+    public static GameDriver driver_ftsoccer = new GameDriver("1988", "ftsoccer", "snk.java", rom_ftsoccer, null, machine_driver_ftsoccer, input_ports_ftsoccer, init_ftsoccer, ROT0, "SNK", "Fighting Soccer", GAME_NO_COCKTAIL);
 }

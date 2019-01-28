@@ -8,7 +8,7 @@ import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;
@@ -233,7 +233,7 @@ public class route16 {
             null,
             8, 0,
             route16_vh_convert_color_prom,
-            VIDEO_TYPE_RASTER | VIDEO_SUPPORTS_DIRTY | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER | VIDEO_SUPPORTS_DIRTY,
             null,
             route16_vh_start,
             route16_vh_stop,
@@ -271,7 +271,7 @@ public class route16 {
             null,
             8, 0,
             route16_vh_convert_color_prom,
-            VIDEO_TYPE_RASTER | VIDEO_SUPPORTS_DIRTY | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER | VIDEO_SUPPORTS_DIRTY,
             null,
             route16_vh_start,
             route16_vh_stop,

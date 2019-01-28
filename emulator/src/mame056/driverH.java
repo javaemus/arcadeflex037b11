@@ -1,7 +1,7 @@
 /**
  * ported to v0.37b7
  */
-package mame;
+package mame056;
 
 import static arcadeflex.fucPtr.*;
 import static old.arcadeflex.libc_old.CopyArray;
@@ -13,142 +13,8 @@ import static mame056.inptportH.input_macro;
 import static old2.mame.memoryH.*;
 import static mame.sndintrfH.MachineSound;
 import static mame056.cpuexecH.*;
+
 public class driverH {
-
-/*    public static class MachineCPU {
-
-        public MachineCPU(int ct, int cc, MemoryReadAddress[] mr, MemoryWriteAddress[] mw, IOReadPort[] pr, IOWritePort[] pw, InterruptPtr vb, int vbf, InterruptPtr ti, int tif, Object reset) {
-            cpu_type = ct;
-            cpu_clock = cc;
-            memory_read = mr;
-            memory_write = mw;
-            port_read = pr;
-            port_write = pw;
-            vblank_interrupt = vb;
-            vblank_interrupts_per_frame = vbf;
-            timed_interrupt = ti;
-            timed_interrupts_per_second = tif;
-            reset_param = reset;
-        }
-
-        public MachineCPU(int ct, int cc, MemoryReadAddress[] mr, MemoryWriteAddress[] mw, IOReadPort[] pr, IOWritePort[] pw, InterruptPtr vb, int vbf, InterruptPtr ti, int tif) {
-            this(ct, cc, mr, mw, pr, pw, vb, vbf, ti, tif, null);
-        }
-
-        public MachineCPU(int ct, int cc, MemoryReadAddress[] mr, MemoryWriteAddress[] mw, IOReadPort[] pr, IOWritePort[] pw, InterruptPtr vb, int vbf) {
-            this(ct, cc, mr, mw, pr, pw, vb, vbf, null, 0, null);
-        }
-
-        public MachineCPU() {
-            this(0, 0, null, null, null, null, null, 0, null, 0, null);
-        }
-
-        public static MachineCPU[] create(int n) {
-            MachineCPU[] a = new MachineCPU[n];
-            for (int k = 0; k < n; k++) {
-                a[k] = new MachineCPU();
-            }
-            return a;
-        }
-
-        public int cpu_type;/* see #defines below. */
-/*        public int cpu_clock;/* in Hertz */
-/*        public MemoryReadAddress[] memory_read;
-/*        public MemoryWriteAddress[] memory_write;
-        public IOReadPort[] port_read;
-        public IOWritePort[] port_write;
-        public InterruptPtr vblank_interrupt;
-        public int vblank_interrupts_per_frame;/* usually 1 */
- /* use this for interrupts which are not tied to vblank 	*/
- /* usually frequency in Hz, but if you need 				*/
- /* greater precision you can give the period in nanoseconds */
- /*       public InterruptPtr timed_interrupt;
-   /*     public int timed_interrupts_per_second;
-   /*     /* pointer to a parameter to pass to the CPU cores reset function */
-   /*     public Object reset_param;
-
-   /* }*/
-/*
-    public static final int CPU_DUMMY = 0;
-    public static final int CPU_Z80 = 1;
-    public static final int CPU_Z80GB = 2;
-    public static final int CPU_8080 = 3;
-    public static final int CPU_8085A = 4;
-    public static final int CPU_M6502 = 5;
-    public static final int CPU_M65C02 = 6;
-    public static final int CPU_M65SC02 = 7;
-    public static final int CPU_M65CE02 = 8;
-    public static final int CPU_M6509 = 9;
-    public static final int CPU_M6510 = 10;
-    public static final int CPU_M6510T = 11;
-    public static final int CPU_M7501 = 12;
-    public static final int CPU_M8502 = 13;
-    public static final int CPU_N2A03 = 14;
-    public static final int CPU_M4510 = 15;
-    public static final int CPU_H6280 = 16;
-    public static final int CPU_I86 = 17;
-    public static final int CPU_I88 = 18;
-    public static final int CPU_I186 = 19;
-    public static final int CPU_I188 = 20;
-    public static final int CPU_I286 = 21;
-    public static final int CPU_V20 = 22;
-    public static final int CPU_V30 = 23;
-    public static final int CPU_V33 = 24;
-    public static final int CPU_I8035 = 25;/* same as CPU_I8039 */
-/*    public static final int CPU_I8039 = 26;
-/*    public static final int CPU_I8048 = 27;/* same as CPU_I8039 */
-/*    public static final int CPU_N7751 = 28;/* same as CPU_I8039 */
-/*    public static final int CPU_M6800 = 29;/* same as CPU_M6802/CPU_M6808 */
-/*    public static final int CPU_M6801 = 30;/* same as CPU_M6803 */
-/*    public static final int CPU_M6802 = 31;/* same as CPU_M6800/CPU_M6808 */
-/*    public static final int CPU_M6803 = 32;/* same as CPU_M6801 */
-/*    public static final int CPU_M6808 = 33;/* same as CPU_M6800/CPU_M6802 */
-/*    public static final int CPU_HD63701 = 34;/* 6808 with some additional opcodes */
-/*    public static final int CPU_NSC8105 = 35;/* same(?) as CPU_M6802(?) with scrambled opcodes. There is at least one new opcode. */
-/*    public static final int CPU_M6805 = 36;
-/*    public static final int CPU_M68705 = 37;/* same as CPU_M6805 */
-/*    public static final int CPU_HD63705 = 38;/* M6805 family but larger address space, different stack size */
-/*    public static final int CPU_HD6309 = 39;/* same as CPU_M6809 (actually it's not 100% compatible) */
-/*    public static final int CPU_M6809 = 40;
-/*    public static final int CPU_KONAMI = 41;
-    public static final int CPU_M68000 = 42;
-    public static final int CPU_M68010 = 43;
-    public static final int CPU_M68EC020 = 44;
-    public static final int CPU_M68020 = 45;
-    public static final int CPU_T11 = 46;
-    public static final int CPU_S2650 = 47;
-    public static final int CPU_F8 = 48;
-    public static final int CPU_TMS34010 = 49;
-    public static final int CPU_TMS9900 = 50;
-    public static final int CPU_TMS9940 = 51;
-    public static final int CPU_TMS9980 = 52;
-    public static final int CPU_TMS9985 = 53;
-    public static final int CPU_TMS9989 = 54;
-    public static final int CPU_TMS9995 = 55;
-    public static final int CPU_TMS99105A = 56;
-    public static final int CPU_TMS99110A = 57;
-    public static final int CPU_Z8000 = 58;
-    public static final int CPU_TMS320C10 = 59;
-    public static final int CPU_CCPU = 60;
-    public static final int CPU_PDP1 = 61;
-    public static final int CPU_ADSP2100 = 62;
-    public static final int CPU_ADSP2105 = 63;
-    public static final int CPU_PSX = 64;
-    public static final int CPU_SC61860 = 65;
-    public static final int CPU_ARM = 66;
-    public static final int CPU_G65C816 = 67;
-    public static final int CPU_SPC700 = 68;
-
-    public static final int CPU_COUNT = 69;*/
-
-    /* set this if the CPU is used as a slave for audio. It will not be emulated if */
- /* sound is disabled, therefore speeding up a lot the emulation. */
-//    public static final int CPU_AUDIO_CPU = 0x8000;
-
-    /* the Z80 can be wired to use 16 bit addressing for I/O ports */
-//    public static final int CPU_16BIT_PORT = 0x4000;
-
-//    public static final int CPU_FLAGS_MASK = 0xff00;
 
     public static final int MAX_CPU = 8;/* MAX_CPU is the maximum number of CPUs which cpuintrf.c  can run at the same time. Currently, 8 is enough. */
 
@@ -277,12 +143,10 @@ public class driverH {
     public static final int VIDEO_TYPE_RASTER = 0x0000;
     public static final int VIDEO_TYPE_VECTOR = 0x0001;
 
-    /* bit 2 of the video attributes indicates whether or not the driver modifies the palette */
-    public static final int VIDEO_MODIFIES_PALETTE = 0x0004;
 
     /* bit 3 of the video attributes indicates that the game's palette has 6 or more bits */
  /*       per gun, and would therefore require a 24-bit display. This is entirely up to */
- /*       the OS dpeendant layer, the bitmap will still be 16-bit. */
+ /*       the OS depeendant layer, the bitmap will still be 16-bit. */
     public static final int VIDEO_NEEDS_6BITS_PER_GUN = 0x0008;
 
     /* ASG 980417 - added: */
@@ -303,6 +167,31 @@ public class driverH {
 
     /* Mish 181099:  See comments in vidhrdw/generic.c for details */
     public static final int VIDEO_BUFFERS_SPRITERAM = 0x0100;
+
+    /* game wants to use a hicolor or truecolor bitmap (e.g. for alpha blending) */
+    public static final int VIDEO_RGB_DIRECT = 0x0200;
+
+    /* automatically extend the palette creating a darker copy for shadows */
+    public static final int VIDEO_HAS_SHADOWS = 0x0400;
+
+    /* automatically extend the palette creating a brighter copy for highlights */
+    public static final int VIDEO_HAS_HIGHLIGHTS = 0x0800;
+
+    /* generic aspect ratios */
+    public static final int VIDEO_ASPECT_RATIO_MASK = 0xffff0000;
+
+    public static final int VIDEO_ASPECT_RATIO_NUM(int a) {
+        return (((a) >> 24) & 0xff);
+    }
+
+    public static final int VIDEO_ASPECT_RATIO_DEN(int a) {
+        return (((a) >> 16) & 0xff);
+    }
+
+    public static final int VIDEO_ASPECT_RATIO(int n, int d) {
+        return ((((n) & 0xff) << 24) | (((d) & 0xff) << 16));
+    }
+
 
     /* flags for sound_attributes */
     public static final int SOUND_SUPPORTS_STEREO = 0x0001;
@@ -365,29 +254,26 @@ public class driverH {
 
     }
     /* values for the flags field */
-
     public static final int ORIENTATION_MASK = 0x0007;
     public static final int ORIENTATION_FLIP_X = 0x0001;/* mirror everything in the X direction */
     public static final int ORIENTATION_FLIP_Y = 0x0002;/* mirror everything in the Y direction */
     public static final int ORIENTATION_SWAP_XY = 0x0004;/* mirror along the top-left/bottom-right diagonal */
 
     public static final int GAME_NOT_WORKING = 0x0008;
-    public static final int GAME_WRONG_COLORS = 0x0010;/* colors are totally wrong */
-    public static final int GAME_IMPERFECT_COLORS = 0x0020;/* colors are not 100% accurate, but close */
-    public static final int GAME_NO_SOUND = 0x0040;/* sound is missing */
-    public static final int GAME_IMPERFECT_SOUND = 0x0080;/* sound is known to be wrong */
-    public static final int GAME_REQUIRES_16BIT = 0x0100;/* cannot fit in 256 colors */
-    public static final int GAME_NO_COCKTAIL = 0x0200;/* screen flip support is missing */
-    public static final int GAME_UNEMULATED_PROTECTION = 0x0400;/* game's protection not fully emulated */
-    public static final int NOT_A_DRIVER = 0x4000;/* set by the fake "root" driver_ and by "containers" e.g. driver_neogeo. */
+    public static final int GAME_UNEMULATED_PROTECTION = 0x0010;/* game's protection not fully emulated */
+    public static final int GAME_WRONG_COLORS = 0x0020;/* colors are totally wrong */
+    public static final int GAME_IMPERFECT_COLORS = 0x0040;/* colors are not 100% accurate, but close */
+    public static final int GAME_IMPERFECT_GRAPHICS = 0x0080;/* graphics are wrong/incomplete */
+    public static final int GAME_NO_COCKTAIL = 0x0100;/* screen flip support is missing */
+    public static final int GAME_NO_SOUND = 0x0200;/* sound is missing */
+    public static final int GAME_IMPERFECT_SOUND = 0x0400;/* sound is known to be wrong */
+    public static final int NOT_A_DRIVER = 0x4000;/* set by the fake "root" driver_0 and by "containers" */
+
 
  /* monitor parameters to be used with the GAME() macro */
-    public static final int ROT0 = 0x0000;
+    public static final int ROT0 = 0x0;
     public static final int ROT90 = (ORIENTATION_SWAP_XY | ORIENTATION_FLIP_X);/* rotate clockwise 90 degrees */
     public static final int ROT180 = (ORIENTATION_FLIP_X | ORIENTATION_FLIP_Y);/* rotate 180 degrees */
     public static final int ROT270 = (ORIENTATION_SWAP_XY | ORIENTATION_FLIP_Y);/* rotate counter-clockwise 90 degrees */
-    public static final int ROT0_16BIT = (ROT0 | GAME_REQUIRES_16BIT);
-    public static final int ROT90_16BIT = (ROT90 | GAME_REQUIRES_16BIT);
-    public static final int ROT180_16BIT = (ROT180 | GAME_REQUIRES_16BIT);
-    public static final int ROT270_16BIT = (ROT270 | GAME_REQUIRES_16BIT);
+
 }

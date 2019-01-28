@@ -7,7 +7,7 @@ import static arcadeflex.libc.cstring.strcmp;
 import static old.arcadeflex.osdepend.*;
 
 import static mame056.cpuintrfH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.cpuexecH.*;
 import static mame056.memory.*;
 //cpu imports

@@ -12,7 +12,7 @@ import static sound._2610intf.*;
 import static sound._2151intfH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;
@@ -570,7 +570,7 @@ public class pipedrm {
             gfxdecodeinfo,
             1536, 1536,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             pipedrm_vh_start,
             pipedrm_vh_stop,
@@ -606,7 +606,7 @@ public class pipedrm {
             gfxdecodeinfo_hatris,
             2048, 2048,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             pipedrm_vh_start,
             pipedrm_vh_stop,

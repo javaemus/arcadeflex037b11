@@ -10,7 +10,7 @@ import static common.libc.cstdio.*;
 import static common.libc.cstring.*;
 
 import static mame056.commonH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame.osdependH.OSD_FILETYPE_ROM;
 import static mame.osdependH.OSD_FILETYPE_SAMPLE;
 import static old.arcadeflex.fileio.*;

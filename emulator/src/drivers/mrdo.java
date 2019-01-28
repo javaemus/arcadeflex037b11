@@ -10,7 +10,7 @@ import arcadeflex.libc.ptr.UBytePtr;
 import static mame056.cpu.z80.z80H.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;

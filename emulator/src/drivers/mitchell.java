@@ -7,7 +7,7 @@ package drivers;
 import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static old2.mame.memoryH.*;
 import static mame.commonH.*;
 import static mame056.inptport.*;
@@ -1116,7 +1116,7 @@ public class mitchell {
             mgakuen_gfxdecodeinfo,
             1024, 1024, /* less colors than the others */
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             pang_vh_start,
             pang_vh_stop,
@@ -1149,7 +1149,7 @@ public class mitchell {
             gfxdecodeinfo,
             2048, 2048,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             pang_vh_start,
             pang_vh_stop,
@@ -1181,7 +1181,7 @@ public class mitchell {
             marukin_gfxdecodeinfo,
             2048, 2048,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             pang_vh_start,
             pang_vh_stop,

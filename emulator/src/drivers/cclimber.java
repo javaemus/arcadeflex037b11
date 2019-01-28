@@ -5,7 +5,7 @@
 package drivers;
 import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static old2.mame.memoryH.*;
 import static mame.commonH.*;
 import static mame056.inptport.*;
@@ -1227,7 +1227,7 @@ public class cclimber {
             swimmer_gfxdecodeinfo,
             256 + 32 + 2, 64 * 8 + 4 * 8,
             swimmer_vh_convert_color_prom,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             cclimber_vh_start,
             cclimber_vh_stop,

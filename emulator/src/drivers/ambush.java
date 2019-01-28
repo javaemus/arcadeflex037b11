@@ -11,7 +11,7 @@ import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
 import static mame.sndintrfH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 //sndhrdw imports
 //sound imports
 import static sound.ay8910.*;

@@ -12,7 +12,7 @@ import static old2.mame.mame.Machine;
 import static mame056.commonH.*;
 import static old2.mame.tilemapH.*;
 import static arcadeflex.video.osd_alloc_bitmap;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static old.arcadeflex.osdepend.*;
 import static arcadeflex.video.osd_free_bitmap;
 import mame.drawgfxH.rectangle;

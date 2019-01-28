@@ -14,7 +14,7 @@ import static old2.mame.mame.Machine;
 import static mame056.commonH.*;
 import static vidhrdw.generic.*;
 import static WIP.machine.mcr.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame.palette.*;
 import static WIP.vidhrdw.mcr3.*;
 

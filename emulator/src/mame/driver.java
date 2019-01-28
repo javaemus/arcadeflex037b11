@@ -4,7 +4,7 @@
  */
 package mame;
 
-import static mame.driverH.*;
+import static mame056.driverH.*;
 
 import static drivers.retofinv.*;
 import static mame056.drivers.jrpacman.*;

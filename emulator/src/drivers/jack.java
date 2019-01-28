@@ -5,7 +5,7 @@
 package drivers;
 import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static old2.mame.memoryH.*;
 import static mame.commonH.*;
 import static mame056.inptport.*;
@@ -394,7 +394,7 @@ public class jack {
             gfxdecodeinfo,
             32, 32,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             generic_vh_start,
             generic_vh_stop,

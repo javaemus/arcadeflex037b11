@@ -8,7 +8,7 @@ import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;
@@ -450,7 +450,7 @@ public class fastfred {
             fastfred_gfxdecodeinfo,
             256, 32 * 8,
             fastfred_vh_convert_color_prom,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             generic_vh_start,
             generic_vh_stop,

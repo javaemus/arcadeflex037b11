@@ -9,7 +9,7 @@ import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static mame.commonH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;
@@ -2685,7 +2685,7 @@ public class system1 {
             gfxdecodeinfo,
             1536, 1536,
             system1_vh_convert_color_prom,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             system1_vh_start,
             system1_vh_stop,
@@ -2724,7 +2724,7 @@ public class system1 {
             gfxdecodeinfo,
             1536, 1536,
             system1_vh_convert_color_prom,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             system1_vh_start,
             system1_vh_stop,
@@ -2762,7 +2762,7 @@ public class system1 {
             gfxdecodeinfo,
             1536, 1536,
             system1_vh_convert_color_prom,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             system1_vh_start,
             system1_vh_stop,
@@ -2800,7 +2800,7 @@ public class system1 {
             gfxdecodeinfo,
             1536, 1536,
             system1_vh_convert_color_prom,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             system1_vh_start,
             system1_vh_stop,
@@ -2838,7 +2838,7 @@ public class system1 {
             gfxdecodeinfo,
             1536, 1536,
             system1_vh_convert_color_prom,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             system1_vh_start,
             system1_vh_stop,
@@ -2876,7 +2876,7 @@ public class system1 {
             gfxdecodeinfo,
             1536, 1536,
             system1_vh_convert_color_prom,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER ,
             null,
             system1_vh_start,
             system1_vh_stop,

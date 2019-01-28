@@ -14,7 +14,7 @@ import static mame056.commonH.*;
 import static mame056.cpuintrf.*;
 import static mame056.cpuexec.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static mame056.memoryH.*;

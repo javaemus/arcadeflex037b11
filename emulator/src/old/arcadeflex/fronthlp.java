@@ -23,7 +23,7 @@ import static old.arcadeflex.libc_old.*;
 import static mame056.common.*;
 import static mame056.commonH.*;
 import static mame.driver.drivers;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame.sndintrf.sound_name;
 import static mame.sndintrf.sound_num;
 import static mame.sndintrfH.MachineSound;

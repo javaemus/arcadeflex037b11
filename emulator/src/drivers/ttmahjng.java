@@ -5,7 +5,7 @@
 package drivers;
 import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static old2.mame.memoryH.*;
 import static mame.commonH.*;
 import static mame056.inptport.*;
@@ -215,7 +215,7 @@ public class ttmahjng {
             null,
             8, 0,
             ttmahjng_vh_convert_color_prom,
-            VIDEO_TYPE_RASTER | VIDEO_SUPPORTS_DIRTY | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER | VIDEO_SUPPORTS_DIRTY,
             null,
             ttmahjng_vh_start,
             ttmahjng_vh_stop,

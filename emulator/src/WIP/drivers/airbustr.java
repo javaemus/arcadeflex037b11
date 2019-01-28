@@ -8,7 +8,7 @@ import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static common.libc.cstdlib.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static old2.mame.memoryH.*;
 import static mame.commonH.*;
 import static mame056.inptport.*;
@@ -565,7 +565,7 @@ public class airbustr {
             gfxdecodeinfo,
             256 * 3, 256 * 3,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE,
+            VIDEO_TYPE_RASTER,
             null,
             airbustr_vh_start,
             null,

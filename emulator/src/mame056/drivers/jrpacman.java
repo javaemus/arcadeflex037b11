@@ -13,7 +13,7 @@ import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static mame.sndintrfH.*;
 import static mame.drawgfxH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static mame056.memoryH.*;
 //sound imports
 import static sound.namco.*;

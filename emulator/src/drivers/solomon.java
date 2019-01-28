@@ -6,7 +6,7 @@
 package drivers;
 import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
-import static mame.driverH.*;
+import static mame056.driverH.*;
 import static old2.mame.memoryH.*;
 import static mame056.inptport.*;
 import static mame.drawgfxH.*;
@@ -241,7 +241,7 @@ public class solomon {
             gfxdecodeinfo,
             256, 256,
             null,
-            VIDEO_TYPE_RASTER | VIDEO_MODIFIES_PALETTE | VIDEO_SUPPORTS_DIRTY,
+            VIDEO_TYPE_RASTER | VIDEO_SUPPORTS_DIRTY,
             null,
             solomon_vh_start,
             solomon_vh_stop,
