@@ -16,7 +16,6 @@ import static mame056.common.*;
 import static mame056.commonH.*;
 import static mame.commonH.REGION_PROMS;
 import static arcadeflex.video.*;
-import static old.mame.usrintrf.*;
 import static common.subArrays.*;
 import static mame056.usrintrf.*;
 

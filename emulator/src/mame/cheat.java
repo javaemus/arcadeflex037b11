@@ -12,7 +12,6 @@ import static mame056.commonH.*;
 import static mame056.ui_text.*;
 import static mame056.ui_textH.*;
 import static mame056.inptportH.*;
-import static old.mame.usrintrf.*;
 import static old2.mame.mame.*;
 import static mame056.cpuintrf.cpunum_address_mask;
 import static mame056.cpuintrf.cpunum_read_byte;

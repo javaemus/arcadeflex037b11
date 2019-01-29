@@ -15,7 +15,6 @@ import static old2.mame.memory.*;
 import static mame056.inptport.input_port_0_r;
 import static arcadeflex.video.*;
 import static mame056.inptport.input_port_1_r;
-import static old.mame.usrintrf.*;
 import static old2.arcadeflex.osd_cpuH.*;
 import static mame056.common.*;
 import static mame056.cpu.z80.z80.z80_ICount;

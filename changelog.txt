@@ -4,6 +4,7 @@
 -More work to usrintrf
 -Even more work to usrintrf
 -Even more to usrintrf
+-Finished usrintrf porting
 
 28/01/2019
 ==========

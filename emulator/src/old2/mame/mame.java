@@ -59,7 +59,6 @@ import static mame056.usrintrf.handle_user_interface;
 import static mame056.usrintrf.init_user_interface;
 import static mame056.usrintrf.showcopyright;
 import static mame056.usrintrf.showgamewarnings;
-import static old.mame.usrintrf.*;
 import static vidhrdw.generic.*;
 
 

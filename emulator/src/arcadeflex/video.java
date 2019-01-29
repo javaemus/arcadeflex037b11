@@ -1672,7 +1672,9 @@ public class video {
             blue[0] = current_palette.read(3 * pen + 2);
         }
     }
-
+    public static void osd_mark_dirty(int _x1, int _y1, int _x2, int _y2) {
+        
+    }
     
     public static void osd_mark_dirty(int _x1, int _y1, int _x2, int _y2, int ui) {
         /*TODO*///	if (use_dirty)

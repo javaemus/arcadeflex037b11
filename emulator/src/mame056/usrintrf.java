@@ -6,6 +6,7 @@ package mame056;
 import static arcadeflex.libc.cstdio.sprintf;
 import arcadeflex.libc.ptr.UBytePtr;
 import static arcadeflex.video.osd_get_brightness;
+import static arcadeflex.video.osd_mark_dirty;
 import static arcadeflex.video.osd_pause;
 import static arcadeflex.video.osd_save_snapshot;
 import static arcadeflex.video.osd_set_brightness;
@@ -31,7 +32,6 @@ import static mame056.inputH.*;
 import static mame056.input.*;
 import static old.mame.drawgfx.*;
 import static mame056.inptportH.*;
-import static old.mame.usrintrf.*;
 import static old2.mame.common.schedule_full_refresh;
 import static old2.mame.mame.*;
 import static mame056.mameH.*;
@@ -50,8 +50,11 @@ import static mame056.usrintrfH.SEL_MASK;
 import static old.arcadeflex.sound.osd_get_mastervolume;
 import static old.arcadeflex.sound.osd_set_mastervolume;
 import static mame056.inptport.*;
+import mame056.usrintrfH.DisplayText;
+import static mame056.usrintrfH.UI_COLOR_INVERSE;
 import static mame056.usrintrfH.UI_COLOR_NORMAL;
 import static mame056.version.build_version;
+import static old.arcadeflex.libc_old.strlen;
 import static old.arcadeflex.sound.osd_sound_enable;
 
 public class usrintrf {
@@ -345,85 +348,69 @@ public class usrintrf {
         schedule_full_refresh();
     }
 
-    /*TODO*///
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///
-/*TODO*///  Display text on the screen. If erase is 0, it superimposes the text on
-/*TODO*///  the last frame displayed.
-/*TODO*///
-/*TODO*///***************************************************************************/
-/*TODO*///
-/*TODO*///void displaytext(struct mame_bitmap *bitmap,const struct DisplayText *dt)
-/*TODO*///{
-/*TODO*///	switch_ui_orientation();
-/*TODO*///
-/*TODO*///	osd_mark_dirty(Machine->uixmin,Machine->uiymin,Machine->uixmin+Machine->uiwidth-1,Machine->uiymin+Machine->uiheight-1);
-/*TODO*///
-/*TODO*///	while (dt->text)
-/*TODO*///	{
-/*TODO*///		int x,y;
-/*TODO*///		const char *c;
-/*TODO*///
-/*TODO*///
-/*TODO*///		x = dt->x;
-/*TODO*///		y = dt->y;
-/*TODO*///		c = dt->text;
-/*TODO*///
-/*TODO*///		while (*c)
-/*TODO*///		{
-/*TODO*///			int wrapped;
-/*TODO*///
-/*TODO*///
-/*TODO*///			wrapped = 0;
-/*TODO*///
-/*TODO*///			if (*c == '\n')
-/*TODO*///			{
-/*TODO*///				x = dt->x;
-/*TODO*///				y += Machine->uifontheight + 1;
-/*TODO*///				wrapped = 1;
-/*TODO*///			}
-/*TODO*///			else if (*c == ' ')
-/*TODO*///			{
-/*TODO*///				/* don't try to word wrap at the beginning of a line (this would cause */
-/*TODO*///				/* an endless loop if a word is longer than a line) */
-/*TODO*///				if (x != dt->x)
-/*TODO*///				{
-/*TODO*///					int nextlen=0;
-/*TODO*///					const char *nc;
-/*TODO*///
-/*TODO*///
-/*TODO*///					nc = c+1;
-/*TODO*///					while (*nc && *nc != ' ' && *nc != '\n')
-/*TODO*///					{
-/*TODO*///						nextlen += Machine->uifontwidth;
-/*TODO*///						nc++;
-/*TODO*///					}
-/*TODO*///
-/*TODO*///					/* word wrap */
-/*TODO*///					if (x + Machine->uifontwidth + nextlen > Machine->uiwidth)
-/*TODO*///					{
-/*TODO*///						x = dt->x;
-/*TODO*///						y += Machine->uifontheight + 1;
-/*TODO*///						wrapped = 1;
-/*TODO*///					}
-/*TODO*///				}
-/*TODO*///			}
-/*TODO*///
-/*TODO*///			if (!wrapped)
-/*TODO*///			{
-/*TODO*///				drawgfx(bitmap,Machine->uifont,*c,dt->color,0,0,x+Machine->uixmin,y+Machine->uiymin,0,TRANSPARENCY_NONE,0);
-/*TODO*///				x += Machine->uifontwidth;
-/*TODO*///			}
-/*TODO*///
-/*TODO*///			c++;
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		dt++;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	switch_true_orientation();
-/*TODO*///}
+    /**
+     * *************************************************************************
+     *
+     * Display text on the screen. If erase is 0, it superimposes the text on
+     * the last frame displayed.
+     *
+     **************************************************************************
+     */
+    public static void displaytext(mame_bitmap bitmap, DisplayText[] dt) {
+        switch_ui_orientation();
+
+        osd_mark_dirty(Machine.uixmin, Machine.uiymin, Machine.uixmin + Machine.uiwidth - 1, Machine.uiymin + Machine.uiheight - 1);
+        int _ptr = 0;
+        while (dt[_ptr].text != null) {
+            int x, y;
+            int c;
+
+            x = dt[_ptr].x;
+            y = dt[_ptr].y;
+            c = 0;//dt.text;
+            while (c < dt[_ptr].text.length() && dt[_ptr].text.charAt(c) != '\0')//while (*c)
+            {
+                boolean wrapped = false;
+
+                if (dt[_ptr].text.charAt(c) == '\n') {
+                    x = dt[_ptr].x;
+                    y += Machine.uifontheight + 1;
+                    wrapped = true;
+                } else if (dt[_ptr].text.charAt(c) == ' ') {
+                    /* don't try to word wrap at the beginning of a line (this would cause */
+ /* an endless loop if a word is longer than a line) */
+                    if (x != dt[_ptr].x) {
+                        int nextlen = 0;
+                        int nc;//const char *nc;
+
+                        nc = c + 1;
+                        while (nc < dt[_ptr].text.length() && dt[_ptr].text.charAt(nc) != '\0' && dt[_ptr].text.charAt(nc) != ' ' && dt[_ptr].text.charAt(nc) != '\n')//while (*nc && *nc != ' ' && *nc != '\n')
+                        {
+                            nextlen += Machine.uifontwidth;
+                            nc++;
+                        }
+
+                        /* word wrap */
+                        if (x + Machine.uifontwidth + nextlen > Machine.uiwidth) {
+                            x = dt[_ptr].x;
+                            y += Machine.uifontheight + 1;
+                            wrapped = true;
+                        }
+                    }
+                }
+
+                if (!wrapped) {
+                    drawgfx(bitmap, Machine.uifont, dt[_ptr].text.charAt(c), dt[_ptr].color, 0, 0, x + Machine.uixmin, y + Machine.uiymin, null, TRANSPARENCY_NONE, 0);
+                    x += Machine.uifontwidth;
+                }
+
+                c++;
+            }
+            _ptr++;
+        }
+        switch_true_orientation();
+
+    }
 
     /* Writes messages on the screen. */
     public static void ui_text_ex(mame_bitmap bitmap, String buf_begin, int buf_end, int x, int y, int color) {
@@ -603,161 +590,151 @@ public class usrintrf {
 /*TODO*///	ui_multitext_ex(bitmap,begin,end,max,x,y,color);
 /*TODO*///}
 /*TODO*///
-/*TODO*///void ui_displaymenu(struct mame_bitmap *bitmap,const char **items,const char **subitems,char *flag,int selected,int arrowize_subitem)
-/*TODO*///{
-/*TODO*///	struct DisplayText dt[256];
-/*TODO*///	int curr_dt;
-/*TODO*///	const char *lefthilight = ui_getstring (UI_lefthilight);
-/*TODO*///	const char *righthilight = ui_getstring (UI_righthilight);
-/*TODO*///	const char *uparrow = ui_getstring (UI_uparrow);
-/*TODO*///	const char *downarrow = ui_getstring (UI_downarrow);
-/*TODO*///	const char *leftarrow = ui_getstring (UI_leftarrow);
-/*TODO*///	const char *rightarrow = ui_getstring (UI_rightarrow);
-/*TODO*///	int i,count,len,maxlen,highlen;
-/*TODO*///	int leftoffs,topoffs,visible,topitem;
-/*TODO*///	int selected_long;
-/*TODO*///
-/*TODO*///
-/*TODO*///	i = 0;
-/*TODO*///	maxlen = 0;
-/*TODO*///	highlen = Machine->uiwidth / Machine->uifontwidth;
-/*TODO*///	while (items[i])
-/*TODO*///	{
-/*TODO*///		len = 3 + strlen(items[i]);
-/*TODO*///		if (subitems && subitems[i])
-/*TODO*///			len += 2 + strlen(subitems[i]);
-/*TODO*///		if (len > maxlen && len <= highlen)
-/*TODO*///			maxlen = len;
-/*TODO*///		i++;
-/*TODO*///	}
-/*TODO*///	count = i;
-/*TODO*///
-/*TODO*///	visible = Machine->uiheight / (3 * Machine->uifontheight / 2) - 1;
-/*TODO*///	topitem = 0;
-/*TODO*///	if (visible > count) visible = count;
-/*TODO*///	else
-/*TODO*///	{
-/*TODO*///		topitem = selected - visible / 2;
-/*TODO*///		if (topitem < 0) topitem = 0;
-/*TODO*///		if (topitem > count - visible) topitem = count - visible;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	leftoffs = (Machine->uiwidth - maxlen * Machine->uifontwidth) / 2;
-/*TODO*///	topoffs = (Machine->uiheight - (3 * visible + 1) * Machine->uifontheight / 2) / 2;
-/*TODO*///
-/*TODO*///	/* black background */
-/*TODO*///	ui_drawbox(bitmap,leftoffs,topoffs,maxlen * Machine->uifontwidth,(3 * visible + 1) * Machine->uifontheight / 2);
-/*TODO*///
-/*TODO*///	selected_long = 0;
-/*TODO*///	curr_dt = 0;
-/*TODO*///	for (i = 0;i < visible;i++)
-/*TODO*///	{
-/*TODO*///		int item = i + topitem;
-/*TODO*///
-/*TODO*///		if (i == 0 && item > 0)
-/*TODO*///		{
-/*TODO*///			dt[curr_dt].text = uparrow;
-/*TODO*///			dt[curr_dt].color = UI_COLOR_NORMAL;
-/*TODO*///			dt[curr_dt].x = (Machine->uiwidth - Machine->uifontwidth * strlen(uparrow)) / 2;
-/*TODO*///			dt[curr_dt].y = topoffs + (3*i+1)*Machine->uifontheight/2;
-/*TODO*///			curr_dt++;
-/*TODO*///		}
-/*TODO*///		else if (i == visible - 1 && item < count - 1)
-/*TODO*///		{
-/*TODO*///			dt[curr_dt].text = downarrow;
-/*TODO*///			dt[curr_dt].color = UI_COLOR_NORMAL;
-/*TODO*///			dt[curr_dt].x = (Machine->uiwidth - Machine->uifontwidth * strlen(downarrow)) / 2;
-/*TODO*///			dt[curr_dt].y = topoffs + (3*i+1)*Machine->uifontheight/2;
-/*TODO*///			curr_dt++;
-/*TODO*///		}
-/*TODO*///		else
-/*TODO*///		{
-/*TODO*///			if (subitems && subitems[item])
-/*TODO*///			{
-/*TODO*///				int sublen;
-/*TODO*///				len = strlen(items[item]);
-/*TODO*///				dt[curr_dt].text = items[item];
-/*TODO*///				dt[curr_dt].color = UI_COLOR_NORMAL;
-/*TODO*///				dt[curr_dt].x = leftoffs + 3*Machine->uifontwidth/2;
-/*TODO*///				dt[curr_dt].y = topoffs + (3*i+1)*Machine->uifontheight/2;
-/*TODO*///				curr_dt++;
-/*TODO*///				sublen = strlen(subitems[item]);
-/*TODO*///				if (sublen > maxlen-5-len)
-/*TODO*///				{
-/*TODO*///					dt[curr_dt].text = "...";
-/*TODO*///					sublen = strlen(dt[curr_dt].text);
-/*TODO*///					if (item == selected)
-/*TODO*///						selected_long = 1;
-/*TODO*///				} else {
-/*TODO*///					dt[curr_dt].text = subitems[item];
-/*TODO*///				}
-/*TODO*///				/* If this item is flagged, draw it in inverse print */
-/*TODO*///				dt[curr_dt].color = (flag && flag[item]) ? UI_COLOR_INVERSE : UI_COLOR_NORMAL;
-/*TODO*///				dt[curr_dt].x = leftoffs + Machine->uifontwidth * (maxlen-1-sublen) - Machine->uifontwidth/2;
-/*TODO*///				dt[curr_dt].y = topoffs + (3*i+1)*Machine->uifontheight/2;
-/*TODO*///				curr_dt++;
-/*TODO*///			}
-/*TODO*///			else
-/*TODO*///			{
-/*TODO*///				dt[curr_dt].text = items[item];
-/*TODO*///				dt[curr_dt].color = UI_COLOR_NORMAL;
-/*TODO*///				dt[curr_dt].x = (Machine->uiwidth - Machine->uifontwidth * strlen(items[item])) / 2;
-/*TODO*///				dt[curr_dt].y = topoffs + (3*i+1)*Machine->uifontheight/2;
-/*TODO*///				curr_dt++;
-/*TODO*///			}
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	i = selected - topitem;
-/*TODO*///	if (subitems && subitems[selected] && arrowize_subitem)
-/*TODO*///	{
-/*TODO*///		if (arrowize_subitem & 1)
-/*TODO*///		{
-/*TODO*///			int sublen;
-/*TODO*///
-/*TODO*///			len = strlen(items[selected]);
-/*TODO*///
-/*TODO*///			dt[curr_dt].text = leftarrow;
-/*TODO*///			dt[curr_dt].color = UI_COLOR_NORMAL;
-/*TODO*///
-/*TODO*///			sublen = strlen(subitems[selected]);
-/*TODO*///			if (sublen > maxlen-5-len)
-/*TODO*///				sublen = strlen("...");
-/*TODO*///
-/*TODO*///			dt[curr_dt].x = leftoffs + Machine->uifontwidth * (maxlen-2 - sublen) - Machine->uifontwidth/2 - 1;
-/*TODO*///			dt[curr_dt].y = topoffs + (3*i+1)*Machine->uifontheight/2;
-/*TODO*///			curr_dt++;
-/*TODO*///		}
-/*TODO*///		if (arrowize_subitem & 2)
-/*TODO*///		{
-/*TODO*///			dt[curr_dt].text = rightarrow;
-/*TODO*///			dt[curr_dt].color = UI_COLOR_NORMAL;
-/*TODO*///			dt[curr_dt].x = leftoffs + Machine->uifontwidth * (maxlen-1) - Machine->uifontwidth/2;
-/*TODO*///			dt[curr_dt].y = topoffs + (3*i+1)*Machine->uifontheight/2;
-/*TODO*///			curr_dt++;
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///	else
-/*TODO*///	{
-/*TODO*///		dt[curr_dt].text = righthilight;
-/*TODO*///		dt[curr_dt].color = UI_COLOR_NORMAL;
-/*TODO*///		dt[curr_dt].x = leftoffs + Machine->uifontwidth * (maxlen-1) - Machine->uifontwidth/2;
-/*TODO*///		dt[curr_dt].y = topoffs + (3*i+1)*Machine->uifontheight/2;
-/*TODO*///		curr_dt++;
-/*TODO*///	}
-/*TODO*///	dt[curr_dt].text = lefthilight;
-/*TODO*///	dt[curr_dt].color = UI_COLOR_NORMAL;
-/*TODO*///	dt[curr_dt].x = leftoffs + Machine->uifontwidth/2;
-/*TODO*///	dt[curr_dt].y = topoffs + (3*i+1)*Machine->uifontheight/2;
-/*TODO*///	curr_dt++;
-/*TODO*///
-/*TODO*///	dt[curr_dt].text = 0;	/* terminate array */
-/*TODO*///
-/*TODO*///	displaytext(bitmap,dt);
-/*TODO*///
-/*TODO*///	if (selected_long)
-/*TODO*///	{
-/*TODO*///		int long_dx;
+    public static void ui_displaymenu(mame_bitmap bitmap, String[] items, String[] subitems, char[] flag, int selected, int arrowize_subitem) {
+        DisplayText[] dt = DisplayText.create(256);
+        int curr_dt;
+        String lefthilight = ui_getstring(UI_lefthilight);
+        String righthilight = ui_getstring(UI_righthilight);
+        String uparrow = ui_getstring(UI_uparrow);
+        String downarrow = ui_getstring(UI_downarrow);
+        String leftarrow = ui_getstring(UI_leftarrow);
+        String rightarrow = ui_getstring(UI_rightarrow);
+        int i, count, len, maxlen, highlen;
+        int leftoffs, topoffs, visible, topitem;
+        int selected_long;
+
+        i = 0;
+        maxlen = 0;
+        highlen = Machine.uiwidth / Machine.uifontwidth;
+        while (items[i] != null) {
+            len = 3 + strlen(items[i]);
+            if (subitems != null && subitems[i] != null) {
+                len += 2 + strlen(subitems[i]);
+            }
+            if (len > maxlen && len <= highlen) {
+                maxlen = len;
+            }
+            i++;
+        }
+        count = i;
+
+        visible = Machine.uiheight / (3 * Machine.uifontheight / 2) - 1;
+        topitem = 0;
+        if (visible > count) {
+            visible = count;
+        } else {
+            topitem = selected - visible / 2;
+            if (topitem < 0) {
+                topitem = 0;
+            }
+            if (topitem > count - visible) {
+                topitem = count - visible;
+            }
+        }
+
+        leftoffs = (Machine.uiwidth - maxlen * Machine.uifontwidth) / 2;
+        topoffs = (Machine.uiheight - (3 * visible + 1) * Machine.uifontheight / 2) / 2;
+
+        /* black background */
+        ui_drawbox(bitmap, leftoffs, topoffs, maxlen * Machine.uifontwidth, (3 * visible + 1) * Machine.uifontheight / 2);
+
+        selected_long = 0;
+        curr_dt = 0;
+        for (i = 0; i < visible; i++) {
+            int item = i + topitem;
+
+            if (i == 0 && item > 0) {
+                dt[curr_dt].text = uparrow;
+                dt[curr_dt].color = UI_COLOR_NORMAL;
+                dt[curr_dt].x = (Machine.uiwidth - Machine.uifontwidth * strlen(uparrow)) / 2;
+                dt[curr_dt].y = topoffs + (3 * i + 1) * Machine.uifontheight / 2;
+                curr_dt++;
+            } else if (i == visible - 1 && item < count - 1) {
+                dt[curr_dt].text = downarrow;
+                dt[curr_dt].color = UI_COLOR_NORMAL;
+                dt[curr_dt].x = (Machine.uiwidth - Machine.uifontwidth * strlen(downarrow)) / 2;
+                dt[curr_dt].y = topoffs + (3 * i + 1) * Machine.uifontheight / 2;
+                curr_dt++;
+            } else {
+                if (subitems != null && subitems[item] != null) {
+                    int sublen;
+                    len = strlen(items[item]);
+                    dt[curr_dt].text = items[item];
+                    dt[curr_dt].color = UI_COLOR_NORMAL;
+                    dt[curr_dt].x = leftoffs + 3 * Machine.uifontwidth / 2;
+                    dt[curr_dt].y = topoffs + (3 * i + 1) * Machine.uifontheight / 2;
+                    curr_dt++;
+                    sublen = strlen(subitems[item]);
+                    if (sublen > maxlen - 5 - len) {
+                        dt[curr_dt].text = "...";
+                        sublen = strlen(dt[curr_dt].text);
+                        if (item == selected) {
+                            selected_long = 1;
+                        }
+                    } else {
+                        dt[curr_dt].text = subitems[item];
+                    }
+                    /* If this item is flagged, draw it in inverse print */
+                    dt[curr_dt].color = (flag != null && flag[item] != 0) ? UI_COLOR_INVERSE : UI_COLOR_NORMAL;
+                    dt[curr_dt].x = leftoffs + Machine.uifontwidth * (maxlen - 1 - sublen) - Machine.uifontwidth / 2;
+                    dt[curr_dt].y = topoffs + (3 * i + 1) * Machine.uifontheight / 2;
+                    curr_dt++;
+                } else {
+                    dt[curr_dt].text = items[item];
+                    dt[curr_dt].color = UI_COLOR_NORMAL;
+                    dt[curr_dt].x = (Machine.uiwidth - Machine.uifontwidth * strlen(items[item])) / 2;
+                    dt[curr_dt].y = topoffs + (3 * i + 1) * Machine.uifontheight / 2;
+                    curr_dt++;
+                }
+            }
+        }
+
+        i = selected - topitem;
+        if (subitems != null && subitems[selected] != null && arrowize_subitem != 0) {
+            if ((arrowize_subitem & 1) != 0) {
+                int sublen;
+                len = strlen(items[selected]);
+
+                dt[curr_dt].text = leftarrow;
+                dt[curr_dt].color = UI_COLOR_NORMAL;
+
+                sublen = strlen(subitems[selected]);
+                if (sublen > maxlen - 5 - len) {
+                    sublen = strlen("...");
+                }
+
+                dt[curr_dt].x = leftoffs + Machine.uifontwidth * (maxlen - 2 - sublen) - Machine.uifontwidth / 2 - 1;
+                dt[curr_dt].y = topoffs + (3 * i + 1) * Machine.uifontheight / 2;
+                curr_dt++;
+            }
+            if ((arrowize_subitem & 2) != 0) {
+                dt[curr_dt].text = rightarrow;
+                dt[curr_dt].color = UI_COLOR_NORMAL;
+                dt[curr_dt].x = leftoffs + Machine.uifontwidth * (maxlen - 1) - Machine.uifontwidth / 2;
+                dt[curr_dt].y = topoffs + (3 * i + 1) * Machine.uifontheight / 2;
+                curr_dt++;
+            }
+        } else {
+            dt[curr_dt].text = righthilight;
+            dt[curr_dt].color = UI_COLOR_NORMAL;
+            dt[curr_dt].x = leftoffs + Machine.uifontwidth * (maxlen - 1) - Machine.uifontwidth / 2;
+            dt[curr_dt].y = topoffs + (3 * i + 1) * Machine.uifontheight / 2;
+            curr_dt++;
+        }
+        dt[curr_dt].text = lefthilight;
+        dt[curr_dt].color = UI_COLOR_NORMAL;
+        dt[curr_dt].x = leftoffs + Machine.uifontwidth / 2;
+        dt[curr_dt].y = topoffs + (3 * i + 1) * Machine.uifontheight / 2;
+        curr_dt++;
+
+        dt[curr_dt].text = null;
+        /* terminate array */
+
+        displaytext(bitmap, dt);
+
+        if (selected_long != 0) {
+            throw new UnsupportedOperationException("unimplemented");
+            /*TODO*///		int long_dx;
 /*TODO*///		int long_dy;
 /*TODO*///		int long_x;
 /*TODO*///		int long_y;
@@ -774,113 +751,120 @@ public class usrintrf {
 /*TODO*///			long_y = topoffs + i * 3*Machine->uifontheight/2 - long_dy;
 /*TODO*///
 /*TODO*///		ui_multitextbox_ex(bitmap,subitems[selected],subitems[selected] + strlen(subitems[selected]), long_max, long_x,long_y,long_dx,long_dy, UI_COLOR_NORMAL);
-/*TODO*///	}
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///void ui_displaymessagewindow(struct mame_bitmap *bitmap,const char *text)
-/*TODO*///{
-/*TODO*///	struct DisplayText dt[256];
-/*TODO*///	int curr_dt;
-/*TODO*///	char *c,*c2;
-/*TODO*///	int i,len,maxlen,lines;
-/*TODO*///	char textcopy[2048];
-/*TODO*///	int leftoffs,topoffs;
-/*TODO*///	int maxcols,maxrows;
-/*TODO*///
-/*TODO*///	maxcols = (Machine->uiwidth / Machine->uifontwidth) - 1;
-/*TODO*///	maxrows = (2 * Machine->uiheight - Machine->uifontheight) / (3 * Machine->uifontheight);
-/*TODO*///
-/*TODO*///	/* copy text, calculate max len, count lines, wrap long lines and crop height to fit */
-/*TODO*///	maxlen = 0;
-/*TODO*///	lines = 0;
-/*TODO*///	c = (char *)text;
-/*TODO*///	c2 = textcopy;
-/*TODO*///	while (*c)
-/*TODO*///	{
-/*TODO*///		len = 0;
-/*TODO*///		while (*c && *c != '\n')
-/*TODO*///		{
-/*TODO*///			*c2++ = *c++;
-/*TODO*///			len++;
-/*TODO*///			if (len == maxcols && *c != '\n')
-/*TODO*///			{
-/*TODO*///				/* attempt word wrap */
-/*TODO*///				char *csave = c, *c2save = c2;
-/*TODO*///				int lensave = len;
-/*TODO*///
-/*TODO*///				/* back up to last space or beginning of line */
-/*TODO*///				while (*c != ' ' && *c != '\n' && c > text)
-/*TODO*///					--c, --c2, --len;
-/*TODO*///
-/*TODO*///				/* if no space was found, hard wrap instead */
-/*TODO*///				if (*c != ' ')
-/*TODO*///					c = csave, c2 = c2save, len = lensave;
-/*TODO*///				else
-/*TODO*///					c++;
-/*TODO*///
-/*TODO*///				*c2++ = '\n'; /* insert wrap */
-/*TODO*///				break;
-/*TODO*///			}
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		if (*c == '\n')
-/*TODO*///			*c2++ = *c++;
-/*TODO*///
-/*TODO*///		if (len > maxlen) maxlen = len;
-/*TODO*///
-/*TODO*///		lines++;
-/*TODO*///		if (lines == maxrows)
-/*TODO*///			break;
-/*TODO*///	}
-/*TODO*///	*c2 = '\0';
-/*TODO*///
-/*TODO*///	maxlen += 1;
-/*TODO*///
-/*TODO*///	leftoffs = (Machine->uiwidth - Machine->uifontwidth * maxlen) / 2;
-/*TODO*///	if (leftoffs < 0) leftoffs = 0;
-/*TODO*///	topoffs = (Machine->uiheight - (3 * lines + 1) * Machine->uifontheight / 2) / 2;
-/*TODO*///
-/*TODO*///	/* black background */
-/*TODO*///	ui_drawbox(bitmap,leftoffs,topoffs,maxlen * Machine->uifontwidth,(3 * lines + 1) * Machine->uifontheight / 2);
-/*TODO*///
-/*TODO*///	curr_dt = 0;
-/*TODO*///	c = textcopy;
-/*TODO*///	i = 0;
-/*TODO*///	while (*c)
-/*TODO*///	{
-/*TODO*///		c2 = c;
-/*TODO*///		while (*c && *c != '\n')
-/*TODO*///			c++;
-/*TODO*///
-/*TODO*///		if (*c == '\n')
-/*TODO*///		{
-/*TODO*///			*c = '\0';
-/*TODO*///			c++;
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		if (*c2 == '\t')    /* center text */
-/*TODO*///		{
-/*TODO*///			c2++;
-/*TODO*///			dt[curr_dt].x = (Machine->uiwidth - Machine->uifontwidth * (c - c2)) / 2;
-/*TODO*///		}
-/*TODO*///		else
-/*TODO*///			dt[curr_dt].x = leftoffs + Machine->uifontwidth/2;
-/*TODO*///
-/*TODO*///		dt[curr_dt].text = c2;
-/*TODO*///		dt[curr_dt].color = UI_COLOR_NORMAL;
-/*TODO*///		dt[curr_dt].y = topoffs + (3*i+1)*Machine->uifontheight/2;
-/*TODO*///		curr_dt++;
-/*TODO*///
-/*TODO*///		i++;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	dt[curr_dt].text = 0;	/* terminate array */
-/*TODO*///
-/*TODO*///	displaytext(bitmap,dt);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
+        }
+    }
+
+    public static void ui_displaymessagewindow(mame_bitmap bitmap, String text) {
+        DisplayText[] dt = DisplayText.create(256);
+        int curr_dt;
+        int c, c2;
+        char[] textcopy = new char[2048];
+        int i, len, maxlen, lines;
+        int leftoffs, topoffs;
+        int maxcols, maxrows;
+
+        maxcols = (Machine.uiwidth / Machine.uifontwidth) - 1;
+        maxrows = (2 * Machine.uiheight - Machine.uifontheight) / (3 * Machine.uifontheight);
+
+        /* copy text, calculate max len, count lines, wrap long lines and crop height to fit */
+        maxlen = 0;
+        lines = 0;
+        c = 0;//(char *)text;
+        c2 = 0;//textcopy;
+        while (c < text.length() && text.charAt(c) != '\0')//while (*c)
+        {
+            len = 0;
+            while (c < text.length() && text.charAt(c) != '\0' && text.charAt(c) != '\n')//while (*c && *c != '\n')
+            {
+                textcopy[c2++] = text.charAt(c++);
+                len++;
+                if (len == maxcols && text.charAt(c) != '\n') {
+                    /* attempt word wrap */
+                    int csave = c, c2save = c2;
+                    int lensave = len;
+
+                    /* back up to last space or beginning of line */
+                    while (text.charAt(c) != ' ' && text.charAt(c) != '\n' && c > 0)//while (*c != ' ' && *c != '\n' && c > text)
+                    {
+                        --c;
+                        --c2;
+                        --len;
+                    }
+                    /* if no space was found, hard wrap instead */
+                    if (text.charAt(c) != ' ') {
+                        c = csave;
+                        c2 = c2save;
+                        len = lensave;
+                    } else {
+                        c++;
+                    }
+
+                    textcopy[c2++] = '\n';
+                    /* insert wrap */
+                    break;
+                }
+            }
+            if (c < text.length() && text.charAt(c) == '\n')//if (*c == '\n')
+            {
+                textcopy[c2++] = text.charAt(c++);
+            }
+
+            if (len > maxlen) {
+                maxlen = len;
+            }
+
+            lines++;
+            if (lines == maxrows) {
+                break;
+            }
+        }
+        textcopy[c2] = '\0';
+
+        maxlen += 1;
+        leftoffs = (Machine.uiwidth - Machine.uifontwidth * maxlen) / 2;
+        if (leftoffs < 0) {
+            leftoffs = 0;
+        }
+        topoffs = (Machine.uiheight - (3 * lines + 1) * Machine.uifontheight / 2) / 2;
+
+        /* black background */
+        ui_drawbox(bitmap, leftoffs, topoffs, maxlen * Machine.uifontwidth, (3 * lines + 1) * Machine.uifontheight / 2);
+
+        curr_dt = 0;
+        c = 0;//textcopy;
+        i = 0;
+        while (c < textcopy.length && textcopy[c] != '\0')//while (*c)
+        {
+            c2 = c;
+            while (c < textcopy.length && textcopy[c] != '\0' && textcopy[c] != '\n')//while (*c && *c != '\n')
+            {
+                c++;
+            }
+
+            if (textcopy[c] == '\n') {
+                textcopy[c] = '\0';
+                c++;
+            }
+            if (textcopy[c2] == '\t') /* center text */ {
+                c2++;
+                dt[curr_dt].x = (Machine.uiwidth - Machine.uifontwidth * (c - c2)) / 2;
+            } else {
+                dt[curr_dt].x = leftoffs + Machine.uifontwidth / 2;
+            }
+
+            dt[curr_dt].text = new String(textcopy).substring(c2);//dt[curr_dt].text = c2;
+            dt[curr_dt].color = UI_COLOR_NORMAL;
+            dt[curr_dt].y = topoffs + (3 * i + 1) * Machine.uifontheight / 2;
+            curr_dt++;
+
+            i++;
+        }
+        dt[curr_dt].text = null;
+        /* terminate array */
+
+        displaytext(bitmap, dt);
+    }
+
     public static void showcharset(mame_bitmap bitmap) {
         int i;
         String buf = "";
@@ -2782,42 +2766,40 @@ public class usrintrf {
         return sel + 1;
     }
 
-    /*TODO*////*********************************************************************
-/*TODO*///
-/*TODO*///  start of On Screen Display handling
-/*TODO*///
-/*TODO*///*********************************************************************/
-/*TODO*///
-/*TODO*///static void displayosd(struct mame_bitmap *bitmap,const char *text,int percentage,int default_percentage)
-/*TODO*///{
-/*TODO*///	struct DisplayText dt[2];
-/*TODO*///	int avail;
-/*TODO*///
-/*TODO*///
-/*TODO*///	avail = (Machine->uiwidth / Machine->uifontwidth) * 19 / 20;
-/*TODO*///
-/*TODO*///	ui_drawbox(bitmap,(Machine->uiwidth - Machine->uifontwidth * avail) / 2,
-/*TODO*///			(Machine->uiheight - 7*Machine->uifontheight/2),
-/*TODO*///			avail * Machine->uifontwidth,
-/*TODO*///			3*Machine->uifontheight);
-/*TODO*///
-/*TODO*///	avail--;
-/*TODO*///
-/*TODO*///	drawbar(bitmap,(Machine->uiwidth - Machine->uifontwidth * avail) / 2,
-/*TODO*///			(Machine->uiheight - 3*Machine->uifontheight),
-/*TODO*///			avail * Machine->uifontwidth,
-/*TODO*///			Machine->uifontheight,
-/*TODO*///			percentage,default_percentage);
-/*TODO*///
-/*TODO*///	dt[0].text = text;
-/*TODO*///	dt[0].color = UI_COLOR_NORMAL;
-/*TODO*///	dt[0].x = (Machine->uiwidth - Machine->uifontwidth * strlen(text)) / 2;
-/*TODO*///	dt[0].y = (Machine->uiheight - 2*Machine->uifontheight) + 2;
-/*TODO*///	dt[1].text = 0; /* terminate array */
-/*TODO*///	displaytext(bitmap,dt);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
+    /**
+     * ******************************************************************
+     * <p>
+     * start of On Screen Display handling
+     * <p>
+     * *******************************************************************
+     */
+    public static void displayosd(mame_bitmap bitmap, String text, int percentage, int default_percentage) {
+        DisplayText[] dt = DisplayText.create(2);
+        int avail;
+
+        avail = (Machine.uiwidth / Machine.uifontwidth) * 19 / 20;
+
+        ui_drawbox(bitmap, (Machine.uiwidth - Machine.uifontwidth * avail) / 2,
+                (Machine.uiheight - 7 * Machine.uifontheight / 2),
+                avail * Machine.uifontwidth,
+                3 * Machine.uifontheight);
+
+        avail--;
+
+        drawbar(bitmap, (Machine.uiwidth - Machine.uifontwidth * avail) / 2,
+                (Machine.uiheight - 3 * Machine.uifontheight),
+                avail * Machine.uifontwidth,
+                Machine.uifontheight,
+                percentage, default_percentage);
+
+        dt[0].text = text;
+        dt[0].color = UI_COLOR_NORMAL;
+        dt[0].x = (Machine.uiwidth - Machine.uifontwidth * strlen(text)) / 2;
+        dt[0].y = (Machine.uiheight - 2 * Machine.uifontheight) + 2;
+        dt[1].text = null;/* terminate array */
+        displaytext(bitmap, dt);
+    }
+
     public static onscrd_fncPtr onscrd_volume = new onscrd_fncPtr() {
         public void handler(mame_bitmap bitmap, int increment, int arg) {
             String buf;
@@ -3146,41 +3128,37 @@ public class usrintrf {
         return sel + 1;
     }
 
-    /*TODO*////*********************************************************************
-/*TODO*///
-/*TODO*///  end of On Screen Display handling
-/*TODO*///
-/*TODO*///*********************************************************************/
-/*TODO*///
-/*TODO*///
-/*TODO*///static void displaymessage(struct mame_bitmap *bitmap,const char *text)
-/*TODO*///{
-/*TODO*///	struct DisplayText dt[2];
-/*TODO*///	int avail;
-/*TODO*///
-/*TODO*///
-/*TODO*///	if (Machine->uiwidth < Machine->uifontwidth * strlen(text))
-/*TODO*///	{
-/*TODO*///		ui_displaymessagewindow(bitmap,text);
-/*TODO*///		return;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	avail = strlen(text)+2;
-/*TODO*///
-/*TODO*///	ui_drawbox(bitmap,(Machine->uiwidth - Machine->uifontwidth * avail) / 2,
-/*TODO*///			Machine->uiheight - 3*Machine->uifontheight,
-/*TODO*///			avail * Machine->uifontwidth,
-/*TODO*///			2*Machine->uifontheight);
-/*TODO*///
-/*TODO*///	dt[0].text = text;
-/*TODO*///	dt[0].color = UI_COLOR_NORMAL;
-/*TODO*///	dt[0].x = (Machine->uiwidth - Machine->uifontwidth * strlen(text)) / 2;
-/*TODO*///	dt[0].y = Machine->uiheight - 5*Machine->uifontheight/2;
-/*TODO*///	dt[1].text = 0; /* terminate array */
-/*TODO*///	displaytext(bitmap,dt);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
+    /**
+     * ******************************************************************
+     * <p>
+     * end of On Screen Display handling
+     * <p>
+     * *******************************************************************
+     */
+    public static void displaymessage(mame_bitmap bitmap, String text) {
+        DisplayText[] dt = DisplayText.create(2);
+        int avail;
+
+        if (Machine.uiwidth < Machine.uifontwidth * strlen(text)) {
+            ui_displaymessagewindow(bitmap, text);
+            return;
+        }
+
+        avail = strlen(text) + 2;
+
+        ui_drawbox(bitmap, (Machine.uiwidth - Machine.uifontwidth * avail) / 2,
+                Machine.uiheight - 3 * Machine.uifontheight,
+                avail * Machine.uifontwidth,
+                2 * Machine.uifontheight);
+
+        dt[0].text = text;
+        dt[0].color = UI_COLOR_NORMAL;
+        dt[0].x = (Machine.uiwidth - Machine.uifontwidth * strlen(text)) / 2;
+        dt[0].y = Machine.uiheight - 5 * Machine.uifontheight / 2;
+        dt[1].text = null;/* terminate array */
+        displaytext(bitmap, dt);
+    }
+
     public static String messagetext;
     public static int messagecounter;
 
