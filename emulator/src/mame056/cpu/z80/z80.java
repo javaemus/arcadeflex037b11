@@ -4247,6 +4247,10 @@ public class z80 extends cpu_interface {
     public void internal_write(int offset, int data) {
         //doesesn't exist in z80 cpu
     }
+    @Override
+    public int mem_address_bits_of_cpu() {
+        return 16;
+    }
     
     /**
      * Opcodes

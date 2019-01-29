@@ -2654,34 +2654,6 @@ public class memory {
     /*TODO*///
     /*TODO*///GENERATE_MEM_HANDLERS_32BIT_BE(18)	/* HACK -- used for pdp-1 */
     /*TODO*///
-    /*TODO*////* make sure you add an entry to this list whenever you add a set of handlers */
-    /*TODO*///static const struct memory_address_table readmem_to_bits[] =
-    /*TODO*///{
-    /*TODO*///	{ 16, cpu_readmem16 },
-    /*TODO*///	{ 20, cpu_readmem20 },
-    /*TODO*///	{ 21, cpu_readmem21 },
-    /*TODO*///	{ 24, cpu_readmem24 },
-    /*TODO*///
-    /*TODO*///	{ 16, cpu_readmem16bew },
-    /*TODO*///	{ 24, cpu_readmem24bew },
-    /*TODO*///	{ 32, cpu_readmem32bew },
-    /*TODO*///
-    /*TODO*///	{ 16, cpu_readmem16lew },
-    /*TODO*///	{ 17, cpu_readmem17lew },
-    /*TODO*///	{ 24, cpu_readmem24lew },
-    /*TODO*///	{ 29, cpu_readmem29lew },
-    /*TODO*///	{ 32, cpu_readmem32lew },
-    /*TODO*///
-    /*TODO*///	{ 24, cpu_readmem24bedw },
-    /*TODO*///	{ 29, cpu_readmem29bedw },
-    /*TODO*///	{ 32, cpu_readmem32bedw },
-    /*TODO*///
-    /*TODO*///	{ 26, cpu_readmem26ledw },
-    /*TODO*///	{ 29, cpu_readmem29ledw },
-    /*TODO*///	{ 32, cpu_readmem32ledw },
-    /*TODO*///
-    /*TODO*///	{ 18, cpu_readmem18bedw }
-    /*TODO*///};
     /*TODO*///
     /*TODO*///
     /*TODO*////*-------------------------------------------------
@@ -2699,47 +2671,23 @@ public class memory {
     /*TODO*///
     /*TODO*///GENERATE_PORT_HANDLERS_32BIT_LE(16)
     /*TODO*///GENERATE_PORT_HANDLERS_32BIT_LE(24)
-    /*TODO*///
-    /*TODO*///
-    /*TODO*////*-------------------------------------------------
-    /*TODO*///	get address bits from a read handler
-    /*TODO*///-------------------------------------------------*/
-    /*TODO*///
+    /*-------------------------------------------------
+    	get address bits from a read handler
+    -------------------------------------------------*/
     public static int mem_address_bits_of_cpu(int cputype) {
-        /*HACK*/
-        return 16;//It should be ok for Z80 . well readone later
+        return cputype_get_interface(cputype).mem_address_bits_of_cpu();
     }
 
-    /*TODO*///int mem_address_bits_of_cpu(int cputype)
-    /*TODO*///{
-    /*TODO*///	read8_handler handler = cputype_get_interface(cputype)->memory_read;
-    /*TODO*///	int	idx;
-    /*TODO*///
-    /*TODO*///	/* scan the table */
-    /*TODO*///	for (idx = 0; idx < sizeof(readmem_to_bits) / sizeof(readmem_to_bits[0]); idx++)
-    /*TODO*///		if (readmem_to_bits[idx].handler == handler)
-    /*TODO*///			return readmem_to_bits[idx].bits;
-    /*TODO*///
-    /*TODO*///	/* this is a fatal error */
-    /*TODO*///	fatalerror("CPU #%d memory handlers don't have a table entry in readmem_to_bits!\n");
-    /*TODO*///	exit(1);
-    /*TODO*///	return 0;
-    /*TODO*///}
-    /*TODO*///
     /*-------------------------------------------------
     	get address bits from a read handler
     -------------------------------------------------*/
     public static int port_address_bits_of_cpu(int cputype) {
-        return 16;//HACK!
-/*TODO*///        return cputype == CPU_V60 ? 24 : 16;
+        return cputype == CPU_V60 ? 24 : 16;
     }
 
-    /*TODO*///
-    /*TODO*///
-    /*TODO*////*-------------------------------------------------
-    /*TODO*///	basic static handlers
-    /*TODO*///-------------------------------------------------*/
-    /*TODO*///
+    /*-------------------------------------------------
+    	basic static handlers
+    -------------------------------------------------*/
     public static ReadHandlerPtr mrh8_bad = new ReadHandlerPtr() {
         public int handler(int offset) {
             logerror("cpu #%d (PC=%08X): unmapped memory byte read from %08X\n", cpu_getactivecpu(), activecpu_get_pc(), offset);
