@@ -27,6 +27,8 @@ import static mame056.version.build_version;
 import static mame056.cpuexec.machine_reset;
 import static mame056.cpuexecH.CPU_AUDIO_CPU;
 import static mame056.cpuintrf.cputype_name;
+import static mame056.usrintrf.displaygameinfo;
+import static mame056.usrintrf.drawbar;
 import static mame056.usrintrf.mame_stats;
 import static mame056.usrintrf.messagecounter;
 import static mame056.usrintrf.messagetext;
@@ -40,6 +42,7 @@ import static mame056.usrintrf.setup_menu;
 import static mame056.usrintrf.showcharset;
 import static mame056.usrintrf.switch_true_orientation;
 import static mame056.usrintrf.switch_ui_orientation;
+import static mame056.usrintrf.ui_drawbox;
 
 
 public class usrintrf {
@@ -133,61 +136,9 @@ public class usrintrf {
         ui_text_ex(bitmap, buf, buf.length(), x, y, UI_COLOR_NORMAL);
     }
 
-    public static void ui_drawbox(mame_bitmap bitmap, int leftx, int topy, int width, int height) {
-        int black, white;
 
 
-        switch_ui_orientation();
 
-        if (leftx < 0) leftx = 0;
-        if (topy < 0) topy = 0;
-        if (width > Machine.uiwidth) width = Machine.uiwidth;
-        if (height > Machine.uiheight) height = Machine.uiheight;
-
-        leftx += Machine.uixmin;
-        topy += Machine.uiymin;
-
-        black = Machine.uifont.colortable.read(0);
-        white = Machine.uifont.colortable.read(1);
-
-        plot_box.handler(bitmap, leftx, topy, width, 1, white);
-        plot_box.handler(bitmap, leftx, topy + height - 1, width, 1, white);
-        plot_box.handler(bitmap, leftx, topy, 1, height, white);
-        plot_box.handler(bitmap, leftx + width - 1, topy, 1, height, white);
-        plot_box.handler(bitmap, leftx + 1, topy + 1, width - 2, height - 2, black);
-
-        switch_true_orientation();
-    }
-
-    public static void drawbar(mame_bitmap bitmap, int leftx, int topy, int width, int height, int percentage, int default_percentage) {
-        int black, white;
-
-
-        switch_ui_orientation();
-
-        if (leftx < 0) leftx = 0;
-        if (topy < 0) topy = 0;
-        if (width > Machine.uiwidth) width = Machine.uiwidth;
-        if (height > Machine.uiheight) height = Machine.uiheight;
-
-        leftx += Machine.uixmin;
-        topy += Machine.uiymin;
-
-        black = Machine.uifont.colortable.read(0);
-        white = Machine.uifont.colortable.read(1);
-
-        plot_box.handler(bitmap, leftx + (width - 1) * default_percentage / 100, topy, 1, height / 8, white);
-
-        plot_box.handler(bitmap, leftx, topy + height / 8, width, 1, white);
-
-        plot_box.handler(bitmap, leftx, topy + height / 8, 1 + (width - 1) * percentage / 100, height - 2 * (height / 8), white);
-
-        plot_box.handler(bitmap, leftx, topy + height - height / 8 - 1, width, 1, white);
-
-        plot_box.handler(bitmap, leftx + (width - 1) * default_percentage / 100, topy + height - height / 8, 1, height / 8, white);
-
-        switch_true_orientation();
-    }
 
     public static void ui_displaymenu(mame_bitmap bitmap, String[] items, String[] subitems, char[] flag, int selected, int arrowize_subitem) {
         DisplayText[] dt = DisplayText.create(256);
@@ -476,158 +427,6 @@ public class usrintrf {
         used = null;
     }
 
-
-    public static int displaygameinfo(mame_bitmap bitmap, int selected) {
-        int i;
-        String buf = "";
-        String buf2 = "";
-        int sel;
-
-
-        sel = selected - 1;
-
-
-        buf = sprintf("%s\n%s %s\n\n%s:\n", Machine.gamedrv.description, Machine.gamedrv.year, Machine.gamedrv.manufacturer,
-                ui_getstring(UI_cpu));
-        i = 0;
-        while (i < MAX_CPU && Machine.drv.cpu[i].cpu_type != 0) {
-
-            if (Machine.drv.cpu[i].cpu_clock >= 1000000)
-                buf += sprintf("%s %d.%06d MHz",
-                        cputype_name(Machine.drv.cpu[i].cpu_type),
-                        Machine.drv.cpu[i].cpu_clock / 1000000,
-                        Machine.drv.cpu[i].cpu_clock % 1000000);
-            else
-                buf += sprintf("%s %d.%03d kHz",
-                        cputype_name(Machine.drv.cpu[i].cpu_type),
-                        Machine.drv.cpu[i].cpu_clock / 1000,
-                        Machine.drv.cpu[i].cpu_clock % 1000);
-
-            if ((Machine.drv.cpu[i].cpu_type & CPU_AUDIO_CPU) != 0) {
-                buf2 = sprintf(" (%s)", ui_getstring(UI_sound_lc));
-                buf += buf2;
-            }
-
-            buf += "\n";
-
-            i++;
-        }
-
-        buf2 = sprintf("\n%s", ui_getstring(UI_sound));
-        buf += buf2;
-        if ((Machine.drv.sound_attributes & SOUND_SUPPORTS_STEREO) != 0)
-            buf += sprintf(" (%s)", ui_getstring(UI_stereo));
-        buf += ":\n";
-
-        i = 0;
-        while (i < MAX_SOUND && Machine.drv.sound[i].sound_type != 0) {
-            if (sound_num(Machine.drv.sound[i]) != 0)
-                buf += sprintf("%dx", sound_num(Machine.drv.sound[i]));
-
-            buf += sprintf("%s", sound_name(Machine.drv.sound[i]));
-
-            if (sound_clock(Machine.drv.sound[i]) != 0) {
-                if (sound_clock(Machine.drv.sound[i]) >= 1000000)
-                    buf += sprintf(" %d.%06d MHz",
-                            sound_clock(Machine.drv.sound[i]) / 1000000,
-                            sound_clock(Machine.drv.sound[i]) % 1000000);
-                else
-                    buf += sprintf(" %d.%03d kHz",
-                            sound_clock(Machine.drv.sound[i]) / 1000,
-                            sound_clock(Machine.drv.sound[i]) % 1000);
-            }
-            buf += "\n";
-
-            i++;
-        }
-
-        if ((Machine.drv.video_attributes & VIDEO_TYPE_VECTOR) != 0)
-            buf += sprintf("\n%s\n", ui_getstring(UI_vectorgame));
-        else {
-            int pixelx, pixely, tmax, tmin, rem;
-
-            pixelx = 4 * (Machine.visible_area.max_y - Machine.visible_area.min_y + 1);
-            pixely = 3 * (Machine.visible_area.max_x - Machine.visible_area.min_x + 1);
-
-		/* calculate MCD */
-            if (pixelx >= pixely) {
-                tmax = pixelx;
-                tmin = pixely;
-            } else {
-                tmax = pixely;
-                tmin = pixelx;
-            }
-            while ((rem = tmax % tmin) != 0) {
-                tmax = tmin;
-                tmin = rem;
-            }
-        /* tmin is now the MCD */
-
-            pixelx /= tmin;
-            pixely /= tmin;
-
-            buf += sprintf("\n%s:\n", ui_getstring(UI_screenres));
-            buf += sprintf("%d x %d (%s) %f Hz\n",
-                    Machine.visible_area.max_x - Machine.visible_area.min_x + 1,
-                    Machine.visible_area.max_y - Machine.visible_area.min_y + 1,
-                    (Machine.gamedrv.flags & ORIENTATION_SWAP_XY) != 0 ? "V" : "H",
-                    Machine.drv.frames_per_second);
-//#if 0
-//            buf += sprintf("pixel aspect ratio %d:%d\n",
-//                    pixelx, pixely);
-//            buf += sprintf("%d colors ", Machine.drv.total_colors);
-//            if ((Machine.gamedrv.flags & GAME_REQUIRES_16BIT) != 0)
-//                buf += "(16-bit required)\n";
-//            else if ((Machine.drv.video_attributes & VIDEO_MODIFIES_PALETTE) != 0)
-//                buf += "(dynamic)\n";
-//            else buf += "(static)\n";
-//#endif
-        }
-
-
-        if (sel == -1) {
-        /* startup info, print MAME version and ask for any key */
-
-            buf2 = sprintf("\n\t%s ", "Arcadeflex"/*ui_getstring (UI_mame)*/);	/* \t means that the line will be centered */
-            buf += buf2;
-
-            buf += build_version;
-            buf2 = sprintf("\n\t%s", ui_getstring(UI_anykey));
-            buf += buf2;
-            ui_drawbox(bitmap, 0, 0, Machine.uiwidth, Machine.uiheight);
-            ui_displaymessagewindow(bitmap, buf);
-
-            sel = 0;
-            if (code_read_async() != CODE_NONE)
-                sel = -1;
-        } else {
-        /* menu system, use the normal menu keys */
-            buf += "\n\t";
-            buf += ui_getstring(UI_lefthilight);
-            buf += " ";
-            buf += ui_getstring(UI_returntomain);
-            buf += " ";
-            buf += ui_getstring(UI_righthilight);
-
-            ui_displaymessagewindow(bitmap, buf);
-
-            if (input_ui_pressed(IPT_UI_SELECT) != 0)
-                sel = -1;
-
-            if (input_ui_pressed(IPT_UI_CANCEL) != 0)
-                sel = -1;
-
-            if (input_ui_pressed(IPT_UI_CONFIGURE) != 0)
-                sel = -2;
-        }
-
-        if (sel == -1 || sel == -2) {
-			/* tell updatescreen() to clean after us */
-            need_to_clear_bitmap = 1;
-        }
-
-        return sel + 1;
-    }
 
     public static int showgamewarnings(mame_bitmap bitmap) {
         int i;
