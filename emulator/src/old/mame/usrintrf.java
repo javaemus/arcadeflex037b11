@@ -46,11 +46,7 @@ import static mame056.usrintrf.ui_drawbox;
 
 
 public class usrintrf {
-    public static int setup_selected;
-    public static int osd_selected;
-    public static int single_step;
-
-
+ 
     /***************************************************************************
      * Display text on the screen. If erase is 0, it superimposes the text on
      * the last frame displayed.
@@ -116,28 +112,6 @@ public class usrintrf {
 
         if (update_screen != 0) update_video_and_audio();
     }
-
-    /* Writes messages on the screen. */
-    public static void ui_text_ex(mame_bitmap bitmap, String buf_begin, int buf_end, int x, int y, int color) {
-        switch_ui_orientation();
-
-        for (int i = 0; i < buf_end; ++i) {
-            drawgfx(bitmap, Machine.uifont, buf_begin.charAt(i), color, 0, 0,
-                    x + Machine.uixmin,
-                    y + Machine.uiymin, null, TRANSPARENCY_NONE, 0);
-            x += Machine.uifontwidth;
-        }
-
-        switch_true_orientation();
-    }
-
-    /* Writes messages on the screen. */
-    public static void ui_text(mame_bitmap bitmap, String buf, int x, int y) {
-        ui_text_ex(bitmap, buf, buf.length(), x, y, UI_COLOR_NORMAL);
-    }
-
-
-
 
 
     public static void ui_displaymenu(mame_bitmap bitmap, String[] items, String[] subitems, char[] flag, int selected, int arrowize_subitem) {
@@ -385,47 +359,7 @@ public class usrintrf {
         displaytext(bitmap, dt, 0, 0);
     }
 
- 
-    static void showtotalcolors(mame_bitmap bitmap) {
-        char[] used;
-        int i, l, x, y, total;
-        char[] r = new char[1];
-        char[] g = new char[1];
-        char[] b = new char[1];
-        String buf = "";
 
-
-        used = new char[64 * 64 * 64];
-        if (used == null) return;
-
-        for (i = 0; i < 64 * 64 * 64; i++)
-            used[i] = 0;
-
-        for (y = 0; y < bitmap.height; y++) {
-            for (x = 0; x < bitmap.width; x++) {
-                osd_get_pen(read_pixel.handler(bitmap, x, y), r, g, b);
-                r[0] >>= 2;
-                g[0] >>= 2;
-                b[0] >>= 2;
-                used[64 * 64 * r[0] + 64 * g[0] + b[0]] = 1;
-            }
-        }
-
-        total = 0;
-        for (i = 0; i < 64 * 64 * 64; i++)
-            if (used[i] != 0) total++;
-
-        switch_ui_orientation();
-
-        buf = sprintf("%5d colors", total);
-        l = strlen(buf);
-        for (i = 0; i < l; i++)
-            drawgfx(bitmap, Machine.uifont, buf.charAt(i), total > 256 ? UI_COLOR_INVERSE : UI_COLOR_NORMAL, 0, 0, Machine.uixmin + i * Machine.uifontwidth, Machine.uiymin, null, TRANSPARENCY_NONE, 0);
-
-        switch_true_orientation();
-
-        used = null;
-    }
 
 
     public static int showgamewarnings(mame_bitmap bitmap) {
@@ -543,103 +477,6 @@ public class usrintrf {
         return 0;
     }
 
-    static int hist_scroll = 0;
-
-    /* Display text entry for current driver from history.dat and mameinfo.dat. */
-    public static int displayhistory(mame_bitmap bitmap, int selected) {
-
-/*TODO*///	static char *buf = 0;
-        int maxcols, maxrows;
-        int sel;
-
-
-        sel = selected - 1;
-
-
-        maxcols = (Machine.uiwidth / Machine.uifontwidth) - 1;
-        maxrows = (2 * Machine.uiheight - Machine.uifontheight) / (3 * Machine.uifontheight);
-        maxcols -= 2;
-        maxrows -= 8;
-/*TODO*///
-/*TODO*///	if (!buf)
-/*TODO*///	{
-/*TODO*///		/* allocate a buffer for the text */
-/*TODO*///		buf = malloc (8192);
-/*TODO*///		if (buf)
-/*TODO*///		{
-/*TODO*///			/* try to load entry */
-/*TODO*///			if (load_driver_history (Machine->gamedrv, buf, 8192) == 0)
-/*TODO*///			{
-/*TODO*///				scroll = 0;
-/*TODO*///				wordwrap_text_buffer (buf, maxcols);
-/*TODO*///				strcat(buf,"\n\t");
-/*TODO*///				strcat(buf,ui_getstring (UI_lefthilight));
-/*TODO*///				strcat(buf," ");
-/*TODO*///				strcat(buf,ui_getstring (UI_returntomain));
-/*TODO*///				strcat(buf," ");
-/*TODO*///				strcat(buf,ui_getstring (UI_righthilight));
-/*TODO*///				strcat(buf,"\n");
-/*TODO*///			}
-/*TODO*///			else
-/*TODO*///			{
-/*TODO*///				free (buf);
-/*TODO*///				buf = 0;
-/*TODO*///			}
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///
-        {
-/*TODO*///		if (buf)
-/*TODO*///			display_scroll_message (bitmap, &scroll, maxcols, maxrows, buf);
-/*TODO*///		else
-/*TODO*///		{
-            String msg = "";
-
-            msg += "\t";
-            msg += ui_getstring(UI_historymissing);
-            msg += "\n\n\t";
-            msg += ui_getstring(UI_lefthilight);
-            msg += " ";
-            msg += ui_getstring(UI_returntomain);
-            msg += " ";
-            msg += ui_getstring(UI_righthilight);
-            ui_displaymessagewindow(bitmap, msg);
-/*TODO*///		}
-
-            if ((hist_scroll > 0) && input_ui_pressed_repeat(IPT_UI_UP, 4) != 0) {
-                if (hist_scroll == 2) hist_scroll = 0;	/* 1 would be the same as 0, but with arrow on top */
-                else hist_scroll--;
-            }
-
-            if (input_ui_pressed_repeat(IPT_UI_DOWN, 4) != 0) {
-                if (hist_scroll == 0) hist_scroll = 2;	/* 1 would be the same as 0, but with arrow on top */
-                else hist_scroll++;
-            }
-
-            if (input_ui_pressed(IPT_UI_SELECT) != 0)
-                sel = -1;
-
-            if (input_ui_pressed(IPT_UI_CANCEL) != 0)
-                sel = -1;
-
-            if (input_ui_pressed(IPT_UI_CONFIGURE) != 0)
-                sel = -2;
-        }
-        if (sel == -1 || sel == -2) {
-			/* tell updatescreen() to clean after us */
-            need_to_clear_bitmap = 1;
-/*TODO*///
-/*TODO*///		/* force buffer to be recreated */
-/*TODO*///		if (buf)
-/*TODO*///		{
-/*TODO*///			free (buf);
-/*TODO*///			buf = 0;
-/*TODO*///        }
-        }
-
-        return sel + 1;
-    }
-
     /**
      * ******************************************************************
      * <p>
@@ -706,132 +543,5 @@ public class usrintrf {
         dt[0].y = Machine.uiheight - 5 * Machine.uifontheight / 2;
         dt[1].text = null; /* terminate array */
         displaytext(bitmap, dt, 0, 0);
-    }
-
-
-
-    static int show_total_colors;
-
-    public static int handle_user_interface(mame_bitmap bitmap) {
-/*TODO*///	/* if the user pressed F12, save the screen to a file */
-/*TODO*///	if (input_ui_pressed(IPT_UI_SNAPSHOT))
-/*TODO*///		osd_save_snapshot(bitmap);
-/*TODO*///
-/*TODO*///	/* This call is for the cheat, it must be called once a frame */
-	if (options.cheat!=0) DoCheat(bitmap);
-/*TODO*///
-    /* if the user pressed ESC, stop the emulation */
-    /* but don't quit if the setup menu is on screen */
-        if (setup_selected == 0 && input_ui_pressed(IPT_UI_CANCEL) != 0)
-            return 1;
-
-        if (setup_selected == 0 && input_ui_pressed(IPT_UI_CONFIGURE) != 0) {
-            setup_selected = -1;
-            if (osd_selected != 0) {
-                osd_selected = 0;	/* disable on screen display */
-				/* tell updatescreen() to clean after us */
-                need_to_clear_bitmap = 1;
-            }
-        }
-        if (setup_selected != 0) setup_selected = setup_menu(bitmap, setup_selected);
-
-        if (osd_selected == 0 && input_ui_pressed(IPT_UI_ON_SCREEN_DISPLAY) != 0) {
-            osd_selected = -1;
-            if (setup_selected != 0) {
-                setup_selected = 0; /* disable setup menu */
-				/* tell updatescreen() to clean after us */
-                need_to_clear_bitmap = 1;
-            }
-        }
-        if (osd_selected != 0) osd_selected = on_screen_display(bitmap, osd_selected);
-
-	/* if the user pressed F3, reset the emulation */
-        if (input_ui_pressed(IPT_UI_RESET_MACHINE) != 0)
-            machine_reset();
-
-
-        if (single_step != 0 || input_ui_pressed(IPT_UI_PAUSE) != 0) /* pause the game */ {
-/*		osd_selected = 0;	   disable on screen display, since we are going   */
-                            /* to change parameters affected by it */
-
-            if (single_step == 0) {
-                osd_sound_enable(0);
-                osd_pause(1);
-            }
-
-            while (input_ui_pressed(IPT_UI_PAUSE) == 0) {
-                if (osd_skip_this_frame() == 0) {
-                    if (need_to_clear_bitmap != 0 || bitmap_dirty != 0) {
-                        osd_clearbitmap(bitmap);
-                        need_to_clear_bitmap = 0;
-                        draw_screen(bitmap_dirty);
-                        bitmap_dirty = 0;
-                    }
-                }
-
-/*TODO*///			if (input_ui_pressed(IPT_UI_SNAPSHOT))
-/*TODO*///				osd_save_snapshot(bitmap);
-
-                if (setup_selected == 0 && input_ui_pressed(IPT_UI_CANCEL) != 0)
-                    return 1;
-
-                if (setup_selected == 0 && input_ui_pressed(IPT_UI_CONFIGURE) != 0) {
-                    setup_selected = -1;
-                    if (osd_selected != 0) {
-                        osd_selected = 0;	/* disable on screen display */
-					/* tell updatescreen() to clean after us */
-                        need_to_clear_bitmap = 1;
-                    }
-                }
-                if (setup_selected != 0) setup_selected = setup_menu(bitmap, setup_selected);
-
-                if (osd_selected == 0 && input_ui_pressed(IPT_UI_ON_SCREEN_DISPLAY) != 0) {
-                    osd_selected = -1;
-                    if (setup_selected != 0) {
-                        setup_selected = 0; /* disable setup menu */
-					/* tell updatescreen() to clean after us */
-                        need_to_clear_bitmap = 1;
-                    }
-                }
-                if (osd_selected != 0) osd_selected = on_screen_display(bitmap, osd_selected);
-
-			/* show popup message if any */
-                if (messagecounter > 0) displaymessage(bitmap, messagetext);
-
-                update_video_and_audio();
-/*TODO*///			osd_poll_joysticks();
-            }
-
-            if (code_pressed(KEYCODE_LSHIFT) != 0 || code_pressed(KEYCODE_RSHIFT) != 0)
-                single_step = 1;
-            else {
-                single_step = 0;
-                osd_pause(0);
-                osd_sound_enable(1);
-            }
-        }
-
-
-	/* show popup message if any */
-        if (messagecounter > 0) {
-            displaymessage(bitmap, messagetext);
-
-            if (--messagecounter == 0)
-			/* tell updatescreen() to clean after us */
-                need_to_clear_bitmap = 1;
-        }
-
-
-
-	/* if the user pressed F4, show the character set */
-        if (input_ui_pressed(IPT_UI_SHOW_GFX) != 0) {
-            osd_sound_enable(0);
-
-            showcharset(bitmap);
-
-            osd_sound_enable(1);
-        }
-
-        return 0;
     }
 }

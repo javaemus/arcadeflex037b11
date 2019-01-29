@@ -6,11 +6,15 @@ package mame056;
 import static arcadeflex.libc.cstdio.sprintf;
 import arcadeflex.libc.ptr.UBytePtr;
 import static arcadeflex.video.osd_get_brightness;
+import static arcadeflex.video.osd_pause;
 import static arcadeflex.video.osd_save_snapshot;
 import static arcadeflex.video.osd_set_brightness;
+import static arcadeflex.video.osd_skip_this_frame;
 import static common.libc.cstring.memset;
 import static common.libc.expressions.sizeof;
 import common.subArrays.IntArray;
+import static mame.cheat.DisplayWatches;
+import static mame.cheat.DoCheat;
 import static mame.cheat.cheat_menu;
 import mame.drawgfxH.GfxElement;
 import mame.drawgfxH.GfxLayout;
@@ -19,22 +23,14 @@ import static mame.drawgfxH.TRANSPARENCY_NONE_RAW;
 import static mame.sndintrf.sound_clock;
 import static mame.sndintrf.sound_name;
 import static mame.sndintrf.sound_num;
-import static mame056.driverH.ORIENTATION_FLIP_X;
-import static mame056.driverH.ORIENTATION_FLIP_Y;
-import static mame056.driverH.ORIENTATION_SWAP_XY;
-import static mame056.driverH.VIDEO_PIXEL_ASPECT_RATIO_1_2;
-import static mame056.driverH.VIDEO_PIXEL_ASPECT_RATIO_MASK;
-import static mame056.driverH.VIDEO_TYPE_VECTOR;
-import static mame056.common.coinlockedout;
-import static mame056.common.coins;
-import static mame056.common.dispensed_tickets;
-import mame056.commonH.mame_bitmap;
+import static mame056.driverH.*;
+import static mame056.common.*;
+import static mame056.commonH.*;
 import static mame056.inputH.*;
 import static mame056.input.*;
 import static old.mame.drawgfx.*;
 import static mame056.inptportH.*;
 import static old.mame.usrintrf.*;
-import static old.mame.usrintrf.ui_text;
 import static old2.mame.common.schedule_full_refresh;
 import static old2.mame.mame.*;
 import static mame056.mameH.*;
@@ -53,14 +49,16 @@ import static mame056.usrintrfH.SEL_MASK;
 import static old.arcadeflex.sound.osd_get_mastervolume;
 import static old.arcadeflex.sound.osd_set_mastervolume;
 import static mame056.inptport.*;
+import static mame056.usrintrfH.UI_COLOR_NORMAL;
 import static mame056.version.build_version;
+import static old.arcadeflex.sound.osd_sound_enable;
 
 public class usrintrf {
 
-    /*TODO*///static int setup_selected;
-/*TODO*///static int osd_selected;
+    static int setup_selected;
+    static int osd_selected;
     static int jukebox_selected;
-    /*TODO*///static int single_step;
+    static int single_step;
     static int trueorientation;
     static int orientation_count;
 
@@ -425,30 +423,26 @@ public class usrintrf {
 /*TODO*///
 /*TODO*///	switch_true_orientation();
 /*TODO*///}
-/*TODO*///
-/*TODO*////* Writes messages on the screen. */
-/*TODO*///static void ui_text_ex(struct mame_bitmap *bitmap,const char* buf_begin, const char* buf_end, int x, int y, int color)
-/*TODO*///{
-/*TODO*///	switch_ui_orientation();
-/*TODO*///
-/*TODO*///	for (;buf_begin != buf_end; ++buf_begin)
-/*TODO*///	{
-/*TODO*///		drawgfx(bitmap,Machine->uifont,*buf_begin,color,0,0,
-/*TODO*///				x + Machine->uixmin,
-/*TODO*///				y + Machine->uiymin, 0,TRANSPARENCY_NONE,0);
-/*TODO*///		x += Machine->uifontwidth;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	switch_true_orientation();
-/*TODO*///}
-/*TODO*///
-/*TODO*////* Writes messages on the screen. */
-/*TODO*///void ui_text(struct mame_bitmap *bitmap,const char *buf,int x,int y)
-/*TODO*///{
-/*TODO*///	ui_text_ex(bitmap, buf, buf + strlen(buf), x, y, UI_COLOR_NORMAL);
-/*TODO*///}
-/*TODO*///
-/*TODO*///
+
+    /* Writes messages on the screen. */
+    public static void ui_text_ex(mame_bitmap bitmap, String buf_begin, int buf_end, int x, int y, int color) {
+        switch_ui_orientation();
+
+        for (int i = 0; i < buf_end; ++i) {
+            drawgfx(bitmap, Machine.uifont, buf_begin.charAt(i), color, 0, 0,
+                    x + Machine.uixmin,
+                    y + Machine.uiymin, null, TRANSPARENCY_NONE, 0);
+            x += Machine.uifontwidth;
+        }
+
+        switch_true_orientation();
+    }
+
+    /* Writes messages on the screen. */
+    public static void ui_text(mame_bitmap bitmap, String buf, int x, int y) {
+        ui_text_ex(bitmap, buf, buf.length(), x, y, UI_COLOR_NORMAL);
+    }
+
     public static void ui_drawbox(mame_bitmap bitmap, int leftx, int topy, int width, int height) {
         int black, white;
 
@@ -2280,7 +2274,110 @@ public class usrintrf {
 /*TODO*///}
 /*TODO*///
 /*TODO*///
-/*TODO*////* Display text entry for current driver from history.dat and mameinfo.dat. */
+    static int hist_scroll = 0;
+
+    /* Display text entry for current driver from history.dat and mameinfo.dat. */
+    public static int displayhistory(mame_bitmap bitmap, int selected) {
+
+        /*TODO*///	static char *buf = 0;
+        int maxcols, maxrows;
+        int sel;
+
+        sel = selected - 1;
+
+        maxcols = (Machine.uiwidth / Machine.uifontwidth) - 1;
+        maxrows = (2 * Machine.uiheight - Machine.uifontheight) / (3 * Machine.uifontheight);
+        maxcols -= 2;
+        maxrows -= 8;
+        /*TODO*///
+/*TODO*///	if (!buf)
+/*TODO*///	{
+/*TODO*///		/* allocate a buffer for the text */
+/*TODO*///		buf = malloc (8192);
+/*TODO*///		if (buf)
+/*TODO*///		{
+/*TODO*///			/* try to load entry */
+/*TODO*///			if (load_driver_history (Machine->gamedrv, buf, 8192) == 0)
+/*TODO*///			{
+/*TODO*///				scroll = 0;
+/*TODO*///				wordwrap_text_buffer (buf, maxcols);
+/*TODO*///				strcat(buf,"\n\t");
+/*TODO*///				strcat(buf,ui_getstring (UI_lefthilight));
+/*TODO*///				strcat(buf," ");
+/*TODO*///				strcat(buf,ui_getstring (UI_returntomain));
+/*TODO*///				strcat(buf," ");
+/*TODO*///				strcat(buf,ui_getstring (UI_righthilight));
+/*TODO*///				strcat(buf,"\n");
+/*TODO*///			}
+/*TODO*///			else
+/*TODO*///			{
+/*TODO*///				free (buf);
+/*TODO*///				buf = 0;
+/*TODO*///			}
+/*TODO*///		}
+/*TODO*///	}
+/*TODO*///
+        {
+            /*TODO*///		if (buf)
+/*TODO*///			display_scroll_message (bitmap, &scroll, maxcols, maxrows, buf);
+/*TODO*///		else
+/*TODO*///		{
+            String msg = "";
+
+            msg += "\t";
+            msg += ui_getstring(UI_historymissing);
+            msg += "\n\n\t";
+            msg += ui_getstring(UI_lefthilight);
+            msg += " ";
+            msg += ui_getstring(UI_returntomain);
+            msg += " ";
+            msg += ui_getstring(UI_righthilight);
+            ui_displaymessagewindow(bitmap, msg);
+            /*TODO*///		}
+
+            if ((hist_scroll > 0) && input_ui_pressed_repeat(IPT_UI_UP, 4) != 0) {
+                if (hist_scroll == 2) {
+                    hist_scroll = 0;	/* 1 would be the same as 0, but with arrow on top */
+                } else {
+                    hist_scroll--;
+                }
+            }
+
+            if (input_ui_pressed_repeat(IPT_UI_DOWN, 4) != 0) {
+                if (hist_scroll == 0) {
+                    hist_scroll = 2;	/* 1 would be the same as 0, but with arrow on top */
+                } else {
+                    hist_scroll++;
+                }
+            }
+
+            if (input_ui_pressed(IPT_UI_SELECT) != 0) {
+                sel = -1;
+            }
+
+            if (input_ui_pressed(IPT_UI_CANCEL) != 0) {
+                sel = -1;
+            }
+
+            if (input_ui_pressed(IPT_UI_CONFIGURE) != 0) {
+                sel = -2;
+            }
+        }
+        if (sel == -1 || sel == -2) {
+            /* tell updatescreen() to clean after us */
+            schedule_full_refresh();
+            /*TODO*///
+/*TODO*///		/* force buffer to be recreated */
+/*TODO*///		if (buf)
+/*TODO*///		{
+/*TODO*///			free (buf);
+/*TODO*///			buf = 0;
+/*TODO*///        }
+        }
+
+        return sel + 1;
+    }
+    /*TODO*////* Display text entry for current driver from history.dat and mameinfo.dat. */
 /*TODO*///static int displayhistory (struct mame_bitmap *bitmap, int selected)
 /*TODO*///{
 /*TODO*///	static int scroll = 0;
@@ -3112,52 +3209,55 @@ public class usrintrf {
 /*TODO*///	va_end(arg);
 /*TODO*///	messagecounter = seconds * Machine->drv->frames_per_second;
 /*TODO*///}
+    public static int handle_user_interface(mame_bitmap bitmap) {
+        /*TODO*///	int request_loadsave = LOADSAVE_NONE;
 /*TODO*///
-/*TODO*///int handle_user_interface(struct mame_bitmap *bitmap)
-/*TODO*///{
-/*TODO*///	static int show_profiler;
-/*TODO*///	int request_loadsave = LOADSAVE_NONE;
-/*TODO*///
-/*TODO*///
-/*TODO*///	/* if the user pressed F12, save the screen to a file */
-/*TODO*///	if (input_ui_pressed(IPT_UI_SNAPSHOT))
-/*TODO*///		osd_save_snapshot(bitmap);
-/*TODO*///
-/*TODO*///	/* This call is for the cheat, it must be called once a frame */
-/*TODO*///	if (options.cheat) DoCheat(bitmap);
-/*TODO*///
-/*TODO*///	/* if the user pressed ESC, stop the emulation */
-/*TODO*///	/* but don't quit if the setup menu is on screen */
-/*TODO*///	if (setup_selected == 0 && input_ui_pressed(IPT_UI_CANCEL))
-/*TODO*///		return 1;
-/*TODO*///
-/*TODO*///	if (setup_selected == 0 && input_ui_pressed(IPT_UI_CONFIGURE))
-/*TODO*///	{
-/*TODO*///		setup_selected = -1;
-/*TODO*///		if (osd_selected != 0)
-/*TODO*///		{
-/*TODO*///			osd_selected = 0;	/* disable on screen display */
-/*TODO*///			schedule_full_refresh();
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///	if (setup_selected != 0) setup_selected = setup_menu(bitmap, setup_selected);
-/*TODO*///
-/*TODO*///	if (!mame_debug && osd_selected == 0 && input_ui_pressed(IPT_UI_ON_SCREEN_DISPLAY))
-/*TODO*///	{
-/*TODO*///		osd_selected = -1;
-/*TODO*///		if (setup_selected != 0)
-/*TODO*///		{
-/*TODO*///			setup_selected = 0; /* disable setup menu */
-/*TODO*///			schedule_full_refresh();
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///	if (osd_selected != 0) osd_selected = on_screen_display(bitmap, osd_selected);
-/*TODO*///
-/*TODO*///	/* if the user pressed F3, reset the emulation */
-/*TODO*///	if (input_ui_pressed(IPT_UI_RESET_MACHINE))
-/*TODO*///		machine_reset();
-/*TODO*///
-/*TODO*///	if (input_ui_pressed(IPT_UI_SAVE_STATE))
+
+        /* if the user pressed F12, save the screen to a file */
+        if (input_ui_pressed(IPT_UI_SNAPSHOT) != 0) {
+            osd_save_snapshot(bitmap);
+        }
+
+        /* This call is for the cheat, it must be called once a frame */
+        if (options.cheat != 0) {
+            DoCheat(bitmap);
+        }
+
+        /* if the user pressed ESC, stop the emulation */
+ /* but don't quit if the setup menu is on screen */
+        if (setup_selected == 0 && input_ui_pressed(IPT_UI_CANCEL) != 0) {
+            return 1;
+        }
+
+        if (setup_selected == 0 && input_ui_pressed(IPT_UI_CONFIGURE) != 0) {
+            setup_selected = -1;
+            if (osd_selected != 0) {
+                osd_selected = 0;/* disable on screen display */
+                schedule_full_refresh();
+            }
+        }
+        if (setup_selected != 0) {
+            setup_selected = setup_menu(bitmap, setup_selected);
+        }
+
+        if (osd_selected == 0 && input_ui_pressed(IPT_UI_ON_SCREEN_DISPLAY) != 0) {
+            osd_selected = -1;
+            if (setup_selected != 0) {
+                setup_selected = 0;
+                /* disable setup menu */
+                schedule_full_refresh();
+            }
+        }
+        if (osd_selected != 0) {
+            osd_selected = on_screen_display(bitmap, osd_selected);
+        }
+
+        /* if the user pressed F3, reset the emulation */
+        if (input_ui_pressed(IPT_UI_RESET_MACHINE) != 0) {
+            machine_reset();
+        }
+
+        /*TODO*///	if (input_ui_pressed(IPT_UI_SAVE_STATE))
 /*TODO*///		request_loadsave = LOADSAVE_SAVE;
 /*TODO*///
 /*TODO*///	if (input_ui_pressed(IPT_UI_LOAD_STATE))
@@ -3216,117 +3316,97 @@ public class usrintrf {
 /*TODO*///				usrintf_showmessage("Load cancelled");
 /*TODO*///		}
 /*TODO*///	}
-/*TODO*///
-/*TODO*///	if (single_step || input_ui_pressed(IPT_UI_PAUSE)) /* pause the game */
-/*TODO*///	{
-/*TODO*////*		osd_selected = 0;	   disable on screen display, since we are going   */
-/*TODO*///							/* to change parameters affected by it */
-/*TODO*///
-/*TODO*///		if (single_step == 0)
-/*TODO*///		{
-/*TODO*///			osd_sound_enable(0);
-/*TODO*///			osd_pause(1);
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		while (!input_ui_pressed(IPT_UI_PAUSE))
-/*TODO*///		{
-/*TODO*///#ifdef MAME_NET
-/*TODO*///			osd_net_sync();
-/*TODO*///#endif /* MAME_NET */
-/*TODO*///			profiler_mark(PROFILER_VIDEO);
-/*TODO*///			if (osd_skip_this_frame() == 0)
-/*TODO*///			{
-/*TODO*///				/* keep calling vh_screenrefresh() while paused so we can stuff */
-/*TODO*///				/* debug code in there */
-/*TODO*///				draw_screen();
-/*TODO*///			}
-/*TODO*///			profiler_mark(PROFILER_END);
-/*TODO*///
-/*TODO*///			if (input_ui_pressed(IPT_UI_SNAPSHOT))
-/*TODO*///				osd_save_snapshot(bitmap);
-/*TODO*///
-/*TODO*///			if (setup_selected == 0 && input_ui_pressed(IPT_UI_CANCEL))
-/*TODO*///				return 1;
-/*TODO*///
-/*TODO*///			if (setup_selected == 0 && input_ui_pressed(IPT_UI_CONFIGURE))
-/*TODO*///			{
-/*TODO*///				setup_selected = -1;
-/*TODO*///				if (osd_selected != 0)
-/*TODO*///				{
-/*TODO*///					osd_selected = 0;	/* disable on screen display */
-/*TODO*///					schedule_full_refresh();
-/*TODO*///				}
-/*TODO*///			}
-/*TODO*///			if (setup_selected != 0) setup_selected = setup_menu(bitmap, setup_selected);
-/*TODO*///
-/*TODO*///			if (!mame_debug && osd_selected == 0 && input_ui_pressed(IPT_UI_ON_SCREEN_DISPLAY))
-/*TODO*///			{
-/*TODO*///				osd_selected = -1;
-/*TODO*///				if (setup_selected != 0)
-/*TODO*///				{
-/*TODO*///					setup_selected = 0; /* disable setup menu */
-/*TODO*///					schedule_full_refresh();
-/*TODO*///				}
-/*TODO*///			}
-/*TODO*///			if (osd_selected != 0) osd_selected = on_screen_display(bitmap, osd_selected);
-/*TODO*///
-/*TODO*///			if (options.cheat) DisplayWatches(bitmap);
-/*TODO*///
-/*TODO*///			/* show popup message if any */
-/*TODO*///			if (messagecounter > 0) displaymessage(bitmap, messagetext);
-/*TODO*///
-/*TODO*///			update_video_and_audio();
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		if (code_pressed(KEYCODE_LSHIFT) || code_pressed(KEYCODE_RSHIFT))
-/*TODO*///			single_step = 1;
-/*TODO*///		else
-/*TODO*///		{
-/*TODO*///			single_step = 0;
-/*TODO*///			osd_pause(0);
-/*TODO*///			osd_sound_enable(1);
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///
-/*TODO*///
-/*TODO*///	/* show popup message if any */
-/*TODO*///	if (messagecounter > 0)
-/*TODO*///	{
-/*TODO*///		displaymessage(bitmap, messagetext);
-/*TODO*///
-/*TODO*///		if (--messagecounter == 0)
-/*TODO*///			schedule_full_refresh();
-/*TODO*///	}
-/*TODO*///
-/*TODO*///
-/*TODO*///	if (input_ui_pressed(IPT_UI_SHOW_PROFILER))
-/*TODO*///	{
-/*TODO*///		show_profiler ^= 1;
-/*TODO*///		if (show_profiler)
-/*TODO*///			profiler_start();
-/*TODO*///		else
-/*TODO*///		{
-/*TODO*///			profiler_stop();
-/*TODO*///			schedule_full_refresh();
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	if (show_profiler) profiler_show(bitmap);
-/*TODO*///
-/*TODO*///
-/*TODO*///	/* if the user pressed F4, show the character set */
-/*TODO*///	if (input_ui_pressed(IPT_UI_SHOW_GFX))
-/*TODO*///	{
-/*TODO*///		osd_sound_enable(0);
-/*TODO*///
-/*TODO*///		showcharset(bitmap);
-/*TODO*///
-/*TODO*///		osd_sound_enable(1);
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	return 0;
-/*TODO*///}
-/*TODO*///
+        if (single_step != 0 || input_ui_pressed(IPT_UI_PAUSE) != 0) /* pause the game */ {
+            /*		osd_selected = 0;	   disable on screen display, since we are going   */
+ /* to change parameters affected by it */
+
+            if (single_step == 0) {
+                osd_sound_enable(0);
+                osd_pause(1);
+            }
+
+            while (input_ui_pressed(IPT_UI_PAUSE) == 0) {
+                if (osd_skip_this_frame() == 0) {
+                    /* keep calling vh_screenrefresh() while paused so we can stuff */
+ /* debug code in there */
+                    draw_screen();
+                }
+
+                if (input_ui_pressed(IPT_UI_SNAPSHOT) != 0) {
+                    osd_save_snapshot(bitmap);
+                }
+
+                if (setup_selected == 0 && input_ui_pressed(IPT_UI_CANCEL) != 0) {
+                    return 1;
+                }
+
+                if (setup_selected == 0 && input_ui_pressed(IPT_UI_CONFIGURE) != 0) {
+                    setup_selected = -1;
+                    if (osd_selected != 0) {
+                        osd_selected = 0;
+                        /* disable on screen display */
+                        schedule_full_refresh();
+                    }
+                }
+                if (setup_selected != 0) {
+                    setup_selected = setup_menu(bitmap, setup_selected);
+                }
+
+                if (osd_selected == 0 && input_ui_pressed(IPT_UI_ON_SCREEN_DISPLAY) != 0) {
+                    osd_selected = -1;
+                    if (setup_selected != 0) {
+                        setup_selected = 0;
+                        /* disable setup menu */
+                        schedule_full_refresh();
+                    }
+                }
+                if (osd_selected != 0) {
+                    osd_selected = on_screen_display(bitmap, osd_selected);
+                }
+
+                if (options.cheat != 0) {
+                    DisplayWatches(bitmap);
+                }
+
+                /* show popup message if any */
+                if (messagecounter > 0) {
+                    displaymessage(bitmap, messagetext);
+                }
+
+                update_video_and_audio();
+            }
+
+            if (code_pressed(KEYCODE_LSHIFT) != 0 || code_pressed(KEYCODE_RSHIFT) != 0) {
+                single_step = 1;
+            } else {
+                single_step = 0;
+                osd_pause(0);
+                osd_sound_enable(1);
+            }
+        }
+
+
+        /* show popup message if any */
+        if (messagecounter > 0) {
+            displaymessage(bitmap, messagetext);
+
+            if (--messagecounter == 0) {
+                schedule_full_refresh();
+            }
+        }
+
+        /* if the user pressed F4, show the character set */
+        if (input_ui_pressed(IPT_UI_SHOW_GFX) != 0) {
+            osd_sound_enable(0);
+
+            showcharset(bitmap);
+
+            osd_sound_enable(1);
+        }
+
+        return 0;
+    }
+
     public static void init_user_interface() {
         snapno = 0;/* reset snapshot counter */
 

@@ -55,6 +55,7 @@ import static mame056.commonH.*;
 import static mame056.cpuexec.cpu_init;
 import static mame056.cpuexec.cpu_run;
 import static mame056.usrintrf.builduifont;
+import static mame056.usrintrf.handle_user_interface;
 import static mame056.usrintrf.init_user_interface;
 import static mame056.usrintrf.showcopyright;
 import static old.mame.usrintrf.*;
@@ -533,6 +534,14 @@ public class mame {
 
         if (artwork_backdrop != null || artwork_overlay != null) {
             artwork_draw(artwork_real_scrbitmap, Machine.scrbitmap, _bitmap_dirty);
+        }
+    }
+    public static void draw_screen() {
+
+        (Machine.drv.vh_update).handler(Machine.scrbitmap, bitmap_dirty);
+
+        if (artwork_backdrop != null || artwork_overlay != null) {
+            artwork_draw(artwork_real_scrbitmap, Machine.scrbitmap, bitmap_dirty);
         }
     }
 
