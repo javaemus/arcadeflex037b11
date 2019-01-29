@@ -36,13 +36,13 @@ import static old.arcadeflex.ticker.TICKS_PER_SEC;
 import static mame056.inptportH.IPT_UI_SHOW_FPS;
 import static mame056.input.*;
 import static mame056.inputH.*;
-import static old.mame.usrintrf.ui_text;
 import arcadeflex056.settings;
 import static old2.mame.mame.Machine;
 import static old2.mame.mame.bitmap_dirty;
 import static old2.mame.mame.need_to_clear_bitmap;
 import static mame056.commonH.*;
 import static mame056.usrintrf.set_ui_visarea;
+import static mame056.usrintrf.ui_text;
 
 /**
  *

@@ -2,44 +2,17 @@
  * ported to 0.37b5
  */
 package old.mame;
-import static arcadeflex.libc.cstdio.*;
 import static old.arcadeflex.libc_old.strlen;
-import static mame.cheat.DoCheat;
-import static mame.cheat.cheat_menu;
-import static old.arcadeflex.sound.*;
 import static arcadeflex.video.*;
 import static old2.mame.mame.update_video_and_audio;
-import static old.mame.drawgfx.*;
 import static old.mame.drawgfx.drawgfx;
 import static mame.drawgfxH.*;
-import static mame.driver.drivers;
-import static mame056.driverH.*;
-import static mame056.inptportH.*;
 import mame056.commonH.mame_bitmap;
-import static mame056.input.*;
-import static mame056.inputH.*;
 import static old2.mame.mame.*;
-import static mame.sndintrf.*;
 import static mame056.ui_text.ui_getstring;
 import static mame056.ui_textH.*;
 import static mame056.usrintrfH.*;
-import static mame056.version.build_version;
-import static mame056.cpuexec.machine_reset;
-import static mame056.cpuexecH.CPU_AUDIO_CPU;
-import static mame056.cpuintrf.cputype_name;
-import static mame056.usrintrf.displaygameinfo;
 import static mame056.usrintrf.drawbar;
-import static mame056.usrintrf.mame_stats;
-import static mame056.usrintrf.messagecounter;
-import static mame056.usrintrf.messagetext;
-import static mame056.usrintrf.on_screen_display;
-import static mame056.usrintrf.onscrd_brightness;
-import static mame056.usrintrf.onscrd_volume;
-import static mame056.usrintrf.setcodesettings;
-import static mame056.usrintrf.setdefcodesettings;
-import static mame056.usrintrf.setdipswitches;
-import static mame056.usrintrf.setup_menu;
-import static mame056.usrintrf.showcharset;
 import static mame056.usrintrf.switch_true_orientation;
 import static mame056.usrintrf.switch_ui_orientation;
 import static mame056.usrintrf.ui_drawbox;
@@ -359,123 +332,6 @@ public class usrintrf {
         displaytext(bitmap, dt, 0, 0);
     }
 
-
-
-
-    public static int showgamewarnings(mame_bitmap bitmap) {
-        int i;
-        String buf = "";
-
-        if ((Machine.gamedrv.flags &
-                (GAME_NOT_WORKING | GAME_UNEMULATED_PROTECTION | GAME_WRONG_COLORS | GAME_IMPERFECT_COLORS |
-                        GAME_NO_SOUND | GAME_IMPERFECT_SOUND | GAME_NO_COCKTAIL)) != 0) {
-            int done;
-
-            buf = ui_getstring(UI_knownproblems);
-            buf += "\n\n";
-
-            if ((Machine.gamedrv.flags & GAME_IMPERFECT_COLORS) != 0) {
-                buf += ui_getstring(UI_imperfectcolors);
-                buf += "\n";
-            }
-
-            if ((Machine.gamedrv.flags & GAME_WRONG_COLORS) != 0) {
-                buf += ui_getstring(UI_wrongcolors);
-                buf += "\n";
-            }
-
-            if ((Machine.gamedrv.flags & GAME_IMPERFECT_SOUND) != 0) {
-                buf += ui_getstring(UI_imperfectsound);
-                buf += "\n";
-            }
-
-            if ((Machine.gamedrv.flags & GAME_NO_SOUND) != 0) {
-                buf += ui_getstring(UI_nosound);
-                buf += "\n";
-            }
-
-            if ((Machine.gamedrv.flags & GAME_NO_COCKTAIL) != 0) {
-                buf += ui_getstring(UI_nococktail);
-                buf += "\n";
-            }
-
-            if ((Machine.gamedrv.flags & (GAME_NOT_WORKING | GAME_UNEMULATED_PROTECTION)) != 0) {
-                GameDriver maindrv;
-                int foundworking;
-
-                if ((Machine.gamedrv.flags & GAME_NOT_WORKING) != 0) {
-                    buf += ui_getstring(UI_brokengame);
-                    buf += "\n";
-                }
-                if ((Machine.gamedrv.flags & GAME_UNEMULATED_PROTECTION) != 0) {
-                    buf += ui_getstring(UI_brokenprotection);
-                    buf += "\n";
-                }
-                if (Machine.gamedrv.clone_of != null && (Machine.gamedrv.clone_of.flags & NOT_A_DRIVER) == 0)
-                    maindrv = Machine.gamedrv.clone_of;
-                else maindrv = Machine.gamedrv;
-
-                foundworking = 0;
-                i = 0;
-                while (drivers[i] != null) {
-                    if (drivers[i] == maindrv || drivers[i].clone_of == maindrv) {
-                        if ((drivers[i].flags & (GAME_NOT_WORKING | GAME_UNEMULATED_PROTECTION)) == 0) {
-                            if (foundworking == 0) {
-                                buf += "\n\n";
-                                buf += ui_getstring(UI_workingclones);
-                                buf += "\n\n";
-                            }
-                            foundworking = 1;
-
-                            buf += sprintf("%s\n", drivers[i].name);
-                        }
-                    }
-                    i++;
-                }
-            }
-
-
-            buf += "\n\n";
-            buf += ui_getstring(UI_typeok);
-
-            ui_displaymessagewindow(bitmap, buf);
-
-            done = 0;
-            do {
-                update_video_and_audio();
-/*TODO*///      osd_poll_joysticks();
-                if (input_ui_pressed(IPT_UI_CANCEL) != 0)
-                    return 1;
-                if (code_pressed_memory(KEYCODE_O) != 0 ||
-                        input_ui_pressed(IPT_UI_LEFT) != 0)
-                    done = 1;
-                if (done == 1 && (code_pressed_memory(KEYCODE_K) != 0 ||
-                        input_ui_pressed(IPT_UI_RIGHT) != 0))
-                    done = 2;
-            } while (done < 2);
-        }
-
-
-        osd_clearbitmap(bitmap);
-
-	/* clear the input memory */
-        while (code_read_async() != CODE_NONE) {
-        }
-
-        while (displaygameinfo(bitmap, 0) == 1) {
-            update_video_and_audio();
-/*TODO*///      osd_poll_joysticks();
-        }
-
-        osd_clearbitmap(bitmap);
-    /* make sure that the screen is really cleared, in case autoframeskip kicked in */
-        update_video_and_audio();
-        update_video_and_audio();
-        update_video_and_audio();
-        update_video_and_audio();
-
-        return 0;
-    }
 
     /**
      * ******************************************************************

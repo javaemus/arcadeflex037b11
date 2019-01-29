@@ -20,6 +20,7 @@ import mame.drawgfxH.GfxElement;
 import mame.drawgfxH.GfxLayout;
 import static mame.drawgfxH.TRANSPARENCY_NONE;
 import static mame.drawgfxH.TRANSPARENCY_NONE_RAW;
+import static mame.driver.drivers;
 import static mame.sndintrf.sound_clock;
 import static mame.sndintrf.sound_name;
 import static mame.sndintrf.sound_num;
@@ -1978,143 +1979,128 @@ public class usrintrf {
         return sel + 1;
     }
 
+    public static int showgamewarnings(mame_bitmap bitmap) {
+        int i;
+        String buf = "";
+
+        if ((Machine.gamedrv.flags
+                & (GAME_NOT_WORKING | GAME_UNEMULATED_PROTECTION | GAME_WRONG_COLORS | GAME_IMPERFECT_COLORS
+                | GAME_NO_SOUND | GAME_IMPERFECT_SOUND | GAME_IMPERFECT_GRAPHICS | GAME_NO_COCKTAIL)) != 0) {
+            int done;
+
+            buf = ui_getstring(UI_knownproblems);
+            buf += "\n\n";
+
+            if ((Machine.gamedrv.flags & GAME_IMPERFECT_COLORS) != 0) {
+                buf += ui_getstring(UI_imperfectcolors);
+                buf += "\n";
+            }
+
+            if ((Machine.gamedrv.flags & GAME_WRONG_COLORS) != 0) {
+                buf += ui_getstring(UI_wrongcolors);
+                buf += "\n";
+            }
+
+            if ((Machine.gamedrv.flags & GAME_IMPERFECT_GRAPHICS) != 0) {
+                buf += ui_getstring(UI_imperfectgraphics);
+                buf += "\n";
+            }
+            if ((Machine.gamedrv.flags & GAME_IMPERFECT_SOUND) != 0) {
+                buf += ui_getstring(UI_imperfectsound);
+                buf += "\n";
+            }
+
+            if ((Machine.gamedrv.flags & GAME_NO_SOUND) != 0) {
+                buf += ui_getstring(UI_nosound);
+                buf += "\n";
+            }
+
+            if ((Machine.gamedrv.flags & GAME_NO_COCKTAIL) != 0) {
+                buf += ui_getstring(UI_nococktail);
+                buf += "\n";
+            }
+
+            if ((Machine.gamedrv.flags & (GAME_NOT_WORKING | GAME_UNEMULATED_PROTECTION)) != 0) {
+                GameDriver maindrv;
+                int foundworking;
+
+                if ((Machine.gamedrv.flags & GAME_NOT_WORKING) != 0) {
+                    buf += ui_getstring(UI_brokengame);
+                    buf += "\n";
+                }
+                if ((Machine.gamedrv.flags & GAME_UNEMULATED_PROTECTION) != 0) {
+                    buf += ui_getstring(UI_brokenprotection);
+                    buf += "\n";
+                }
+                if (Machine.gamedrv.clone_of != null && (Machine.gamedrv.clone_of.flags & NOT_A_DRIVER) == 0) {
+                    maindrv = Machine.gamedrv.clone_of;
+                } else {
+                    maindrv = Machine.gamedrv;
+                }
+
+                foundworking = 0;
+                i = 0;
+                while (drivers[i] != null) {
+                    if (drivers[i] == maindrv || drivers[i].clone_of == maindrv) {
+                        if ((drivers[i].flags & (GAME_NOT_WORKING | GAME_UNEMULATED_PROTECTION)) == 0) {
+                            if (foundworking == 0) {
+                                buf += "\n\n";
+                                buf += ui_getstring(UI_workingclones);
+                                buf += "\n\n";
+                            }
+                            foundworking = 1;
+
+                            buf += sprintf("%s\n", drivers[i].name);
+                        }
+                    }
+                    i++;
+                }
+            }
+
+            buf += "\n\n";
+            buf += ui_getstring(UI_typeok);
+
+            erase_screen(bitmap);
+            ui_displaymessagewindow(bitmap, buf);
+
+            done = 0;
+            do {
+                update_video_and_audio();
+                if (input_ui_pressed(IPT_UI_CANCEL) != 0) {
+                    return 1;
+                }
+                if (code_pressed_memory(KEYCODE_O) != 0
+                        || input_ui_pressed(IPT_UI_LEFT) != 0) {
+                    done = 1;
+                }
+                if (done == 1 && (code_pressed_memory(KEYCODE_K) != 0
+                        || input_ui_pressed(IPT_UI_RIGHT) != 0)) {
+                    done = 2;
+                }
+            } while (done < 2);
+        }
+
+        erase_screen(bitmap);
+
+        /* clear the input memory */
+        while (code_read_async() != CODE_NONE) {
+        }
+
+        while (displaygameinfo(bitmap, 0) == 1) {
+            update_video_and_audio();
+            /*TODO*///      osd_poll_joysticks();
+        }
+
+        erase_screen(bitmap);
+        /* make sure that the screen is really cleared, in case autoframeskip kicked in */
+        update_video_and_audio();
+        update_video_and_audio();
+        update_video_and_audio();
+        update_video_and_audio();
+
+        return 0;
+    }
     /*TODO*///
-/*TODO*///int showgamewarnings(struct mame_bitmap *bitmap)
-/*TODO*///{
-/*TODO*///	int i;
-/*TODO*///	char buf[2048];
-/*TODO*///
-/*TODO*///	if (Machine->gamedrv->flags &
-/*TODO*///			(GAME_NOT_WORKING | GAME_UNEMULATED_PROTECTION | GAME_WRONG_COLORS | GAME_IMPERFECT_COLORS |
-/*TODO*///			  GAME_NO_SOUND | GAME_IMPERFECT_SOUND | GAME_IMPERFECT_GRAPHICS | GAME_NO_COCKTAIL))
-/*TODO*///	{
-/*TODO*///		int done;
-/*TODO*///
-/*TODO*///		strcpy(buf, ui_getstring (UI_knownproblems));
-/*TODO*///		strcat(buf, "\n\n");
-/*TODO*///
-/*TODO*///
-/*TODO*///		if (Machine->gamedrv->flags & GAME_IMPERFECT_COLORS)
-/*TODO*///		{
-/*TODO*///			strcat(buf, ui_getstring (UI_imperfectcolors));
-/*TODO*///			strcat(buf, "\n");
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		if (Machine->gamedrv->flags & GAME_WRONG_COLORS)
-/*TODO*///		{
-/*TODO*///			strcat(buf, ui_getstring (UI_wrongcolors));
-/*TODO*///			strcat(buf, "\n");
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		if (Machine->gamedrv->flags & GAME_IMPERFECT_GRAPHICS)
-/*TODO*///		{
-/*TODO*///			strcat(buf, ui_getstring (UI_imperfectgraphics));
-/*TODO*///			strcat(buf, "\n");
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		if (Machine->gamedrv->flags & GAME_IMPERFECT_SOUND)
-/*TODO*///		{
-/*TODO*///			strcat(buf, ui_getstring (UI_imperfectsound));
-/*TODO*///			strcat(buf, "\n");
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		if (Machine->gamedrv->flags & GAME_NO_SOUND)
-/*TODO*///		{
-/*TODO*///			strcat(buf, ui_getstring (UI_nosound));
-/*TODO*///			strcat(buf, "\n");
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		if (Machine->gamedrv->flags & GAME_NO_COCKTAIL)
-/*TODO*///		{
-/*TODO*///			strcat(buf, ui_getstring (UI_nococktail));
-/*TODO*///			strcat(buf, "\n");
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		if (Machine->gamedrv->flags & (GAME_NOT_WORKING | GAME_UNEMULATED_PROTECTION))
-/*TODO*///		{
-/*TODO*///			const struct GameDriver *maindrv;
-/*TODO*///			int foundworking;
-/*TODO*///
-/*TODO*///			if (Machine->gamedrv->flags & GAME_NOT_WORKING)
-/*TODO*///			{
-/*TODO*///				strcpy(buf, ui_getstring (UI_brokengame));
-/*TODO*///				strcat(buf, "\n");
-/*TODO*///			}
-/*TODO*///			if (Machine->gamedrv->flags & GAME_UNEMULATED_PROTECTION)
-/*TODO*///			{
-/*TODO*///				strcat(buf, ui_getstring (UI_brokenprotection));
-/*TODO*///				strcat(buf, "\n");
-/*TODO*///			}
-/*TODO*///
-/*TODO*///			if (Machine->gamedrv->clone_of && !(Machine->gamedrv->clone_of->flags & NOT_A_DRIVER))
-/*TODO*///				maindrv = Machine->gamedrv->clone_of;
-/*TODO*///			else maindrv = Machine->gamedrv;
-/*TODO*///
-/*TODO*///			foundworking = 0;
-/*TODO*///			i = 0;
-/*TODO*///			while (drivers[i])
-/*TODO*///			{
-/*TODO*///				if (drivers[i] == maindrv || drivers[i]->clone_of == maindrv)
-/*TODO*///				{
-/*TODO*///					if ((drivers[i]->flags & (GAME_NOT_WORKING | GAME_UNEMULATED_PROTECTION)) == 0)
-/*TODO*///					{
-/*TODO*///						if (foundworking == 0)
-/*TODO*///						{
-/*TODO*///							strcat(buf,"\n\n");
-/*TODO*///							strcat(buf, ui_getstring (UI_workingclones));
-/*TODO*///							strcat(buf,"\n\n");
-/*TODO*///						}
-/*TODO*///						foundworking = 1;
-/*TODO*///
-/*TODO*///						sprintf(&buf[strlen(buf)],"%s\n",drivers[i]->name);
-/*TODO*///					}
-/*TODO*///				}
-/*TODO*///				i++;
-/*TODO*///			}
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		strcat(buf,"\n\n");
-/*TODO*///		strcat(buf,ui_getstring (UI_typeok));
-/*TODO*///
-/*TODO*///		erase_screen(bitmap);
-/*TODO*///		ui_displaymessagewindow(bitmap,buf);
-/*TODO*///
-/*TODO*///		done = 0;
-/*TODO*///		do
-/*TODO*///		{
-/*TODO*///			update_video_and_audio();
-/*TODO*///			if (input_ui_pressed(IPT_UI_CANCEL))
-/*TODO*///				return 1;
-/*TODO*///			if (code_pressed_memory(KEYCODE_O) ||
-/*TODO*///					input_ui_pressed(IPT_UI_LEFT))
-/*TODO*///				done = 1;
-/*TODO*///			if (done == 1 && (code_pressed_memory(KEYCODE_K) ||
-/*TODO*///					input_ui_pressed(IPT_UI_RIGHT)))
-/*TODO*///				done = 2;
-/*TODO*///		} while (done < 2);
-/*TODO*///	}
-/*TODO*///
-/*TODO*///
-/*TODO*///	erase_screen(bitmap);
-/*TODO*///
-/*TODO*///	/* clear the input memory */
-/*TODO*///	while (code_read_async() != CODE_NONE) {};
-/*TODO*///
-/*TODO*///	while (displaygameinfo(bitmap,0) == 1)
-/*TODO*///	{
-/*TODO*///		update_video_and_audio();
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	erase_screen(bitmap);
-/*TODO*///	/* make sure that the screen is really cleared, in case autoframeskip kicked in */
-/*TODO*///	update_video_and_audio();
-/*TODO*///	update_video_and_audio();
-/*TODO*///	update_video_and_audio();
-/*TODO*///	update_video_and_audio();
-/*TODO*///
-/*TODO*///	return 0;
-/*TODO*///}
-/*TODO*///
 /*TODO*////* Word-wraps the text in the specified buffer to fit in maxwidth characters per line.
 /*TODO*///   The contents of the buffer are modified.
 /*TODO*///   Known limitations: Words longer than maxwidth cause the function to fail. */
@@ -2337,7 +2323,8 @@ public class usrintrf {
 
             if ((hist_scroll > 0) && input_ui_pressed_repeat(IPT_UI_UP, 4) != 0) {
                 if (hist_scroll == 2) {
-                    hist_scroll = 0;	/* 1 would be the same as 0, but with arrow on top */
+                    hist_scroll = 0;
+                    /* 1 would be the same as 0, but with arrow on top */
                 } else {
                     hist_scroll--;
                 }
@@ -2345,7 +2332,8 @@ public class usrintrf {
 
             if (input_ui_pressed_repeat(IPT_UI_DOWN, 4) != 0) {
                 if (hist_scroll == 0) {
-                    hist_scroll = 2;	/* 1 would be the same as 0, but with arrow on top */
+                    hist_scroll = 2;
+                    /* 1 would be the same as 0, but with arrow on top */
                 } else {
                     hist_scroll++;
                 }
@@ -3201,14 +3189,11 @@ public class usrintrf {
         messagecounter = (int) (2 * Machine.drv.frames_per_second);
     }
 
-    /*TODO*///void CLIB_DECL usrintf_showmessage_secs(int seconds, const char *text,...)
-/*TODO*///{
-/*TODO*///	va_list arg;
-/*TODO*///	va_start(arg,text);
-/*TODO*///	vsprintf(messagetext,text,arg);
-/*TODO*///	va_end(arg);
-/*TODO*///	messagecounter = seconds * Machine->drv->frames_per_second;
-/*TODO*///}
+    public static void usrintf_showmessage_secs(int seconds, String text, Object... arg) {
+        messagetext = sprintf(text, arg);
+        messagecounter = (int) (seconds * Machine.drv.frames_per_second);
+    }
+
     public static int handle_user_interface(mame_bitmap bitmap) {
         /*TODO*///	int request_loadsave = LOADSAVE_NONE;
 /*TODO*///
