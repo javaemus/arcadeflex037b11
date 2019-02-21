@@ -5,7 +5,7 @@
 package sound;
 
 import static arcadeflex.fucPtr.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910H.*;
 
 public class _2610intfH {
 

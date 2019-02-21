@@ -30,8 +30,8 @@ import static old2.mame.common.*;
 
 import static mame056.sndhrdw.galaxian.*;
 
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 import static mame056.sound.dac.*;
 import static mame056.sound.dacH.*;
 

@@ -24,8 +24,8 @@ import static sound.MSM5205.*;
 import static sound.MSM5205H.*;
 import static mame.palette.*;
 import static mame056.timer.*;
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 import static mame056.timerH.*;
 import static mame056.common.*;
 

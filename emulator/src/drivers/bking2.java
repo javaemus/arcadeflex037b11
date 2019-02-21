@@ -22,8 +22,8 @@ import static vidhrdw.generic.*;
 import static mame056.cpuexec.cpu_cause_interrupt;
 import static mame056.cpuexec.interrupt;
 import static mame056.cpuexec.watchdog_reset_w;
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 import static old.arcadeflex.osdepend.*;
 import static mame056.sound.dac.DAC_0_signed_data_w;
 

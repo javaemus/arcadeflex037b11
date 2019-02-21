@@ -16,8 +16,8 @@ import static mame056.driverH.*;
 //sndhrdw imports
 import static sndhrdw.scramble.*;
 //sound imports
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 //vidhrdw imports
 import static vidhrdw.generic.*;
 import static vidhrdw.amidar.*;

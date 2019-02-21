@@ -14,8 +14,8 @@ import static old2.mame.memoryH.*;
 import static mame.sndintrfH.*;
 import static mame056.cpuexec.interrupt;
 import static mame056.cpuexec.watchdog_reset_r;
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 import static vidhrdw.generic.*;
 import static vidhrdw.nova2001.*;
 

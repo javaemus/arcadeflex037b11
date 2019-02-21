@@ -6,8 +6,8 @@ package mame056.sndhrdw;
 
 import static mame056.memoryH.*;
 import static mame.sndintrf.*;
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 import static old.sound.mixerH.*;
 import static mame056.sound.streams.*;
 import static arcadeflex.fucPtr.*;

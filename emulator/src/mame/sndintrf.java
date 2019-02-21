@@ -19,7 +19,7 @@ import sound.Dummy_snd;
 import sound.CustomSound;
 import mame056.sound.sn76496;
 import sound.namco;
-import sound.ay8910;
+import mame056.sound.ay8910;
 import sound._2203intf;
 import sound.MSM5205;
 import sound._3526intf;

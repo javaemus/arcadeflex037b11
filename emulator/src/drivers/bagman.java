@@ -21,8 +21,8 @@ import static mame056.cpuexec.interrupt_enable_w;
 import static sound._5110intf.*;
 import static sound._5110intfH.*;
 import static sound.tms5110H.*;
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 import static vidhrdw.bagman.*;
 import static vidhrdw.generic.*;
 

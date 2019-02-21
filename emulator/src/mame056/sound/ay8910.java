@@ -1,15 +1,16 @@
 /**
+ * ported to v0.56
  * ported to v0.37b7
  *
  */
-package sound;
+package mame056.sound;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.cstdio.sprintf;
 import static common.ptr.*;
 import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910H.*;
 import static old.arcadeflex.osdepend.*;
 import static mame056.cpuintrfH.cpu_get_pc;
 import static old.sound.mixer.*;
@@ -46,14 +47,13 @@ public class ay8910 extends snd_interface {
         //no functionality expected
     }
 
-    @Override
-    public void reset() {
-        //no functionality expected
-    }
-
     public static final int MAX_OUTPUT = 0x7fff;
 
     public static final int STEP = 0x8000;
+
+    static int num = 0;
+    static int ay8910_index_ym = 0;/* index of first chip of YM2203's SSG */
+
 
     public static class AY8910 {
 
@@ -65,6 +65,7 @@ public class ay8910 extends snd_interface {
         WriteHandlerPtr PortBwrite;
         int register_latch;
         int/*unsigned char*/ u8_Regs[] = new int[16];
+        int lastEnable;
         long/*unsigned int*/ u32_UpdateStep;
         int PeriodA, PeriodB, PeriodC, PeriodN, PeriodE;
         int CountA, CountB, CountC, CountN, CountE;
@@ -166,6 +167,25 @@ public class ay8910 extends snd_interface {
                     PSG.CountN = 1;
                 }
                 break;
+            case AY_ENABLE:
+                if ((PSG.lastEnable == -1)
+                        || ((PSG.lastEnable & 0x40) != (PSG.u8_Regs[AY_ENABLE] & 0x40))) {
+                    /* write out 0xff if port set to input */
+                    if (PSG.PortAwrite != null) {
+                        (PSG.PortAwrite).handler(0, (PSG.u8_Regs[AY_ENABLE] & 0x40) != 0 ? PSG.u8_Regs[AY_PORTA] : 0xff);
+                    }
+                }
+
+                if ((PSG.lastEnable == -1)
+                        || ((PSG.lastEnable & 0x80) != (PSG.u8_Regs[AY_ENABLE] & 0x80))) {
+                    /* write out 0xff if port set to input */
+                    if (PSG.PortBwrite != null) {
+                        (PSG.PortBwrite).handler(0, (PSG.u8_Regs[AY_ENABLE] & 0x80) != 0 ? PSG.u8_Regs[AY_PORTB] : 0xff);
+                    }
+                }
+
+                PSG.lastEnable = PSG.u8_Regs[AY_ENABLE];
+                break;
             case AY_AVOL:
                 PSG.u8_Regs[AY_AVOL] &= 0x1f;
                 PSG.u8_EnvelopeA = PSG.u8_Regs[AY_AVOL] & 0x10;
@@ -245,23 +265,25 @@ public class ay8910 extends snd_interface {
                 }
                 break;
             case AY_PORTA:
-                if ((PSG.u8_Regs[AY_ENABLE] & 0x40) == 0) {
-                    logerror("warning: write to 8910 #%d Port A set as input\n", n);
-                }
-                if (PSG.PortAwrite != null) {
-                    PSG.PortAwrite.handler(0, v);
+                if ((PSG.u8_Regs[AY_ENABLE] & 0x40) != 0) {
+                    if (PSG.PortAwrite != null) {
+                        (PSG.PortAwrite).handler(0, PSG.u8_Regs[AY_PORTA]);
+                    } else {
+                        logerror("PC %04x: warning - write %02x to 8910 #%d Port A\n", cpu_get_pc(), PSG.u8_Regs[AY_PORTA], n);
+                    }
                 } else {
-                    logerror("PC %04x: warning - write %02x to 8910 #%d Port A\n", cpu_get_pc(), v, n);
+                    logerror("warning: write to 8910 #%d Port A set as input - ignored\n", n);
                 }
                 break;
             case AY_PORTB:
-                if ((PSG.u8_Regs[AY_ENABLE] & 0x80) == 0) {
-                    logerror("warning: write to 8910 #%d Port B set as input\n", n);
-                }
-                if (PSG.PortBwrite != null) {
-                    PSG.PortBwrite.handler(0, v);
+                if ((PSG.u8_Regs[AY_ENABLE] & 0x80) != 0) {
+                    if ((PSG.PortBwrite) != null) {
+                        (PSG.PortBwrite).handler(0, PSG.u8_Regs[AY_PORTB]);
+                    } else {
+                        logerror("PC %04x: warning - write %02x to 8910 #%d Port B\n", cpu_get_pc(), PSG.u8_Regs[AY_PORTB], n);
+                    }
                 } else {
-                    logerror("PC %04x: warning - write %02x to 8910 #%d Port B\n", cpu_get_pc(), v, n);
+                    logerror("warning: write to 8910 #%d Port B set as input - ignored\n", n);
                 }
                 break;
         }
@@ -360,6 +382,17 @@ public class ay8910 extends snd_interface {
             return AY8910Read(4);
         }
     };
+    /*TODO*///READ16_HANDLER( AY8910_read_port_0_lsb_r ) { return AY8910Read(0); }
+/*TODO*///READ16_HANDLER( AY8910_read_port_1_lsb_r ) { return AY8910Read(1); }
+/*TODO*///READ16_HANDLER( AY8910_read_port_2_lsb_r ) { return AY8910Read(2); }
+/*TODO*///READ16_HANDLER( AY8910_read_port_3_lsb_r ) { return AY8910Read(3); }
+/*TODO*///READ16_HANDLER( AY8910_read_port_4_lsb_r ) { return AY8910Read(4); }
+/*TODO*///READ16_HANDLER( AY8910_read_port_0_msb_r ) { return AY8910Read(0) << 8; }
+/*TODO*///READ16_HANDLER( AY8910_read_port_1_msb_r ) { return AY8910Read(1) << 8; }
+/*TODO*///READ16_HANDLER( AY8910_read_port_2_msb_r ) { return AY8910Read(2) << 8; }
+/*TODO*///READ16_HANDLER( AY8910_read_port_3_msb_r ) { return AY8910Read(3) << 8; }
+/*TODO*///READ16_HANDLER( AY8910_read_port_4_msb_r ) { return AY8910Read(4) << 8; }
+
     public static WriteHandlerPtr AY8910_control_port_0_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
             AY8910Write(0, 0, data);
@@ -385,6 +418,17 @@ public class ay8910 extends snd_interface {
             AY8910Write(4, 0, data);
         }
     };
+
+    /*TODO*///WRITE16_HANDLER( AY8910_control_port_0_lsb_w ) { if (ACCESSING_LSB) AY8910Write(0,0,data & 0xff); }
+/*TODO*///WRITE16_HANDLER( AY8910_control_port_1_lsb_w ) { if (ACCESSING_LSB) AY8910Write(1,0,data & 0xff); }
+/*TODO*///WRITE16_HANDLER( AY8910_control_port_2_lsb_w ) { if (ACCESSING_LSB) AY8910Write(2,0,data & 0xff); }
+/*TODO*///WRITE16_HANDLER( AY8910_control_port_3_lsb_w ) { if (ACCESSING_LSB) AY8910Write(3,0,data & 0xff); }
+/*TODO*///WRITE16_HANDLER( AY8910_control_port_4_lsb_w ) { if (ACCESSING_LSB) AY8910Write(4,0,data & 0xff); }
+/*TODO*///WRITE16_HANDLER( AY8910_control_port_0_msb_w ) { if (ACCESSING_MSB) AY8910Write(0,0,data >> 8); }
+/*TODO*///WRITE16_HANDLER( AY8910_control_port_1_msb_w ) { if (ACCESSING_MSB) AY8910Write(1,0,data >> 8); }
+/*TODO*///WRITE16_HANDLER( AY8910_control_port_2_msb_w ) { if (ACCESSING_MSB) AY8910Write(2,0,data >> 8); }
+/*TODO*///WRITE16_HANDLER( AY8910_control_port_3_msb_w ) { if (ACCESSING_MSB) AY8910Write(3,0,data >> 8); }
+/*TODO*///WRITE16_HANDLER( AY8910_control_port_4_msb_w ) { if (ACCESSING_MSB) AY8910Write(4,0,data >> 8); }
     public static WriteHandlerPtr AY8910_write_port_0_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
             AY8910Write(0, 1, data);
@@ -410,6 +454,16 @@ public class ay8910 extends snd_interface {
             AY8910Write(4, 1, data);
         }
     };
+    /*TODO*///WRITE16_HANDLER( AY8910_write_port_0_lsb_w ) { if (ACCESSING_LSB) AY8910Write(0,1,data & 0xff); }
+/*TODO*///WRITE16_HANDLER( AY8910_write_port_1_lsb_w ) { if (ACCESSING_LSB) AY8910Write(1,1,data & 0xff); }
+/*TODO*///WRITE16_HANDLER( AY8910_write_port_2_lsb_w ) { if (ACCESSING_LSB) AY8910Write(2,1,data & 0xff); }
+/*TODO*///WRITE16_HANDLER( AY8910_write_port_3_lsb_w ) { if (ACCESSING_LSB) AY8910Write(3,1,data & 0xff); }
+/*TODO*///WRITE16_HANDLER( AY8910_write_port_4_lsb_w ) { if (ACCESSING_LSB) AY8910Write(4,1,data & 0xff); }
+/*TODO*///WRITE16_HANDLER( AY8910_write_port_0_msb_w ) { if (ACCESSING_MSB) AY8910Write(0,1,data >> 8); }
+/*TODO*///WRITE16_HANDLER( AY8910_write_port_1_msb_w ) { if (ACCESSING_MSB) AY8910Write(1,1,data >> 8); }
+/*TODO*///WRITE16_HANDLER( AY8910_write_port_2_msb_w ) { if (ACCESSING_MSB) AY8910Write(2,1,data >> 8); }
+/*TODO*///WRITE16_HANDLER( AY8910_write_port_3_msb_w ) { if (ACCESSING_MSB) AY8910Write(3,1,data >> 8); }
+/*TODO*///WRITE16_HANDLER( AY8910_write_port_4_msb_w ) { if (ACCESSING_MSB) AY8910Write(4,1,data >> 8); }
 
     public static StreamInitMultiPtr AY8910Update = new StreamInitMultiPtr() {
         @Override
@@ -736,6 +790,7 @@ public class ay8910 extends snd_interface {
         PSG.u8_OutputB = 0;
         PSG.u8_OutputC = 0;
         PSG.u8_OutputN = 0xff;
+        PSG.lastEnable = -1;/* force a write */
         for (i = 0; i < AY_PORTA; i++) {
             _AYWriteReg(chip, i, 0);
             /* AYWriteReg() uses the timer system; we cannot */
@@ -744,12 +799,21 @@ public class ay8910 extends snd_interface {
  /* has not been initialized. */
     }
 
-    static int AY8910_init(MachineSound msound, int chip,
+    @Override
+    public void reset() {
+        int i;
+
+        for (i = 0; i < num; i++) {
+            AY8910_reset(i);
+        }
+    }
+
+    static int AY8910_init(String chip_name, int chip,
             int clock, int volume, int sample_rate,
             ReadHandlerPtr portAread, ReadHandlerPtr portBread,
             WriteHandlerPtr portAwrite, WriteHandlerPtr portBwrite) {
 
-        AY8910 PSG = AYPSG[chip];
+        AY8910 PSG = AYPSG[chip + ay8910_index_ym];
         String[] name = new String[3];
         int[] vol = new int[3];
         //memset(PSG,0,sizeof(struct AY8910));
@@ -760,34 +824,56 @@ public class ay8910 extends snd_interface {
         PSG.PortBwrite = portBwrite;
         for (int i = 0; i < 3; i++) {
             vol[i] = volume;
-            name[i] = sprintf("%s #%d Ch %c", sound_name(msound), chip, 'A' + i);
+            name[i] = sprintf("%s #%d Ch %c", chip_name, chip, 'A' + i);;
         }
-        PSG.Channel = stream_init_multi(3, name, vol, sample_rate, chip, AY8910Update);
+        PSG.Channel = stream_init_multi(3, name, vol, sample_rate, chip + ay8910_index_ym, AY8910Update);
 
         if (PSG.Channel == -1) {
             return 1;
         }
 
-        AY8910_set_clock(chip, clock);
-        AY8910_reset(chip);
+        AY8910_set_clock(chip + ay8910_index_ym, clock);
         return 0;
     }
 
     @Override
     public int start(MachineSound msound) {
+        return AY8910_sh_start(msound);
+    }
+
+    public static int AY8910_sh_start(MachineSound msound) {
         int chip;
         AY8910interface intf = (AY8910interface) msound.sound_interface;
+        ay8910_index_ym = num;
 
-        for (chip = 0; chip < intf.num; chip++) {
-            if (AY8910_init(msound, chip, intf.baseclock,
+        num = intf.num;
+
+        for (chip = 0; chip < num; chip++) {
+            if (AY8910_init(sound_name(msound), chip, intf.baseclock,
                     intf.mixing_level[chip] & 0xffff,
                     Machine.sample_rate,
                     intf.portAread[chip], intf.portBread[chip],
                     intf.portAwrite[chip], intf.portBwrite[chip]) != 0) {
                 return 1;
             }
-            build_mixer_table(chip);
+            build_mixer_table(chip + ay8910_index_ym);
         }
         return 0;
+    }
+
+    public static void AY8910_sh_stop_ym() {
+        num -= ay8910_index_ym;
+        ay8910_index_ym = 0;
+    }
+
+    public static int AY8910_sh_start_ym(MachineSound msound) {
+        AY8910interface intf = (AY8910interface) msound.sound_interface;
+
+        if (num + intf.num > MAX_8910) {
+            return 1;
+        }
+
+        ay8910_index_ym = num;
+        return AY8910_sh_start(msound);
     }
 }

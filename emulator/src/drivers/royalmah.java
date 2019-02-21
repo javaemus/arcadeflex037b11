@@ -20,8 +20,8 @@ import static old2.mame.mame.*;
 import static old.mame.drawgfx.plot_pixel;
 import static mame056.cpuexec.interrupt;
 import static mame056.inputH.*;
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 
 public class royalmah {
 

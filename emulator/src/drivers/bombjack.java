@@ -18,8 +18,8 @@ import static mame056.cpuexec.interrupt_enable_w;
 import static mame056.cpuexec.nmi_interrupt;
 import static mame056.timer.*;
 import static mame056.timerH.TIME_NOW;
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 import static vidhrdw.generic.*;
 import static vidhrdw.bombjack.*;
 

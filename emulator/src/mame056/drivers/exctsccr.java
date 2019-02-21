@@ -24,8 +24,8 @@ import static mame056.machine.exctsccr.*;
 import static vidhrdw.generic.*;
 import static mame056.sound.dac.*;
 import static mame056.sound.dacH.*;
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 
 public class exctsccr {
 

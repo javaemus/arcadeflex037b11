@@ -20,8 +20,8 @@ import mame056.commonH.mame_bitmap;
 import static mame056.cpuexec.cpu_getiloops;
 import static mame056.cpuexec.interrupt;
 import static old.mame.drawgfx.drawgfx;
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 import static vidhrdw.generic.*;
 
 public class olibochu {

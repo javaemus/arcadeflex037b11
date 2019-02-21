@@ -21,8 +21,8 @@ import static mame056.cpuexec.interrupt_enable_w;
 import static mame056.cpuexec.nmi_interrupt;
 import static mame056.cpuexec.watchdog_reset_w;
 import static vidhrdw.kyugo.*;
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 
 public class kyugo {
 

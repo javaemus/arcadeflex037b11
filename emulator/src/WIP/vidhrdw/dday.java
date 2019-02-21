@@ -16,7 +16,7 @@ import old.arcadeflex.libc_old.IntPtr;
 import static arcadeflex.video.osd_mark_dirty;
 import common.subArrays.IntArray;
 import static old.sound.mixer.*;
-import static sound.ay8910.*;
+import static mame056.sound.ay8910.*;
 import static mame056.common.*;
 
 public class dday {

@@ -20,8 +20,8 @@ import static mame056.cpuexec.watchdog_reset_r;
 import static mame056.cpuexec.watchdog_reset_w;
 import static mame056.inptportH.*;
 import static vidhrdw.funkybee.*;
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 
 public class funkybee {
 

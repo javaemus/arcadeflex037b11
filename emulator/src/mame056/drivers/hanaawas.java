@@ -16,8 +16,8 @@ import static mame056.inptportH.*;
 import static arcadeflex.fucPtr.*;
 import static mame056.cpuexec.interrupt;
 import static vidhrdw.hanaawas.*;
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 import static vidhrdw.generic.*;
 
 public class hanaawas {

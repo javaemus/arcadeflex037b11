@@ -15,8 +15,8 @@ import static mame.sndintrfH.*;
 import static mame.drawgfxH.*;
 import static mame056.driverH.*;
 //sound imports
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 //vidhrdw imports
 import static vidhrdw.generic.*;
 import static WIP.vidhrdw.slapfght.*;

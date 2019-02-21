@@ -18,8 +18,8 @@ import static mame056.cpuexec.interrupt_enable_w;
 import static mame056.cpuexec.nmi_interrupt;
 import static vidhrdw.generic.*;
 import static vidhrdw.mermaid.*;
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 
 public class mermaid {
 

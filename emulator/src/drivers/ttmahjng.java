@@ -18,8 +18,8 @@ import static mame056.cpuexec.interrupt;
 import static mame056.input.*;
 import static mame056.inputH.*;
 import static vidhrdw.ttmahjng.*;
-import static sound.ay8910.*;
-import static sound.ay8910H.*;
+import static mame056.sound.ay8910.*;
+import static mame056.sound.ay8910H.*;
 
 public class ttmahjng {
 

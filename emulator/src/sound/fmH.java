@@ -4,7 +4,7 @@
  */
 package sound;
 
-import static sound.ay8910.*;
+import static mame056.sound.ay8910.*;
 
 public class fmH {
 
