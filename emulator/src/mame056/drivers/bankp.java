@@ -16,7 +16,7 @@ import static mame.sndintrfH.*;
 import static mame056.cpuexec.nmi_interrupt;
 import static vidhrdw.generic.*;
 import static mame056.sound.sn76496H.*;
-import static vidhrdw.bankp.*;
+import static mame056.vidhrdw.bankp.*;
 import static mame056.sound.sn76496.*;
 
 public class bankp {

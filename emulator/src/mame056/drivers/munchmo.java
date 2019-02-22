@@ -2,7 +2,7 @@
  * ported to v0.37b7
  * using automatic conversion tool v0.01
  */
-package WIP.drivers;
+package mame056.drivers;
 
 import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
@@ -18,7 +18,7 @@ import static vidhrdw.generic.*;
 import static mame056.sound.ay8910H.*;
 import static mame056.sound.ay8910.*;
 import static mame.sndintrf.*;
-import static WIP.vidhrdw.munchmo.*;
+import static mame056.vidhrdw.munchmo.*;
 import static common.libc.expressions.*;
 import static mame056.cpuexec.cpu_cause_interrupt;
 import static mame056.cpuexec.ignore_interrupt;
@@ -317,7 +317,7 @@ public class munchmo {
             /* video hardware */
             256 + 32 + 32, 256, new rectangle(0, 255 + 32 + 32, 0, 255 - 16),
             gfxdecodeinfo,
-            256, 256,
+            256, 0,
             mnchmobl_convert_color_prom,
             VIDEO_TYPE_RASTER,
             null,
