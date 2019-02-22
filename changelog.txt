@@ -1,3 +1,7 @@
+23/03/2019
+==========
+-Ported 1943 vidhrdw to 0.56
+
 22/02/2019
 ==========
 -Ported munchmo driver,vidhrdw to 0.56 (controls now works with new cpuinterf)

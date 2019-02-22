@@ -22,7 +22,7 @@ import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
 import static sound._2203intf.*;
 import static sound._2203intfH.*;
-import static vidhrdw._1943.*;
+import static mame056.vidhrdw._1943.*;
 import static vidhrdw.generic.*;
 
 public class _1943 {

@@ -1,12 +1,14 @@
 /**
+ * ported to v0.56
  * ported to v0.37b7
  *
  */
-package vidhrdw;
+package mame056.vidhrdw;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
 import static mame056.commonH.*;
+import static mame056.palette.*;
 import static old.mame.drawgfx.*;
 import static mame.drawgfxH.*;
 import static old2.mame.mame.Machine;
@@ -48,31 +50,31 @@ public class _1943 {
     }
 
     public static VhConvertColorPromPtr c1943_vh_convert_color_prom = new VhConvertColorPromPtr() {
-        public void handler(char[] palette, char[] colortable, UBytePtr color_prom) {
+        public void handler(char[] obsolete, char[] colortable, UBytePtr color_prom) {
             int p_inc = 0;
             for (int i = 0; i < Machine.drv.total_colors; i++) {
-                int bit0, bit1, bit2, bit3;
+                int bit0, bit1, bit2, bit3, r, g, b;
 
-                bit0 = (color_prom.read(0) >> 0) & 0x01;
-                bit1 = (color_prom.read(0) >> 1) & 0x01;
-                bit2 = (color_prom.read(0) >> 2) & 0x01;
-                bit3 = (color_prom.read(0) >> 3) & 0x01;
-                palette[p_inc++] = ((char) (0x0e * bit0 + 0x1f * bit1 + 0x43 * bit2 + 0x8f * bit3));
-                bit0 = (color_prom.read(Machine.drv.total_colors) >> 0) & 0x01;
-                bit1 = (color_prom.read(Machine.drv.total_colors) >> 1) & 0x01;
-                bit2 = (color_prom.read(Machine.drv.total_colors) >> 2) & 0x01;
-                bit3 = (color_prom.read(Machine.drv.total_colors) >> 3) & 0x01;
-                palette[p_inc++] = ((char) (0x0e * bit0 + 0x1f * bit1 + 0x43 * bit2 + 0x8f * bit3));
-                bit0 = (color_prom.read(2 * Machine.drv.total_colors) >> 0) & 0x01;
-                bit1 = (color_prom.read(2 * Machine.drv.total_colors) >> 1) & 0x01;
-                bit2 = (color_prom.read(2 * Machine.drv.total_colors) >> 2) & 0x01;
-                bit3 = (color_prom.read(2 * Machine.drv.total_colors) >> 3) & 0x01;
-                palette[p_inc++] = ((char) (0x0e * bit0 + 0x1f * bit1 + 0x43 * bit2 + 0x8f * bit3));
+                bit0 = (color_prom.read(i) >> 0) & 0x01;
+                bit1 = (color_prom.read(i) >> 1) & 0x01;
+                bit2 = (color_prom.read(i) >> 2) & 0x01;
+                bit3 = (color_prom.read(i) >> 3) & 0x01;
+                r = 0x0e * bit0 + 0x1f * bit1 + 0x43 * bit2 + 0x8f * bit3;
+                bit0 = (color_prom.read(i + Machine.drv.total_colors) >> 0) & 0x01;
+                bit1 = (color_prom.read(i + Machine.drv.total_colors) >> 1) & 0x01;
+                bit2 = (color_prom.read(i + Machine.drv.total_colors) >> 2) & 0x01;
+                bit3 = (color_prom.read(i + Machine.drv.total_colors) >> 3) & 0x01;
+                g = 0x0e * bit0 + 0x1f * bit1 + 0x43 * bit2 + 0x8f * bit3;
+                bit0 = (color_prom.read(i + 2 * Machine.drv.total_colors) >> 0) & 0x01;
+                bit1 = (color_prom.read(i + 2 * Machine.drv.total_colors) >> 1) & 0x01;
+                bit2 = (color_prom.read(i + 2 * Machine.drv.total_colors) >> 2) & 0x01;
+                bit3 = (color_prom.read(i + 2 * Machine.drv.total_colors) >> 3) & 0x01;
+                b = 0x0e * bit0 + 0x1f * bit1 + 0x43 * bit2 + 0x8f * bit3;
 
-                color_prom.inc();
+                palette_set_color(i, r, g, b);
             }
 
-            color_prom.inc(2 * Machine.drv.total_colors);
+            color_prom.inc(3 * Machine.drv.total_colors);
             /* color_prom now points to the beginning of the lookup table */
 
  /* characters use colors 64-79 */
