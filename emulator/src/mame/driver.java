@@ -106,7 +106,7 @@ import static WIP.drivers.slapfght.*;
 import static WIP.drivers.vulgus.*;
 import static WIP.drivers.lwings.*;
 import static WIP.drivers.tehkanwc.*;
-import static WIP.drivers.munchmo.*;
+import static mame056.drivers.munchmo.*;
 import static WIP.drivers.dday.*;
 import static WIP.drivers.scramble.*;
 import static WIP.drivers.mcr1.*;

@@ -10,7 +10,7 @@ import static old2.mame.memoryH.*;
 import static mame056.inptport.*;
 import static mame056.sound.ay8910.*;
 import static mame056.sound.ay8910H.*;
-import static old.sound.mixerH.*;
+import static mame056.sound.mixerH.*;
 import static WIP.machine._6821pia.*;
 import static WIP.machine._6821piaH.*;
 import static mame056.cpuintrf.*;

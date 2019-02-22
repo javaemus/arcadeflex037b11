@@ -22,7 +22,7 @@ import static vidhrdw.pipedrm.*;
 import static mame056.common.*;
 import static mame.palette.*;
 import arcadeflex.libc.ptr.UBytePtr;
-import static old.sound.mixerH.*;
+import static mame056.sound.mixerH.*;
 import static vidhrdw.generic.*;
 import static common.libc.cstring.*;
 import static mame056.timer.*;

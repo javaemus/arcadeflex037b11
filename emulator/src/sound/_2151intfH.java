@@ -5,7 +5,7 @@
 package sound;
 
 import static arcadeflex.fucPtr.*;
-import static old.sound.mixerH.MIXER;
+import static mame056.sound.mixerH.MIXER;
 
 public class _2151intfH {
 

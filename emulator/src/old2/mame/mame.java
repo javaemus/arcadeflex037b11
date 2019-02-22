@@ -48,7 +48,7 @@ import static mame056.input.*;
 import static mame056.inputH.*;
 import static mame056.inptport.*;
 import static mame.osdependH.OSD_FILETYPE_NVRAM;
-import static mame.palette.*;
+import static mame056.palette.*;
 import static mame.sndintrf.*;
 import static mame056.common.*;
 import static mame056.commonH.*;

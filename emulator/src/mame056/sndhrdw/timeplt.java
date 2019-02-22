@@ -8,7 +8,7 @@ import static mame056.memoryH.*;
 import static mame.sndintrf.*;
 import static mame056.sound.ay8910.*;
 import static mame056.sound.ay8910H.*;
-import static old.sound.mixerH.*;
+import static mame056.sound.mixerH.*;
 import static mame056.sound.streams.*;
 import static arcadeflex.fucPtr.*;
 import static mame056.cpuexec.cpu_cause_interrupt;

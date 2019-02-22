@@ -43,13 +43,15 @@ import static old2.mame.mame.need_to_clear_bitmap;
 import static mame056.commonH.*;
 import static mame056.usrintrf.set_ui_visarea;
 import static mame056.usrintrf.ui_text;
+import static old2.mame.common.schedule_full_refresh;
+
 
 /**
  *
  * @author chusogar
  */
 public class video {
-    
+
     public static software_gfx screen; //for our screen creation
     public static int skiplines;
     public static int skipcolumns;
@@ -78,12 +80,12 @@ public class video {
     public static int vis_min_x, vis_max_x, vis_min_y, vis_max_y;
     static int warming_up;
     public static int vsync_frame_rate;
-    
+
     public static final int BACKGROUND = 0;
     public static int brightness;
     public static int use_vesa;
     public static int auto_resolution;
-    
+
     public static int screen_colors;
     public static UBytePtr current_palette;
     public static /*unsigned int * */ int[] dirtycolor;
@@ -110,19 +112,19 @@ public class video {
     /* to calculate fps average on exit */
 
     public static final int FRAMES_TO_SKIP = 20;
-    
+
     public static final int MAX_X_MULTIPLY = 4;
     public static final int MAX_Y_MULTIPLY = 3;
     public static final int MAX_X_MULTIPLY16 = 4;
     public static final int MAX_Y_MULTIPLY16 = 2;
-    
+
     /* Create a bitmap. Also calls osd_clearbitmap() to appropriately initialize */
-    /* it to the background color. */
-    /* VERY IMPORTANT: the function must allocate also a "safety area" 16 pixels wide all */
-    /* around the bitmap. This is required because, for performance reasons, some graphic */
-    /* routines don't clip at boundaries of the bitmap. */
+ /* it to the background color. */
+ /* VERY IMPORTANT: the function must allocate also a "safety area" 16 pixels wide all */
+ /* around the bitmap. This is required because, for performance reasons, some graphic */
+ /* routines don't clip at boundaries of the bitmap. */
     public static int safety = 16;
-    
+
     static int skiptable[][]
             = {
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -139,11 +141,11 @@ public class video {
                 {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
             };
 
-    
     public static class RGB {
+
         public char r, g, b;
     }
-    
+
     /*
      * This function tries to find the best display mode.
      */
@@ -860,7 +862,6 @@ public class video {
 /*TODO*///
         warming_up = 1;
 
-        
         return 1;
     }
 
@@ -946,13 +947,14 @@ public class video {
 /*TODO*///		if(dbl)
 /*TODO*///			scanlines=1;
 /*TODO*///	}
-        
+
         return 0;
     }
 
-    public static void osd_update_video_and_audio(mame_bitmap bitmap,int led) {
-    osd_update_video_and_audio(bitmap);
-}
+    public static void osd_update_video_and_audio(mame_bitmap bitmap, int led) {
+        osd_update_video_and_audio(bitmap);
+    }
+
     public static void osd_update_video_and_audio(mame_bitmap bitmap) {
         if (++framecount > frameskip) {
             framecount = 0;
@@ -960,11 +962,11 @@ public class video {
             if (input_ui_pressed(IPT_UI_SHOW_FPS) != 0) {
                 if (showfpstemp != 0) {
                     showfpstemp = 0;
-                    need_to_clear_bitmap = 1;
+                    schedule_full_refresh();
                 } else {
                     showfps ^= 1;
                     if (showfps == 0) {
-                        need_to_clear_bitmap = 1;
+                        schedule_full_refresh();
                     }
                 }
             }
@@ -974,8 +976,7 @@ public class video {
             do {
 
                 curr = uclock();
-            }
-            while ((throttle != 0) && (curr - prev1[clock_counter] < (frameskip + 1) * 1000000000 / Machine.drv.frames_per_second));
+            } while ((throttle != 0) && (curr - prev1[clock_counter] < (frameskip + 1) * 1000000000 / Machine.drv.frames_per_second));
             //while (throttle != 0 && video_sync == 0 && (curr - prev[i]) < (frameskip+1) * UCLOCKS_PER_SEC/drv.frames_per_second);
             if (showfps != 0 || showfpstemp != 0) {
                 int fps;
@@ -1019,57 +1020,98 @@ public class video {
                             } else {
 
                                 /*TODO*///							adjusted_palette.r >>= 2;
-    /*TODO*///							adjusted_palette.g >>= 2;
-    /*TODO*///							adjusted_palette.b >>= 2;
+                                /*TODO*///							adjusted_palette.g >>= 2;
+                                /*TODO*///							adjusted_palette.b >>= 2;
                             }
                             set_color(i, adjusted_palette);
                         }
                     }
                 }
             }
+            else
+                {
+                    if (dirty_bright != 0)
+                    {
+                        dirty_bright = 0;
+                        for (int i = 0; i < 256; i++)
+                        {
+                            float rate = (float)(brightness * brightness_paused_adjust * Math.pow(i / 255.0, 1 / osd_gamma_correction) / 100);
+                            bright_lookup[i] = (int)(255 * rate + 0.5);
+                        }
+                    }
+                    if (dirtypalette!=0)
+                    {
+                       // if (use_dirty != 0) init_dirty(1);	/* have to redraw the whole screen */
+
+                        dirtypalette = 0;
+                        for (int i = 0; i < screen_colors; i++)
+                        {
+                            if (dirtycolor[i]!=0)
+                            {
+                                int r, g, b;
+
+                                dirtycolor[i] = 0;
+
+                                r = current_palette.read(3 * i + 0);
+                                g = current_palette.read(3 * i + 1);
+                                b = current_palette.read(3 * i + 2);
+                                if (i != Machine.uifont.colortable.read(1))	/* don't adjust the user interface text */
+                                {
+                                    r = bright_lookup[r];
+                                    g = bright_lookup[g];
+                                    b = bright_lookup[b];
+                                }
+                                palette_16bit_lookup[i] = (char)(makecol(r, g, b));// * 0x10001);
+                                RGB p = new RGB();
+                                p.r=(char)r;
+                                p.g=(char)g;
+                                p.b=(char)b;
+                                set_color(i, p);
+                            }
+                        }
+                    }
+                }
             /*TODO*///		else
-    /*TODO*///		{
-    /*TODO*///			if (dirty_bright)
-    /*TODO*///			{
-    /*TODO*///				dirty_bright = 0;
-    /*TODO*///				for (i = 0;i < 256;i++)
-    /*TODO*///				{
-    /*TODO*///					float rate = brightness * brightness_paused_adjust * pow(i / 255.0, 1 / osd_gamma_correction) / 100;
-    /*TODO*///					bright_lookup[i] = 255 * rate + 0.5;
-    /*TODO*///				}
-    /*TODO*///			}
-    /*TODO*///			if (dirtypalette)
-    /*TODO*///			{
-    /*TODO*///				if (use_dirty) init_dirty(1);	/* have to redraw the whole screen */
-    /*TODO*///
-    /*TODO*///				dirtypalette = 0;
-    /*TODO*///				for (i = 0;i < screen_colors;i++)
-    /*TODO*///				{
-    /*TODO*///					if (dirtycolor[i])
-    /*TODO*///					{
-    /*TODO*///						int r,g,b;
-    /*TODO*///
-    /*TODO*///						dirtycolor[i] = 0;
-    /*TODO*///
-    /*TODO*///						r = current_palette[3*i+0];
-    /*TODO*///						g = current_palette[3*i+1];
-    /*TODO*///						b = current_palette[3*i+2];
-    /*TODO*///						if (i != Machine->uifont->colortable[1])	/* don't adjust the user interface text */
-    /*TODO*///						{
-    /*TODO*///							r = bright_lookup[r];
-    /*TODO*///							g = bright_lookup[g];
-    /*TODO*///							b = bright_lookup[b];
-    /*TODO*///						}
-    /*TODO*///						palette_16bit_lookup[i] = makecol(r,g,b) * 0x10001;
-    /*TODO*///					}
-    /*TODO*///				}
-    /*TODO*///			}
-    /*TODO*///		}
+            /*TODO*///		{
+            /*TODO*///			if (dirty_bright)
+            /*TODO*///			{
+            /*TODO*///				dirty_bright = 0;
+            /*TODO*///				for (i = 0;i < 256;i++)
+            /*TODO*///				{
+            /*TODO*///					float rate = brightness * brightness_paused_adjust * pow(i / 255.0, 1 / osd_gamma_correction) / 100;
+            /*TODO*///					bright_lookup[i] = 255 * rate + 0.5;
+            /*TODO*///				}
+            /*TODO*///			}
+            /*TODO*///			if (dirtypalette)
+            /*TODO*///			{
+            /*TODO*///				if (use_dirty) init_dirty(1);	/* have to redraw the whole screen */
+            /*TODO*///
+            /*TODO*///				dirtypalette = 0;
+            /*TODO*///				for (i = 0;i < screen_colors;i++)
+            /*TODO*///				{
+            /*TODO*///					if (dirtycolor[i])
+            /*TODO*///					{
+            /*TODO*///						int r,g,b;
+            /*TODO*///
+            /*TODO*///						dirtycolor[i] = 0;
+            /*TODO*///
+            /*TODO*///						r = current_palette[3*i+0];
+            /*TODO*///						g = current_palette[3*i+1];
+            /*TODO*///						b = current_palette[3*i+2];
+            /*TODO*///						if (i != Machine->uifont->colortable[1])	/* don't adjust the user interface text */
+            /*TODO*///						{
+            /*TODO*///							r = bright_lookup[r];
+            /*TODO*///							g = bright_lookup[g];
+            /*TODO*///							b = bright_lookup[b];
+            /*TODO*///						}
+            /*TODO*///						palette_16bit_lookup[i] = makecol(r,g,b) * 0x10001;
+            /*TODO*///					}
+            /*TODO*///				}
+            /*TODO*///			}
+            /*TODO*///		}
             blitscreen_dirty1_vga();
             update_audio();
-            if (need_to_clear_bitmap != 0) {
-                osd_clearbitmap(Machine.scrbitmap);
-            }
+            
             clock_counter = (clock_counter + 1) % MEMORY;
             if ((curr - prev1[clock_counter]) != 0) {
                 long divdr = (int) Machine.drv.frames_per_second * (curr - prev1[clock_counter]) / (100L * MEMORY);
@@ -1081,43 +1123,42 @@ public class video {
         }
     }
 
-    
     public static void osd_close_display() {
         /*TODO*///	if (gone_to_gfx_mode != 0)
-    /*TODO*///	{
-    /*TODO*///		/* tidy up if 15.75KHz SVGA mode used */
-    /*TODO*///		if (scanrate15KHz && use_vesa == 1)
-    /*TODO*///		{
-    /*TODO*///			/* check we've got a valid driver before calling it */
-    /*TODO*///			if (SVGA15KHzdriver != NULL)
-    /*TODO*///				SVGA15KHzdriver->resetSVGA15KHzmode();
-    /*TODO*///		}
-    /*TODO*///
-    /*TODO*///		set_gfx_mode (GFX_TEXT,0,0,0,0);
-    /*TODO*///
+        /*TODO*///	{
+        /*TODO*///		/* tidy up if 15.75KHz SVGA mode used */
+        /*TODO*///		if (scanrate15KHz && use_vesa == 1)
+        /*TODO*///		{
+        /*TODO*///			/* check we've got a valid driver before calling it */
+        /*TODO*///			if (SVGA15KHzdriver != NULL)
+        /*TODO*///				SVGA15KHzdriver->resetSVGA15KHzmode();
+        /*TODO*///		}
+        /*TODO*///
+        /*TODO*///		set_gfx_mode (GFX_TEXT,0,0,0,0);
+        /*TODO*///
         if (frames_displayed > FRAMES_TO_SKIP) {
             printf("Average FPS: %f\n", (double) TICKS_PER_SEC / (end_time - start_time) * (frames_displayed - FRAMES_TO_SKIP));
         }
         /*TODO*///	}
-    /*TODO*///
-    /*TODO*///	free(dirtycolor);
-    /*TODO*///	dirtycolor = 0;
-    /*TODO*///	free(current_palette);
-    /*TODO*///	current_palette = 0;
-    /*TODO*///	free(palette_16bit_lookup);
-    /*TODO*///	palette_16bit_lookup = 0;
-    /*TODO*///	if (scrbitmap)
-    /*TODO*///	{
-    /*TODO*///		osd_free_bitmap(scrbitmap);
-    /*TODO*///		scrbitmap = NULL;
-    /*TODO*///	}
+        /*TODO*///
+        /*TODO*///	free(dirtycolor);
+        /*TODO*///	dirtycolor = 0;
+        /*TODO*///	free(current_palette);
+        /*TODO*///	current_palette = 0;
+        /*TODO*///	free(palette_16bit_lookup);
+        /*TODO*///	palette_16bit_lookup = 0;
+        /*TODO*///	if (scrbitmap)
+        /*TODO*///	{
+        /*TODO*///		osd_free_bitmap(scrbitmap);
+        /*TODO*///		scrbitmap = NULL;
+        /*TODO*///	}
     }
 
     public static void osd_modify_pen(int pen, int/*unsigned char*/ red, int/*unsigned char*/ green, int/*unsigned char*/ blue) {
-        if (modifiable_palette == 0) {
+        /*if (modifiable_palette == 0) {
             logerror("error: osd_modify_pen() called with modifiable_palette == 0\n");
             return;
-        }
+        }*/
 
         if (current_palette.read(3 * pen + 0) != red
                 || current_palette.read(3 * pen + 1) != green
@@ -1129,6 +1170,142 @@ public class video {
             dirtycolor[pen] = 1;
             dirtypalette = 1;
         }
+    }
+
+    public static int makecol(int r, int g, int b) {//makecol16 from allegro src
+      /*  Color c = new Color(r, g, b);
+        int cl = c.getRGB();
+        //Red shift from 24 to 16, masking but 5 MSBs 
+        char o = (char) ((cl >> 8) & 0xf800);
+
+        /* Green shift from 16 to 11, masking 6 MSBs */
+    /*    o |= (char) ((cl >> 5) & 0x07e0);
+
+        /* Blue shift from 8 to 5, masking 5 MSBs */
+     /*   o |= (char) ((cl >> 3) & 0x001f);
+        System.out.println((int) o);*/
+     int o = ((r >> 3) << 11) | (( g >> 2) << 5 ) | (( b >> 3 ) << 0 );
+        return o;
+        //return (((r >> 3) << 11)
+        //        | ((g >> 2) << 11)
+        //      | ((b >> 3) << 11));
+    }
+
+    public static int osd_allocate_colors(int totalcolors, /*unsigned*/ char[] palette, int[] rgb_components) {
+
+        /*TODO*///TEMPHACK*/
+        video_depth = Machine.scrbitmap.depth;
+
+        int i;
+        modifiable_palette = 0;
+        screen_colors = totalcolors;
+        if (video_depth != 8) {
+            screen_colors += 2;
+        } else {
+            screen_colors = 256;
+        }
+        System.out.println(screen_colors);
+        dirtycolor = new int[screen_colors];
+        current_palette = new UBytePtr(3 * screen_colors*2);//bug in mame probably in 8bit colors only so *2 but ui still looks red
+        palette_16bit_lookup = new int[screen_colors];
+        if (dirtycolor == null || current_palette == null || palette_16bit_lookup == null) {
+            return 1;
+        }
+        for (i = 0; i < screen_colors; i++) {
+            dirtycolor[i] = 1;
+        }
+        dirtypalette = 1;
+        for (i = 0; i < screen_colors; i++) {
+            current_palette.write(3 * i + 0, 0);
+            current_palette.write(3 * i + 1, 0);
+            current_palette.write(3 * i + 2, 0);
+        }
+        // reserve color totalcolors+1 for the user interface text */
+        if (totalcolors < 65535) {
+            current_palette.write((totalcolors + 1) * 3 + 0, 0xff);
+            current_palette.write((totalcolors + 1) * 3 + 1, 0xff);
+            current_palette.write((totalcolors + 1) * 3 + 2, 0xff);
+            Machine.uifont.colortable.write(0, totalcolors);
+            Machine.uifont.colortable.write(1, totalcolors + 1);
+            Machine.uifont.colortable.write(2, totalcolors + 1);
+            Machine.uifont.colortable.write(3, totalcolors);
+        } else {
+            Machine.uifont.colortable.write(0, 0);
+            Machine.uifont.colortable.write(1, 65535);
+            Machine.uifont.colortable.write(2, 65535);
+            Machine.uifont.colortable.write(3, 0);
+        }
+
+        for (i = 0; i < totalcolors; i++) {
+            current_palette.write(3 * i + 0, palette[3 * i]);
+            current_palette.write(3 * i + 1, palette[3 * i + 1]);
+            current_palette.write(3 * i + 2, palette[3 * i + 2]);
+        }
+
+        /*TODO*///	if (use_vesa == 0)
+/*TODO*///	{
+/*TODO*///		if (use_dirty) /* supports dirty ? */
+/*TODO*///		{
+/*TODO*///			if (unchained)
+/*TODO*///			{
+/*TODO*///				update_screen = blitscreen_dirty1_unchained_vga;
+/*TODO*///				logerror("blitscreen_dirty1_unchained_vga\n");
+/*TODO*///			}
+/*TODO*///			else
+/*TODO*///			{
+/*TODO*///				update_screen = blitscreen_dirty1_vga;
+/*TODO*///				logerror("blitscreen_dirty1_vga\n");
+/*TODO*///			}
+/*TODO*///		}
+/*TODO*///		else
+/*TODO*///		{
+/*TODO*///			/* check for unchained modes */
+/*TODO*///			if (unchained)
+/*TODO*///			{
+/*TODO*///				update_screen = blitscreen_dirty0_unchained_vga;
+/*TODO*///				logerror("blitscreen_dirty0_unchained_vga\n");
+/*TODO*///			}
+/*TODO*///			else
+/*TODO*///			{
+/*TODO*///				update_screen = blitscreen_dirty0_vga;
+/*TODO*///				logerror("blitscreen_dirty0_vga\n");
+/*TODO*///			}
+/*TODO*///		}
+/*TODO*///	}
+/*TODO*///	else
+/*TODO*///	{
+/*TODO*///		if (use_mmx == -1) /* mmx=auto: can new mmx blitters be applied? */
+/*TODO*///		{
+/*TODO*///			/* impossible cases follow */
+/*TODO*///			if (!cpu_mmx)
+/*TODO*///				mmxlfb = 0;
+/*TODO*///			else if ((gfx_mode != GFX_VESA2L) && (gfx_mode != GFX_VESA3))
+/*TODO*///				mmxlfb = 0;
+/*TODO*///			/* not yet implemented cases follow */
+/*TODO*///			else if ((xmultiply > 2) || (ymultiply > 2))
+/*TODO*///				mmxlfb = 0;
+/*TODO*///			else
+/*TODO*///				mmxlfb = 1;
+/*TODO*///		}
+/*TODO*///		else /* use forced mmx= setting from mame_old.cfg at own risk!!! */
+/*TODO*///			mmxlfb = use_mmx;
+/*TODO*///
+/*TODO*///		if (video_depth == 16)
+/*TODO*///		{
+/*TODO*///			if (modifiable_palette)
+/*TODO*///				update_screen = updaters16_palettized[xmultiply-1][ymultiply-1][scanlines?1:0][use_dirty?1:0];
+/*TODO*///			else
+/*TODO*///				update_screen = updaters16[xmultiply-1][ymultiply-1][scanlines?1:0][use_dirty?1:0];
+/*TODO*///		}
+/*TODO*///		else
+/*TODO*///		{
+/*TODO*///			update_screen = updaters8[xmultiply-1][ymultiply-1][scanlines?1:0][use_dirty?1:0];
+/*TODO*///		}
+/*TODO*///	}
+/*TODO*///
+/*temphack?? */
+        back_buffer = new char[Machine.scrbitmap.line[0].memory.length];
+        return 0;
     }
 
     public static int osd_allocate_colors(int totalcolors, /*unsigned*/ char[] palette, char[] pens, int modifiable) {
@@ -1161,22 +1338,20 @@ public class video {
             current_palette.write(3 * i + 2, 0);
         }
         if (video_depth != 8 && modifiable == 0) {
-            throw new UnsupportedOperationException("osd_allocatecolors");
-            /*TODO*///		int r,g,b;
-/*TODO*///
-/*TODO*///
-/*TODO*///		for (i = 0;i < totalcolors;i++)
-/*TODO*///		{
-/*TODO*///			r = 255 * brightness * pow(palette[3*i+0] / 255.0, 1 / osd_gamma_correction) / 100;
-/*TODO*///			g = 255 * brightness * pow(palette[3*i+1] / 255.0, 1 / osd_gamma_correction) / 100;
-/*TODO*///			b = 255 * brightness * pow(palette[3*i+2] / 255.0, 1 / osd_gamma_correction) / 100;
-/*TODO*///			*pens++ = makecol(r,g,b);
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		Machine->uifont->colortable[0] = makecol(0x00,0x00,0x00);
-/*TODO*///		Machine->uifont->colortable[1] = makecol(0xff,0xff,0xff);
-/*TODO*///		Machine->uifont->colortable[2] = makecol(0xff,0xff,0xff);
-/*TODO*///		Machine->uifont->colortable[3] = makecol(0x00,0x00,0x00);
+            int r, g, b;
+
+            int pens_ptr = 0;
+            for (i = 0; i < totalcolors; i++) {
+                r = (int) (255 * brightness * Math.pow(palette[3 * i + 0] / 255.0, 1 / osd_gamma_correction) / 100);
+                g = (int) (255 * brightness * Math.pow(palette[3 * i + 1] / 255.0, 1 / osd_gamma_correction) / 100);
+                b = (int) (255 * brightness * Math.pow(palette[3 * i + 2] / 255.0, 1 / osd_gamma_correction) / 100);
+                pens[pens_ptr++] = (char) (makecol(r, g, b));
+            }
+
+            Machine.uifont.colortable.write(0, makecol(0x00, 0x00, 0x00));
+            Machine.uifont.colortable.write(1, makecol(0xff, 0xff, 0xff));
+            Machine.uifont.colortable.write(2, makecol(0xff, 0xff, 0xff));
+            Machine.uifont.colortable.write(3, makecol(0x00, 0x00, 0x00));
         } else {
             if (video_depth == 8 && totalcolors >= 255) {
                 int bestblack, bestwhite;
@@ -1303,14 +1478,11 @@ public class video {
         return 0;
     }
 
-    
-    public static void osd_refresh() {  /*function from old arcadeflex_old */
+    public static void osd_refresh() {
+        /*function from old arcadeflex_old */
 
         if (screen != null) {
             screen.blit();
-        }
-        if (MainApplet.inst != null) {
-            MainApplet.inst.blit();
         }
         try {
             Thread.sleep(100L);
@@ -1360,7 +1532,6 @@ public class video {
         screen.requestFocus();
     }
 
-    
     /* center image inside the display based on the visual area */
     public static void internal_set_visible_area(int min_x, int max_x, int min_y, int max_y, int debugger) {
         int act_width;
@@ -1549,7 +1720,6 @@ public class video {
         tempCreation();
     }
 
-    
     public static void osd_set_visible_area(int min_x, int max_x, int min_y, int max_y) {
         vis_min_x = min_x;
         vis_max_x = max_x;
@@ -1557,7 +1727,7 @@ public class video {
         vis_max_y = max_y;
         internal_set_visible_area(min_x, max_x, min_y, max_y, 0);
     }
-    
+
     public static void osd_free_bitmap(mame_bitmap bitmap) {
         if (bitmap != null) {
             //bitmap->line -= safety;
@@ -1610,12 +1780,11 @@ public class video {
                 } else {
                     bitmap.line[i] = new UBytePtr(bm, i * rowlen + safety);
                 }
-                bitmap.line[i].offset += safety;
+                //bitmap.line[i].offset += safety;
             }
             ///bitmap.line += safety;
 
 //            bitmap._private = bm;
-
             osd_clearbitmap(bitmap);
         }
 
@@ -1625,7 +1794,7 @@ public class video {
     public static int osd_skip_this_frame() {
         return skiptable[frameskip][frameskip_counter];
     }
-    
+
     public static void osd_pause(int paused) {
         int i;
 
@@ -1641,7 +1810,7 @@ public class video {
         dirtypalette = 1;
         dirty_bright = 1;
     }
-    
+
     /* brightess = percentage 0-100% */
     public static void osd_set_brightness(int _brightness) {
         int i;
@@ -1659,7 +1828,6 @@ public class video {
         return brightness;
     }
 
-    
     public static void osd_get_pen(int pen, char[] red, char[] green, char[] blue) {
         if (video_depth != 8 && modifiable_palette == 0) {
             throw new UnsupportedOperationException("unimplemented");
@@ -1672,10 +1840,11 @@ public class video {
             blue[0] = current_palette.read(3 * pen + 2);
         }
     }
+
     public static void osd_mark_dirty(int _x1, int _y1, int _x2, int _y2) {
-        
+
     }
-    
+
     public static void osd_mark_dirty(int _x1, int _y1, int _x2, int _y2, int ui) {
         /*TODO*///	if (use_dirty)
 /*TODO*///	{
@@ -1714,12 +1883,12 @@ public class video {
 
         if (bitmap == Machine.scrbitmap) {
             osd_mark_dirty(0, 0, bitmap.width - 1, bitmap.height - 1, 1);
-            bitmap_dirty = 1;
+            schedule_full_refresh();
         }
     }
-    public static void osd_save_snapshot(mame_bitmap bitmap)
-    {
-        
+
+    public static void osd_save_snapshot(mame_bitmap bitmap) {
+
     }
 
 }

@@ -30,7 +30,7 @@ import static old.arcadeflex.osdepend.*;
 import static old2.mame.drawgfx.decodechar;
 import static WIP.sndhrdw.rastan.*;
 import arcadeflex.libc.ptr.UBytePtr;
-import static old.sound.mixerH.*;
+import static mame056.sound.mixerH.*;
 import static common.libc.expressions.*;
 
 public class taito_l {

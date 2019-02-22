@@ -1,30 +1,12 @@
-/*
- * ported to v0.37b5
- *
- *
+/**
+ *  ported to 0.56
  */
-package old.sound;
+package mame056.sound;
 
 public class mixerH {
+
     public static final int MIXER_MAX_CHANNELS = 16;
 
-    /*
-      When you allocate a channel, you pass a default mixing level setting.
-      The mixing level is in the range 0-100, and is passed down to the OS dependant
-      code. A channel playing at 100% has full access to the complete dynamic range
-      of the sound_old card. When more than one channel is playing, clipping may occur
-      so the levels have to decreased to avoid that, and adjusted to get the correct
-      balance.
-
-      By default, channels play on both speakers. They can also be directed to only
-      one speaker. Note that in that case the sound_old will be perceived by the
-      listener at half intensity, since it is coming from only one speaker.
-      Use the MIXER() macro to select which speaker the channel should go to. E.g.
-      mixer_allocate_channel(MIXER(50,MIXER_PAN_LEFT));
-
-      The MIXER() macro uses 16 bits because the YM3012_VOL() macro stuffs two
-      MIXER() values for left and right channel into a long.
-    */
     public static final int MIXER_PAN_CENTER = 0;
     public static final int MIXER_PAN_LEFT = 1;
     public static final int MIXER_PAN_RIGHT = 2;

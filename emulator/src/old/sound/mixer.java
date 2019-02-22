@@ -12,7 +12,7 @@ import static old.arcadeflex.sound.*;
 import static mame056.driverH.SOUND_SUPPORTS_STEREO;
 import static old2.mame.mame.Machine;
 import static mame.sndintrf.sound_scalebufferpos;
-import static old.sound.mixerH.*;
+import static mame056.sound.mixerH.*;
 
 public class mixer {
 

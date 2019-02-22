@@ -22,7 +22,7 @@ import static vidhrdw.generic.*;
 import static vidhrdw.galaxian.*;
 import static mame.sndintrf.*;
 import static mame056.common.*;
-import static old.sound.mixerH.*;
+import static mame056.sound.mixerH.*;
 import static old2.mame.common.*;
 import static sndhrdw.frogger.*;
 import static sndhrdw.scramble.*;

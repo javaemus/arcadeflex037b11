@@ -35,7 +35,7 @@ import static mame056.cpuexec.ignore_interrupt;
 import static mame056.cpuexec.interrupt_enable_w;
 import static mame056.cpuexec.watchdog_reset_r;
 import static mame056.cpuexec.watchdog_reset_w;
-import static old.sound.mixerH.*;
+import static mame056.sound.mixerH.*;
 import static old2.mame.common.*;
 import static sndhrdw.frogger.*;
 import static sndhrdw.scramble.*;

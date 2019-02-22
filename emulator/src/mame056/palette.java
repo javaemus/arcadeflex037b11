@@ -3,19 +3,24 @@
  */
 package mame056;
 
+
+import static arcadeflex.video.osd_allocate_colors;
+import static arcadeflex.video.osd_modify_pen;
 import common.subArrays.IntArray;
-import static mame.commonH.REGION_PROMS;
+import static mame056.commonH.REGION_PROMS;
 import static mame056.common.memory_region;
 import static mame056.usrintrf.usrintf_showmessage;
-import static old2.mame.mame.*;
+import static old.arcadeflex.osdepend.logerror;
+import static old2.mame.mame.Machine;
+
 
 public class palette {
 
     /*TODO*///#define VERBOSE 0
     static char[] game_palette;/* RGB palette as set by the driver */
     static char[] actual_palette;/* actual RGB palette after brightness adjustments */
- /*TODO*///static double *brightness;
-/*TODO*///
+    static double[] brightness;
+    /*TODO*///
     static int colormode;
     public static final int PALETTIZED_16BIT = 0;
     public static final int DIRECT_15BIT = 1;
@@ -56,8 +61,8 @@ public class palette {
 /*TODO*///
         game_palette = new char[3 * total_colors];
         actual_palette = new char[3 * total_colors];
-        /*TODO*///	brightness = malloc(sizeof(*brightness) * Machine->drv->total_colors);
-/*TODO*///
+        brightness = new double[Machine.drv.total_colors];
+        /*TODO*///
 /*TODO*///	if (Machine->color_depth == 15)
 /*TODO*///		colormode = DIRECT_15BIT;
 /*TODO*///	else if (Machine->color_depth == 32)
@@ -100,11 +105,11 @@ public class palette {
 /*TODO*///		palette_stop();
 /*TODO*///		return 1;
 /*TODO*///	}
-/*TODO*///
-/*TODO*///	for (i = 0;i < Machine->drv->total_colors;i++)
-/*TODO*///		brightness[i] = 1.0;
-/*TODO*///
-/*TODO*///
+        for (int i = 0; i < Machine.drv.total_colors; i++) {
+            brightness[i] = 1.0;
+        }
+
+        /*TODO*///
 /*TODO*///	state_save_register_UINT8("palette", 0, "colors", game_palette, total_colors*3);
 /*TODO*///	state_save_register_UINT8("palette", 0, "actual_colors", actual_palette, total_colors*3);
 /*TODO*///	state_save_register_double("palette", 0, "brightness", brightness, Machine->drv->total_colors);
@@ -124,9 +129,8 @@ public class palette {
         return 0;
     }
 
-    /*TODO*///
-/*TODO*///void palette_stop(void)
-/*TODO*///{
+    public static void palette_stop()
+    {
 /*TODO*///	free(game_palette);
 /*TODO*///	game_palette = 0;
 /*TODO*///	free(actual_palette);
@@ -152,10 +156,8 @@ public class palette {
 /*TODO*///	palette_shadow_table = 0;
 /*TODO*///
 /*TODO*///	palette_initialized = 0;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*///
+    }
+    
     public static int palette_init() {
         int i;
 
@@ -182,9 +184,9 @@ public class palette {
 
         switch (colormode) {
             case PALETTIZED_16BIT: {
-                /*TODO*///                if (osd_allocate_colors(total_colors, game_palette, NULL, debug_palette, debug_pens)) {
-/*TODO*///                    return 1;
-/*TODO*///                }
+                if (osd_allocate_colors(total_colors, game_palette, null) != 0) {
+                    return 1;
+                }
 
                 for (i = 0; i < total_colors; i++) {
                     Machine.pens[i] = i;
@@ -192,7 +194,7 @@ public class palette {
 
                 /* refresh the palette to support shadows in PROM games */
                 for (i = 0; i < Machine.drv.total_colors; i++) {
-                    /*TODO*///                    palette_set_color(i, game_palette[3 * i + 0], game_palette[3 * i + 1], game_palette[3 * i + 2]);
+                    palette_set_color(i, game_palette[3 * i + 0], game_palette[3 * i + 1], game_palette[3 * i + 2]);
                 }
             }
             break;
@@ -298,22 +300,23 @@ public class palette {
 /*TODO*///				game_palette[3*color + 1] * (direct_rgb_components[1] / 0xff) +
 /*TODO*///				game_palette[3*color + 2] * (direct_rgb_components[2] / 0xff);
 /*TODO*///}
-/*TODO*///
-/*TODO*///INLINE void palette_set_color_16_palettized(int color,UINT8 red,UINT8 green,UINT8 blue)
-/*TODO*///{
-/*TODO*///	if (	actual_palette[3*color + 0] == red &&
-/*TODO*///			actual_palette[3*color + 1] == green &&
-/*TODO*///			actual_palette[3*color + 2] == blue)
-/*TODO*///		return;
-/*TODO*///
-/*TODO*///	actual_palette[3*color + 0] = red;
-/*TODO*///	actual_palette[3*color + 1] = green;
-/*TODO*///	actual_palette[3*color + 2] = blue;
-/*TODO*///
-/*TODO*///	if (palette_initialized)
-/*TODO*///		osd_modify_pen(Machine->pens[color],red,green,blue);
-/*TODO*///}
-/*TODO*///
+    public static void palette_set_color_16_palettized(int color, int/*UINT8*/ red, int/*UINT8*/ green, int/*UINT8*/ blue) {
+        if (actual_palette[3 * color + 0] == red
+                && actual_palette[3 * color + 1] == green
+                && actual_palette[3 * color + 2] == blue) {
+            return;
+        }
+
+        actual_palette[3 * color + 0] = (char) red;
+        actual_palette[3 * color + 1] = (char) green;
+        actual_palette[3 * color + 2] = (char) blue;
+
+        if (palette_initialized != 0) {
+            osd_modify_pen(Machine.pens[color], red, green, blue);
+        }
+    }
+
+    /*TODO*///
 /*TODO*///static void palette_reset_16_palettized(void)
 /*TODO*///{
 /*TODO*///	if (palette_initialized)
@@ -344,39 +347,34 @@ public class palette {
 /*TODO*///	*g = *g * factor + 0.5;
 /*TODO*///	*b = *b * factor + 0.5;
 /*TODO*///}
-/*TODO*///
-/*TODO*///void palette_set_color(int color,UINT8 r,UINT8 g,UINT8 b)
-/*TODO*///{
-/*TODO*///	if (color >= total_colors)
-/*TODO*///	{
-/*TODO*///logerror("error: palette_set_color() called with color %d, but only %d allocated.\n",color,total_colors);
-/*TODO*///		return;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	game_palette[3*color + 0] = r;
-/*TODO*///	game_palette[3*color + 1] = g;
-/*TODO*///	game_palette[3*color + 2] = b;
-/*TODO*///
-/*TODO*///	if (color < Machine->drv->total_colors && brightness[color] != 1.0)
-/*TODO*///	{
-/*TODO*///		r = r * brightness[color] + 0.5;
-/*TODO*///		g = g * brightness[color] + 0.5;
-/*TODO*///		b = b * brightness[color] + 0.5;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	switch (colormode)
-/*TODO*///	{
-/*TODO*///		case PALETTIZED_16BIT:
-/*TODO*///			palette_set_color_16_palettized(color,r,g,b);
-/*TODO*///			break;
-/*TODO*///		case DIRECT_15BIT:
+    public static void palette_set_color(int color, int/*UINT8*/ r, int/*UINT8*/ g, int/*UINT8*/ b) {
+        if (color >= total_colors) {
+            logerror("error: palette_set_color() called with color %d, but only %d allocated.\n", color, total_colors);
+            return;
+        }
+
+        game_palette[3 * color + 0] = (char) (r & 0xFF);
+        game_palette[3 * color + 1] = (char) (g & 0xFF);
+        game_palette[3 * color + 2] = (char) (b & 0xFF);
+
+        if (color < Machine.drv.total_colors && brightness[color] != 1.0) {
+            r = (int) (r * brightness[color] + 0.5) & 0xFF;
+            g = (int) (g * brightness[color] + 0.5) & 0xFF;
+            b = (int) (b * brightness[color] + 0.5) & 0xFF;
+        }
+
+        switch (colormode) {
+            case PALETTIZED_16BIT:
+                palette_set_color_16_palettized(color, r, g, b);
+                break;
+            /*TODO*///		case DIRECT_15BIT:
 /*TODO*///			palette_set_color_15_direct(color,r,g,b);
 /*TODO*///			break;
 /*TODO*///		case DIRECT_32BIT:
 /*TODO*///			palette_set_color_32_direct(color,r,g,b);
 /*TODO*///			break;
-/*TODO*///	}
-/*TODO*///
+        }
+        /*TODO*///
 /*TODO*///	if (color < Machine->drv->total_colors)
 /*TODO*///	{
 /*TODO*///		/* automatically create darker shade for shadow handling */
@@ -401,8 +399,8 @@ public class palette {
 /*TODO*///			palette_set_color(color,nr,ng,nb);
 /*TODO*///		}
 /*TODO*///	}
-/*TODO*///}
-/*TODO*///
+    }
+    /*TODO*///
 /*TODO*///void palette_get_color(int color,UINT8 *r,UINT8 *g,UINT8 *b)
 /*TODO*///{
 /*TODO*///	*r = game_palette[3*color + 0];

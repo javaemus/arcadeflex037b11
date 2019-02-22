@@ -26,7 +26,7 @@ import static old2.mame.common.*;
 import static mame056.common.*;
 import static mame056.inptport.*;
 import static mame056.inptportH.*;
-import static old.sound.mixerH.*;
+import static mame056.sound.mixerH.*;
 import static old2.mame.memoryH.*;
 import static mame056.cpuexec.ignore_interrupt;
 import static mame056.cpuexec.interrupt_enable_w;
