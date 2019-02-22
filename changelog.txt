@@ -1,6 +1,7 @@
 23/03/2019
 ==========
 -Ported 1943 vidhrdw to 0.56
+-Ported digdug vidhrdw to 0.56
 
 22/02/2019
 ==========
