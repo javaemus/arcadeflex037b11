@@ -4,6 +4,8 @@
 package mame056.sound;
 
 import arcadeflex.libc.ptr.BytePtr;
+import static arcadeflex.libc.cstdio.sprintf;
+import static arcadeflex056.debug.mixerLog;
 import static common.libc.cstring.memset;
 import static common.ptr.*;
 import static mame056.driverH.SOUND_SUPPORTS_STEREO;
@@ -14,6 +16,8 @@ import static common.libc.expressions.*;
 import static mame.sndintrf.sound_scalebufferpos;
 import static mame056.sound.filter.*;
 import static mame056.sound.filterH.*;
+import static old.arcadeflex.libc_old.*;
+import static old.arcadeflex.osdepend.logerror;
 
 public class mixer {
 
@@ -45,14 +49,20 @@ public class mixer {
 /*TODO*////* #define MIXER_USE_LOGERROR */
 /*TODO*///
 /*TODO*////***************************************************************************/
-/*TODO*////* Config */
-/*TODO*///
-/*TODO*////* Internal log */
-/*TODO*///#ifdef MIXER_USE_LOGERROR
-/*TODO*///#define mixerlogerror(a) logerror a
-/*TODO*///#else
-/*TODO*///#define mixerlogerror(a) do { } while (0)
-/*TODO*///#endif
+    /* Config */
+    static int mx_opened;
+
+    public static void mixerlogerror(String string, Object... arguments) {
+        if (mixerLog) {
+            FILE f;
+
+            f = fopen("mixer.log", (mx_opened++) != 0 ? "a" : "w");
+            if (f != null) {
+                fprintf(f, string, arguments);
+                fclose(f);
+            }
+        }
+    }
 
     /* accumulators have ACCUMULATOR_SAMPLES samples (must be a power of 2) */
     public static final int ACCUMULATOR_SAMPLES = 8192;
@@ -104,8 +114,8 @@ public class mixer {
 /*TODO*///
 /*TODO*///	/* state of non-streamed playback */
 /*TODO*///	int is_stream;
-	int is_playing;
-/*TODO*///	int is_looping;
+        int is_playing;
+        /*TODO*///	int is_looping;
 /*TODO*///	int is_16bit;
 /*TODO*///	void* data_start;
 /*TODO*///	void* data_end;
@@ -118,8 +128,8 @@ public class mixer {
     static int[] /*unsigned*/ config_default_mixing_level = new int[MIXER_MAX_CHANNELS];
 
     static int first_free_channel = 0;
-    static boolean is_config_invalid;
-    static boolean is_stereo;
+    static int is_config_invalid;
+    static int is_stereo;
 
     /* 32-bit accumulators */
     static int/*unsigned*/ accum_base;
@@ -689,14 +699,14 @@ public class mixer {
 
         /* determine if we're playing in stereo or not */
         first_free_channel = 0;
-        is_stereo = ((Machine.drv.sound_attributes & SOUND_SUPPORTS_STEREO) != 0);
+        is_stereo = ((Machine.drv.sound_attributes & SOUND_SUPPORTS_STEREO) != 0) ? 1 : 0;
 
         /* clear the accumulators */
         accum_base = 0;
         memset(left_accum, 0, sizeof(left_accum));
         memset(right_accum, 0, sizeof(right_accum));
 
-        samples_this_frame = osd_start_audio_stream(is_stereo ? 1 : 0);
+        samples_this_frame = osd_start_audio_stream(is_stereo);
 
         mixer_sound_enabled = 1;
 
@@ -772,7 +782,7 @@ public class mixer {
         }
 
         /* copy the mono 32-bit data to a 16-bit buffer, clipping along the way */
-        if (!is_stereo) {
+        if (is_stereo == 0) {
             int mix = 0;
             for (int i = 0; i < samples_this_frame; i++) {
                 /* fetch and clip the sample */
@@ -846,59 +856,47 @@ public class mixer {
      * *************************************************************************
      */
     public static int mixer_allocate_channels(int channels, int[] default_mixing_levels) {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	int i, j;
-/*TODO*///
-/*TODO*///	mixerlogerror(("Mixer:mixer_allocate_channels(%d)\n",channels));
-/*TODO*///
-/*TODO*///	/* make sure we didn't overrun the number of available channels */
-/*TODO*///	if (first_free_channel + channels > MIXER_MAX_CHANNELS)
-/*TODO*///	{
-/*TODO*///		logerror("Too many mixer channels (requested %d, available %d)\n", first_free_channel + channels, MIXER_MAX_CHANNELS);
-/*TODO*///		exit(1);
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* loop over channels requested */
-/*TODO*///	for (i = 0; i < channels; i++)
-/*TODO*///	{
-/*TODO*///		struct mixer_channel_data *channel = &mixer_channel[first_free_channel + i];
-/*TODO*///
-/*TODO*///		/* extract the basic data */
-/*TODO*///		channel->default_mixing_level 	= MIXER_GET_LEVEL(default_mixing_levels[i]);
-/*TODO*///		channel->pan 					= MIXER_GET_PAN(default_mixing_levels[i]);
-/*TODO*///		channel->gain 					= MIXER_GET_GAIN(default_mixing_levels[i]);
-/*TODO*///		/* add by hiro-shi */
-/*TODO*///		channel->left_volume 				= 100;
-/*TODO*///		channel->right_volume 				= 100;
-/*TODO*///
-/*TODO*///		/* backwards compatibility with old 0-255 volume range */
-/*TODO*///		if (channel->default_mixing_level > 100)
-/*TODO*///			channel->default_mixing_level = channel->default_mixing_level * 25 / 255;
-/*TODO*///
-/*TODO*///		/* attempt to load in the configuration data for this channel */
-/*TODO*///		channel->mixing_level = channel->default_mixing_level;
-/*TODO*///		if (!is_config_invalid)
-/*TODO*///		{
-/*TODO*///			/* if the defaults match, set the mixing level from the config */
-/*TODO*///			if (channel->default_mixing_level == channel->config_default_mixing_level)
-/*TODO*///				channel->mixing_level = channel->config_mixing_level;
-/*TODO*///
-/*TODO*///			/* otherwise, invalidate all channels that have been created so far */
-/*TODO*///			else
-/*TODO*///			{
-/*TODO*///				is_config_invalid = 1;
-/*TODO*///				for (j = 0; j < first_free_channel + i; j++)
-/*TODO*///					mixer_set_mixing_level(j, mixer_channel[j].default_mixing_level);
-/*TODO*///			}
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		/* set the default name */
-/*TODO*///		mixer_set_name(first_free_channel + i, 0);
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* increment the counter and return the first one */
-/*TODO*///	first_free_channel += channels;
-/*TODO*///	return first_free_channel - channels;
+        mixerlogerror("Mixer:mixer_allocate_channels(%d)\n", channels);
+
+        /* make sure we didn't overrun the number of available channels */
+        if (first_free_channel + channels > MIXER_MAX_CHANNELS) {
+            logerror("Too many mixer channels (requested %d, available %d)\n", first_free_channel + channels, MIXER_MAX_CHANNELS);
+            throw new UnsupportedOperationException("ERROR");
+        }
+        /* loop over channels requested */
+        for (int i = 0; i < channels; i++) {
+            /* extract the basic data */
+            mixer_channel[first_free_channel + i].default_mixing_level = (char) MIXER_GET_LEVEL(default_mixing_levels[i]);
+            mixer_channel[first_free_channel + i].pan = MIXER_GET_PAN(default_mixing_levels[i]);
+            mixer_channel[first_free_channel + i].gain = MIXER_GET_GAIN(default_mixing_levels[i]);
+            mixer_channel[first_free_channel + i].left_volume = 100;
+            mixer_channel[first_free_channel + i].right_volume = 100;
+
+            /* backwards compatibility with old 0-255 volume range */
+            if (mixer_channel[first_free_channel + i].default_mixing_level > 100) {
+                mixer_channel[first_free_channel + i].default_mixing_level = (char) (mixer_channel[first_free_channel + i].default_mixing_level * 25 / 255);
+            }
+
+            /* attempt to load in the configuration data for this channel */
+            mixer_channel[first_free_channel + i].mixing_level = mixer_channel[first_free_channel + i].default_mixing_level;
+            if (is_config_invalid == 0) {
+                /* if the defaults match, set the mixing level from the config */
+                if (mixer_channel[first_free_channel + i].default_mixing_level == mixer_channel[first_free_channel + i].config_default_mixing_level) {
+                    mixer_channel[first_free_channel + i].mixing_level = mixer_channel[first_free_channel + i].config_mixing_level;
+                } /* otherwise, invalidate all channels that have been created so far */ else {
+                    is_config_invalid = 1;
+                    for (int j = 0; j < first_free_channel + i; j++) {
+                        mixer_set_mixing_level(j, mixer_channel[j].default_mixing_level);
+                    }
+                }
+            }
+            /* set the default name */
+            mixer_set_name(first_free_channel + i, null);
+        }
+        /* increment the counter and return the first one */
+        first_free_channel += (char) channels;
+        return first_free_channel - channels;
+
     }
 
     /**
@@ -907,20 +905,19 @@ public class mixer {
      * *************************************************************************
      */
     public static void mixer_set_name(int ch, String name) {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	struct mixer_channel_data *channel = &mixer_channel[ch];
-/*TODO*///
-/*TODO*///	/* either copy the name or create a default one */
-/*TODO*///	if (name != NULL)
-/*TODO*///		strcpy(channel->name, name);
-/*TODO*///	else
-/*TODO*///		sprintf(channel->name, "<channel #%d>", ch);
-/*TODO*///
-/*TODO*///	/* append left/right onto the channel as appropriate */
-/*TODO*///	if (channel->pan == MIXER_PAN_LEFT)
-/*TODO*///		strcat(channel->name, " (Lt)");
-/*TODO*///	else if (channel->pan == MIXER_PAN_RIGHT)
-/*TODO*///		strcat(channel->name, " (Rt)");
+        /* either copy the name or create a default one */
+        if (name != null) {
+            mixer_channel[ch].name = name;
+        } else {
+            mixer_channel[ch].name = sprintf("<channel #%d>", ch);
+        }
+
+        /* append left/right onto the channel as appropriate */
+        if (mixer_channel[ch].pan == MIXER_PAN_LEFT) {
+            mixer_channel[ch].name += " (Lt)";
+        } else if (mixer_channel[ch].pan == MIXER_PAN_RIGHT) {
+            mixer_channel[ch].name += " (Rt)";
+        }
     }
 
     /*TODO*///
@@ -950,22 +947,17 @@ public class mixer {
         mixer_channel[ch].right_volume = volume;
     }
 
-    /*TODO*///
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///	mixer_set_mixing_level
-/*TODO*///***************************************************************************/
-/*TODO*///
-/*TODO*///void mixer_set_mixing_level(int ch, int level)
-/*TODO*///{
-/*TODO*///	struct mixer_channel_data *channel = &mixer_channel[ch];
-/*TODO*///
-/*TODO*///	mixer_update_channel(channel, sound_scalebufferpos(samples_this_frame));
-/*TODO*///	channel->mixing_level = level;
-/*TODO*///}
-/*TODO*///
-/*TODO*///
-/*TODO*////***************************************************************************
+    /**
+     * *************************************************************************
+     * mixer_set_mixing_level
+     * *************************************************************************
+     */
+    public static void mixer_set_mixing_level(int ch, int level) {
+        mixer_update_channel(mixer_channel[ch], sound_scalebufferpos((int) samples_this_frame));
+        mixer_channel[ch].mixing_level = (char) level;
+    }
+
+    /*TODO*////***************************************************************************
 /*TODO*///	mixer_set_stereo_volume
 /*TODO*///***************************************************************************/
 /*TODO*///void mixer_set_stereo_volume(int ch, int l_vol, int r_vol )
@@ -1089,15 +1081,16 @@ public class mixer {
 /*TODO*///	return samples_this_frame;
 /*TODO*///}
 /*TODO*///
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///	mixer_need_samples_this_frame
-/*TODO*///***************************************************************************/
-/*TODO*///#define EXTRA_SAMPLES 1    // safety margin for sampling rate conversion
+    /**
+     * *************************************************************************
+     * mixer_need_samples_this_frame
+    **************************************************************************
+     */
+    public static final int EXTRA_SAMPLES = 1;// safety margin for sampling rate conversion
+
     public static int mixer_need_samples_this_frame(int channel, int freq) {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	return (samples_this_frame - mixer_channel[channel].samples_available)
-/*TODO*///			* freq / Machine->sample_rate + EXTRA_SAMPLES;
+        return (samples_this_frame - mixer_channel[channel].samples_available)
+                * freq / Machine.sample_rate + EXTRA_SAMPLES;
     }
 
     /*TODO*///
@@ -1185,7 +1178,7 @@ public class mixer {
     /**
      * *************************************************************************
      * mixer_is_sample_playing
-    **************************************************************************
+     * *************************************************************************
      */
     public static int mixer_is_sample_playing(int ch) {
         mixer_update_channel(mixer_channel[ch], sound_scalebufferpos((int) samples_this_frame));

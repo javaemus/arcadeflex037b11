@@ -3,7 +3,7 @@
  * using automatic conversion tool v0.01
  */
 package old.sound;
-import static arcadeflex.libc.cstdio.*;
+import static arcadeflex.libc.cstdio.sprintf;
 import arcadeflex.libc.ptr.*;
 import static common.ptr.*;
 

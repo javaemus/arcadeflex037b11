@@ -103,9 +103,7 @@ public class libc_old {
     public static int sizeof(char[] array) {
         return array.length;
     }
-    public static int sizeof(int[] array) {
-        return array.length;
-    }
+
 
     /*
      *   copy array
