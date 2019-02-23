@@ -14,7 +14,7 @@ import static old2.mame.mame.Machine;
 import static mame.sndintrf.sound_scalebufferpos;
 import static mame056.sound.mixerH.*;
 
-public class mixer {
+public class old_mixer {
 
     /* enable this to turn off clipping (helpful to find cases where we max out */
     public static final boolean DISABLE_CLIPPING = false;

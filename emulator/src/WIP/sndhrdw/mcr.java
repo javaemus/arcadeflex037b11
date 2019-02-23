@@ -19,7 +19,7 @@ import static mame056.timer.*;
 import static mame056.timerH.*;
 import static WIP.sndhrdw.mcrH.*;
 import static mame056.cpuexec.cpu_set_reset_line;
-import static old.sound.mixer.*;
+import static mame056.sound.mixer.*;
 import static mame056.sound.dac.*;
 import static mame056.sound.dacH.*;
 

@@ -12,7 +12,7 @@ import static mame056.common.*;
 import static old2.mame.mame.Machine;
 import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
-import static old.sound.mixer.*;
+import static mame056.sound.mixer.*;
 import static mame056.sound.mixerH.*;
 
 public class samples extends snd_interface {

@@ -11,7 +11,7 @@ import mame.sndintrfH.MachineSound;
 import static mame056.cpuexec.cpu_cause_interrupt;
 import static mame056.cpuexecH.Z80_VECTOR;
 import static old2.mame.mame.*;
-import static old.sound.mixer.*;
+import static mame056.sound.mixer.*;
 
 public class senjyo {
 

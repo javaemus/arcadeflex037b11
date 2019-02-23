@@ -8,7 +8,7 @@ import static arcadeflex.fucPtr.*;
 import static common.ptr.*;
 import static common.libc.expressions.*;
 import static mame.sndintrfH.*;
-import static old.sound.mixer.*;
+import static mame056.sound.mixer.*;
 
 public class polyplay {
 

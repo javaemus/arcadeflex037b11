@@ -12,7 +12,7 @@ import static old2.mame.mame.Machine;
 import static mame.sndintrfH.*;
 import static mame056.timer.*;
 import static mame056.timerH.*;
-import static old.sound.mixer.*;
+import static mame056.sound.mixer.*;
 import static mame056.sound.streams.*;
 
 import sound.Dummy_snd;

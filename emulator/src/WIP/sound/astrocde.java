@@ -10,7 +10,7 @@ import common.ptr.ShortPtr;
 import static old2.mame.mame.Machine;
 import static mame.sndintrf.*;
 import static mame.sndintrfH.*;
-import static old.sound.mixer.*;
+import static mame056.sound.mixer.*;
 import static WIP.sound.astrocdeH.*;
 import static mame056.cpuintrfH.cpu_get_reg;
 import static mame056.cpu.z80.z80H.*;

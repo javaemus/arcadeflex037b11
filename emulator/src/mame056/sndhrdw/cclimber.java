@@ -6,7 +6,7 @@ package mame056.sndhrdw;
 
 import static mame.sndintrfH.*;
 import static old2.mame.mame.*;
-import static old.sound.mixer.*;
+import static mame056.sound.mixer.*;
 import static mame056.common.*;
 import static mame.commonH.*;
 import static arcadeflex.libc.ptr.*;
