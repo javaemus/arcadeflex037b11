@@ -96,30 +96,37 @@ public class mixer {
 
         /* current playback positions */
         int/*unsigned*/ samples_available;
-        /*TODO*///
-/*TODO*///	/* resample state */
-/*TODO*///	int frac; /* resample fixed point state (used if filter is not active) */
-/*TODO*///	int pivot; /* resample brehesnam state (used if filter is active) */
-/*TODO*///	int step; /* fixed point increment */
-/*TODO*///	unsigned from_frequency; /* current source frequency */
-/*TODO*///	unsigned to_frequency; /* current destination frequency */
-/*TODO*///	unsigned lowpass_frequency; /* current lowpass arbitrary cut frequency, 0 if default */
-/*TODO*///	filter* filter; /* filter used, ==0 if none */
+
+        /* resample state */
+        int frac;
+        /* resample fixed point state (used if filter is not active) */
+        int pivot;
+        /* resample brehesnam state (used if filter is active) */
+        int step;
+        /* fixed point increment */
+        int/*unsigned*/ from_frequency;/* current source frequency */
+        int/*unsigned*/ to_frequency;/* current destination frequency */
+        int/*unsigned*/ lowpass_frequency;/* current lowpass arbitrary cut frequency, 0 if default */
+        _filter filter;/* filter used, ==0 if none */
         filter_state left;/* state of the filter for the left/mono channel */
         filter_state right;/* state of the filter for the right channel */
- /*TODO*///	int is_reset_requested; /* state reset requested */
-/*TODO*///
-/*TODO*///	/* lowpass filter request */
-/*TODO*///	unsigned request_lowpass_frequency; /* request for the lowpass arbitrary cut frequency, 0 if default */
-/*TODO*///
-/*TODO*///	/* state of non-streamed playback */
-/*TODO*///	int is_stream;
+        int is_reset_requested;
+        /* state reset requested */
+
+ /* lowpass filter request */
+        int/*unsigned*/ request_lowpass_frequency;/* request for the lowpass arbitrary cut frequency, 0 if default */
+
+ /* state of non-streamed playback */
+        int is_stream;
         int is_playing;
-        /*TODO*///	int is_looping;
-/*TODO*///	int is_16bit;
-/*TODO*///	void* data_start;
-/*TODO*///	void* data_end;
-/*TODO*///	void* data_current;
+        int is_looping;
+        int is_16bit;
+
+        BytePtr data_start_b;
+        ShortPtr data_start_s;//void *		data_start;
+        int data_end;//void *		data_end;
+        int data_current;//void *		data_current;
+
     }
 
     /* channel data */
@@ -150,8 +157,9 @@ public class mixer {
 /*TODO*///
 /*TODO*////* Window size of the FIR filter in samples (must be odd) */
 /*TODO*////* Greater values are more precise, lesser values are faster. */
-/*TODO*///#define FILTER_WIDTH 31
-/*TODO*///
+    public static final int FILTER_WIDTH = 31;
+
+    /*TODO*///
 /*TODO*////* The number of samples that need to be played to flush the filter state */
 /*TODO*////* For the FIR filters it's equal to the filter width */
 /*TODO*///#define FILTER_FLUSH FILTER_WIDTH
@@ -161,177 +169,137 @@ public class mixer {
 /*TODO*///	lowpass_frequency - lowpass frequency, use 0 to automatically compute it from the resample operation
 /*TODO*///	restart - restart the resample state
 /*TODO*///*/
-/*TODO*///static void mixer_channel_resample_set(struct mixer_channel_data *channel, unsigned from_frequency, unsigned lowpass_frequency, int restart)
-/*TODO*///{
-/*TODO*///	unsigned to_frequency;
-/*TODO*///	to_frequency = Machine->sample_rate;
-/*TODO*///
-/*TODO*///	mixerlogerror(("Mixer:mixer_channel_resample_set(%s,%d,%d)\n",channel->name,from_frequency,lowpass_frequency,restart));
-/*TODO*///
-/*TODO*///	if (restart)
-/*TODO*///	{
-/*TODO*///		mixerlogerror(("\tpivot=0\n"));
-/*TODO*///		channel->pivot = 0;
-/*TODO*///		channel->frac = 0;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	/* only if the filter change */
-/*TODO*///	if (from_frequency != channel->from_frequency
-/*TODO*///		|| to_frequency != channel->to_frequency
-/*TODO*///		|| lowpass_frequency != channel->lowpass_frequency)
-/*TODO*///	{
-/*TODO*///		/* delete the previous filter */
-/*TODO*///		if (channel->filter)
-/*TODO*///		{
-/*TODO*///			filter_free(channel->filter);
-/*TODO*///			channel->filter = 0;
-/*TODO*///		}
-/*TODO*///
-/*TODO*///		/* make a new filter */
-/*TODO*///#ifdef MIXER_USE_OPTION_FILTER
-/*TODO*///		if (options.use_filter)
-/*TODO*///#endif
-/*TODO*///		if ((from_frequency != 0 && to_frequency != 0 && (from_frequency != to_frequency || lowpass_frequency != 0)))
-/*TODO*///		{
-/*TODO*///			double cut;
-/*TODO*///			unsigned cut_frequency;
-/*TODO*///
-/*TODO*///			if (from_frequency < to_frequency) {
-/*TODO*///				/* upsampling */
-/*TODO*///				cut_frequency = from_frequency / 2;
-/*TODO*///				if (lowpass_frequency != 0 && cut_frequency > lowpass_frequency)
-/*TODO*///					cut_frequency = lowpass_frequency;
-/*TODO*///				cut = (double)cut_frequency / to_frequency;
-/*TODO*///			} else {
-/*TODO*///				/* downsampling */
-/*TODO*///				cut_frequency = to_frequency / 2;
-/*TODO*///				if (lowpass_frequency != 0 && cut_frequency > lowpass_frequency)
-/*TODO*///					cut_frequency = lowpass_frequency;
-/*TODO*///				cut = (double)cut_frequency / from_frequency;
-/*TODO*///			}
-/*TODO*///
-/*TODO*///			channel->filter = filter_lp_fir_alloc(cut, FILTER_WIDTH);
-/*TODO*///
-/*TODO*///			mixerlogerror(("\tfilter from %d Hz, to %d Hz, cut %f, cut %d Hz\n",from_frequency,to_frequency,cut,cut_frequency));
-/*TODO*///		}
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	channel->lowpass_frequency = lowpass_frequency;
-/*TODO*///	channel->from_frequency = from_frequency;
-/*TODO*///	channel->to_frequency = to_frequency;
-/*TODO*///	channel->step = (double)from_frequency * (1 << FRACTION_BITS) / to_frequency;
-/*TODO*///
-/*TODO*///	/* reset the filter state */
-/*TODO*///	if (channel->filter && channel->is_reset_requested)
-/*TODO*///	{
-/*TODO*///		mixerlogerror(("\tstate clear\n"));
-/*TODO*///		channel->is_reset_requested = 0;
-/*TODO*///		filter_state_reset(channel->filter,channel->left);
-/*TODO*///		filter_state_reset(channel->filter,channel->right);
-/*TODO*///	}
-/*TODO*///}
-/*TODO*///
-/*TODO*////* Resample a channel
-/*TODO*///	channel - channel info
-/*TODO*///	state - filter state
-/*TODO*///	volume - volume (0-255)
-/*TODO*///	dst - destination vector
-/*TODO*///	dst_len - max number of destination samples
-/*TODO*///	src - source vector, (updated at the exit)
-/*TODO*///	src_len - max number of source samples
-/*TODO*///*/
-/*TODO*///static unsigned mixer_channel_resample_16(struct mixer_channel_data* channel, filter_state* state, int volume, int* dst, unsigned dst_len, INT16** psrc, unsigned src_len)
-/*TODO*///{
-/*TODO*///	unsigned dst_base = (accum_base + channel->samples_available) & ACCUMULATOR_MASK;
-/*TODO*///	unsigned dst_pos = dst_base;
-/*TODO*///
-/*TODO*///	INT16* src = *psrc;
-/*TODO*///
-/*TODO*///	assert( dst_len <= ACCUMULATOR_MASK );
-/*TODO*///
-/*TODO*///	if (!channel->filter)
-/*TODO*///	{
-/*TODO*///		if (channel->from_frequency == channel->to_frequency)
-/*TODO*///		{
-/*TODO*///			/* copy */
-/*TODO*///			unsigned len;
-/*TODO*///			INT16* src_end;
-/*TODO*///			if (src_len > dst_len)
-/*TODO*///				len = dst_len;
-/*TODO*///			else
-/*TODO*///				len = src_len;
-/*TODO*///
-/*TODO*///#ifdef X86_ASM /* this is very hardware dependant */
-/*TODO*///			/* optimized version (a small but measurable speedup) */
-/*TODO*///			while (len) {
-/*TODO*///				unsigned run;
-/*TODO*///				int* rundst;
-/*TODO*///
-/*TODO*///				run = ACCUMULATOR_MASK + 1 - dst_pos;
-/*TODO*///				if (run > len)
-/*TODO*///					run = len;
-/*TODO*///				len -= run;
-/*TODO*///
-/*TODO*///				src_end = src + (run & 3);
-/*TODO*///				while (src != src_end) {
-/*TODO*///					dst[dst_pos] += (*src * volume) >> 8;
-/*TODO*///					dst_pos = (dst_pos + 1) & ACCUMULATOR_MASK;
-/*TODO*///					++src;
-/*TODO*///				}
-/*TODO*///
-/*TODO*///				rundst = dst + dst_pos;
-/*TODO*///				src_end = src + (run & ~3);
-/*TODO*///				dst_pos = (dst_pos + (run & ~3)) & ACCUMULATOR_MASK;
-/*TODO*///				while (src != src_end) {
-/*TODO*///					rundst[0] += (src[0] * volume) >> 8;
-/*TODO*///					rundst[1] += (src[1] * volume) >> 8;
-/*TODO*///					rundst[2] += (src[2] * volume) >> 8;
-/*TODO*///					rundst[3] += (src[3] * volume) >> 8;
-/*TODO*///					rundst += 4;
-/*TODO*///					src += 4;
-/*TODO*///				}
-/*TODO*///			}
-/*TODO*///#else
-/*TODO*///			/* reference version */
-/*TODO*///			src_end = src + len;
-/*TODO*///			while (src != src_end)
-/*TODO*///			{
-/*TODO*///				dst[dst_pos] += (*src * volume) >> 8;
-/*TODO*///				dst_pos = (dst_pos + 1) & ACCUMULATOR_MASK;
-/*TODO*///				++src;
-/*TODO*///			}
-/*TODO*///#endif
-/*TODO*///		} else {
-/*TODO*///			/* end address */
-/*TODO*///			INT16* src_end = src + src_len;
-/*TODO*///			unsigned dst_pos_end = (dst_pos + dst_len) & ACCUMULATOR_MASK;
-/*TODO*///
-/*TODO*///			int step = channel->step;
-/*TODO*///			int frac = channel->frac;
-/*TODO*///			src += frac >> FRACTION_BITS;
-/*TODO*///			frac &= FRACTION_MASK;
-/*TODO*///
-/*TODO*///			while (src < src_end && dst_pos != dst_pos_end)
-/*TODO*///			{
-/*TODO*///				dst[dst_pos] += (*src * volume) >> 8;
-/*TODO*///				frac += step;
-/*TODO*///				dst_pos = (dst_pos + 1) & ACCUMULATOR_MASK;
-/*TODO*///				src += frac >> FRACTION_BITS;
-/*TODO*///				frac &= FRACTION_MASK;
-/*TODO*///			}
-/*TODO*///
-/*TODO*///			/* adjust the end if it's too big */
-/*TODO*///			if (src > src_end) {
-/*TODO*///				frac += (src - src_end) << FRACTION_BITS;
-/*TODO*///				src = src_end;
-/*TODO*///			}
-/*TODO*///
-/*TODO*///			channel->frac = frac;
-/*TODO*///		}
-/*TODO*///	} else if (!channel->from_frequency) {
-/*TODO*///		dst_pos = (dst_pos + dst_len) & ACCUMULATOR_MASK;
-/*TODO*///	} else {
-/*TODO*///		int pivot = channel->pivot;
+    static void mixer_channel_resample_set(mixer_channel_data channel, int/*unsigned*/ from_frequency, int/*unsigned*/ lowpass_frequency, int restart) {
+        int/*unsigned*/ to_frequency;
+        to_frequency = Machine.sample_rate;
+
+        mixerlogerror("Mixer:mixer_channel_resample_set(%s,%d,%d)\n", channel.name, from_frequency, lowpass_frequency, restart);
+
+        if (restart != 0) {
+            mixerlogerror(("\tpivot=0\n"));
+            channel.pivot = 0;
+            channel.frac = 0;
+        }
+
+        /* only if the filter change */
+        if (from_frequency != channel.from_frequency
+                || to_frequency != channel.to_frequency
+                || lowpass_frequency != channel.lowpass_frequency) {
+            /* delete the previous filter */
+            if (channel.filter != null) {
+                filter_free(channel.filter);
+                channel.filter = null;
+            }
+
+            /* make a new filter */
+            if (options.use_filter != 0) {
+                if ((from_frequency != 0 && to_frequency != 0 && (from_frequency != to_frequency || lowpass_frequency != 0))) {
+                    double cut;
+                    int/*unsigned*/ cut_frequency;
+
+                    if (from_frequency < to_frequency) {
+                        /* upsampling */
+                        cut_frequency = from_frequency / 2;
+                        if (lowpass_frequency != 0 && cut_frequency > lowpass_frequency) {
+                            cut_frequency = lowpass_frequency;
+                        }
+                        cut = (double) cut_frequency / to_frequency;
+                    } else {
+                        /* downsampling */
+                        cut_frequency = to_frequency / 2;
+                        if (lowpass_frequency != 0 && cut_frequency > lowpass_frequency) {
+                            cut_frequency = lowpass_frequency;
+                        }
+                        cut = (double) cut_frequency / from_frequency;
+                    }
+
+                    channel.filter = filter_lp_fir_alloc(cut, FILTER_WIDTH);
+
+                    mixerlogerror("\tfilter from %d Hz, to %d Hz, cut %f, cut %d Hz\n", from_frequency, to_frequency, cut, cut_frequency);
+                }
+            }
+        }
+
+        channel.lowpass_frequency = lowpass_frequency;
+        channel.from_frequency = from_frequency;
+        channel.to_frequency = to_frequency;
+        channel.step = (int) ((double) from_frequency * (1 << FRACTION_BITS) / to_frequency);
+
+        /* reset the filter state */
+        if (channel.filter != null && channel.is_reset_requested != 0) {
+            mixerlogerror(("\tstate clear\n"));
+            channel.is_reset_requested = 0;
+            filter_state_reset(channel.filter, channel.left);
+            filter_state_reset(channel.filter, channel.right);
+        }
+    }
+
+    /* Resample a channel
+	channel - channel info
+	state - filter state
+	volume - volume (0-255)
+	dst - destination vector
+	dst_len - max number of destination samples
+	src - source vector, (updated at the exit)
+	src_len - max number of source samples
+     */
+    static int/*unsigned*/ mixer_channel_resample_16(mixer_channel_data channel, filter_state state, int volume, int[] dst, int/*unsigned*/ dst_len, ShortPtr psrc, int/*unsigned*/ src_len) {
+        int /*unsigned*/ dst_base = (accum_base + channel.samples_available) & ACCUMULATOR_MASK;
+        int /*unsigned*/ dst_pos = dst_base;
+
+        ShortPtr src = new ShortPtr(psrc);//INT16* src = *psrc;
+        int psrc_offset=src.offset;
+
+        if (channel.filter == null) {
+            if (channel.from_frequency == channel.to_frequency) {
+                /* copy */
+                int /*unsigned*/ len;
+                
+                if (src_len > dst_len) {
+                    len = dst_len;
+                } else {
+                    len = src_len;
+                }
+
+
+                /* reference version */
+                int src_end = (src.offset+ len)*2;
+                while (src.offset!= src_end) {
+                    dst[dst_pos] += (src.read() * volume) >> 8;
+                    dst_pos = (dst_pos + 1) & ACCUMULATOR_MASK;
+                    src.inc();
+                }
+            } else {
+                /* end address */
+                int src_end = (src.offset+ src_len)*2;
+                int/*unsigned*/ dst_pos_end = (dst_pos + dst_len) & ACCUMULATOR_MASK;
+
+                int step = channel.step;
+                int frac = channel.frac;
+                src.inc(frac >> FRACTION_BITS);
+                frac &= FRACTION_MASK;
+
+                while (src.offset < src_end&& dst_pos != dst_pos_end) {
+                    dst[dst_pos] += (src.read() * volume) >> 8;
+                    frac += step;
+                    dst_pos = (dst_pos + 1) & ACCUMULATOR_MASK;
+                    src.inc(frac >> FRACTION_BITS);
+                    frac &= FRACTION_MASK;
+                }
+
+                /* adjust the end if it's too big */
+                if (src.offset > src_end) {
+                    frac += (src.offset - src_end) << FRACTION_BITS;
+                    src.offset = src_end;
+                }
+
+                channel.frac = frac;
+            }
+        } else if (channel.from_frequency == 0) {
+            dst_pos = (dst_pos + dst_len) & ACCUMULATOR_MASK;
+        } else {
+            throw new UnsupportedOperationException("Unsupported");
+            /*TODO*///		int pivot = channel->pivot;
 /*TODO*///
 /*TODO*///		/* end address */
 /*TODO*///		INT16* src_end = src + src_len;
@@ -376,13 +344,14 @@ public class mixer {
 /*TODO*///		}
 /*TODO*///
 /*TODO*///		channel->pivot = pivot;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	*psrc = src;
-/*TODO*///
-/*TODO*///	return (dst_pos - dst_base) & ACCUMULATOR_MASK;
-/*TODO*///}
-/*TODO*///
+        }
+
+        psrc.offset = psrc_offset;//*psrc = src;
+
+        return (dst_pos - dst_base) & ACCUMULATOR_MASK;
+    }
+
+    /*TODO*///
 /*TODO*///static unsigned mixer_channel_resample_8(struct mixer_channel_data *channel, filter_state* state, int volume, int* dst, unsigned dst_len, INT8** psrc, unsigned src_len)
 /*TODO*///{
 /*TODO*///	unsigned dst_base = (accum_base + channel->samples_available) & ACCUMULATOR_MASK;
@@ -518,18 +487,18 @@ public class mixer {
 /*TODO*///	channel->samples_available += count;
 /*TODO*///	return count;
 /*TODO*///}
-/*TODO*///
-/*TODO*////* Mix a 16 bit channel */
-/*TODO*///static unsigned mixer_channel_resample_16_pan(struct mixer_channel_data *channel, int* volume, unsigned dst_len, INT16** src, unsigned src_len)
-/*TODO*///{
-/*TODO*///	unsigned count;
-/*TODO*///
-/*TODO*///	if (!is_stereo || channel->pan == MIXER_PAN_LEFT) {
-/*TODO*///		count = mixer_channel_resample_16(channel, channel->left, volume[0], left_accum, dst_len, src, src_len);
-/*TODO*///	} else if (channel->pan == MIXER_PAN_RIGHT) {
-/*TODO*///		count = mixer_channel_resample_16(channel, channel->right, volume[1], right_accum, dst_len, src, src_len);
-/*TODO*///	} else {
-/*TODO*///		/* save */
+
+    /* Mix a 16 bit channel */
+    static int/*unsigned*/ mixer_channel_resample_16_pan(mixer_channel_data channel, int[] volume, int/*unsigned*/ dst_len, ShortPtr src, int/*unsigned*/ src_len) {
+        int /*unsigned*/ count;
+
+        if (is_stereo == 0 || channel.pan == MIXER_PAN_LEFT) {
+            count = mixer_channel_resample_16(channel, channel.left, volume[0], left_accum, dst_len, src, src_len);
+        } else if (channel.pan == MIXER_PAN_RIGHT) {
+            count = mixer_channel_resample_16(channel, channel.right, volume[1], right_accum, dst_len, src, src_len);
+        } else {
+            throw new UnsupportedOperationException("Unsupported");
+            /*TODO*///		/* save */
 /*TODO*///		unsigned save_pivot = channel->pivot;
 /*TODO*///		unsigned save_frac = channel->frac;
 /*TODO*///		INT16* save_src = *src;
@@ -539,19 +508,20 @@ public class mixer {
 /*TODO*///		channel->frac = save_frac;
 /*TODO*///		*src = save_src;
 /*TODO*///		mixer_channel_resample_16(channel, channel->right, volume[1], right_accum, dst_len, src, src_len);
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	channel->samples_available += count;
-/*TODO*///	return count;
-/*TODO*///}
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///	mix_sample_8
-/*TODO*///***************************************************************************/
-/*TODO*///
-/*TODO*///void mix_sample_8(struct mixer_channel_data *channel, int samples_to_generate)
-/*TODO*///{
-/*TODO*///	INT8 *source, *source_end;
+        }
+
+        channel.samples_available += count;
+        return count;
+    }
+
+    /**
+     * *************************************************************************
+     * mix_sample_8
+**************************************************************************
+     */
+    public static void mix_sample_8(mixer_channel_data channel, int samples_to_generate) {
+        throw new UnsupportedOperationException("unsupported");
+        /*TODO*///	INT8 *source, *source_end;
 /*TODO*///	int mixing_volume[2];
 /*TODO*///
 /*TODO*///	/* compute the overall mixing volume */
@@ -592,15 +562,16 @@ public class mixer {
 /*TODO*///
 /*TODO*///	/* update the final positions */
 /*TODO*///	channel->data_current = source;
-/*TODO*///}
-/*TODO*///
+    }
+
+    /*TODO*///
 /*TODO*////***************************************************************************
 /*TODO*///	mix_sample_16
 /*TODO*///***************************************************************************/
 /*TODO*///
-/*TODO*///void mix_sample_16(struct mixer_channel_data *channel, int samples_to_generate)
-/*TODO*///{
-/*TODO*///	INT16 *source, *source_end;
+    public static void mix_sample_16(mixer_channel_data channel, int samples_to_generate) {
+        throw new UnsupportedOperationException("unsupported");
+        /*TODO*///	INT16 *source, *source_end;
 /*TODO*///	int mixing_volume[2];
 /*TODO*///
 /*TODO*///	/* compute the overall mixing volume */
@@ -641,8 +612,9 @@ public class mixer {
 /*TODO*///
 /*TODO*///	/* update the final positions */
 /*TODO*///	channel->data_current = source;
-/*TODO*///}
-/*TODO*///
+    }
+
+    /*TODO*///
 /*TODO*////***************************************************************************
 /*TODO*///	mixer_flush
 /*TODO*///***************************************************************************/
@@ -651,9 +623,9 @@ public class mixer {
 /*TODO*///static unsigned char silence_data[FILTER_FLUSH];
 /*TODO*///
 /*TODO*////* Flush the state of the filter playing some 0 samples */
-/*TODO*///static void mixer_flush(struct mixer_channel_data *channel)
-/*TODO*///{
-/*TODO*///	INT8 *source_begin, *source_end;
+    static void mixer_flush(mixer_channel_data channel) {
+        throw new UnsupportedOperationException("Unsupported");
+        /*TODO*///	INT8 *source_begin, *source_end;
 /*TODO*///	int mixing_volume[2];
 /*TODO*///	unsigned save_available;
 /*TODO*///
@@ -678,7 +650,8 @@ public class mixer {
 /*TODO*///
 /*TODO*///	/* restore the number of samples availables */
 /*TODO*///	channel->samples_available = save_available;
-/*TODO*///}
+    }
+
     /**
      * *************************************************************************
      * mixer_sh_start
@@ -736,28 +709,30 @@ public class mixer {
      * *************************************************************************
      */
     public static void mixer_update_channel(mixer_channel_data channel, int total_sample_count) {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	int samples_to_generate = total_sample_count - channel->samples_available;
-/*TODO*///
-/*TODO*///	/* don't do anything for streaming channels */
-/*TODO*///	if (channel->is_stream)
-/*TODO*///		return;
-/*TODO*///
-/*TODO*///	/* if we're all caught up, just return */
-/*TODO*///	if (samples_to_generate <= 0)
-/*TODO*///		return;
-/*TODO*///
-/*TODO*///        /* if we're playing, mix in the data */
-/*TODO*///	if (channel->is_playing)
-/*TODO*///	{
-/*TODO*///		if (channel->is_16bit)
-/*TODO*///			mix_sample_16(channel, samples_to_generate);
-/*TODO*///		else
-/*TODO*///			mix_sample_8(channel, samples_to_generate);
-/*TODO*///
-/*TODO*///		if (!channel->is_playing)
-/*TODO*///			mixer_flush(channel);
-/*TODO*///	}
+        int samples_to_generate = (int) (total_sample_count - channel.samples_available);
+
+        /* don't do anything for streaming channels */
+        if (channel.is_stream != 0) {
+            return;
+        }
+
+        /* if we're all caught up, just return */
+        if (samples_to_generate <= 0) {
+            return;
+        }
+
+        /* if we're playing, mix in the data */
+        if (channel.is_playing != 0) {
+            if (channel.is_16bit != 0) {
+                mix_sample_16(channel, samples_to_generate);
+            } else {
+                mix_sample_8(channel, samples_to_generate);
+            }
+
+            if (channel.is_playing == 0) {
+                mixer_flush(channel);
+            }
+        }
     }
 
     /**
@@ -1033,41 +1008,37 @@ public class mixer {
 /*TODO*///	osd_fwrite(f, mixing_levels, MIXER_MAX_CHANNELS);
 /*TODO*///}
 /*TODO*///
-/*TODO*///
-/*TODO*////***************************************************************************
-/*TODO*///	mixer_play_streamed_sample_16
-/*TODO*///***************************************************************************/
+    /**
+     * *************************************************************************
+     * mixer_play_streamed_sample_16
+     * *************************************************************************
+     */
     public static void mixer_play_streamed_sample_16(int ch, ShortPtr data, int len, int freq) {
-        throw new UnsupportedOperationException("Unsupported");
-        /*TODO*///	struct mixer_channel_data *channel = &mixer_channel[ch];
-/*TODO*///	int mixing_volume[2];
-/*TODO*///
-/*TODO*///	mixerlogerror(("Mixer:mixer_play_streamed_sample_16(%s,,%d,%d)\n",channel->name,len/2,freq));
-/*TODO*///
-/*TODO*///	/* skip if sound is off */
-/*TODO*///	if (Machine->sample_rate == 0)
-/*TODO*///		return;
-/*TODO*///	channel->is_stream = 1;
-/*TODO*///
-/*TODO*///	profiler_mark(PROFILER_MIXER);
-/*TODO*///
-/*TODO*///	/* compute the overall mixing volume */
-/*TODO*///	if (mixer_sound_enabled) {
-/*TODO*///		mixing_volume[0] = ((channel->left_volume * channel->mixing_level * 256) << channel->gain) / (100*100);
-/*TODO*///		mixing_volume[1] = ((channel->right_volume * channel->mixing_level * 256) << channel->gain) / (100*100);
-/*TODO*///	} else {
-/*TODO*///		mixing_volume[0] = 0;
-/*TODO*///		mixing_volume[1] = 0;
-/*TODO*///	}
-/*TODO*///
-/*TODO*///	mixer_channel_resample_set(channel,freq,channel->request_lowpass_frequency,0);
-/*TODO*///
-/*TODO*///	/* compute the length in fractional form */
-/*TODO*///	len = len / 2; /* convert len from byte to word */
-/*TODO*///
-/*TODO*///	mixer_channel_resample_16_pan(channel,mixing_volume,ACCUMULATOR_MASK,&data,len);
-/*TODO*///
-/*TODO*///	profiler_mark(PROFILER_END);
+        int[] mixing_volume = new int[2];
+
+        mixerlogerror("Mixer:mixer_play_streamed_sample_16(%s,,%d,%d)\n", mixer_channel[ch].name, len / 2, freq);
+
+        /* skip if sound is off */
+        if (Machine.sample_rate == 0) {
+            return;
+        }
+        mixer_channel[ch].is_stream = 1;
+        /* compute the overall mixing volume */
+        if (mixer_sound_enabled != 0) {
+            mixing_volume[0] = ((mixer_channel[ch].left_volume * mixer_channel[ch].mixing_level * 256) << mixer_channel[ch].gain) / (100 * 100);
+            mixing_volume[1] = ((mixer_channel[ch].right_volume * mixer_channel[ch].mixing_level * 256) << mixer_channel[ch].gain) / (100 * 100);
+        } else {
+            mixing_volume[0] = 0;
+            mixing_volume[1] = 0;
+        }
+
+        mixer_channel_resample_set(mixer_channel[ch], freq, mixer_channel[ch].request_lowpass_frequency, 0);
+
+        /* compute the length in fractional form */
+        len = len / 2;
+        /* convert len from byte to word */
+
+        mixer_channel_resample_16_pan(mixer_channel[ch], mixing_volume, ACCUMULATOR_MASK, data, len);
     }
 
     /*TODO*///
@@ -1084,7 +1055,7 @@ public class mixer {
     /**
      * *************************************************************************
      * mixer_need_samples_this_frame
-    **************************************************************************
+     * *************************************************************************
      */
     public static final int EXTRA_SAMPLES = 1;// safety margin for sampling rate conversion
 

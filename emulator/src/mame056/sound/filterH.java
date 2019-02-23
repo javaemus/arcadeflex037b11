@@ -8,22 +8,14 @@ public class filterH {
     /* Max filter order */
     public static final int FILTER_ORDER_MAX = 51;
 
-    /*TODO*///
-/*TODO*////* Define to use interger calculation */
-/*TODO*///#define FILTER_USE_INT
-/*TODO*///
-/*TODO*///#ifdef FILTER_USE_INT
-/*TODO*///typedef int filter_real;
-/*TODO*///#define FILTER_INT_FRACT 15 /* fractional bits */
-/*TODO*///#else
-/*TODO*///typedef double filter_real;
-/*TODO*///#endif
-/*TODO*///
-/*TODO*///typedef struct filter_struct {
-/*TODO*///	filter_real xcoeffs[(FILTER_ORDER_MAX+1)/2];
-/*TODO*///	unsigned order;
-/*TODO*///} filter;
-/*TODO*///
+    public static final int FILTER_INT_FRACT = 15;/* fractional bits */
+
+    public static class _filter {
+
+        public int[] xcoeffs = new int[(FILTER_ORDER_MAX + 1) / 2];
+        int /*unsigned*/ order;
+    }
+
     public static class filter_state {
 
         int/*unsigned*/ prev_mac;
