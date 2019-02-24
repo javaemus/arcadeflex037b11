@@ -1,8 +1,8 @@
-/*
- * Changelog:
- * 02/09/2017 - Added working exctsccr driver
+/**
+ * ported to v0.56
+ * ported to v.037b7
  */
-package vidhrdw;
+package mame056.vidhrdw;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
@@ -224,7 +224,7 @@ public class exctsccr {
     /**
      * *************************************************************************
      *
-     * Draw the game screen in the given osd_bitmap. Do NOT call
+     * Draw the game screen in the given mame_bitmap. Do NOT call
      * osd_update_display() from this function, it will be called by the main
      * emulation engine.
      *

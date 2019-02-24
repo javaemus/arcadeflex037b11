@@ -20,7 +20,7 @@ import static mame056.cpuexec.interrupt_enable_w;
 import static mame056.cpuexec.interrupt_vector_w;
 import static mame056.cpuexec.watchdog_reset_w;
 import static vidhrdw.generic.*;
-import static vidhrdw.rallyx.*;
+import static mame056.vidhrdw.rallyx.*;
 import static old2.mame.mame.*;
 import static mame056.sound.samples.*;
 import static mame056.sound.samplesH.*;

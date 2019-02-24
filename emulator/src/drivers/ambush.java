@@ -18,7 +18,7 @@ import static mame056.sound.ay8910.*;
 import static mame056.sound.ay8910H.*;
 //vidhrdw imports
 import static vidhrdw.generic.*;
-import static vidhrdw.ambush.*;
+import static mame056.vidhrdw.ambush.*;
 
 import static old2.mame.common.*;
 import static mame056.common.*;

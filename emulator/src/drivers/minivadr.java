@@ -14,7 +14,7 @@ import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame056.cpuexec.interrupt;
 import static mame056.inptportH.*;
-import static vidhrdw.minivadr.*;
+import static mame056.vidhrdw.minivadr.*;
 
 public class minivadr {
 

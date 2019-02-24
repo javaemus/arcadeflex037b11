@@ -20,7 +20,7 @@ import static mame056.inputH.*;
 import static vidhrdw.generic.*;
 import static mame056.sound.sn76496.*;
 import static mame056.sound.sn76496H.*;
-import static vidhrdw.ladybug.*;
+import static mame056.vidhrdw.ladybug.*;
 
 public class ladybug {
 

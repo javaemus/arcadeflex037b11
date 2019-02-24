@@ -22,7 +22,7 @@ import static mame056.cpuexec.nmi_interrupt;
 import static mame056.cpuexec.watchdog_reset_w;
 import static mame056.sound.ay8910.*;
 import static mame056.sound.ay8910H.*;
-import static vidhrdw.espial.*;
+import static mame056.vidhrdw.espial.*;
 import static vidhrdw.generic.*;
 
 public class espial {

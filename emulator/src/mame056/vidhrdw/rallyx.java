@@ -1,8 +1,9 @@
 /**
+ * ported to v0.56
  * ported to v0.37b7
  * ported to v0.36
  */
-package vidhrdw;
+package mame056.vidhrdw;
 
 import static arcadeflex.fucPtr.*;
 import static old2.mame.common.*;

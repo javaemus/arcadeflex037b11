@@ -1,8 +1,9 @@
-/*
- * ported to 0.37b7
+/**
+ * ported to v0.56
+ * ported to v0.37b7
  * ported to v0.36
  */
-package vidhrdw;
+package mame056.vidhrdw;
 
 import static common.libc.cstring.*;
 import static arcadeflex.fucPtr.*;

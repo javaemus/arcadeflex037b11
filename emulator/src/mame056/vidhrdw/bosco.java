@@ -1,8 +1,9 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- * using automatic conversion tool v0.01
+ * 
  */
-package vidhrdw;
+package mame056.vidhrdw;
 
 import static arcadeflex.fucPtr.*;
 import static mame.drawgfxH.*;
@@ -330,27 +331,8 @@ public class bosco {
                 }
             }
 
-            /* copy the temporary bitmap to the screen */
-            {
-                int scrollx, scrolly;
+            fillbitmap(bitmap, Machine.pens[0], Machine.visible_area);
 
-                if (flipscreen != 0) {
-                    scrollx = (bosco_scrollx + 32);//- 3*displacement) + 32;
-                    scrolly = (bosco_scrolly + 16) - 32;
-                } else {
-                    scrollx = -(bosco_scrollx);
-                    scrolly = -(bosco_scrolly + 16);
-                }
-
-                copyscrollbitmap(bitmap, tmpbitmap1, 1, new int[]{scrollx}, 1, new int[]{scrolly}, Machine.visible_area, TRANSPARENCY_NONE, 0);
-            }
-
-            /* radar */
-            if (flipscreen != 0) {
-                copybitmap(bitmap, tmpbitmap, 0, 0, 0, 0, radarvisibleareaflip, TRANSPARENCY_NONE, 0);
-            } else {
-                copybitmap(bitmap, tmpbitmap, 0, 0, 28 * 8, 0, radarvisiblearea, TRANSPARENCY_NONE, 0);
-            }
 
             /* draw the sprites */
             for (offs = 0; offs < spriteram_size[0]; offs += 2) {
@@ -365,7 +347,29 @@ public class bosco {
                         spriteram_2.read(offs + 1) & 0x3f,
                         spriteram.read(offs) & 1, spriteram.read(offs) & 2,
                         sx, sy,
-                        flipscreen != 0 ? spritevisibleareaflip : spritevisiblearea, TRANSPARENCY_THROUGH, Machine.pens[0]);
+                        flipscreen != 0 ? spritevisibleareaflip : spritevisiblearea, TRANSPARENCY_COLOR, 0);
+            }
+
+            /* copy the temporary bitmap to the screen */
+            {
+                int scrollx, scrolly;
+
+                if (flipscreen != 0) {
+                    scrollx = (bosco_scrollx + 32);//- 3*displacement) + 32;
+                    scrolly = (bosco_scrolly + 16) - 32;
+                } else {
+                    scrollx = -(bosco_scrollx);
+                    scrolly = -(bosco_scrolly + 16);
+                }
+
+                copyscrollbitmap(bitmap, tmpbitmap1, 1, new int[]{scrollx}, 1, new int[]{scrolly}, Machine.visible_area, TRANSPARENCY_COLOR, 0);
+            }
+
+            /* radar */
+            if (flipscreen != 0) {
+                copybitmap(bitmap, tmpbitmap, 0, 0, 0, 0, radarvisibleareaflip, TRANSPARENCY_NONE, 0);
+            } else {
+                copybitmap(bitmap, tmpbitmap, 0, 0, 28 * 8, 0, radarvisiblearea, TRANSPARENCY_NONE, 0);
             }
 
             /* draw the dots on the radar and the bullets */

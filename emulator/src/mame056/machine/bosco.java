@@ -23,7 +23,7 @@ import static mame056.cpuintrfH.ASSERT_LINE;
 import static mame056.cpuintrfH.CLEAR_LINE;
 import static mame056.cpuintrfH.cpu_get_pc;
 import static mame056.sndhrdw.bosco.*;
-import static vidhrdw.bosco.*;
+import static mame056.vidhrdw.bosco.*;
 import static mame056.memory.*;
 
 public class bosco {

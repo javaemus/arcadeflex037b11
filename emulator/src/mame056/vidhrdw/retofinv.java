@@ -1,8 +1,9 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- * using automatic conversion tool v0.01
+ * 
  */
-package vidhrdw;
+package mame056.vidhrdw;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.cstring.*;

@@ -20,7 +20,7 @@ import static mame056.cpuexec.interrupt;
 import static mame056.cpuexec.interrupt_enable_w;
 import static mame056.cpuexec.watchdog_reset_w;
 import static vidhrdw.generic.*;
-import static vidhrdw.wiping.*;
+import static mame056.vidhrdw.wiping.*;
 import static mame056.sndhrdw.wiping.*;
 
 public class wiping {

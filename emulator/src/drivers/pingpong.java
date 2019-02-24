@@ -21,7 +21,7 @@ import static mame056.cpuexec.watchdog_reset_w;
 import static vidhrdw.generic.*;
 import static mame056.sound.sn76496.*;
 import static mame056.sound.sn76496H.*;
-import static vidhrdw.pingpong.*;
+import static mame056.vidhrdw.pingpong.*;
 
 public class pingpong {
 

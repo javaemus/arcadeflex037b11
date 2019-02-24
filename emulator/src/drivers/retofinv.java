@@ -14,7 +14,7 @@ import static mame056.inptport.*;
 import static mame056.inptportH.*;
 import static old2.mame.memoryH.*;
 import static mame.sndintrfH.*;
-import static vidhrdw.retofinv.*;
+import static mame056.vidhrdw.retofinv.*;
 import static mame056.common.*;
 import static mame.sndintrf.*;
 import static mame056.cpuexec.cpu_set_halt_line;

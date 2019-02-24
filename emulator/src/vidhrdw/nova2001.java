@@ -1,4 +1,5 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
  *
  */
@@ -128,7 +129,7 @@ public class nova2001 {
                     scrollx = nova2001_xscroll;
                     scrolly = nova2001_yscroll;
                 } else {
-                    scrollx = -nova2001_xscroll;
+                    scrollx = -nova2001_xscroll+7;
                     scrolly = -nova2001_yscroll;
                 }
 
@@ -137,7 +138,7 @@ public class nova2001 {
 
             /* Next, draw the sprites */
             for (offs = 0; offs < spriteram_size[0]; offs += 32) {
-                if ((spriteram.read(offs + 0) & 0x40) != 0) {
+               
                     int sx, sy, flipx, flipy;
 
                     sx = spriteram.read(offs + 1);
@@ -152,12 +153,12 @@ public class nova2001 {
                     }
 
                     drawgfx(bitmap, Machine.gfx[2 + ((spriteram.read(offs + 0) & 0x80) >> 7)],
-                            spriteram.read(offs + 0) & 0x3f,
+                            spriteram.read(offs + 0) & 0x7f,
                             spriteram.read(offs + 3) & 0x0f,
                             flipx, flipy,
                             sx, sy,
                             Machine.visible_area, TRANSPARENCY_PEN, 0);
-                }
+                
             }
 
             /* Finally, draw the foreground text */

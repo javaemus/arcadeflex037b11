@@ -17,7 +17,7 @@ import static mame056.cpuexec.watchdog_reset_w;
 import static sound.namco.*;
 import static sound.namcoH.*;
 import static mame056.machine.bosco.*;
-import static vidhrdw.bosco.*;
+import static mame056.vidhrdw.bosco.*;
 import static mame056.sndhrdw.bosco.*;
 import static vidhrdw.generic.*;
 import static mame056.sound.samplesH.*;

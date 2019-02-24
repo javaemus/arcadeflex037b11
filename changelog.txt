@@ -1,6 +1,7 @@
 24/02/2019
 ==========
 -Mixer appears to start working now (bankp works)
+-Ported a bunch of vidhrdw to 0.56
 
 23/02/2019
 ==========

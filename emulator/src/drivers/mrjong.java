@@ -17,7 +17,7 @@ import static mame056.cpuexec.nmi_interrupt;
 import static mame056.sound.sn76496.*;
 import static mame056.sound.sn76496H.*;
 import static vidhrdw.generic.*;
-import static vidhrdw.mrjong.*;
+import static mame056.vidhrdw.mrjong.*;
 
 public class mrjong {
 

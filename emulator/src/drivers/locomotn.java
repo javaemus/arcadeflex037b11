@@ -16,7 +16,7 @@ import static vidhrdw.generic.*;
 import static mame.sndintrfH.*;
 import static mame056.common.*;
 import static mame056.inptportH.*;
-import static vidhrdw.rallyx.*;
+import static mame056.vidhrdw.rallyx.*;
 import static mame.sndintrf.*;
 import static mame056.cpuexec.ignore_interrupt;
 import static mame056.cpuexec.interrupt_enable_w;

@@ -1,27 +1,28 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- * using automatic conversion tool v0.01
  */
-package vidhrdw;
+package mame056.vidhrdw;
 
 import static arcadeflex.fucPtr.*;
-
 import static arcadeflex.libc.ptr.*;
-import static old2.mame.mame.*;
-import static mame056.commonH.*;
-import static mame.drawgfxH.*;
-import static old2.mame.common.*;
-import static old.mame.drawgfx.copybitmap;
-import static mame.palette.*;
-import static mame056.common.coin_counter_w;
 import static old.mame.drawgfx.*;
+import static mame.drawgfxH.*;
+import static old2.mame.mame.Machine;
+import mame056.commonH.mame_bitmap;
+import static mame.commonH.REGION_CPU1;
+import static mame056.common.*;
+import static mame056.sound.sn76477.*;
+import static old2.mame.common.*;
+import static mame056.cpuexec.cpu_yield;
+import static mame056.palette.palette_set_color;
 
-public class ttmahjng {
+public class route16 {
 
-    public static UBytePtr ttmahjng_sharedram = new UBytePtr();
-    public static UBytePtr ttmahjng_videoram1 = new UBytePtr();
-    public static UBytePtr ttmahjng_videoram2 = new UBytePtr();
-    public static int[] ttmahjng_videoram_size = new int[1];
+    public static UBytePtr route16_sharedram = new UBytePtr();
+    public static UBytePtr route16_videoram1 = new UBytePtr();
+    public static UBytePtr route16_videoram2 = new UBytePtr();
+    public static int[] route16_videoram_size = new int[1];
 
     static mame_bitmap tmpbitmap1;
     static mame_bitmap tmpbitmap2;
@@ -29,14 +30,51 @@ public class ttmahjng {
     static int video_flip;
     static int video_color_select_1;
     static int video_color_select_2;
+    static int video_disable_1 = 0;
+    static int video_disable_2 = 0;
     static int video_remap_1;
     static int video_remap_2;
-    static UBytePtr ttmahjng_color_prom;
+    static UBytePtr route16_color_prom;
+    static int route16_hardware;
 
-    public static VhConvertColorPromPtr ttmahjng_vh_convert_color_prom = new VhConvertColorPromPtr() {
+    public static VhConvertColorPromPtr route16_vh_convert_color_prom = new VhConvertColorPromPtr() {
         public void handler(char[] palette, char[] colortable, UBytePtr color_prom) {
-            ttmahjng_color_prom = color_prom;
+            route16_color_prom = color_prom;
             /* we'll need this later */
+        }
+    };
+
+    /**
+     * *************************************************************************
+     *
+     * Set hardware dependent flag.
+     *
+     **************************************************************************
+     */
+    public static InitDriverPtr init_route16b = new InitDriverPtr() {
+        public void handler() {
+            route16_hardware = 1;
+        }
+    };
+
+    public static InitDriverPtr init_route16 = new InitDriverPtr() {
+        public void handler() {
+            UBytePtr rom = memory_region(REGION_CPU1);
+
+            /* patch the protection */
+            rom.write(0x00e9, 0x3a);
+
+            rom.write(0x0754, 0xc3);
+            rom.write(0x0755, 0x63);
+            rom.write(0x0756, 0x07);
+
+            init_route16b.handler();
+        }
+    };
+
+    public static InitDriverPtr init_stratvox = new InitDriverPtr() {
+        public void handler() {
+            route16_hardware = 0;
         }
     };
 
@@ -47,7 +85,7 @@ public class ttmahjng {
      *
      **************************************************************************
      */
-    public static VhStartPtr ttmahjng_vh_start = new VhStartPtr() {
+    public static VhStartPtr route16_vh_start = new VhStartPtr() {
         public int handler() {
             if ((tmpbitmap1 = bitmap_alloc(Machine.drv.screen_width, Machine.drv.screen_height)) == null) {
                 return 1;
@@ -63,6 +101,8 @@ public class ttmahjng {
             video_flip = 0;
             video_color_select_1 = 0;
             video_color_select_2 = 0;
+            video_disable_1 = 0;
+            video_disable_2 = 0;
             video_remap_1 = 1;
             video_remap_2 = 1;
 
@@ -77,7 +117,7 @@ public class ttmahjng {
      *
      **************************************************************************
      */
-    public static VhStopPtr ttmahjng_vh_stop = new VhStopPtr() {
+    public static VhStopPtr route16_vh_stop = new VhStopPtr() {
         public void handler() {
             bitmap_free(tmpbitmap1);
             bitmap_free(tmpbitmap2);
@@ -86,16 +126,18 @@ public class ttmahjng {
 
     /**
      * *************************************************************************
-     * ttmahjng_out0_w
+     * route16_out0_w
      * *************************************************************************
      */
     static int last_write_1 = 0;
-    public static WriteHandlerPtr ttmahjng_out0_w = new WriteHandlerPtr() {
+    public static WriteHandlerPtr route16_out0_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
+
             if (data == last_write_1) {
                 return;
             }
 
+            video_disable_1 = (((data & 0x02) << 6) != 0 && route16_hardware != 0) ? 1 : 0;
             video_color_select_1 = ((data & 0x1f) << 2);
 
             /* Bit 5 is the coin counter. */
@@ -108,16 +150,18 @@ public class ttmahjng {
 
     /**
      * *************************************************************************
-     * ttmahjng_out1_w
+     * route16_out1_w
      * *************************************************************************
      */
-    static int last_write_2 = 0;
-    public static WriteHandlerPtr ttmahjng_out1_w = new WriteHandlerPtr() {
+    static int last_write = 0;
+    public static WriteHandlerPtr route16_out1_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            if (data == last_write_2) {
+
+            if (data == last_write) {
                 return;
             }
 
+            video_disable_2 = (((data & 0x02) << 6) != 0 && route16_hardware != 0) ? 1 : 0;
             video_color_select_2 = ((data & 0x1f) << 2);
 
             if (video_flip != ((data & 0x20) >> 5)) {
@@ -125,62 +169,97 @@ public class ttmahjng {
             }
 
             video_remap_2 = 1;
-            last_write_2 = data;
+            last_write = data;
         }
     };
 
     /**
      * *************************************************************************
-     * ttmahjng_sharedram_r
-     * *************************************************************************
+     *
+     * Handle Stratovox's extra sound effects.
+     *
+     **************************************************************************
      */
-    public static ReadHandlerPtr ttmahjng_sharedram_r = new ReadHandlerPtr() {
-        public int handler(int offset) {
-            return ttmahjng_sharedram.read(offset);
-        }
-    };
-
-    /**
-     * *************************************************************************
-     * ttmahjng_sharedram_w
-     * *************************************************************************
-     */
-    public static WriteHandlerPtr ttmahjng_sharedram_w = new WriteHandlerPtr() {
+    public static WriteHandlerPtr stratvox_sn76477_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            ttmahjng_sharedram.write(offset, data);
+            /* get out for Route 16 */
+            if (route16_hardware != 0) {
+                return;
+            }
+
+            /**
+             * *************************************************************
+             * AY8910 output bits are connected to... 7 - direct: 5V *
+             * 30k/(100+30k) = 1.15V - via DAC?? 6 - SN76477 mixer a 5 - SN76477
+             * mixer b 4 - SN76477 mixer c 3 - SN76477 envelope 1 2	- SN76477
+             * envelope 2 1 - SN76477 vco 0 - SN76477 enable
+             * *************************************************************
+             */
+            SN76477_mixer_w(0, (data >> 4) & 7);
+            SN76477_envelope_w(0, (data >> 2) & 3);
+            SN76477_vco_w(0, (data >> 1) & 1);
+            SN76477_enable_w(0, data & 1);
         }
     };
 
     /**
      * *************************************************************************
-     * ttmahjng_videoram1_r
+     * route16_sharedram_r
      * *************************************************************************
      */
-    public static ReadHandlerPtr ttmahjng_videoram1_r = new ReadHandlerPtr() {
+    public static ReadHandlerPtr route16_sharedram_r = new ReadHandlerPtr() {
         public int handler(int offset) {
-            return ttmahjng_videoram1.read(offset);
+            return route16_sharedram.read(offset);
         }
     };
 
     /**
      * *************************************************************************
-     * ttmahjng_videoram2_r
+     * route16_sharedram_w
      * *************************************************************************
      */
-    public static ReadHandlerPtr ttmahjng_videoram2_r = new ReadHandlerPtr() {
-        public int handler(int offset) {
-            return ttmahjng_videoram1.read(offset);
-        }
-    };
-
-    /**
-     * *************************************************************************
-     * ttmahjng_videoram1_w
-     * *************************************************************************
-     */
-    public static WriteHandlerPtr ttmahjng_videoram1_w = new WriteHandlerPtr() {
+    public static WriteHandlerPtr route16_sharedram_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            ttmahjng_videoram1.write(offset, data);
+            route16_sharedram.write(offset, data);
+
+            // 4313-4319 are used in Route 16 as triggers to wake the other CPU
+            if (offset >= 0x0313 && offset <= 0x0319 && data == 0xff && route16_hardware != 0) {
+                // Let the other CPU run
+                cpu_yield();
+            }
+        }
+    };
+
+    /**
+     * *************************************************************************
+     * route16_videoram1_r
+     * *************************************************************************
+     */
+    public static ReadHandlerPtr route16_videoram1_r = new ReadHandlerPtr() {
+        public int handler(int offset) {
+            return route16_videoram1.read(offset);
+        }
+    };
+
+    /**
+     * *************************************************************************
+     * route16_videoram2_r
+     * *************************************************************************
+     */
+    public static ReadHandlerPtr route16_videoram2_r = new ReadHandlerPtr() {
+        public int handler(int offset) {
+            return route16_videoram1.read(offset);
+        }
+    };
+
+    /**
+     * *************************************************************************
+     * route16_videoram1_w
+     * *************************************************************************
+     */
+    public static WriteHandlerPtr route16_videoram1_w = new WriteHandlerPtr() {
+        public void handler(int offset, int data) {
+            route16_videoram1.write(offset, data);
 
             common_videoram_w(offset, data, 0, tmpbitmap1);
         }
@@ -188,12 +267,12 @@ public class ttmahjng {
 
     /**
      * *************************************************************************
-     * ttmahjng_videoram2_w
+     * route16_videoram2_w
      * *************************************************************************
      */
-    public static WriteHandlerPtr ttmahjng_videoram2_w = new WriteHandlerPtr() {
+    public static WriteHandlerPtr route16_videoram2_w = new WriteHandlerPtr() {
         public void handler(int offset, int data) {
-            ttmahjng_videoram2.write(offset, data);
+            route16_videoram2.write(offset, data);
 
             common_videoram_w(offset, data, 4, tmpbitmap2);
         }
@@ -204,7 +283,8 @@ public class ttmahjng {
      * common_videoram_w
      * *************************************************************************
      */
-    static void common_videoram_w(int offset, int data, int coloroffset, mame_bitmap bitmap) {
+    static void common_videoram_w(int offset, int data,
+            int coloroffset, mame_bitmap bitmap) {
         int x, y, color1, color2, color3, color4;
 
         x = ((offset & 0x3f) << 2);
@@ -242,7 +322,7 @@ public class ttmahjng {
      *
      **************************************************************************
      */
-    public static VhUpdatePtr ttmahjng_vh_screenrefresh = new VhUpdatePtr() {
+    public static VhUpdatePtr route16_vh_screenrefresh = new VhUpdatePtr() {
         public void handler(mame_bitmap bitmap, int full_refresh) {
             if (video_remap_1 != 0) {
                 modify_pen(0, video_color_select_1 + 0);
@@ -258,21 +338,30 @@ public class ttmahjng {
                 modify_pen(7, video_color_select_2 + 3);
             }
 
-            if (palette_recalc() != null || video_remap_1 != 0 || video_remap_2 != 0) {
+            if (full_refresh != 0 || video_remap_1 != 0 || video_remap_2 != 0) {
                 int offs;
 
                 // redraw bitmaps
-                for (offs = 0; offs < ttmahjng_videoram_size[0]; offs++) {
-                    ttmahjng_videoram1_w.handler(offs, ttmahjng_videoram1.read(offs));
-                    ttmahjng_videoram2_w.handler(offs, ttmahjng_videoram2.read(offs));
+                for (offs = 0; offs < route16_videoram_size[0]; offs++) {
+                    route16_videoram1_w.handler(offs, route16_videoram1.read(offs));
+                    route16_videoram2_w.handler(offs, route16_videoram2.read(offs));
                 }
             }
 
             video_remap_1 = 0;
             video_remap_2 = 0;
 
-            copybitmap(bitmap, tmpbitmap2, 0, 0, 0, 0, Machine.visible_area, TRANSPARENCY_NONE, 0);
-            copybitmap(bitmap, tmpbitmap1, 0, 0, 0, 0, Machine.visible_area, TRANSPARENCY_COLOR, 0);
+            if (video_disable_2 == 0) {
+                copybitmap(bitmap, tmpbitmap2, 0, 0, 0, 0, Machine.visible_area, TRANSPARENCY_NONE, 0);
+            }
+
+            if (video_disable_1 == 0) {
+                if (video_disable_2 != 0) {
+                    copybitmap(bitmap, tmpbitmap1, 0, 0, 0, 0, Machine.visible_area, TRANSPARENCY_NONE, 0);
+                } else {
+                    copybitmap(bitmap, tmpbitmap1, 0, 0, 0, 0, Machine.visible_area, TRANSPARENCY_COLOR, 0);
+                }
+            }
         }
     };
 
@@ -284,12 +373,12 @@ public class ttmahjng {
     static void modify_pen(int pen, int colorindex) {
         int r, g, b, color;
 
-        color = ttmahjng_color_prom.read(colorindex);
+        color = route16_color_prom.read(colorindex);
 
-        b = ((color & 1) != 0 ? 0xff : 0x00);
+        r = ((color & 1) != 0 ? 0xff : 0x00);
         g = ((color & 2) != 0 ? 0xff : 0x00);
-        r = ((color & 4) != 0 ? 0xff : 0x00);
+        b = ((color & 4) != 0 ? 0xff : 0x00);
 
-        palette_change_color(pen, r, g, b);
+        palette_set_color(pen, r, g, b);
     }
 }

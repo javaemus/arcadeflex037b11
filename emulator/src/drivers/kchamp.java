@@ -20,7 +20,7 @@ import static arcadeflex.libc.ptr.*;
 import static mame056.sound.ay8910.*;
 import static mame056.sound.ay8910H.*;
 import static mame.sndintrf.*;
-import static vidhrdw.kchamp.*;
+import static mame056.vidhrdw.kchamp.*;
 import static mame056.sound.dacH.*;
 import static mame056.sound.dac.*;
 import static sound.MSM5205H.*;

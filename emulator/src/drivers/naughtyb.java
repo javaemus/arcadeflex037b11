@@ -16,7 +16,7 @@ import static mame056.cpuexec.ignore_interrupt;
 import static mame056.cpuexec.nmi_interrupt;
 import static vidhrdw.generic.*;
 import static mame056.sound.tms36xxH.*;
-import static vidhrdw.naughtyb.*;
+import static mame056.vidhrdw.naughtyb.*;
 import static mame056.sndhrdw.pleiads.*;
 
 public class naughtyb {

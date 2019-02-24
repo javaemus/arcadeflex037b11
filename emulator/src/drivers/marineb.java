@@ -17,7 +17,7 @@ import static mame056.sound.ay8910.*;
 import static mame056.sound.ay8910H.*;
 import static vidhrdw.marineb.*;
 import static vidhrdw.generic.*;
-import static vidhrdw.espial.*;
+import static mame056.vidhrdw.espial.*;
 import static drivers.espial.*;
 import static mame056.cpuexec.interrupt;
 import static mame056.cpuexec.interrupt_enable_w;

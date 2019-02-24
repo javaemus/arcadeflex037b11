@@ -21,7 +21,7 @@ import static mame.sndintrf.soundlatch_r;
 import static mame.sndintrf.soundlatch_w;
 import static mame056.sound.ay8910.*;
 import static mame056.sound.ay8910H.*;
-import static vidhrdw.blueprnt.*;
+import static mame056.vidhrdw.blueprnt.*;
 import static mame056.common.*;
 import static mame056.cpuexec.cpu_cause_interrupt;
 import static mame056.cpuexec.interrupt;

@@ -16,7 +16,7 @@ import static mame056.inptportH.*;
 import static arcadeflex.fucPtr.*;
 import static mame.sndintrfH.*;
 import static mame056.cpuexec.cpu_getiloops;
-import static vidhrdw.higemaru.*;
+import static mame056.vidhrdw.higemaru.*;
 import static mame056.sound.ay8910.*;
 import static mame056.sound.ay8910H.*;
 

@@ -1,8 +1,9 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
  *
  */
-package vidhrdw;
+package mame056.vidhrdw;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
@@ -13,6 +14,7 @@ import mame056.commonH.mame_bitmap;
 import static vidhrdw.generic.*;
 import static common.libc.cstring.*;
 import static common.libc.expressions.*;
+import static mame056.palette.*;
 
 public class bagman {
 
@@ -35,32 +37,29 @@ public class bagman {
      * *************************************************************************
      */
     public static VhConvertColorPromPtr bagman_vh_convert_color_prom = new VhConvertColorPromPtr() {
-        public void handler(char[] palette, char[] colortable, UBytePtr color_prom) {
+        public void handler(char[] obsolete, char[] colortable, UBytePtr color_prom) {
             int i;
-            //#define TOTAL_COLORS(gfxn) (Machine.gfx[gfxn].total_colors * Machine.gfx[gfxn].color_granularity)
-            //#define COLOR(gfxn,offs) (colortable[Machine.drv.gfxdecodeinfo[gfxn].color_codes_start + offs])
 
-            int p_inc = 0;
             for (i = 0; i < Machine.drv.total_colors; i++) {
-                int bit0, bit1, bit2;
+                		int bit0,bit1,bit2,r,g,b;
 
-                /* red component */
-                bit0 = (color_prom.read() >> 0) & 0x01;
-                bit1 = (color_prom.read() >> 1) & 0x01;
-                bit2 = (color_prom.read() >> 2) & 0x01;
-                palette[p_inc++] = ((char) (0x21 * bit0 + 0x47 * bit1 + 0x97 * bit2));
-                /* green component */
-                bit0 = (color_prom.read() >> 3) & 0x01;
-                bit1 = (color_prom.read() >> 4) & 0x01;
-                bit2 = (color_prom.read() >> 5) & 0x01;
-                palette[p_inc++] = ((char) (0x21 * bit0 + 0x47 * bit1 + 0x97 * bit2));
-                /* blue component */
-                bit0 = 0;
-                bit1 = (color_prom.read() >> 6) & 0x01;
-                bit2 = (color_prom.read() >> 7) & 0x01;
-                palette[p_inc++] = ((char) (0x21 * bit0 + 0x47 * bit1 + 0x97 * bit2));
+		/* red component */
+		bit0 = (color_prom.read(i) >> 0) & 0x01;
+		bit1 = (color_prom.read(i) >> 1) & 0x01;
+		bit2 = (color_prom.read(i) >> 2) & 0x01;
+		r = 0x21 * bit0 + 0x47 * bit1 + 0x97 * bit2;
+		/* green component */
+		bit0 = (color_prom.read(i) >> 3) & 0x01;
+		bit1 = (color_prom.read(i) >> 4) & 0x01;
+		bit2 = (color_prom.read(i) >> 5) & 0x01;
+		g = 0x21 * bit0 + 0x47 * bit1 + 0x97 * bit2;
+		/* blue component */
+		bit0 = 0;
+		bit1 = (color_prom.read(i) >> 6) & 0x01;
+		bit2 = (color_prom.read(i) >> 7) & 0x01;
+		b = 0x21 * bit0 + 0x47 * bit1 + 0x97 * bit2;
 
-                color_prom.inc();
+		palette_set_color(i,r,g,b);
             }
         }
     };

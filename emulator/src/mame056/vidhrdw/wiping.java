@@ -1,7 +1,8 @@
 /**
+ *  ported to v0.56
  *  ported to 0.37b7
  */
-package vidhrdw;
+package mame056.vidhrdw;
 
 import static arcadeflex.fucPtr.*;
 import static arcadeflex.libc.ptr.*;
@@ -46,11 +47,11 @@ public class wiping {
                 bit2 = (color_prom.read() >> 5) & 0x01;
                 palette[p_ptr++] = (char) (0x21 * bit0 + 0x47 * bit1 + 0x97 * bit2);
                 /* blue component */
-                bit0 = 0;
-                bit1 = (color_prom.read() >> 6) & 0x01;
-                bit2 = (color_prom.read() >> 7) & 0x01;
-                palette[p_ptr++] = (char) (0x21 * bit0 + 0x47 * bit1 + 0x97 * bit2);
-
+                /* blue component */
+		bit0 = (color_prom.read() >> 6) & 0x01;
+		bit1 = (color_prom.read() >> 7) & 0x01;
+		palette[p_ptr++] = (char) (0x4f * bit0 + 0xa8 * bit1);
+                
                 color_prom.inc();
             }
 

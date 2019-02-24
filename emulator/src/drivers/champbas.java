@@ -19,7 +19,7 @@ import static mame056.cpuexec.interrupt;
 import static mame056.cpuexec.interrupt_enable_w;
 import static mame056.cpuexec.watchdog_reset_w;
 import static mame056.sound.dacH.*;
-import static vidhrdw.champbas.*;
+import static mame056.vidhrdw.champbas.*;
 import static vidhrdw.generic.*;
 import static mame056.sound.dac.*;
 import static mame056.sound.ay8910.*;

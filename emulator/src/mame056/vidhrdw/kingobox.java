@@ -1,8 +1,9 @@
-/*
+/**
+ * ported to v0.56
  * ported to 0.37b7
  * ported to v0.36
  */
-package vidhrdw;
+package mame056.vidhrdw;
 
 import static arcadeflex.fucPtr.*;
 import static common.libc.cstring.*;
@@ -247,7 +248,7 @@ public class kingobox {
                     dirtybuffer[offs] = 0;
 
                     drawgfx(tmpbitmap, Machine.gfx[4],
-                            videoram.read(offs),
+                            sx != 0 ? videoram.read(offs) : 0,/* make the top row black */
                             ((colorram.read(offs) & 0x70) >> 4) + 8 * palette_bank,
                             0, 0,
                             sx * 16, sy * 16,

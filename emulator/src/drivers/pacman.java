@@ -28,7 +28,7 @@ import static sound.namco.*;
 import static sound.namcoH.*;
 //vidhrdw imports
 import static vidhrdw.generic.*;
-import static vidhrdw.pengo.*;
+import static mame056.vidhrdw.pengo.*;
 import static mame056.cpuexec.interrupt;
 import static mame056.cpuexec.interrupt_enable_w;
 import static mame056.cpuexec.interrupt_vector_w;

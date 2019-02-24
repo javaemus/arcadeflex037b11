@@ -17,7 +17,7 @@ import static mame.sndintrfH.*;
 import static mame056.cpuexec.interrupt_enable_w;
 import static mame056.cpuexec.nmi_interrupt;
 import static vidhrdw.generic.*;
-import static vidhrdw.mermaid.*;
+import static mame056.vidhrdw.mermaid.*;
 import static mame056.sound.ay8910.*;
 import static mame056.sound.ay8910H.*;
 

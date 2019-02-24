@@ -19,7 +19,7 @@ import static mame056.cpuexec.cpu_getiloops;
 import static mame056.cpuexec.interrupt;
 import static mame056.sound.ay8910.*;
 import static mame056.sound.ay8910H.*;
-import static vidhrdw.exedexes.*;
+import static mame056.vidhrdw.exedexes.*;
 import static vidhrdw.generic.*;
 import static mame056.sound.sn76496.*;
 import static mame056.sound.sn76496H.*;

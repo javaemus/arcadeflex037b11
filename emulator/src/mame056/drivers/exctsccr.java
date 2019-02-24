@@ -19,7 +19,7 @@ import static mame056.cpuexec.ignore_interrupt;
 import static mame056.cpuexec.interrupt;
 import static mame056.cpuexec.nmi_interrupt;
 import static mame056.cpuexec.watchdog_reset_w;
-import static vidhrdw.exctsccr.*;
+import static mame056.vidhrdw.exctsccr.*;
 import static mame056.machine.exctsccr.*;
 import static vidhrdw.generic.*;
 import static mame056.sound.dac.*;

@@ -21,7 +21,7 @@ import static mame056.cpuexec.interrupt_enable_w;
 import static mame056.cpuexec.nmi_interrupt;
 import static vidhrdw.generic.*;
 import static mame056.sndhrdw.timeplt.*;
-import static vidhrdw.pooyan.*;
+import static mame056.vidhrdw.pooyan.*;
 
 public class pooyan {
 

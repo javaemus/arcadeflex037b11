@@ -24,7 +24,7 @@ import static mame056.cpuexec.interrupt;
 import static mame056.cpuexec.interrupt_enable_w;
 import static sound.namco.*;
 import static sound.namcoH.*;
-import static vidhrdw.pengo.*;
+import static mame056.vidhrdw.pengo.*;
 import static vidhrdw.generic.*;
 
 public class pengo {
