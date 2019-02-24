@@ -91,7 +91,7 @@ import static drivers.zodiack.*;
 import static drivers.mrjong.*;
 import static drivers.gotya.*;
 import static drivers.ambush.*;
-import static drivers.minivadr.*;
+import static mame056.drivers.minivadr.*;
 import static drivers.sauro.*;
 import static drivers.mitchell.*;
 import static mame056.drivers.cbasebal.*;

@@ -1,36 +1,39 @@
-/*
+/**
+ * ported to v0.56
  * ported to v0.37b7
- * using automatic conversion tool v0.01
  */
-package drivers;
+package mame056.drivers;
+
 import static mame056.cpuintrfH.*;
 import static mame056.cpuexecH.*;
 import static arcadeflex.fucPtr.*;
 import static mame056.driverH.*;
-import static old2.mame.memoryH.*;
-import static mame.commonH.*;
+import static mame056.commonH.*;
 import static mame056.inptport.*;
 import static mame.drawgfxH.*;
 import static vidhrdw.generic.*;
 import static mame056.cpuexec.interrupt;
 import static mame056.inptportH.*;
 import static mame056.vidhrdw.minivadr.*;
+import static mame056.memoryH.*;
 
 public class minivadr {
 
-    static MemoryReadAddress readmem[]
-            = {
-                new MemoryReadAddress(0x0000, 0x1fff, MRA_ROM),
-                new MemoryReadAddress(0xa000, 0xbfff, MRA_RAM),
-                new MemoryReadAddress(0xe008, 0xe008, input_port_0_r),
-                new MemoryReadAddress(-1) /* end of table */};
+    public static Memory_ReadAddress readmem[] = {
+        new Memory_ReadAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_READ | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+        new Memory_ReadAddress(0x0000, 0x1fff, MRA_ROM),
+        new Memory_ReadAddress(0xa000, 0xbfff, MRA_RAM),
+        new Memory_ReadAddress(0xe008, 0xe008, input_port_0_r),
+        new Memory_ReadAddress(MEMPORT_MARKER, 0)
+    };
 
-    static MemoryWriteAddress writemem[]
-            = {
-                new MemoryWriteAddress(0x0000, 0x1fff, MWA_ROM),
-                new MemoryWriteAddress(0xa000, 0xbfff, minivadr_videoram_w, videoram, videoram_size),
-                new MemoryWriteAddress(0xe008, 0xe008, MWA_NOP), // ???
-                new MemoryWriteAddress(-1) /* end of table */};
+    public static Memory_WriteAddress writemem[] = {
+        new Memory_WriteAddress(MEMPORT_MARKER, MEMPORT_DIRECTION_WRITE | MEMPORT_TYPE_MEM | MEMPORT_WIDTH_8),
+        new Memory_WriteAddress(0x0000, 0x1fff, MWA_ROM),
+        new Memory_WriteAddress(0xa000, 0xbfff, minivadr_videoram_w, videoram, videoram_size),
+        new Memory_WriteAddress(0xe008, 0xe008, MWA_NOP), // ???
+        new Memory_WriteAddress(MEMPORT_MARKER, 0)
+    };
 
     static InputPortPtr input_ports_minivadr = new InputPortPtr() {
         public void handler() {
@@ -83,7 +86,7 @@ public class minivadr {
      */
     static RomLoadPtr rom_minivadr = new RomLoadPtr() {
         public void handler() {
-            ROM_REGION(0x10000, REGION_CPU1);/* 64k for code */
+            ROM_REGION(0x10000, REGION_CPU1, 0);/* 64k for code */
             ROM_LOAD("d26-01.bin", 0x0000, 0x2000, 0xa96c823d);
             ROM_END();
         }
